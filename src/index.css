@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Make the scrollbar smaller in width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.no-spinner {
+  appearance: none;
+}
+
+.z-30 {
+  z-index: 10000; /* Set a high enough value to ensure it's in front of other elements */
+}
+
+.rotate-icon {
+  transition: transform 3s ease-in-out;
+}
+
+.rotate-icon.open {
+  transform: rotate(90deg);
+}
+
+.cell-width {
+  width: 5rem; /* Set your desired fixed width */
+  max-width: 5rem;
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Show an ellipsis (...) for truncated text */
+}
+
+/* Tailwind CSS Color Classes - Simplified */
+.bg-primary {
+  background-color: #f3f4f6;
+}
+
+.bg-card {
+  background-color: #ffffff;
+}
+
+.bg-accent {
+  background-color: #fefefe;
+}
+.bg-home {
+  background-color: #204684;
+}
+
+.bg-button {
+  background-color: #204684;
+}
+
+.bg-button-accept {
+  background-color: #22c55e;
+}
+
+.bg-button-decline {
+  background-color: #ef4444;
+}
+.text-neutral {
+  color: #2d3748;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #204684;
+}
