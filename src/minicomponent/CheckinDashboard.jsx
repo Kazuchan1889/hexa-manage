@@ -144,11 +144,11 @@ function CheckinDashboard() {
     axios
       .patch(apiSubmit, {}, { headers })
       .then((response) => {
-        if (!response.data.includes("masih")) setKeluar(true);
+        if (!response.data.includes("dapat dilakukan")) setKeluar(true);
         console.log(response);
         Swal.fire({
-          icon: response.data.includes("masih") ? "error" : "success",
-          title: response.data.includes("masih")
+          icon: response.data.includes("dapat dilakukan") ? "error" : "success",
+          title: response.data.includes("dapat dilakukan")
             ? "Check Out Gagal!"
             : "Check Out Sukses!",
           text: response.data,
