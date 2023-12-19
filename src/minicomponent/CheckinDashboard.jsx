@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Typography } from "@mui/material";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ip from "../ip";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-//ini diubah
+//ini
 
 function CheckinDashboard() {
   const [masuk, setMasuk] = useState("");
