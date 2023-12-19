@@ -109,10 +109,9 @@ function CheckinDashboard() {
               setKeluar(response.data[0].keluar);
 
               console.log(response.data);
-            })
-            .then(() => {
               fetchData();
             })
+            // .then(() => {})
             .catch((error) => {
               console.error("Error", error);
             });

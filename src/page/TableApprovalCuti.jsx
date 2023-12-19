@@ -20,6 +20,7 @@ import InputBase from "@mui/material/InputBase";
 import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TablePagination from "@mui/material/TablePagination";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -27,6 +28,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import ActionButton from "../feature/ActionButton";
+import SettingJatahCuti from "../feature/SettingJatahCuti";
+import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 
 const TableApprovalCuti = () => {
   const [page, setPage] = useState(0);
