@@ -62,6 +62,9 @@ function KaryawanCheckBox({ batchId, setBatchId }) {
         setBatchId([...batchId, id]);
       } else {
         setBatchId(batchId.filter((selectedId) => selectedId !== id));
+        if (selectAll) {
+          setSelectAll(!selectAll);
+        }
       }
     };
     await check(isChecked);

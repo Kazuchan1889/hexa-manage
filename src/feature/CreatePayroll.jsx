@@ -20,14 +20,14 @@ const CreatePayroll = ({ isOpen, onClose }) => {
   const apiCreatePayrollBulanan = `${ip}/api/payroll/post/bulanan`;
   const apiCreatePayrollTHR = `${ip}/api/payroll/post/bonus`;
 
+  const max = 1;
   const handleStep = (index) => {
-    const max = 1;
     if (index <= max) setStep(index);
     else handleSubmit();
   };
 
   const handleClose = () => {
-    setStep(null);
+    setStep(0);
     onClose();
   };
 
@@ -75,7 +75,7 @@ const CreatePayroll = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal open={isOpen || false} onClose={onClose}>
+    <Modal open={isOpen || false} onClose={handleClose}>
       <div
         className="w-2/5 h-96"
         style={{
@@ -86,54 +86,60 @@ const CreatePayroll = ({ isOpen, onClose }) => {
         }}
       >
         <Card className="h-full" style={{ overflowY: "auto" }}>
-          <CardContent>
-            <div className="flex items-center justify-between">
+          <CardContent className="h-full">
+            <div className="flex items-start justify-between h-1/6">
               <Typography variant="h6">Buat Payroll</Typography>
             </div>
-            {step === 0 && (
-              <KaryawanCheckBox
-                batchId={batchId}
-                setBatchId={setBatchId}
-              ></KaryawanCheckBox>
-            )}
-            {step === 1 && (
-              <FormPengisianGaji
-                setRequestBody={setRequestBody}
-                requestBody={requestBody}
-                formType={formType}
-                setFormType={setFormType}
-                setformValid={setformValid}
-              />
-            )}
-            <div className="my-2 flex items-start justify-end space-x-2 ">
-              {step !== 0 && (
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleStep(step - 1)}
-                >
-                  Back
-                </Button>
-              )}
-              {step !== 1 && (
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleStep(step + 1)}
-                >
-                  Next
-                </Button>
+            <div className="flex flex-col h-5/6 justify-between">
+              {step === 0 && (
+                <div className="h-9/10 overflow-auto">
+                  <KaryawanCheckBox
+                    batchId={batchId}
+                    setBatchId={setBatchId}
+                  ></KaryawanCheckBox>
+                </div>
               )}
               {step === 1 && (
-                <Button
-                  variant="contained"
-                  size="small"
-                  disabled={!formValid}
-                  onClick={() => handleSubmit()}
-                >
-                  Submit
-                </Button>
+                <div className="flex justify-between w-full h-1/10">
+                  <FormPengisianGaji
+                    setRequestBody={setRequestBody}
+                    requestBody={requestBody}
+                    formType={formType}
+                    setFormType={setFormType}
+                    setformValid={setformValid}
+                  />
+                </div>
               )}
+              <div className="my-2 flex items-end justify-end space-x-2 h-1/5">
+                {step !== 0 && (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleStep(step - 1)}
+                  >
+                    Back
+                  </Button>
+                )}
+                {step !== max && (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleStep(step + 1)}
+                  >
+                    Next
+                  </Button>
+                )}
+                {step === max && (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    disabled={!formValid}
+                    onClick={() => handleSubmit()}
+                  >
+                    Submit
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
