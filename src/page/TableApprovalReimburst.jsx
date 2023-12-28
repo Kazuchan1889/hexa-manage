@@ -326,7 +326,7 @@ const TableApprovalReimburst = () => {
                           <p className="text-white font-semibold">Jabatan</p>
                         </TableCell>
                         <TableCell align="center" className="w-1/8">
-                          <p className="text-white font-semibold">Pembayaran</p>
+                          <p className="text-white font-semibold">Keterangan</p>
                         </TableCell>
                         <TableCell align="center" className="w-1/8">
                           <p className="text-white font-semibold">Biaya</p>
@@ -393,7 +393,7 @@ const TableApprovalReimburst = () => {
                                 maxWidth: "100px",
                               }}
                             >
-                              {row.pembayaran}
+                              {row.keterangan}
                             </TableCell>
                             <TableCell align="center">{row.biaya}</TableCell>
                             <TableCell
