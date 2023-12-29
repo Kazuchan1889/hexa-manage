@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
@@ -75,7 +76,7 @@ const TableDataKaryawan = () => {
 
   useEffect(() => {
     fetchData();
-  }, [rows]);
+  }, []);
 
   const handleMenuOpen = (event, index) => {
     setAnchorEl(event.currentTarget);

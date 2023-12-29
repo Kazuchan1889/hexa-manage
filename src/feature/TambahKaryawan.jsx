@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
@@ -18,14 +20,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import Swal from "sweetalert2";
 import axios from "axios";
 import ip from "../ip";
+import OperationSelection from "../minicomponent/OperationSelection";
 
 const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [searchValue2, setSearchValue2] = useState("");
+  // const [searchValue, setSearchValue] = useState("");
+  // const [searchValue2, setSearchValue2] = useState("");
   const [step3Data, setStep3Data] = useState(null);
   const [activeStep, setActiveStep] = useState(1);
-  const [choiceArray, setChoiceArray] = useState([]);
+  // const [choiceArray, setChoiceArray] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -72,8 +75,6 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
         // Berhasil menerima data dari server
         console.log(response.data);
         setOperation(response.data);
-        const initialChoices = response.data.map((item) => item.operation);
-        setChoiceArray(initialChoices);
       } catch (error) {
         // Tangani kesalahan jika permintaan gagal
         console.error("Error fetching data:", error);
@@ -81,39 +82,40 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     };
 
     fetchData();
+    // console.log(OperationSelection(operation, null));
   }, []);
 
-  const handleSearchChange1 = (e) => {
-    setSearchValue(e.target.value);
-  };
+  // {  const handleSearchChange1 = (e) => {
+  //     setSearchValue(e.target.value);
+  //   };
 
-  const handleSearchChange2 = (e) => {
-    setSearchValue2(e.target.value);
-  };
+  //   const handleSearchChange2 = (e) => {
+  //     setSearchValue2(e.target.value);
+  //   };
 
-  const filteredChoices = choiceArray.filter((choice) =>
-    choice.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  //   const filteredChoices = choiceArray.filter((choice) =>
+  //     choice.toLowerCase().includes(searchValue.toLowerCase())
+  //   );
 
-  const filteredChosen = chosenArray.filter((chosen) =>
-    chosen.toLowerCase().includes(searchValue2.toLowerCase())
-  );
+  //   const filteredChosen = chosenArray.filter((chosen) =>
+  //     chosen.toLowerCase().includes(searchValue2.toLowerCase())
+  //   );
 
-  const handleSelect = (choice) => {
-    if (chosenArray.includes(choice)) {
-      // Move the chosen item back to choiceArray
-      const updatedChoices = [choice, ...choiceArray];
-      const updatedChosen = chosenArray.filter((item) => item !== choice);
-      setChoiceArray(updatedChoices);
-      setChosenArray(updatedChosen);
-    } else if (choiceArray.includes(choice)) {
-      const updatedChosen = [choice, ...chosenArray];
-      const updatedChoices = choiceArray.filter((item) => item !== choice);
-      setChosenArray(updatedChosen);
-      setChoiceArray(updatedChoices);
-    }
-  };
-
+  //   const handleSelect = (choice) => {
+  //     if (chosenArray.includes(choice)) {
+  //       // Move the chosen item back to choiceArray
+  //       const updatedChoices = [choice, ...choiceArray];
+  //       const updatedChosen = chosenArray.filter((item) => item !== choice);
+  //       setChoiceArray(updatedChoices);
+  //       setChosenArray(updatedChosen);
+  //     } else if (choiceArray.includes(choice)) {
+  //       const updatedChosen = [choice, ...chosenArray];
+  //       const updatedChoices = choiceArray.filter((item) => item !== choice);
+  //       setChosenArray(updatedChosen);
+  //       setChoiceArray(updatedChoices);
+  //     }
+  //   };
+  //}
   const handleStep3 = () => {
     // Kumpulkan data pada step 3
     const censoredPassword = "*****";
@@ -129,7 +131,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
       Lokasi: formData.lokasikerja,
       NoTelp: formData.notelp,
       Salary: formattedSalary,
-      Authority: chosenArray,
+      Authority: chosenArray.map((item) => item.operation),
     };
     setStep3Data(step3Data);
     setActiveStep(3); // Move to step 3 after collecting data
@@ -172,7 +174,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
         level: formData.level,
         role: formData.role,
         status: formData.status,
-        operation: chosenArray,
+        operation: chosenArray.map((item) => item.operation),
         lokasikerja: formData.lokasikerja,
         divisi: formData.divisi,
         notelp: formData.notelp,
@@ -423,149 +425,155 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
             </div>
           )}
           {activeStep === 2 && (
-            <div>
-              <div className="flex justify-center mt-1">
-                <div
-                  className="w-full md:w-1/2"
-                  style={{ marginRight: "20px", minHeight: "300px" }}
-                >
-                  <div className="flex justify-center mb-2">
-                    <TextField
-                      onChange={handleSearchChange1}
-                      label="Cari"
-                      variant="outlined"
-                      fullWidth
-                      style={{ marginTop: "10px", color: "black" }}
-                      InputProps={{
-                        style: { color: "black", padding: "0" },
-                        inputProps: {
-                          style: {
-                            padding: "8px",
-                          },
-                        },
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <SearchIcon
-                              style={{ height: "20px", color: "black" }}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      InputLabelProps={{
-                        style: {
-                          paddingBottom: "25px",
-                          alignItems: "center",
-                          display: "flex",
-                          height: "100%",
-                        },
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="p-4 rounded-t-lg"
-                    style={{ backgroundColor: "#204684" }}
-                  >
-                    <p className="text-white font-semibold text-center">
-                      Hak Yang Tersedia
-                    </p>
-                  </div>
-                  <div className="bg-white border border-t-0 border-gray-300 p-4 rounded-b-lg max-h-[300px] overflow-auto">
-                    <TableContainer>
-                      <Table size="small">
-                        <TableBody>
-                          {filteredChoices.map((choice, index) => (
-                            <TableRow key={index}>
-                              <TableCell align="center">
-                                <Button
-                                  onClick={() => handleSelect(choice)}
-                                  variant="text"
-                                  className="m-2 p-2 md:p-4 md:min-w-[150px] md:text-lg"
-                                >
-                                  {choice.replace("_", " ")}
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                </div>
-                <div className="w-full md:w-1/2 relative">
-                  <div className="flex justify-center mb-2">
-                    <TextField
-                      onChange={handleSearchChange2}
-                      label="Cari"
-                      variant="outlined"
-                      fullWidth
-                      style={{ marginTop: "10px", color: "black" }}
-                      InputProps={{
-                        style: { color: "black", padding: "0" },
-                        inputProps: {
-                          style: {
-                            padding: "8px",
-                          },
-                        },
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <SearchIcon
-                              style={{ height: "20px", color: "black" }}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      InputLabelProps={{
-                        style: {
-                          paddingBottom: "25px",
-                          alignItems: "center",
-                          display: "flex",
-                          height: "100%",
-                        },
-                      }}
-                    />
-                  </div>
-                  <div
-                    className="p-4 rounded-t-lg"
-                    style={{ backgroundColor: "#204684" }}
-                  >
-                    <p className="text-white font-semibold text-center">
-                      Hak Yang Didapat
-                    </p>
-                  </div>
-                  <div className="bg-white border border-t-0 border-gray-300 p-4 rounded-b-lg max-h-[300px] overflow-auto">
-                    <TableContainer>
-                      <Table size="small">
-                        <TableBody>
-                          {filteredChosen.map((chosen, index) => (
-                            <TableRow key={index}>
-                              <TableCell align="center">
-                                <Button
-                                  onClick={() => handleSelect(chosen)}
-                                  variant="text"
-                                  className="m-2 p-2 md:p-4 md:min-w-[150px] md:text-lg"
-                                >
-                                  {chosen.replace("_", " ")}
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end mt-5 mr-2">
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ backgroundColor: "#204684" }}
-                  onClick={() => handleStep3()}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
+            // <div>
+            //   <div className="flex justify-center mt-1">
+            //     <div
+            //       className="w-full md:w-1/2"
+            //       style={{ marginRight: "20px", minHeight: "300px" }}
+            //     >
+            //       <div className="flex justify-center mb-2">
+            //         <TextField
+            //           onChange={handleSearchChange1}
+            //           label="Cari"
+            //           variant="outlined"
+            //           fullWidth
+            //           style={{ marginTop: "10px", color: "black" }}
+            //           InputProps={{
+            //             style: { color: "black", padding: "0" },
+            //             inputProps: {
+            //               style: {
+            //                 padding: "8px",
+            //               },
+            //             },
+            //             endAdornment: (
+            //               <InputAdornment position="end">
+            //                 <SearchIcon
+            //                   style={{ height: "20px", color: "black" }}
+            //                 />
+            //               </InputAdornment>
+            //             ),
+            //           }}
+            //           InputLabelProps={{
+            //             style: {
+            //               paddingBottom: "25px",
+            //               alignItems: "center",
+            //               display: "flex",
+            //               height: "100%",
+            //             },
+            //           }}
+            //         />
+            //       </div>
+            //       <div
+            //         className="p-4 rounded-t-lg"
+            //         style={{ backgroundColor: "#204684" }}
+            //       >
+            //         <p className="text-white font-semibold text-center">
+            //         </p>
+            //       </div>
+            //       <div className="bg-white border border-t-0 border-gray-300 p-4 rounded-b-lg max-h-[300px] overflow-auto">
+            //         <TableContainer>
+            //           <Table size="small">
+            //             <TableBody>
+            //               {filteredChoices.map((choice, index) => (
+            //                 <TableRow key={index}>
+            //                   <TableCell align="center">
+            //                     <Button
+            //                       onClick={() => handleSelect(choice)}
+            //                       variant="text"
+            //                       className="m-2 p-2 md:p-4 md:min-w-[150px] md:text-lg"
+            //                     >
+            //                       {choice.replace("_", " ")}
+            //                     </Button>
+            //                   </TableCell>
+            //                 </TableRow>
+            //               ))}
+            //             </TableBody>
+            //           </Table>
+            //         </TableContainer>
+            //       </div>
+            //     </div>
+            //     <div className="w-full md:w-1/2 relative">
+            //       <div className="flex justify-center mb-2">
+            //         <TextField
+            //           onChange={handleSearchChange2}
+            //           label="Cari"
+            //           variant="outlined"
+            //           fullWidth
+            //           style={{ marginTop: "10px", color: "black" }}
+            //           InputProps={{
+            //             style: { color: "black", padding: "0" },
+            //             inputProps: {
+            //               style: {
+            //                 padding: "8px",
+            //               },
+            //             },
+            //             endAdornment: (
+            //               <InputAdornment position="end">
+            //                 <SearchIcon
+            //                   style={{ height: "20px", color: "black" }}
+            //                 />
+            //               </InputAdornment>
+            //             ),
+            //           }}
+            //           InputLabelProps={{
+            //             style: {
+            //               paddingBottom: "25px",
+            //               alignItems: "center",
+            //               display: "flex",
+            //               height: "100%",
+            //             },
+            //           }}
+            //         />
+            //       </div>
+            //       <div
+            //         className="p-4 rounded-t-lg"
+            //         style={{ backgroundColor: "#204684" }}
+            //       >
+            //         <p className="text-white font-semibold text-center">
+            //           Hak Yang Didapat
+            //         </p>
+            //       </div>
+            //       <div className="bg-white border border-t-0 border-gray-300 p-4 rounded-b-lg max-h-[300px] overflow-auto">
+            //         <TableContainer>
+            //           <Table size="small">
+            //             <TableBody>
+            //               {filteredChosen.map((chosen, index) => (
+            //                 <TableRow key={index}>
+            //                   <TableCell align="center">
+            //                     <Button
+            //                       onClick={() => handleSelect(chosen)}
+            //                       variant="text"
+            //                       className="m-2 p-2 md:p-4 md:min-w-[150px] md:text-lg"
+            //                     >
+            //                       {chosen.replace("_", " ")}
+            //                     </Button>
+            //                   </TableCell>
+            //                 </TableRow>
+            //               ))}
+            //             </TableBody>
+            //           </Table>
+            //         </TableContainer>
+            //       </div>
+            //     </div>
+            //   </div>
+            //   <div className="flex justify-end mt-5 mr-2">
+            //     <Button
+            //       variant="contained"
+            //       size="small"
+            //       style={{ backgroundColor: "#204684" }}
+            //       onClick={() => handleStep3()}
+            //     >
+            //       Next
+            //     </Button>
+            //   </div>
+            // </div>
+            <OperationSelection
+              allOperation={operation}
+              chosenOperation={chosenArray}
+              btnFunction={handleStep3}
+              setSubmitValue={setChosenArray}
+              isSubmit={false}
+            />
           )}
           {activeStep === 3 && step3Data && (
             <div className="max-h-96 text-left overflow-auto">
