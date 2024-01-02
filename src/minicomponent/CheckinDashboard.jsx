@@ -107,8 +107,8 @@ function CheckinDashboard() {
           axios
             .get(apiCheckIn, { headers })
             .then((response) => {
-              setMasuk(response.data[0].masuk);
-              setKeluar(response.data[0].keluar);
+              setMasuk(response.data.masuk);
+              setKeluar(response.data.keluar);
 
               console.log(response.data);
               fetchData();
