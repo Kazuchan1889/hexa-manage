@@ -1,30 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  TextField,
-  Button,
-  Grid,
-  MenuItem,
-  CircularProgress,
-  Dialog,
-  Alert,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
-  TablePagination,
-  Paper,
-  Modal,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  List,
-  ListItem,
-  ListItemText,
-  Avatar,
-} from "@mui/material";
+import { Typography, Avatar } from "@mui/material";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 
 import axios from "axios";
 import "slick-carousel/slick/slick.css";
@@ -39,6 +15,11 @@ function ProfileDashboard() {
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  const [isUserBelumCheckin, setIsUserBelumCheckin] =
+    localStorage.getItem("result") === "belumMasuk";
+  const isUserSudahCheckin = localStorage.getItem("result") === "udahMasuk";
+  const isUserSudahCheckout = localStorage.getItem("result") === "udahKeluar";
 
   useEffect(() => {
     const apiUrl = `${ip}/api/karyawan/get/data/self`;
@@ -105,6 +86,7 @@ function ProfileDashboard() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <div className="flex justify-between items-center w-full">
       <div className="flex flex-col text-left">
@@ -114,6 +96,16 @@ function ProfileDashboard() {
             <br></br>
             {jabatan}
           </Typography>
+          {isUserBelumCheckin ? (
+            <div className="flex">
+              <ReportProblemIcon className="text-yellow-400" />
+              <div className="mt-1">
+                <Typography variant="body2" className="text-yellow-400">
+                  Jangan Lupa Check in Hari ini!
+                </Typography>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
       {dokumen && (

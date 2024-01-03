@@ -9,6 +9,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ip from "../ip";
 import ForgetPassword from "../feature/ForgetPassword";
+import Swal from "sweetalert2";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -56,6 +57,12 @@ function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
+      // Show sweet alert on login failure
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Invalid username or password. Please try again.",
+      });
     }
   };
 
