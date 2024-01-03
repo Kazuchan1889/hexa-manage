@@ -420,7 +420,7 @@ const TableLaporanKegiatan = () => {
                             <TableCell
                               align="center"
                               style={{
-                                color: row.ontime ? "red" : "black",
+                                color: row.ontime ? "black" : "red",
                                 whiteSpace: "normal",
                                 wordWrap: "break-word",
                                 maxHeight: "100px",
