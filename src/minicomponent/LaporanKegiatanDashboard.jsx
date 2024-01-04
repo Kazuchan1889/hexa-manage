@@ -359,7 +359,7 @@ function LaporanKegiatanDashboard() {
         {/* Image */}
         {showUploadFile && (
           <Grid item xs={12}>
-            <p className="text-left">Upload Files</p>
+            <p className="text-left break-words">Upload Files</p>
             <div {...getRootProps()} className="mb-2">
               <input {...getInputProps()} id="fileInput" />
 
@@ -377,7 +377,7 @@ function LaporanKegiatanDashboard() {
                     {uploadedFiles.map((file, index) => (
                       <li key={index}>
                         <CheckCircleIcon color="primary" />
-                        <span className="ml-2">{file.name}</span>
+                        <span className="ml-2 break-words">{file.name}</span>
                       </li>
                     ))}
                   </ul>

@@ -82,7 +82,7 @@ function DashboardAdmin() {
                 <ChartAdminSlider setSlideIndex={setSlideIndex} />
               </div>
             )}
-            <div className="w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] mb-3 lg:m-0 drop-shadow- bg-white p-10 rounded-xl border">
+            <div className="w-[100%] lg:w-[69.5%] h-fit lg:h-[23rem] mb-3 lg:m-0 drop-shadow- bg-white p-10 rounded-xl border">
               <LaporanKegiatanDashboard />
             </div>
           </div>

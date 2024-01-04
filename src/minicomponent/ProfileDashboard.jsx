@@ -16,8 +16,7 @@ function ProfileDashboard() {
   const [data, setData] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
-  const [isUserBelumCheckin, setIsUserBelumCheckin] =
-    localStorage.getItem("result") === "belumMasuk";
+  const isUserBelumCheckin = localStorage.getItem("result") === "belumMasuk";
   const isUserSudahCheckin = localStorage.getItem("result") === "udahMasuk";
   const isUserSudahCheckout = localStorage.getItem("result") === "udahKeluar";
 

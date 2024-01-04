@@ -177,13 +177,22 @@ function CheckinDashboard() {
     day: "numeric",
   });
 
+  function formatServerTime(serverTime) {
+    const [hours, minutes, seconds] = serverTime
+      .split(":")
+      .map((part) => (part.length === 1 ? `0${part}` : part));
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
   return (
     <div className="w-full">
       <div className="my-2">
         <Typography variant="h6">{date}</Typography>
       </div>
       <div className="mb-6">
-        <Typography variant="body2">Server time: {serverTime}</Typography>
+        <Typography variant="body2">
+          Server time: {formatServerTime(serverTime)}
+        </Typography>
       </div>
       {!(userStatusCuti || userStatusIzin || userStatusSakit) && (
         <div className="w-full flex justify-evenly">
