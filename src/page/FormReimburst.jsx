@@ -421,7 +421,7 @@ function FormReimburst() {
                         <Table size="small">
                           <TableHead style={{ backgroundColor: "#204684" }}>
                             <TableRow>
-                              <TableCell>
+                              <TableCell className="w-[30%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}
@@ -430,7 +430,7 @@ function FormReimburst() {
                                   Keterangan
                                 </Typography>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="w-[10%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}
@@ -439,7 +439,7 @@ function FormReimburst() {
                                   Biaya
                                 </Typography>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="w-[10%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}
@@ -448,7 +448,7 @@ function FormReimburst() {
                                   Tanggal
                                 </Typography>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="w-[10%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}
@@ -457,7 +457,7 @@ function FormReimburst() {
                                   Bukti
                                 </Typography>
                               </TableCell>
-                              <TableCell>
+                              <TableCell className="w-[10%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}

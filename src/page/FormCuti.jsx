@@ -387,7 +387,7 @@ function FormCuti() {
                       <Table size="small" className="">
                         <TableHead style={{ backgroundColor: "#204684" }}>
                           <TableRow className="text-center">
-                            <TableCell>
+                            <TableCell className="w-[30%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -396,7 +396,7 @@ function FormCuti() {
                                 Alasan
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="w-[20%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -405,7 +405,7 @@ function FormCuti() {
                                 Pelaksana Tugas Sementara
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -414,7 +414,7 @@ function FormCuti() {
                                 Tanggal Mulai
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -423,7 +423,7 @@ function FormCuti() {
                                 Tanggal Berakhir
                               </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"

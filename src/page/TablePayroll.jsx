@@ -145,7 +145,7 @@ const TablePayroll = () => {
   };
 
   const handleDownloadPayroll = (id) => {
-    const api = `${ip}/api/export/slipgaji/excel/${id}`;
+    const api = `${ip}/api/export/slipgaji/pdf/${id}`;
 
     axios({
       url: api,
@@ -161,7 +161,7 @@ const TablePayroll = () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Slip Payroll.xlsx"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "Slip Payroll.pdf"); // Nama file yang ingin Anda unduh
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -332,22 +332,22 @@ const TablePayroll = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold ">Nama</p>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Nama</p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Jabatan</p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Bulan</p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">No.Rekening</p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Nominal Gaji</p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Slip Gaji</p>
                       </TableCell>
                     </TableRow>

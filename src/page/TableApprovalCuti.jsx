@@ -442,31 +442,31 @@ const TableApprovalCuti = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Nama</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
                           Tanggal Mulai
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
                           Tanggal Selesai
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[30%]">
                         <p className="text-white font-semibold">Keterangan</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
                           Pengganti
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Progress</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/6">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Action</p>
                       </TableCell>
                     </TableRow>
@@ -506,7 +506,8 @@ const TableApprovalCuti = () => {
                                   onAccept={handleApproval}
                                   onReject={handleReject}
                                   data={row}
-                                  tipe={"cuti"}
+                                  tipe={"nonIzin"}
+                                  string={"Cuti"}
                                 />
                               ) : null
                             ) : row.shr === null ? (
@@ -514,7 +515,8 @@ const TableApprovalCuti = () => {
                                 onAccept={handleApproval}
                                 onReject={handleReject}
                                 data={row}
-                                tipe={"cuti"}
+                                tipe={"nonIzin"}
+                                string={"Cuti"}
                               />
                             ) : null
                           ) : row.status ? (

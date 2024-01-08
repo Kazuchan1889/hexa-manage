@@ -371,27 +371,27 @@ const TableLaporanKegiatan = () => {
                   <Table aria-label="simple table" size="small">
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Nama</p>
                         </TableCell>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">
                             Tanggal Laporan
                           </p>
                         </TableCell>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Jam Submit</p>
                         </TableCell>
-                        <TableCell align="center" className="w-1/8">
-                          <p className="text-white font-semibold">Keterangan</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Lokasi</p>
                         </TableCell>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Jenis</p>
                         </TableCell>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[30%]">
+                          <p className="text-white font-semibold">Keterangan</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Dokumen</p>
                         </TableCell>
                       </TableRow>
@@ -449,17 +449,6 @@ const TableLaporanKegiatan = () => {
                                 maxWidth: "150px",
                               }}
                             >
-                              {row.keterangan}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
                               {row.lokasi}
                             </TableCell>
                             <TableCell
@@ -472,6 +461,17 @@ const TableLaporanKegiatan = () => {
                               }}
                             >
                               {row.jenis}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "150px",
+                              }}
+                            >
+                              {row.keterangan}
                             </TableCell>
                             <TableCell align="center">
                               {row.dokumen && row.dokumen.length > 0 && (

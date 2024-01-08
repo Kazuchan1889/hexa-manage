@@ -271,47 +271,37 @@ const TableDataKaryawan = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold sticky top-0">
                           Nama
                         </p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[15%]">
                         <p className="text-white font-semibold sticky top-0">
                           Jabatan
                         </p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
                           Divisi
                         </p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[5%]">
                         <p className="text-white font-semibold sticky top-0">
                           Level
                         </p>
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[5%]">
                         <p className="text-white font-semibold sticky top-0">
                           Status
                         </p>
                       </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold sticky top-0">
-                          Lokasi
-                        </p>
-                      </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
                           Email
                         </p>
                       </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold sticky top-0">
-                          Telphone
-                        </p>
-                      </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" className="w-[5%]">
                         <p className="text-white font-semibold sticky top-0">
                           Action
                         </p>
@@ -344,14 +334,8 @@ const TableDataKaryawan = () => {
                             <TableCell align="center" style={{ width: "10%" }}>
                               {row.status}
                             </TableCell>
-                            <TableCell align="center" style={{ width: "10%" }}>
-                              {row.lokasikerja}
-                            </TableCell>
                             <TableCell align="center" style={{ width: "20%" }}>
                               {row.email}
-                            </TableCell>
-                            <TableCell align="center" style={{ width: "10%" }}>
-                              {row.notelp}
                             </TableCell>
                             <TableCell align="center" style={{ width: "10%" }}>
                               <div className="flex justify-center">

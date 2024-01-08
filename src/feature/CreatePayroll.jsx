@@ -41,6 +41,7 @@ const CreatePayroll = ({ isOpen, onClose }) => {
   const handleSubmit = () => {
     const DatatoSend = {
       month: requestBody.months,
+      kasbon: requestBody.formDataBulanan.kasbon,
       bpjs: requestBody.formDataBulanan.bpjs,
       bjps: requestBody.formDataBulanan.bjps,
       year: requestBody.year,

@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import { Check, Close } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
-const ActionButton = ({ onAccept, onReject, onSakit, tipe, data }) => {
+const ActionButton = ({ onAccept, onReject, onSakit, tipe, data, string }) => {
   const handleIsAccept = async (bool) => {
     if (bool) {
       if (tipe === "izin") {
@@ -20,13 +20,13 @@ const ActionButton = ({ onAccept, onReject, onSakit, tipe, data }) => {
             handleIsSakit(true);
           }
         });
-      } else if (tipe === "cuti") {
+      } else if (tipe === "nonIzin") {
         handleIsSakit(false);
       }
     } else {
       await Swal.fire({
         icon: "question",
-        title: `Apakah ingin menolak ${tipe}`,
+        title: `Apakah ingin menolak ${string}`,
         showCancelButton: true,
         confirmButtonText: "Accept",
       }).then((result) => {
@@ -52,7 +52,7 @@ const ActionButton = ({ onAccept, onReject, onSakit, tipe, data }) => {
     } else {
       await Swal.fire({
         icon: "question",
-        title: `Apakah ingin Menerima ${tipe}`,
+        title: `Apakah ingin Menerima ${string}`,
         showCancelButton: true,
         confirmButtonText: "Accept",
       }).then((result) => {

@@ -473,7 +473,7 @@ function FormIzin() {
                       <Table>
                         <TableHead style={{ backgroundColor: "#204684" }}>
                           <TableRow>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[30%]">
                               <Typography
                                 variant="body2"
                                 className="text-white text-center"
@@ -482,7 +482,7 @@ function FormIzin() {
                                 Alasan
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -491,7 +491,7 @@ function FormIzin() {
                                 Tanggal Mulai
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -500,7 +500,7 @@ function FormIzin() {
                                 Tanggal Selesai
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -509,7 +509,7 @@ function FormIzin() {
                                 Jenis
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[5%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"
@@ -518,7 +518,7 @@ function FormIzin() {
                                 Bukti
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="">
+                            <TableCell size="small" className="w-[10%]">
                               <Typography
                                 variant="body2"
                                 className="font-semibold text-white text-center"

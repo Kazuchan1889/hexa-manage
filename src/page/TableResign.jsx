@@ -179,26 +179,26 @@ const TableResign = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Nama</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Dvisi</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Jabatan</p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
                           Tanggal Pengajuan
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
                           Tanggal Resign
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-1/8">
+                      <TableCell align="center" className="w-[30%]">
                         <p className="text-white font-semibold">Alasan</p>
                       </TableCell>
                     </TableRow>

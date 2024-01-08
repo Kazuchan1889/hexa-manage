@@ -19,6 +19,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import ActionButton from "../feature/ActionButton";
 import Button from "@mui/material/Button";
 import Swal from "sweetalert2";
 import ip from "../ip";
@@ -140,6 +141,14 @@ const TableApprovalReimburst = () => {
     }
   };
 
+  const handleApproveAll = (data) => {
+    if (data.detail.length > 0) {
+      data.detail.forEach((item) => {
+        handleApprove(item);
+      });
+    }
+  };
+
   const handleReject = (data) => {
     if (data && data.id) {
       const config = {
@@ -171,6 +180,14 @@ const TableApprovalReimburst = () => {
             text: "An error occurred while rejecting the request. Please try again.",
           });
         });
+    }
+  };
+
+  const handleRejectAll = (data) => {
+    if (data.detail.length > 0) {
+      data.detail.forEach((item) => {
+        handleReject(item);
+      });
     }
   };
 
@@ -285,6 +302,78 @@ const TableApprovalReimburst = () => {
     setIsOpen(false);
   };
 
+  const handleApproveDetail = (data) => {
+    if (data && data.id) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      };
+
+      const apiApprovalURL = `${ip}/api/reimburst/patch/${data.id}/true`;
+
+      axios
+        .patch(apiApprovalURL, {}, config)
+        .then((response) => {
+          fetchData(""); // Refresh data after approval
+          // Show success alert
+          Swal.fire({
+            icon: "success",
+            title: "Approval Success",
+            text: "The request has been approved successfully.",
+          });
+        })
+        .catch((error) => {
+          console.error("Error approving data:", error);
+          // Show error alert
+          Swal.fire({
+            icon: "error",
+            title: "Approval Error",
+            text: "An error occurred while approving the request. Please try again.",
+          });
+        });
+    }
+  };
+
+  function monthNames(bulan, tahun) {
+    const monthName = new Date(tahun, bulan - 1, 1).toLocaleString("default", {
+      month: "long",
+    });
+    return monthName;
+  }
+
+  const handleDownloadDetail = () => {
+    const api = `${ip}/api/export/reimburse/detail/pdf`;
+
+    const requestBody = {};
+
+    axios({
+      url: api,
+      method: "POST",
+      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      data: { data: selectedRowData },
+      headers: {
+        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Approval Reimburst.pdf"); // Nama file yang ingin Anda unduh
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        if (error.message.includes("400")) alert("Tidak Ada Data");
+        console.error("Error downloading PDF file:", error);
+      });
+  };
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -394,42 +483,44 @@ const TableApprovalReimburst = () => {
                   <Table aria-label="simple table" size="small">
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow>
-                        <TableCell align="center" className="w-1/8">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Nama</p>
                         </TableCell>
                         {(reportType === "approval" ||
                           reportType === "history") && (
                           <>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[5%]">
                               <p className="text-white font-semibold">
                                 Jabatan
                               </p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[35%]">
                               <p className="text-white font-semibold">
                                 Keterangan
                               </p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[10%]">
                               <p className="text-white font-semibold">Biaya</p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[15%]">
                               <p className="text-white font-semibold">
                                 Tanggal Pengajuan
                               </p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[5%]">
                               <p className="text-white font-semibold">
                                 Dokumen
                               </p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
-                              <p className="text-white font-semibold">Status</p>
-                            </TableCell>
                           </>
                         )}
+                        {reportType === "history" && (
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold">Status</p>
+                          </TableCell>
+                        )}
                         {reportType === "approval" && (
-                          <TableCell align="center" className="w-1/8">
+                          <TableCell align="center" className="w-[10%]">
                             <p className="text-white font-semibold text-center">
                               Action
                             </p>
@@ -437,14 +528,34 @@ const TableApprovalReimburst = () => {
                         )}
                         {reportType === "accepted" && (
                           <>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[10%]">
+                              <p className="text-white font-semibold text-center">
+                                Jabatan
+                              </p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[10%]">
                               <p className="text-white font-semibold">Bulan</p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[10%]">
                               <p className="text-white font-semibold">Jumlah</p>
                             </TableCell>
-                            <TableCell align="center" className="w-1/8">
+                            <TableCell align="center" className="w-[15%]">
+                              <p className="text-white font-semibold">
+                                Bank Name
+                              </p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[15%]">
+                              <p className="text-white font-semibold">
+                                No. Rekening
+                              </p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[10%]">
                               <p className="text-white font-semibold">Detail</p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[10%]">
+                              <p className="text-white font-semibold text-center">
+                                Action
+                              </p>
                             </TableCell>
                           </>
                         )}
@@ -526,18 +637,20 @@ const TableApprovalReimburst = () => {
                                     </div>
                                   )}
                                 </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.progres}
-                                </TableCell>
-                                {reportType === "approval" ? (
+                                {reportType === "history" ? (
+                                  <TableCell
+                                    align="center"
+                                    style={{
+                                      whiteSpace: "normal",
+                                      wordWrap: "break-word",
+                                      maxHeight: "100px",
+                                      maxWidth: "100px",
+                                    }}
+                                  >
+                                    {row.progres}
+                                  </TableCell>
+                                ) : null}
+                                {/* {reportType === "approval" ? (
                                   <TableCell align="center">
                                     <DropdownButton
                                       onApproval={handleApprove}
@@ -545,6 +658,32 @@ const TableApprovalReimburst = () => {
                                       onReject={handleReject}
                                     />
                                   </TableCell>
+                                ) : null} */}
+                                {row.status === null ? (
+                                  <>
+                                    <TableCell
+                                      align="center"
+                                      style={{
+                                        color: row.status ? "black" : "red",
+                                      }}
+                                    >
+                                      {row.status === null ? (
+                                        // <DropdownButton
+                                        //   onApproveSakit={handleApproveSakit}
+                                        //   onApproval={handleApproval}
+                                        //   data={row}
+                                        //   onReject={handleReject}
+                                        // />
+                                        <ActionButton
+                                          data={row}
+                                          onAccept={handleApprove}
+                                          onReject={handleReject}
+                                          tipe={"nonIzin"}
+                                          string={"Reimburse"}
+                                        ></ActionButton>
+                                      ) : null}
+                                    </TableCell>
+                                  </>
                                 ) : null}
                               </>
                             )}
@@ -559,7 +698,20 @@ const TableApprovalReimburst = () => {
                                     maxWidth: "100px",
                                   }}
                                 >
-                                  {row.bulan}
+                                  {row.jabatan}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  style={{
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    maxHeight: "100px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {`${monthNames(row.bulan, row.tahun)} ${
+                                    row.tahun
+                                  }`}
                                 </TableCell>
                                 <TableCell
                                   align="center"
@@ -581,6 +733,28 @@ const TableApprovalReimburst = () => {
                                     maxWidth: "100px",
                                   }}
                                 >
+                                  {row.bankname}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  style={{
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    maxHeight: "100px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
+                                  {row.norek}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  style={{
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    maxHeight: "100px",
+                                    maxWidth: "100px",
+                                  }}
+                                >
                                   <Button
                                     variant="outlined"
                                     size="small"
@@ -590,6 +764,20 @@ const TableApprovalReimburst = () => {
                                   >
                                     Detail
                                   </Button>
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  style={{
+                                    color: row.status ? "black" : "red",
+                                  }}
+                                >
+                                  <ActionButton
+                                    data={row}
+                                    onAccept={handleApproveAll}
+                                    onReject={handleRejectAll}
+                                    tipe={"nonIzin"}
+                                    string={"Reimburse"}
+                                  ></ActionButton>
                                 </TableCell>
                               </>
                             )}
@@ -665,6 +853,15 @@ const TableApprovalReimburst = () => {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={handleDownloadDetail}
+                    >
+                      Download
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Modal>

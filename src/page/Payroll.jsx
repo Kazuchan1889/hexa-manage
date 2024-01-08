@@ -68,7 +68,7 @@ function Payroll() {
   };
 
   const handleDownloadPayroll = (id) => {
-    const api = `${ip}/api/export/slipgaji/excel/${id}`;
+    const api = `${ip}/api/export/slipgaji/pdf/${id}`;
 
     axios({
       url: api,
@@ -83,7 +83,7 @@ function Payroll() {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Slip Payroll.xlsx");
+        link.setAttribute("download", "Slip Payroll.pdf");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
