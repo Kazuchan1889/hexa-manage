@@ -24,8 +24,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import ip from "../ip";
 import CreatePayroll from "../feature/CreatePayroll";
 import SettingRumusPayroll from "../feature/SettingRumusPayroll";
-import BackupTableIcon from "@mui/icons-material/BackupTable";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 
 const TablePayroll = () => {
   const [rows, setRows] = useState([]);
@@ -371,24 +371,28 @@ const TablePayroll = () => {
                         <TableCell align="center">
                           <div className="flex justify-evenly">
                             <Button
-                              size="small"
-                              variant="outlined"
+                              variant="text"
                               color="primary"
                               onClick={() =>
                                 handleDownloadPayroll(rows.id, "xlsx")
                               }
                             >
-                              <Typography variant="caption">Excel</Typography>
+                              <FontAwesomeIcon
+                                className="text-green-700"
+                                icon={faFileExcel}
+                              />
                             </Button>
                             <Button
-                              size="small"
-                              variant="outlined"
+                              variant="text"
                               color="primary"
                               onClick={() =>
                                 handleDownloadPayroll(rows.id, "pdf")
                               }
                             >
-                              <Typography variant="caption">PDF</Typography>
+                              <FontAwesomeIcon
+                                className="text-red-700"
+                                icon={faFilePdf}
+                              />
                             </Button>
                           </div>
                         </TableCell>
