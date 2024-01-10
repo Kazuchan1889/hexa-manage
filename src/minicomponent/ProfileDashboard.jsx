@@ -61,6 +61,7 @@ function ProfileDashboard() {
         setDokumen(userData.dokumen || null);
         setJabatan(userData.jabatan || "");
         setData(userData);
+        localStorage.setItem("cutimandiri", userData.cutimandiri);
       })
       .catch((error) => {
         console.error("Error", error);
