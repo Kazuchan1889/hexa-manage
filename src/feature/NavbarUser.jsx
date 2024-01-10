@@ -164,7 +164,7 @@ const NavbarUser = () => {
   const subItems = [
     { label: "Izin", active: false },
     { label: "Cuti", active: false },
-    { label: "Reimburst", active: false },
+    { label: "Reimburse", active: false },
     { label: "Resign", active: false },
   ];
 
@@ -174,7 +174,7 @@ const NavbarUser = () => {
       navigate("/izin");
     } else if (item.label === "Cuti") {
       navigate("/cuti");
-    } else if (item.label === "Reimburst") {
+    } else if (item.label === "Reimburse") {
       navigate("/reimburst");
     } else if (item.label === "Resign") {
       navigate("/resign");
@@ -206,7 +206,7 @@ const NavbarUser = () => {
       ? { label: "Cuti", active: false, to: "/mastercuti" }
       : null,
     checkOp("READ_REIMBURST")
-      ? { label: "Reimburst", active: false, to: "/masterreimburst" }
+      ? { label: "Reimburse", active: false, to: "/masterreimburst" }
       : null,
     checkOp("READ_RESIGN")
       ? { label: "Resign", active: false, to: "/masterresign" }
@@ -417,7 +417,7 @@ const NavbarUser = () => {
               <ListItemIcon>
                 <AttachMoneyIcon />
               </ListItemIcon>
-              <ListItemText primary="Reimburst" />
+              <ListItemText primary="Reimburse" />
             </ListItem>
             <ListItem button component={Link} to="/resign">
               <ListItemIcon>

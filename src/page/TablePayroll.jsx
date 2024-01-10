@@ -24,6 +24,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import ip from "../ip";
 import CreatePayroll from "../feature/CreatePayroll";
 import SettingRumusPayroll from "../feature/SettingRumusPayroll";
+import BackupTableIcon from "@mui/icons-material/BackupTable";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const TablePayroll = () => {
   const [rows, setRows] = useState([]);
@@ -144,8 +146,8 @@ const TablePayroll = () => {
     setPage(0);
   };
 
-  const handleDownloadPayroll = (id) => {
-    const api = `${ip}/api/export/slipgaji/pdf/${id}`;
+  const handleDownloadPayroll = (id, file) => {
+    const api = `${ip}/api/export/slipgaji/${file}/${id}`;
 
     axios({
       url: api,
@@ -161,7 +163,7 @@ const TablePayroll = () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Slip Payroll.pdf"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", `Slip Payroll.${file}`); // Nama file yang ingin Anda unduh
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -367,14 +369,28 @@ const TablePayroll = () => {
                         <TableCell align="center">{rows.rekening}</TableCell>
                         <TableCell align="center">{rows.nominal}</TableCell>
                         <TableCell align="center">
-                          <Button
-                            size="small"
-                            variant="text"
-                            color="primary"
-                            onClick={() => handleDownloadPayroll(rows.id)}
-                          >
-                            <DownloadIcon className="text-gray-500" />
-                          </Button>
+                          <div className="flex justify-evenly">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              onClick={() =>
+                                handleDownloadPayroll(rows.id, "xlsx")
+                              }
+                            >
+                              <Typography variant="caption">Excel</Typography>
+                            </Button>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              onClick={() =>
+                                handleDownloadPayroll(rows.id, "pdf")
+                              }
+                            >
+                              <Typography variant="caption">PDF</Typography>
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
