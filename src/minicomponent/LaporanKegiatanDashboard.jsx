@@ -517,22 +517,24 @@ function LaporanKegiatanDashboard() {
                           <div className="text-center">{row.jenis}</div>
                         </TableCell>
                         <TableCell className="align-center">
-                          <div className="flex justify-center gap-[20%]">
-                            {row.dokumen[0] && (
-                              <img
-                                src={row.dokumen}
-                                className="h-7 cursor-pointer m-auto"
-                                onClick={() => handleImageClick(row.dokumen)}
-                              />
-                            )}
-                            {row.dokumen[1] && (
-                              <img
-                                src={row.dokumen}
-                                className="h-7 cursor-pointer m-auto"
-                                onClick={() => handleImageClick(row.dokumen)}
-                              />
-                            )}
-                          </div>
+                          {row.dokumen && (
+                            <div className="flex justify-center gap-[20%]">
+                              {row.dokumen[0] && (
+                                <img
+                                  src={row.dokumen}
+                                  className="h-7 cursor-pointer m-auto"
+                                  onClick={() => handleImageClick(row.dokumen)}
+                                />
+                              )}
+                              {row.dokumen[1] && (
+                                <img
+                                  src={row.dokumen}
+                                  className="h-7 cursor-pointer m-auto"
+                                  onClick={() => handleImageClick(row.dokumen)}
+                                />
+                              )}
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

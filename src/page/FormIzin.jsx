@@ -165,7 +165,7 @@ function FormIzin() {
   }, []);
 
   // Untuk mengecek field yang kosong
-  const requiredFields = ["alasan", "mulai", "selesai", "jenis", "image"];
+  const requiredFields = ["alasan", "mulai", "selesai", "jenis"];
   const isAnyFieldEmpty = requiredFields.some((field) => {
     if (field === "image" && formData.jenis === "sehari penuh") {
       // Require image validation only if "Sehari Penuh" is selected
@@ -599,8 +599,8 @@ function FormIzin() {
                                     {row.status === null
                                       ? "Waiting"
                                       : row.status === true
-                                      ? "Diterima"
-                                      : "Ditolak"}
+                                      ? "Accepted"
+                                      : "Rejected"}
                                   </Typography>
                                 </TableCell>
                               </TableRow>

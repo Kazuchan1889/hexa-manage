@@ -44,6 +44,7 @@ function FormCuti() {
 
   console.log(formData);
   const sisaCuti = localStorage.getItem("cutimandiri");
+  const jabatan = localStorage.getItem("jabatan");
 
   useEffect(() => {
     // Untuk Fetch data user
@@ -476,22 +477,30 @@ function FormCuti() {
                                 </TableCell>
                                 <TableCell className="w-1/5">
                                   <Typography
-                                    className="text-center"
                                     variant="body2"
+                                    className="text-center"
                                     style={{
                                       color:
-                                        row.status === null
-                                          ? "grey"
-                                          : row.status === true
+                                        row.progress === "rejected"
+                                          ? "red"
+                                          : row.progress === "accepted"
                                           ? "green"
-                                          : "red",
+                                          : row.progress ===
+                                              "acc by direktur" ||
+                                            row.progress === "acc by admin"
+                                          ? "#facc15"
+                                          : "grey",
                                     }}
                                   >
-                                    {row.status === null
-                                      ? "Waiting"
-                                      : row.status === true
-                                      ? "Diterima"
-                                      : "Ditolak"}
+                                    {row.progress === "rejected"
+                                      ? "Rejected"
+                                      : row.progress === "acc by direktur"
+                                      ? "Accepted by Direktur"
+                                      : row.progress === "acc by admin"
+                                      ? "Accepted by Admin"
+                                      : row.progress === "accepted"
+                                      ? "Accepted"
+                                      : "Waiting"}
                                   </Typography>
                                 </TableCell>
                               </TableRow>
