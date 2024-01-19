@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
+import SettingHoliday from "../feature/SettingHoliday";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -41,7 +42,9 @@ const TableAbsen = () => {
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isTimeSettingOpen, setIsTimeSettingOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [isHolidayOpen, setIsHolidayOpen] = useState(false);
+  const [timeMasuk, setTimeMasuk] = useState(null);
+  const [timeKeluar, setTimeKeluar] = useState(null);
   const [selectedToleransi, setSelectedToleransi] = useState(null);
   const operation = localStorage.getItem("operation");
   const apiURLAbsenKaryawan = `${ip}/api/absensi/get/data/dated`;
@@ -101,10 +104,23 @@ const TableAbsen = () => {
 
   const openTimeSetting = () => {
     setIsTimeSettingOpen(true);
+    handleClose();
   };
 
-  const handleTimeChange = (newTime) => {
-    setSelectedTime(newTime);
+  const openHolidaySetting = () => {
+    setIsHolidayOpen(true);
+    handleClose();
+  };
+
+  const closeHolidaySetting = () => {
+    setIsHolidayOpen(false);
+  };
+
+  const handleTimeChange = (newVal, bool) => {
+    console.log(newVal, bool);
+    if (bool) {
+      setTimeMasuk(newVal);
+    } else setTimeKeluar(newVal);
   };
 
   const handleToleransiChange = (newTime) => {
@@ -112,14 +128,19 @@ const TableAbsen = () => {
   };
 
   const handleTimeSave = () => {
-    handleTimeChange(selectedTime);
+    handleTimeChange(timeMasuk, true);
+    handleTimeChange(timeKeluar, false);
     handleToleransiChange(selectedToleransi);
-    console.log(selectedTime.$H, selectedTime.$m, selectedToleransi);
+    console.log(timeMasuk, timeKeluar, selectedToleransi);
     const requestBody2 = {
-      jam: selectedTime.$H,
-      menit: selectedTime.$m,
-      toleransi: selectedToleransi,
+      masuk: {
+        jam: timeMasuk.$H,
+        menit: timeMasuk.$m,
+        toleransi: selectedToleransi,
+      },
+      keluar: { jam: timeKeluar.$H, menit: timeKeluar.$m },
     };
+    console.log(requestBody2);
     axios
       .post(apiURLSettingJam, requestBody2, config)
       .then((response) => {
@@ -305,54 +326,78 @@ const TableAbsen = () => {
                       />
                       Setting Jam Absen
                     </MenuItem>
-                    <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
-                      <DialogTitle>Atur Jam Absen</DialogTitle>
-                      <DialogContent>
-                        <div className="flex space-x-1">
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <div className="flex my-2">
-                              <TimePicker
-                                label="Jam Masuk"
-                                value={selectedTime}
-                                onChange={handleTimeChange}
-                                style={{ width: "100%" }}
-                              />
-                            </div>
-                          </LocalizationProvider>
+                    <MenuItem
+                      onClick={openHolidaySetting}
+                      onClose={handleClose}
+                    >
+                      <CalendarMonthIcon
+                        className="text-gray-500"
+                        style={{ marginRight: "8px" }}
+                      />
+                      Setting Tanggal Libur
+                    </MenuItem>
+                  </Menu>
+                  <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
+                    <DialogTitle>Atur Jam Absen</DialogTitle>
+                    <DialogContent>
+                      <div className="flex space-x-1">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <div className="flex my-2">
-                            <TextField
-                              label="Toleransi (menit)"
-                              type="number"
-                              value={selectedToleransi}
-                              onChange={(event) =>
-                                handleToleransiChange(
-                                  parseInt(event.target.value)
-                                )
-                              }
+                            <TimePicker
+                              label="Jam Masuk"
+                              value={timeMasuk}
+                              onChange={(val) => {
+                                handleTimeChange(val, true);
+                              }}
+                              style={{ width: "100%" }}
                             />
                           </div>
+                        </LocalizationProvider>
+                        <div className="flex my-2">
+                          <TextField
+                            label="Toleransi (menit)"
+                            type="number"
+                            value={selectedToleransi}
+                            onChange={(event) =>
+                              handleToleransiChange(
+                                parseInt(event.target.value)
+                              )
+                            }
+                          />
                         </div>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          onClick={handleTimeSave}
-                          size="small"
-                          style={{ backgroundColor: "#204684" }}
-                          variant="contained"
-                        >
-                          <p>Simpan</p>
-                        </Button>
-                        <Button
-                          onClick={closeTimeSetting}
-                          style={{ backgroundColor: "#F&FAFC" }}
-                          size="small"
-                          variant="outlined"
-                        >
-                          <p className="bg-gray-100">Tutup</p>
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </Menu>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <div className="flex my-2">
+                            <TimePicker
+                              label="Jam Keluar"
+                              value={timeKeluar}
+                              onChange={(val) => {
+                                handleTimeChange(val, false);
+                              }}
+                              style={{ width: "100%" }}
+                            />
+                          </div>
+                        </LocalizationProvider>
+                      </div>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={handleTimeSave}
+                        size="small"
+                        style={{ backgroundColor: "#204684" }}
+                        variant="contained"
+                      >
+                        <p>Simpan</p>
+                      </Button>
+                      <Button
+                        onClick={closeTimeSetting}
+                        style={{ backgroundColor: "#F&FAFC" }}
+                        size="small"
+                        variant="outlined"
+                      >
+                        <p className="bg-gray-100">Tutup</p>
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                   <Button
                     size="small"
                     variant="contained"
@@ -429,6 +474,7 @@ const TableAbsen = () => {
           />
         </div>
       </div>
+      {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
     </div>
   );
 };
