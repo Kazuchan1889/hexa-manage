@@ -16,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Swal from "sweetalert2";
 import axios from "axios";
 import ip from "../ip";
-import OperationSelection from "../minicomponent/OperationSelection";
+import OperationSelection from "./OperationSelection";
 
 const EditOperation = ({ data, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
