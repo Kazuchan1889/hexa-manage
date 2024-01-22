@@ -155,7 +155,9 @@ function Payroll() {
                     .map((row, index) => (
                       <TableRow key={index}>
                         <TableCell size="small">
-                          <div className="text-center">{row.month}</div>
+                          <div className="text-center">
+                            {row.month},{row.year}
+                          </div>
                         </TableCell>
                         <TableCell size="small">
                           <div className="text-center">{row.gaji}</div>

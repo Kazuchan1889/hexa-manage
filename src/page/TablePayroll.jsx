@@ -8,7 +8,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Card, CardContent } from "@mui/material";
+import { Card, CardContent, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import InputBase from "@mui/material/InputBase";
@@ -26,6 +26,7 @@ import CreatePayroll from "../feature/CreatePayroll";
 import SettingRumusPayroll from "../feature/SettingRumusPayroll";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
 
 const TablePayroll = () => {
   const [rows, setRows] = useState([]);
@@ -34,6 +35,7 @@ const TablePayroll = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [search, setSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedYear, setSelectedYear] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isSettingRumusPayrollOpen, setIsSettingRumusPayrollOpen] =
     useState(false);
@@ -59,6 +61,7 @@ const TablePayroll = () => {
   };
 
   const requestBody = {
+    year: selectedYear,
     month: monthsIndex[selectedMonth],
     search: search,
   };
@@ -70,16 +73,18 @@ const TablePayroll = () => {
     },
   };
 
-  axios
-    .post(apiURLPayroll, requestBody, config)
-    .then((response) => {
-      // console.log('Response Data:', response.data);
-      setRows(response.data);
-      setOriginalRows(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+  useEffect(() => {
+    axios
+      .post(apiURLPayroll, requestBody, config)
+      .then((response) => {
+        // console.log('Response Data:', response.data);
+        setRows(response.data);
+        setOriginalRows(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, [search, selectedYear, selectedMonth]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -249,27 +254,29 @@ const TablePayroll = () => {
                     fullWidth
                   />
                 </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                  <select
-                    className="border"
-                    value={selectedMonth}
-                    onChange={handleMonthChange}
-                  >
-                    {months.map((month) => (
-                      <option key={month} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <TextField
+                  select
+                  label="Bulan"
+                  value={selectedMonth}
+                  size="small"
+                  onChange={handleMonthChange}
+                  variant="outlined"
+                  className="w-1/6 text-left"
+                >
+                  {months.map((month) => (
+                    <MenuItem key={month} value={month}>
+                      {month}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  type="number"
+                  label="Tahun"
+                  size="small"
+                  className="w-1/6"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                ></TextField>
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-1">
@@ -365,7 +372,9 @@ const TablePayroll = () => {
                       <TableRow key={index}>
                         <TableCell align="center">{rows.nama}</TableCell>
                         <TableCell align="center">{rows.jabatan}</TableCell>
-                        <TableCell align="center">{rows.month}</TableCell>
+                        <TableCell align="center">
+                          {rows.month},{rows.year}
+                        </TableCell>
                         <TableCell align="center">{rows.rekening}</TableCell>
                         <TableCell align="center">{rows.nominal}</TableCell>
                         <TableCell align="center">

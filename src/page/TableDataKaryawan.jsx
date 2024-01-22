@@ -316,6 +316,7 @@ const TableDataKaryawan = () => {
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage
                         )
+                        .sort((a, b) => a.nama.localeCompare(b.nama))
                         .map((row, index) => (
                           // {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                           <TableRow key={index}>

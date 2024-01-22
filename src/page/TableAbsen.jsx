@@ -444,15 +444,17 @@ const TableAbsen = () => {
                           page * rowsPerPage + rowsPerPage
                         )
                       : rows
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{row.nama}</TableCell>
-                        <TableCell align="center">{row.masuk}</TableCell>
-                        <TableCell align="center">{row.keluar}</TableCell>
-                        <TableCell align="center">{row.date}</TableCell>
-                        <TableCell align="center">{row.status}</TableCell>
-                      </TableRow>
-                    ))}
+                    )
+                      .sort((a, b) => a.nama.localeCompare(b.nama))
+                      .map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">{row.nama}</TableCell>
+                          <TableCell align="center">{row.masuk}</TableCell>
+                          <TableCell align="center">{row.keluar}</TableCell>
+                          <TableCell align="center">{row.date}</TableCell>
+                          <TableCell align="center">{row.status}</TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
