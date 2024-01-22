@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,17 +10,48 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ip from "../ip";
+import axios from "axios";
 
 const SettingHoliday = ({ onClose }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [deskripsi, setDeskripsi] = useState(null);
   const [savedDates, setSavedDates] = useState([]);
 
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("accessToken"),
+    },
+  };
+  async function getHoliday() {
+    const url = `${ip}/api/absensi/get/holiday`;
+    try {
+      const response = await axios.get(url, config);
+      setSavedDates(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function postHoliday() {
+    const url = `${ip}/api/absensi/post/holiday`;
+    try {
+      const response = await axios.post(url, { data: savedDates }, config);
+      console.log(response.data);
+      setSavedDates(null);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getHoliday();
+  }, []);
   const handleSaveDates = () => {
     // Do something with savedDates, like sending to the server or storing in the application state
     console.log("Saved Dates:", savedDates);
-    // Reset selectedDate and close the component
-    setSelectedDate(null);
+    postHoliday();
     onClose();
   };
 
@@ -77,7 +108,7 @@ const SettingHoliday = ({ onClose }) => {
                   .map((item) => (
                     <div
                       className="flex justify-evenly space-x-2 w-full p-2"
-                      key={item}
+                      key={item.tanggal}
                     >
                       <div className="w-full items-start justify-start flex">
                         {item.tanggal}
