@@ -264,19 +264,19 @@ const TableAbsen = () => {
                 </div>
                 <div className="flex rounded-lg space-x-1">
                   <Button
+                    size="small"
+                    variant="text"
+                    onClick={handleOpenDateFilter}
+                  >
+                    <CalendarMonthIcon className="text-black" />
+                  </Button>
+                  <Button
                     variant="contained"
                     size="small"
                     style={{ backgroundColor: "#204684" }}
                     onClick={handleSearch}
                   >
                     Search
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
                   </Button>
                   <Dialog
                     open={isDateFilterOpen}

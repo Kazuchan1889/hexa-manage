@@ -10,7 +10,13 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Card, CardContent, CircularProgress, Modal } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CircularProgress,
+  Modal,
+  TextField,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -36,6 +42,7 @@ const TableApprovalReimburst = () => {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
 
   const monthsIndex = {
     All: null,
@@ -83,6 +90,7 @@ const TableApprovalReimburst = () => {
       search: string,
       jenis: reportType,
       bulan: monthsIndex[selectedMonth],
+      year: selectedYear,
     };
 
     const config = {
@@ -194,7 +202,7 @@ const TableApprovalReimburst = () => {
   useEffect(() => {
     console.log(search); // Log the input value
     fetchData(""); // Initial data fetch
-  }, [reportType, selectedMonth]);
+  }, [reportType, selectedMonth, selectedYear]);
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -397,27 +405,37 @@ const TableApprovalReimburst = () => {
                     onChange={handleSearchChange}
                   />
                 </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                  <select
-                    className="border"
-                    value={selectedMonth}
-                    onChange={handleMonthChange}
-                  >
-                    {months.map((month) => (
-                      <option key={month} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <TextField
+                  select
+                  label="Bulan"
+                  value={selectedMonth}
+                  size="small"
+                  onChange={handleMonthChange}
+                  variant="outlined"
+                  className="w-1/6 text-left"
+                >
+                  {months.map((month) => (
+                    <MenuItem key={month} value={month}>
+                      {month}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  type="number"
+                  label="Tahun"
+                  size="small"
+                  className="w-1/6"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                ></TextField>
+                <Button
+                  variant="contained"
+                  size="small"
+                  style={{ backgroundColor: "#204684" }}
+                  onClick={handleSearch}
+                >
+                  Search
+                </Button>
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-1">

@@ -284,16 +284,6 @@ const TableAproIzin = () => {
       });
   };
 
-  const onAccept = () => {
-    console.log("ini accept");
-  };
-  const onReject = () => {
-    console.log("ini Reject");
-  };
-  const onSakit = () => {
-    console.log("ini acc sakit");
-  };
-
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -320,19 +310,19 @@ const TableAproIzin = () => {
                 </div>
                 <div className="flex rounded-lg space-x-1">
                   <Button
+                    size="small"
+                    variant="text"
+                    onClick={handleOpenDateFilter}
+                  >
+                    <CalendarMonthIcon className="text-black" />
+                  </Button>
+                  <Button
                     variant="contained"
                     size="small"
                     style={{ backgroundColor: "#204684" }}
                     onClick={handleSearch}
                   >
                     Search
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
                   </Button>
                   <Dialog
                     open={isDateFilterOpen}

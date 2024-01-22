@@ -73,7 +73,7 @@ const TablePayroll = () => {
     },
   };
 
-  useEffect(() => {
+  function fetchData() {
     axios
       .post(apiURLPayroll, requestBody, config)
       .then((response) => {
@@ -84,7 +84,11 @@ const TablePayroll = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [search, selectedYear, selectedMonth]);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedYear, selectedMonth]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -277,6 +281,14 @@ const TablePayroll = () => {
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                 ></TextField>
+                <Button
+                  variant="contained"
+                  size="small"
+                  style={{ backgroundColor: "#204684" }}
+                  onClick={handleSearch}
+                >
+                  Search
+                </Button>
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-1">
