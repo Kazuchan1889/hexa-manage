@@ -47,7 +47,7 @@ const SettingHoliday = ({ onClose }) => {
 
   useEffect(() => {
     getHoliday();
-  }, []);
+  });
   const handleSaveDates = () => {
     // Do something with savedDates, like sending to the server or storing in the application state
     console.log("Saved Dates:", savedDates);
