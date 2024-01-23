@@ -31,6 +31,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import ip from "../ip";
+import PatchStatus from "../feature/PatchStatus";
 
 const TableAbsen = () => {
   const [rows, setRows] = useState([]);
@@ -76,7 +77,20 @@ const TableAbsen = () => {
         console.error("Error fetching data:", error);
       }
     };
-
+    const fetchTime = async () => {
+      const url = `${ip}/api/absensi/get/time`;
+      try {
+        const response = await axios.get(url, config);
+        console.log(response.data);
+        setTimeMasuk(new Date());
+        setTimeKeluar(
+          `${response.data.keluar.jam}:${response.data.keluar.menit}`
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    // fetchTime();
     fetchData(); // Call the function when the component mounts
   }, [selectedDate]);
 
@@ -452,7 +466,9 @@ const TableAbsen = () => {
                           <TableCell align="center">{row.masuk}</TableCell>
                           <TableCell align="center">{row.keluar}</TableCell>
                           <TableCell align="center">{row.date}</TableCell>
-                          <TableCell align="center">{row.status}</TableCell>
+                          <TableCell align="center">
+                            <PatchStatus string={row.status} id={row.id} />
+                          </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
