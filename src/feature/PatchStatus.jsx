@@ -20,7 +20,11 @@ const PatchStatus = ({ string, id }) => {
     "sakit",
     "tanpa alasan",
     "terlambat",
+    "libur",
   ];
+  const isDisable = !localStorage
+    .getItem("operation")
+    .includes("UPDATE_ABSENSI");
 
   async function update(e) {
     setStatus(e.target.value);
@@ -30,7 +34,7 @@ const PatchStatus = ({ string, id }) => {
     };
     try {
       const response = await axios.patch(url, body, config);
-      // console.log(response.data);
+      if (response) console.log(`patched`);
     } catch (error) {
       console.log(error);
     }
@@ -43,29 +47,29 @@ const PatchStatus = ({ string, id }) => {
       size="small"
       onChange={(e) => update(e)}
       variant="standard"
+      disabled={isDisable}
       style={{ marginTop: "10px" }}
       SelectProps={{
-        MenuProps: {
-          anchorOrigin: {
-            vertical: "bottom",
-            horizontal: "center",
-          },
-          transformOrigin: {
-            vertical: "top",
-            horizontal: "center",
-          },
-          getContentAnchorEl: null,
-          PaperProps: {
-            style: {
-              maxHeight: 150,
-              width: 200, // Sesuaikan lebar dropdown
-            },
-          },
-        },
+        // MenuProps: {
+        //   anchorOrigin: {
+        //     vertical: "bottom",
+        //     horizontal: "center",
+        //   },
+        //   transformOrigin: {
+        //     vertical: "top",
+        //     horizontal: "center",
+        //   },
+        //   getContentAnchorEl: null,
+        //   PaperProps: {
+        //     style: {
+        //       maxHeight: 150,
+        //       width: 200, // Sesuaikan lebar dropdown
+        //     },
+        //   },
+        // },
         disableUnderline: true,
       }}
       fullWidth
-      style={{ padding: 0 }}
       className="text-left"
     >
       {statusValue.map((val) => (

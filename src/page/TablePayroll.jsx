@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -20,7 +20,6 @@ import AddIcon from "@mui/icons-material/Add";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import DownloadIcon from "@mui/icons-material/Download";
 import ip from "../ip";
 import CreatePayroll from "../feature/CreatePayroll";
 import SettingRumusPayroll from "../feature/SettingRumusPayroll";

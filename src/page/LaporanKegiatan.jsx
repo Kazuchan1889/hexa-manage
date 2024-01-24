@@ -136,11 +136,11 @@ function LaporanKegiatan() {
         });
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
         Swal.fire({
           icon: "error",
           title: "Submit Gagal",
-          text: response.data,
+          text: "error",
           customClass: {
             container: "z-30", // or any value that ensures it's in front of everything
           },
@@ -209,7 +209,7 @@ function LaporanKegiatan() {
     <div className="w-full h-screen bg-white overflow-y-hidden">
       <NavbarUser />
       <div className="flex h-fit">
-        {!isMobile && <Sidebar />}
+        {/* {!isMobile && <Sidebar />} */}
         <div className="h-full w-4/5 mx-auto">
           <div className="flex flex-col justify-between items-center my-2 rounded-xl">
             {loading ? (

@@ -354,7 +354,7 @@ const NavbarUser = () => {
                         <MenuItem
                           key={index}
                           onClick={() => {
-                            handleMasterItemClick(item);
+                            // handleMasterItemClick(item);
                             handleMasterClose();
                           }}
                           component={Link}
