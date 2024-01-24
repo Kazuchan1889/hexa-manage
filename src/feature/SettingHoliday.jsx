@@ -28,6 +28,7 @@ const SettingHoliday = ({ onClose }) => {
     const url = `${ip}/api/absensi/get/holiday`;
     try {
       const response = await axios.get(url, config);
+      // console.log(response.data);
       setSavedDates(response.data);
     } catch (error) {
       console.log(error);
@@ -47,7 +48,7 @@ const SettingHoliday = ({ onClose }) => {
 
   useEffect(() => {
     getHoliday();
-  });
+  }, []);
   const handleSaveDates = () => {
     // Do something with savedDates, like sending to the server or storing in the application state
     console.log("Saved Dates:", savedDates);

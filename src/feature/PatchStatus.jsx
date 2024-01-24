@@ -13,7 +13,6 @@ const PatchStatus = ({ string, id }) => {
   };
   const url = `${ip}/api/absensi/update/status`;
   const [status, setStatus] = useState(string);
-  //   console.log(string, id);
   const statusValue = [
     "masuk",
     "cuti",
@@ -31,7 +30,7 @@ const PatchStatus = ({ string, id }) => {
     };
     try {
       const response = await axios.patch(url, body, config);
-      //   console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -43,12 +42,34 @@ const PatchStatus = ({ string, id }) => {
       value={status}
       size="small"
       onChange={(e) => update(e)}
-      variant="outlined"
+      variant="standard"
+      style={{ marginTop: "10px" }}
+      SelectProps={{
+        MenuProps: {
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+          getContentAnchorEl: null,
+          PaperProps: {
+            style: {
+              maxHeight: 150,
+              width: 200, // Sesuaikan lebar dropdown
+            },
+          },
+        },
+        disableUnderline: true,
+      }}
       fullWidth
+      style={{ padding: 0 }}
       className="text-left"
     >
       {statusValue.map((val) => (
-        <MenuItem key={val} value={val}>
+        <MenuItem key={val} value={val} style={{ textAlign: "center" }}>
           {val}
         </MenuItem>
       ))}

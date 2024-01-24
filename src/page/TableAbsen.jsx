@@ -148,11 +148,14 @@ const TableAbsen = () => {
     console.log(timeMasuk, timeKeluar, selectedToleransi);
     const requestBody2 = {
       masuk: {
-        jam: timeMasuk.$H,
-        menit: timeMasuk.$m,
-        toleransi: selectedToleransi,
+        jam: timeMasuk ? timeMasuk.$H : null,
+        menit: timeMasuk ? timeMasuk.$m : null,
+        toleransi: selectedToleransi ?? null,
       },
-      keluar: { jam: timeKeluar.$H, menit: timeKeluar.$m },
+      keluar: {
+        jam: timeKeluar ? timeKeluar.$H : null,
+        menit: timeKeluar ? timeKeluar.$m : null,
+      },
     };
     console.log(requestBody2);
     axios
@@ -466,7 +469,10 @@ const TableAbsen = () => {
                           <TableCell align="center">{row.masuk}</TableCell>
                           <TableCell align="center">{row.keluar}</TableCell>
                           <TableCell align="center">{row.date}</TableCell>
-                          <TableCell align="center">
+                          <TableCell
+                            align="center"
+                            className="flex items-center"
+                          >
                             <PatchStatus string={row.status} id={row.id} />
                           </TableCell>
                         </TableRow>
