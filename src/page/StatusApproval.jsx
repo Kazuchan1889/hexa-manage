@@ -1,11 +1,11 @@
 import axios from "axios";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import Slider from "react-slick";
 import ip from "../ip";
 
 function StatusApproval() {
-  const [slideIndex, setSlideIndex] = useState(0);
+  // const [slideIndex, setSlideIndex] = useState(0);
   const [waitingCuti, setWaitingCuti] = useState("");
   const [acceptedCuti, setAcceptedCuti] = useState("");
   const [declinedCuti, setDeclinedCuti] = useState("");
@@ -46,7 +46,7 @@ function StatusApproval() {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    beforeChange: (current, next) => setSlideIndex(next),
+    // beforeChange: (current, next) => setSlideIndex(next),
   };
 
   return (
