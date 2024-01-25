@@ -32,7 +32,7 @@ function StatusApproval() {
         setDeclinedIzin(response.data.data.izin.ditolak);
         setWaitingReimburse(response.data.data.reimburst.menunggu);
         setAcceptedReimburse(response.data.data.reimburst.diterima);
-        setDeclinedReimburse(response.data.data.reimburst.menunggu);
+        setDeclinedReimburse(response.data.data.reimburst.ditolak);
         console.log(response.data);
       })
       .catch((error) => {
