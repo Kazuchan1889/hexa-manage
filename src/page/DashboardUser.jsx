@@ -81,7 +81,8 @@ function DashboardUser() {
       style={{ backgroundColor: "#F0F0F0" }}
     >
       <NavbarUser />
-      <div className="flex h-fit">
+      <div className="flex h-fit "
+      style={{ backgroundColor: "#F0F0F0" }}>
         <div className="h-full w-[95%] flex flex-col justify-center items-center mx-auto">
           <div className="h-[40rem] lg:h-full w-full flex flex-col lg:flex-row justify-between items center">
             <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[100%] lg:w-[100%]">
@@ -89,16 +90,13 @@ function DashboardUser() {
             </div>
           </div>
           <div className="h-[40rem]lg:h-[17rem] w-full flex flex-col lg:flex-row justify-between items center">
-            <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md w-[100%] lg:w-[34%] h-[13rem]">
+            {/* <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md w-[100%] lg:w-[34%] h-[13rem]">
               <StatusApproval />
-            </div>
-            <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-md w-[100%] lg:w-[30%] h-[13rem]">
-              <CheckinDashboard />
-            </div>
+            </div> */}
           </div>
           <div className="mb-12 flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
             {!isMobile && (
-              <div className=" grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-4 gap-6">
                 <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
                   <ChartDataKehadiranUser />
                 </div>
@@ -114,12 +112,10 @@ function DashboardUser() {
               </div>
             )}
           </div>
-            <div className=" w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+          <div className=" w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
             <LaporanKegiatanDashboard />
-            </div>
+          </div>
           <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2 mb-6">
-            
-            
           </div>
         </div>
       </div>
