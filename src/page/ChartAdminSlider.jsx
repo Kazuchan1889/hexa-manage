@@ -1,3 +1,4 @@
+import ChartDataGenderKaryawan from "../feature/ChartDataGenderKaryawan";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
@@ -17,6 +18,7 @@ function ChartAdminSlider({ setSlideIndex }) {
     <div className="flex items-center justify-center h-full">
       <Slider {...settings} className="w-full h-72 mx-auto">
         <ChartDataKaryawan />
+        <ChartDataGenderKaryawan />
         <ChartDataKehadiran />
         <ChartDataKehadiranUser />
       </Slider>
