@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Swal from "sweetalert2";
 
 import ip from "../ip";
+import Shortcut from "./Shortcut";
 
 function ProfileDashboard() {
   const [nama, setNama] = useState("");
@@ -87,14 +88,24 @@ function ProfileDashboard() {
     };
   }, []);
 
+  const date = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
+  const hour = new Date().getHours();
+
   return (
     <div className="flex justify-between items-center w-full">
       <div className="flex flex-col text-left">
         <div className="font-semibold text-xl lg:text-3xl">
           <Typography variant="h5" className="text-neutral-200">
-            {nama}
-            <br></br>
-            {jabatan}
+            <div className="w-full font-semibold">
+              {hour >= 12 ? hour >= 17 ? <h1>Good Evening, {nama}! </h1> : <h1>Good Afternoon, {nama}! </h1> : <h1>Good Morning, {nama}! </h1>}
+            </div>
+            <h2 className="text-sm">It's {date}</h2>
+            <Shortcut />
           </Typography>
           {isUserBelumCheckin ? (
             <div className="flex">
