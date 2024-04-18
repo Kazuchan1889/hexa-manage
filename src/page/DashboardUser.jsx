@@ -12,6 +12,7 @@ import ChartDataGender from "../feature/ChartDataGender";
 
 import StatusApproval from "./StatusApproval";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
+import View from "../minicomponent/viewdata";
 
 function DashboardUser() {
   const [nama, setNama] = useState("");
@@ -106,14 +107,18 @@ function DashboardUser() {
               </div>
             )}
           </div>
-          <div className="w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:mr-100 ml-auto mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
-
+          <div className="flex flex-wrap flex-row justify-end items-center w-full h-fit lg:h-1/2">
+            <div className="w-full lg:w-[69.5%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <LaporanKegiatanDashboard />
             </div>
-
+            <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <View />
+            </div>
+          </div>
+         </div>
         </div>
       </div>
-    </div>
+    
   );
 }
 
