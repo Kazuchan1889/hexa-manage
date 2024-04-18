@@ -1,17 +1,17 @@
 import { Chart } from "chart.js";
 import { ArcElement, Legend, Tooltip } from "chart.js";
 import React, { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
 import { Typography } from "@mui/material";
+import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import ip from "../ip";
 
-function ChartDataKehadiran() {
+function ChartDataGenderKaryawan() {
   Chart.register(ArcElement, Tooltip, Legend);
-  const [kehadiranData, setKehadiranData] = useState(null);
+  const [Joblevel, setJoblevel] = useState(null);
 
   useEffect(() => {
-    const apiUrl = `${ip}/api/absensi/get/data/status`;
+    const apiUrl = `${ip}/api/karyawan/get/data/level`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ function ChartDataKehadiran() {
     axios
       .get(apiUrl, { headers })
       .then((response) => {
-        setKehadiranData(response.data);
+        setJoblevel(response.data);
       })
       .catch((error) => {
         console.error("Error", error);
@@ -28,51 +28,47 @@ function ChartDataKehadiran() {
   });
 
   const data = {
-    labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
+    labels: ["Kontrak", "Leader","Senior","Staff"],
     datasets: [
       {
-        data: kehadiranData,
+        data: Joblevel,
         backgroundColor: [
-          "rgba(0, 128, 0, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
           "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(255, 0, 0, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 206, 186, 0.2)",
         ],
         borderColor: [
-          "rgba(0, 128, 0, 1)",
+          "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(255, 0, 0, 1)",
-          "rgba(153, 102, 255, 1)",
+          "rgba(255, 206, 186, 0.2)",
         ],
         borderWidth: 1,
       },
     ],
   };
-
+  console.log(data)
   const options = {
     plugins: {
       legend: {
         display: true,
-        position: "right",
+        position: "right", // Adjust the legend position as needed
       },
     },
-    cutout: 0,
+    cutout: 0, // Change the cutout to 0 to make it a pie chart
   };
 
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">Data Kehadiran Bulan Ini</Typography>
+        <Typography variant="h6">Data Gender Karyawan</Typography>
       </div>
-      <div className="mx-auto w-full h-52 lg:h-72">
-        <Pie data={data} options={options} />
+      <div className="mx-auto w-full h-fit lg:h-72">
+        <Pie data={data} options={options} /> {/* Change to Pie chart */}
       </div>
     </div>
   );
 }
 
-export default ChartDataKehadiran;
+export default ChartDataGenderKaryawan;

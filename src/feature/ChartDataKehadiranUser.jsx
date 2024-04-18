@@ -65,7 +65,7 @@ function ChartDataKehadiranUser() {
   return (
     <div className="h-fit w-[16rem] mx-auto flex flex-col items-center">
       <div className="">
-        <Typography variant="h6">Data Kehadiranmu bulan ini</Typography>
+        <Typography variant="h6">Data Kehadiranmu Hari ini</Typography>
       </div>
       <div className="mx-auto w-full h-full lg:h-72">
         <Pie data={data} options={options} /> {/* Change to Pie chart */}
