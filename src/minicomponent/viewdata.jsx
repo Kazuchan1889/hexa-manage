@@ -18,8 +18,11 @@ function ViewData({  }) {
       <div className="text-2xl font-semibold">
         10 Days
       </div>
+      <a className="flex flex-row mt-2 font-semibold" href="">
+        Form Cuti
+      </a>
     </div>
-    <div className="flex flex-col items-start text-left">
+    <div className="flex flex-col items-start text-left mt-3">
       <div className="text-xl">
         Jumlah Izin Digunakan 
         <svg
@@ -35,6 +38,17 @@ function ViewData({  }) {
       <div className="text-2xl font-semibold">
         0 Days
       </div>
+        <a className="flex flex-row mt-2 font-semibold " href="">
+          Form izin
+          <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        height="1.5em"
+        width="1em"
+          >
+        <path d="M18.59 13H3a1 1 0 010-2h15.59l-5.3-5.3a1 1 0 111.42-1.4l7 7a1 1 0 010 1.4l-7 7a1 1 0 01-1.42-1.4l5.3-5.3z" />
+      </svg>
+      </a>
     </div>
   </div>
   

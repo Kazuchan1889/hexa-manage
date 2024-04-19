@@ -96,8 +96,7 @@ function DashboardUser() {
             </div> */}
           </div>
           <div className="mb-12 flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
-            {!isMobile && (
-              <div className="grid grid-cols-4 gap-6">
+          {!isMobile && (
               <div className=" grid grid-cols-4 gap-10">
                 <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
                   <ChartDataKehadiranUser />
@@ -114,10 +113,13 @@ function DashboardUser() {
               </div>
             )}
           </div>
-          <div className=" w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-            <LaporanKegiatanDashboard />
-          </div>
-          <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2 mb-6">
+          <div className="flex flex-wrap flex-row justify-end items-center w-full h-fit lg:h-1/2">
+            <div className="w-full lg:w-[69.5%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <LaporanKegiatanDashboard />
+            </div>
+            <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <View />
+            </div>
           </div>
          </div>
         </div>
@@ -125,5 +127,4 @@ function DashboardUser() {
     
   );
 }
-
 export default DashboardUser;
