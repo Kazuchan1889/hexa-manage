@@ -83,7 +83,7 @@ function DashboardUser() {
     >
       <NavbarUser />
       <div className="flex h-fit "
-      style={{ backgroundColor: "#F0F0F0" }}>
+        style={{ backgroundColor: "#F0F0F0" }}>
         <div className="h-full w-[95%] flex flex-col justify-center items-center mx-auto">
           <div className="h-[40rem] lg:h-full w-full flex flex-col lg:flex-row justify-between items center">
             <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[100%] lg:w-[100%]">
@@ -124,7 +124,7 @@ function DashboardUser() {
          </div>
         </div>
       </div>
-    
+    </div>
   );
 }
 export default DashboardUser;
