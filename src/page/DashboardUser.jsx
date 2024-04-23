@@ -98,7 +98,7 @@ function DashboardUser() {
           </div>
           <div className="mb-12 flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
           {!isMobile && (
-              <div className=" grid grid-cols-4 gap-10">
+              <div className="grid grid-cols-4 gap-6">
                 <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
                   <ChartDataKehadiranUser />
                 </div>
