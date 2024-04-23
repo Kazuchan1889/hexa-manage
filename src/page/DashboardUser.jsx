@@ -125,10 +125,9 @@ function DashboardUser() {
               <View />
             </div>
           </div>
-         </div>
         </div>
       </div>
-    
+    </div>
   );
 }
 export default DashboardUser;
