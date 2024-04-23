@@ -4,10 +4,11 @@ import ip from "../ip";
 
 function ViewData() {
   const [cutiMandiri, setCutiMandiri] = useState(null);
-  const [izinTerpakai, setIzinTerpakai] = useState([]);
+  const [sisaJatah, setsisaJatah] = useState(null);
 
   useEffect(() => {
     fetchTableData();
+    fetchSisaJatah();
   }, []); // useEffect akan dijalankan sekali saat komponen dimuat
 
   const fetchTableData = () => {
@@ -24,9 +25,29 @@ function ViewData() {
       })
       .catch((error) => {
         console.error(error);
-      });
-      
+      }); 
   };
+ 
+
+const fetchSisaJatah = () => {
+  const apiUrl = `${ip}/api/pengajuan/get/sisa`; // Assuming REACT_APP_API_URL is set correctly in your environment
+  const accessToken = localStorage.getItem("accessToken");
+  const headers = {
+    Authorization: accessToken,
+  };
+
+  axios
+  .get(apiUrl, { headers })
+  .then((response) => {
+    const sisaJatah = response.data.sisa; // Mengakses data "sisa" dari respons
+    setsisaJatah(sisaJatah);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+};
+
+
   return (
     <div className="flex flex-col items-start w-full">
       <div className="flex flex-col items-start text-left">
@@ -53,7 +74,11 @@ function ViewData() {
           Jumlah Izin Digunakan 
         </div>
         <div className="text-2xl font-semibold ">
-          0 Days
+        {sisaJatah !== null ? (
+        <pre>{JSON.stringify(sisaJatah, null, 2)}</pre>
+      ) : (
+        <p>Loading...</p>
+      )} Days
         </div>
         <a className="flex flex-row mt-2 font-semibold border-b-2 border-indigo-500 " href="/izin">
           Form izin
