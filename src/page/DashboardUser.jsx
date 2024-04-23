@@ -8,6 +8,7 @@ import CheckinDashboard from "../minicomponent/CheckinDashboard";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataGender from "../feature/ChartDataGender";
+import Quick from "../minicomponent/Anounce";
 
 
 import StatusApproval from "./StatusApproval";
@@ -96,30 +97,37 @@ function DashboardUser() {
             </div> */}
           </div>
           <div className="mb-12 flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
-            {!isMobile && (
+          {!isMobile && (
               <div className="grid grid-cols-4 gap-6">
-                  <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <ChartDataKehadiranUser />
-                  </div>
-                  <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <ChartDataKaryawan />
-                  </div>
-                  <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <ChartDataKehadiran />
-                  </div>
-                  <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <ChartDataGender />
-                  </div>
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                  <ChartDataKehadiranUser />
+                </div>
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                  <ChartDataKaryawan />
+                </div>
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                  <ChartDataKehadiran />
+                </div>
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                  <ChartDataGender />
+                </div>
               </div>
             )}
           </div>
-          <div className=" w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-            <LaporanKegiatanDashboard />
+          <div className="flex flex-wrap flex-row justify-self-auto  w-full h-fit lg:h-1/2">
+          <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
+              <Quick/>
+            </div>
+            <div className="w-full lg:w-[57%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <LaporanKegiatanDashboard />
+            </div>
+            <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <View />
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
 export default DashboardUser;
