@@ -116,6 +116,9 @@ function DashboardUser() {
           <div className=" w-[100%] lg:w-[69.5%] h-[39rem] lg:h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
             <LaporanKegiatanDashboard />
           </div>
+          <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <View />
+            </div>
         </div>
       </div>
     </div>
