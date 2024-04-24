@@ -3,10 +3,10 @@ import { Typography } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 import ip from "../ip";
-import { Chart } from "chart.js";
+import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend, plugins } from "chart.js";
 
 function ChartDataGenderKaryawan() {
-  Chart.register();
+  Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
   const [karyawanLamaKerjaData, setKaryawanLamaKerjaData] = useState(null);
 
@@ -21,7 +21,7 @@ function ChartDataGenderKaryawan() {
         };
         const response = await axios.get(apiUrl, { headers });
         setKaryawanLamaKerjaData(response.data);
-        console.log(response.data);   
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -45,6 +45,12 @@ function ChartDataGenderKaryawan() {
 
   // Chart options
   const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom", // Adjust the legend position as needed
+      },
+    },
     scales: {
       yAxes: [{
         ticks: {
@@ -92,11 +98,11 @@ function ChartDataGenderKaryawan() {
       <div className="">
         <Typography variant="h6">Data Lama Kerja Karyawan</Typography>
       </div>
-      <div className="mx-auto w-full h-fit lg:h-72">
-          {/* <Bar
+      <div className="flex justify-center items-center mx-auto w-full h-full lg:h-72">
+        <Bar 
           data={data}
           options={options}
-          /> */}
+        />
       </div>
     </div>
   );
