@@ -8,6 +8,7 @@ import CheckinDashboard from "../minicomponent/CheckinDashboard";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataGender from "../feature/ChartDataGender";
+import ChartDataLama from "../feature/ChartDataLama";
 import Quick from "../minicomponent/Anounce";
 
 
@@ -109,7 +110,7 @@ function DashboardUser() {
                   <ChartDataKehadiran />
                 </div>
                 <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                  <ChartDataGender />
+                  <ChartDataLama />
                 </div>
               </div>
             )}

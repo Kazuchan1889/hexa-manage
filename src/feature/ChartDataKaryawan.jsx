@@ -20,6 +20,7 @@ function ChartDataKaryawan() {
       .get(apiUrl, { headers })
       .then((response) => {
         setKaryawanData(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.error("Error", error);

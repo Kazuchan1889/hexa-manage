@@ -4,7 +4,7 @@ import ip from "../ip";
 
 function ViewData() {
   const [cutiMandiri, setCutiMandiri] = useState(null);
-  const [sisaJatah, setsisaJatah] = useState(null);
+  const [sisaJatah, setSisaJatah] = useState(null);
 
   useEffect(() => {
     fetchTableData();
@@ -12,7 +12,7 @@ function ViewData() {
   }, []); // useEffect akan dijalankan sekali saat komponen dimuat
 
   const fetchTableData = () => {
-    const apiUrl = `${ip}/api/pengajuan/get/cuti/self`; // Ganti ip dengan process.env.REACT_APP_API_URL
+    const apiUrl = `${ip}/api/pengajuan/get/cuti/self`; // Endpoint untuk mendapatkan data cuti mandiri
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
     };
@@ -27,26 +27,24 @@ function ViewData() {
         console.error(error);
       }); 
   };
- 
 
-const fetchSisaJatah = () => {
-  const apiUrl = `${ip}/api/pengajuan/get/sisa`; // Assuming REACT_APP_API_URL is set correctly in your environment
-  const accessToken = localStorage.getItem("accessToken");
-  const headers = {
-    Authorization: accessToken,
+  const fetchSisaJatah = () => {
+    const apiUrl = `${ip}/api/pengajuan/get/sisa`; // Endpoint untuk mendapatkan data sisa jatah cuti
+    const accessToken = localStorage.getItem("accessToken");
+    const headers = {
+      Authorization: accessToken,
+    };
+
+    axios
+      .get(apiUrl, { headers })
+      .then((response) => {
+        const sisaJatah = parseInt(response.data.cuti_terpakai);// Mengakses data "Cuti_Terpakai" dari respons
+        setSisaJatah(sisaJatah);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-
-  axios
-  .get(apiUrl, { headers })
-  .then((response) => {
-    const sisaJatah = response.data.sisa; // Mengakses data "sisa" dari respons
-    setsisaJatah(sisaJatah);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-};
-
 
   return (
     <div className="flex flex-col items-start w-full">
@@ -55,7 +53,7 @@ const fetchSisaJatah = () => {
           Cuti Tahunan Balance
         </div>
         <div className="text-2xl font-semibold ">
-          {cutiMandiri !== null ? `${cutiMandiri} Days` : 'Loading...'}
+          {cutiMandiri !== null ? `${cutiMandiri} Days` : '0'}
         </div>
         <a className="flex flex-row mt-2 font-semibold border-b-2 border-indigo-500" href="/cuti">
           Form Cuti
@@ -74,11 +72,7 @@ const fetchSisaJatah = () => {
           Jumlah Izin Digunakan 
         </div>
         <div className="text-2xl font-semibold ">
-        {sisaJatah !== null ? (
-        <pre>{JSON.stringify(sisaJatah, null, 2)}</pre>
-      ) : (
-        <p>Loading...</p>
-      )} Days
+          {sisaJatah !== null ? `${sisaJatah} Days` : '0'}
         </div>
         <a className="flex flex-row mt-2 font-semibold border-b-2 border-indigo-500 " href="/izin">
           Form izin
