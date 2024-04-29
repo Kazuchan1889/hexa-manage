@@ -55,3 +55,96 @@ function Announcement() {
 }
 
 export default Announcement;
+
+// [ version 2.0]
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+
+// const AnnouncementForm = () => {
+//   const [announcementText, setAnnouncementText] = useState('');
+//   const [file, setFile] = useState(null);
+//   const [announcements, setAnnouncements] = useState([]);
+
+//   useEffect(() => {
+//     // Panggil fungsi untuk mendapatkan pengumuman saat komponen dimuat
+//     fetchAnnouncements();
+//   }, []);
+
+//   const fetchAnnouncements = async () => {
+//     try {
+//       // Panggil endpoint backend untuk mendapatkan pengumuman
+//       const response = await axios.get('URL_BACKEND');
+//       // Simpan pengumuman ke dalam state
+//       setAnnouncements(response.data);
+//     } catch (error) {
+//       console.error('Error fetching announcements:', error);
+//     }
+//   };
+
+//   const handleTextChange = (e) => {
+//     setAnnouncementText(e.target.value);
+//   };
+
+//   const handleFileChange = (e) => {
+//     setFile(e.target.files[0]);
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       const formData = new FormData();
+//       formData.append('announcementText', announcementText);
+//       formData.append('file', file);
+
+//       // Kirim data ke backend
+//       const response = await axios.post('URL_BACKEND', formData, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data'
+//         }
+//       });
+      
+//       // Tampilkan respons dari backend jika perlu
+//       console.log(response.data);
+
+//       // Reset form setelah berhasil mengirim
+//       setAnnouncementText('');
+//       setFile(null);
+
+//       // Perbarui daftar pengumuman setelah berhasil mengirim
+//       fetchAnnouncements();
+//     } catch (error) {
+//       console.error('Error:', error);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <div className="flex flex-col items-center justify-center h-[50vh]">
+//        <div className="text-xl font-semibold border-b-2 border-indigo-600 mb-4">
+//          Announcement
+//        </div>
+//       <div>
+//         <textarea
+//           value={announcementText}
+//           onChange={handleTextChange}
+//           placeholder="Tulis pengumuman di sini..."
+//         />
+//       </div>
+//       <div>
+//         <input type="file" onChange={handleFileChange} />
+//       </div>
+//       <div>
+//         <button onClick={handleSubmit}>Submit</button>
+//       </div>
+//       <h2>Announcements</h2>
+//       <ul>
+//         {announcements.map((announcement, index) => (
+//           <li key={index}>{announcement}</li>
+//         ))}
+//       </ul>
+//     </div>
+//     </div>
+//   );
+// };
+
+// export default AnnouncementForm;
+
