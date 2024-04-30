@@ -31,7 +31,7 @@ function ChartDataGenderKaryawan() {
   }, []);
 
   const data = {
-    labels: ["Kurang dari 1 tahun", "1-2 tahun", "Lebih dari 2 tahun"],
+    labels: ["< 1 thn", "1-2 thn", "> 2 tahun"],
     datasets: [
       {
         label: 'Jumlah Karyawan',
