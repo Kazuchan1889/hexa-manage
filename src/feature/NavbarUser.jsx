@@ -32,6 +32,9 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { useNavigate } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import OvertimeIcon from "@mui/icons-material/Schedule";
+import TimeOffIcon from "@mui/icons-material/FreeBreakfast";
+
 const SettingsDropdown = ({ handleLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -134,6 +137,7 @@ const NavbarUser = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formulirOpen, setFormulirOpen] = useState(false);
   const [masterOpen, setMasterOpen] = useState(false);
+  const [timeManagementOpen, setTimeManagementOpen] = useState(false); // New state for Time Management dropdown
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [anchorEl, setAnchorEl] = useState(null);
   const isUserAdmin = localStorage.getItem("role");
@@ -217,6 +221,7 @@ const NavbarUser = () => {
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,
+    
   ].filter((item) => item !== null);
 
   // Untuk membuka master data
@@ -228,6 +233,17 @@ const NavbarUser = () => {
   const handleMasterClose = () => {
     setAnchorEl(null);
     setMasterOpen(false);
+  };
+
+  // New function to handle Time Management dropdown
+  const handleTimeManagementClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setTimeManagementOpen(!timeManagementOpen);
+  };
+
+  const handleTimeManagementClose = () => {
+    setAnchorEl(null);
+    setTimeManagementOpen(false);
   };
 
   // Untuk logic log out
@@ -373,6 +389,64 @@ const NavbarUser = () => {
                   </Menu>
                 </div>
               ) : null}
+              {/* Time Management Dropdown */}
+              <div className="text-black flex items-center justify-center">
+                <Button
+                  variant="button"
+                  onClick={handleTimeManagementClick}
+                  endIcon={
+                    <ExpandMoreIcon
+                      style={{
+                        transform: `rotate(${
+                          timeManagementOpen ? "180deg" : "360deg"
+                        })`,
+                        transition: "transform 0.3s",
+                      }}
+                    />
+                  }
+                >
+                  <Typography
+                    variant="button"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    Time Management
+                  </Typography>
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={timeManagementOpen}
+                  onClose={handleTimeManagementClose}
+                  style={{ marginTop: "0.7rem" }}
+                >
+                  <List>
+                    <MenuItem
+                      onClick={() => {
+                        handleTimeManagementClose();
+                        // handleMenuItemClick(item);
+                        // handleClose();
+                      }}
+                      component={Link}
+                      to="/Over"
+                      style={{ width: "10rem" }}
+                    >
+                      <Typography variant="button">Overtime</Typography>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleTimeManagementClose();
+                        // handleMenuItemClick(item);
+                        // handleClose();
+                      }}
+                      component={Link}
+                      to="/TimeOff"
+                      style={{ width: "10rem" }}
+                    >
+                      <Typography variant="button">Time Off</Typography>
+                    </MenuItem>
+                  </List>
+                </Menu>
+              </div>
+              {/* End of Time Management Dropdown */}
               <div className="text-black flex items-center justify-center">
                 <ListItem button component={Link} to="/payroll">
                   <Typography variant="button">Payroll</Typography>
@@ -442,6 +516,12 @@ const NavbarUser = () => {
                 <ExitToAppIcon />
               </ListItemIcon>
               <ListItemText primary="Logout" />
+            </ListItem>
+            <ListItem button component={Link} to="/Timeoff">
+              <ListItemIcon>
+                <VacationIcon />
+              </ListItemIcon>
+              <ListItemText primary="Timeoff" />
             </ListItem>
           </List>
         </Drawer>
