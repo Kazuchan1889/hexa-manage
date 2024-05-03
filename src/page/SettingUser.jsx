@@ -10,7 +10,6 @@ import {
   Avatar,
 } from "@mui/material";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
-import NavbarUser from "../feature/NavbarUser";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import PasswordResetDialog from "../feature/ChangePassword";
@@ -191,10 +190,9 @@ function AccountSettings() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-white overflow-y-hidden">
-      <NavbarUser />
-      <div className="w-screen flex h-fit">
-        <div className="flex h-fit w-screen mx-auto">
+    <div className="w-[100%] h-[100%] bg-white">
+      <div className="w-full flex h-fit">
+        <div className="flex h-fit w-full mx-auto">
           <div className="flex flex-col justify-between items-center my-3 rounded-xl">
             <form
               onSubmit={handleSubmit}
