@@ -24,6 +24,7 @@ import TableResign from "./page/TableResign";
 import { createTheme, ThemeProvider } from "@mui/material";
 import LiveAttendance from "./page/LiveAttendance";
 import AccountSettingUser from "./page/AccountSettingUser";
+import Test from "./page/Test"
 function App() {
   // Untuk mengganti color primary
   const theme = createTheme({
@@ -57,6 +58,7 @@ function App() {
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/LiveAttendance" element={<LiveAttendance />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
+          <Route path="/Test" element={<Test />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
