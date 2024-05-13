@@ -21,9 +21,12 @@ import TableAbsen from "./page/TableAbsen";
 import TableLaporanKegiatan from "./page/TableLaporanKegiatan";
 import TablePayroll from "./page/TablePayroll";
 import TableResign from "./page/TableResign";
+import Overtime from "./page/Overtime";
 import { createTheme, ThemeProvider } from "@mui/material";
 import LiveAttendance from "./page/LiveAttendance";
 import AccountSettingUser from "./page/AccountSettingUser";
+import Timeoff from "./page/Timeoff";
+import Povertime from "./page/Formovertime";
 import Test from "./page/Test"
 function App() {
   // Untuk mengganti color primary
@@ -58,7 +61,6 @@ function App() {
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/LiveAttendance" element={<LiveAttendance />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
-          <Route path="/Test" element={<Test />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
