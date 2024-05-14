@@ -6,7 +6,7 @@ function Dashboard() {
   localStorage.getItem("accessToken");
   const role = localStorage.getItem("role");
 
-  return <div>{role === "admin" ? <DashboardAdmin /> : <DashboardUser />}</div>;
+  return <div>{role === "admin" ? <DashboardAdmin /> : <DashboardUser  />}</div>;
 }
 
 export default Dashboard;

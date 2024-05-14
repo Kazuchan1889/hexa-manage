@@ -115,7 +115,7 @@ const SettingsDropdown = ({ handleLogout }) => {
                 >
                   <MenuItem
                     component={Link}
-                    to="/setting"
+                    to="/accountsetting"
                     className="px-4 py-2"
                   >
                     <Typography variant="button">Settings</Typography>
@@ -505,7 +505,7 @@ const NavbarUser = () => {
               </ListItemIcon>
               <ListItemText primary="Payroll" />
             </ListItem>
-            <ListItem button component={Link} to="/setting">
+            <ListItem button component={Link} to="/AccountSetting">
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>

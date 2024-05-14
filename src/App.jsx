@@ -27,6 +27,8 @@ import LiveAttendance from "./page/LiveAttendance";
 import AccountSettingUser from "./page/AccountSettingUser";
 import Timeoff from "./page/Timeoff";
 import Povertime from "./page/Formovertime";
+import Schedjule from "./page/Schedjule";
+import Cal from "./page/calen";
 import Test from "./page/Test"
 function App() {
   // Untuk mengganti color primary
@@ -61,6 +63,11 @@ function App() {
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/LiveAttendance" element={<LiveAttendance />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
+          <Route path="/Timeoff" element={<Timeoff />} />
+          <Route path="/Over" element={<Overtime />} />
+          <Route path="/pover" element={<Povertime />} />
+          <Route path="/Schejule" element={<Schedjule />} />
+          <Route path="/Cal" element={<Cal />} />
           <Route path="/Over" element={<Povertime />} />
           <Route path="/TimeOff" element={<Timeoff />} />
         </Routes>
