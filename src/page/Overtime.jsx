@@ -30,6 +30,7 @@ import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 
+
 const TableApprovalCuti = () => {
   const [page, setPage] = useState(0);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);

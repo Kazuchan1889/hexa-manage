@@ -52,6 +52,7 @@ const TableApprovalCuti = () => {
       search: string,
       jenis: reportType,
       date: selectedDate,
+
     };
 
     const config = {
@@ -68,6 +69,7 @@ const TableApprovalCuti = () => {
         console.log("Response Data:", response.data);
         setRows(response.data);
         setOriginalRows(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);

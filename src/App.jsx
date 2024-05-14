@@ -27,6 +27,8 @@ import LiveAttendance from "./page/LiveAttendance";
 import AccountSettingUser from "./page/AccountSettingUser";
 import Timeoff from "./page/Timeoff";
 import Povertime from "./page/Formovertime";
+import Schedjule from "./page/Schedjule";
+import Cal from "./page/calen";
 function App() {
   // Untuk mengganti color primary
   const theme = createTheme({
@@ -63,6 +65,8 @@ function App() {
           <Route path="/Timeoff" element={<Timeoff />} />
           <Route path="/Over" element={<Overtime />} />
           <Route path="/pover" element={<Povertime />} />
+          <Route path="/Schejule" element={<Schedjule />} />
+          <Route path="/Cal" element={<Cal />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

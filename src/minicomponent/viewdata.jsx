@@ -93,7 +93,7 @@ function ViewData() {
         <div className="text-2xl font-semibold ">
           0 
         </div>
-        <a className="flex flex-row mb-5 font-semibold border-b-2 border-indigo-500 " href="">
+        <a className="flex flex-row mb-5 font-semibold border-b-2 border-indigo-500 " href="/Timeoff">
           Lihat
           <svg
             viewBox="0 0 24 24"
