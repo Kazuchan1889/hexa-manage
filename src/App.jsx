@@ -61,6 +61,8 @@ function App() {
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/LiveAttendance" element={<LiveAttendance />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
+          <Route path="/Over" element={<Povertime />} />
+          <Route path="/TimeOff" element={<Timeoff />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
