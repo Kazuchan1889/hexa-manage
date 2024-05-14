@@ -60,22 +60,22 @@ function DashboardAdmin() {
   }, []);
 
   return (
-    <div className="w-screen h-fit lg:h-screen xl:overflow-y-hidden bg-primary">
+    <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
       <NavbarUser />
 
       <div className="flex flex-col h-fit lg:h-screen w-screen">
         <div className="h-full w-[90%] flex flex-col  items-center mx-auto">
-          <div className="h-[28rem] lg:h-[17rem] w-full flex flex-col lg:flex-row justify-between">
+          <div className="w-full h-full lg:h-full w-full flex flex-col lg:flex-row justify-between">
             {checkOperation.includes("SELF_ABSENSI") ? (
-              <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md mx-auto w-[100%] lg:w-[35%]">
+              <div className="flex justify-between items-center drop-shadow-lg bg-home px-10 py-10 my-5 rounded-md w-[100%]">
                 <ProfileDashboard />
               </div>
             ) : (
-              <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md mx-auto xl:mx-0 w-[100%] lg:w-[49%]">
+              <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[100%] lg:w-[100%]">
                 <ProfileDashboard />
               </div>
             )}
-            {checkOperation.includes("SELF_ABSENSI") ? (
+            {/* {checkOperation.includes("SELF_ABSENSI") ? (
               !isMobile && (
                 <div className="flex justify-between drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md mx-auto w-80 lg:w-[33%]">
                   <StatusRequest />
@@ -90,10 +90,10 @@ function DashboardAdmin() {
               <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-11 my-5 rounded-md mx-auto lg:mx:0 w-[100%] lg:w-[30%] h-[13rem] lg:h-[14.5rem]">
                 <CheckinDashboard />
               </div>
-            )}
+            )} */}
           </div>
           {checkOperation.includes("SELF_ABSENSI") ? (
-            <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
+            <div className="flex flex-col mt-4 lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
               {!isMobile && (
                 <div className="w-[100%] lg:w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
                   <ChartAdminSlider setSlideIndex={setSlideIndex} />
