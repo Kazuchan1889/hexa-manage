@@ -137,8 +137,8 @@ function AccountSettingUser() {
   return (
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
-      <div  className="flex m-4 rounded-lg  ">
-        <div className="h-full w-1/4 bg-200 p-4 border border-black" >
+      <div  className="flex m-4 rounded-xl bg-white drop-shadow ">
+        <div className="h-full w-1/4 p-4 border border-gray" >
           <ul className="h-full flex flex-col space-y-2">
             <div className='flex justify-center h-full w-full pl-4 pt-4 pr-4'>
               {dokumen && (
@@ -180,7 +180,7 @@ function AccountSettingUser() {
             </li>
           </ul>
         </div>
-        <div className="w-full bg-200 p-4 border-t border-r border-b border-black">
+        <div className="w-full bg-200 p-4 border-t border-r border-b border-gray">
           {renderContent()}
         </div>
       </div>

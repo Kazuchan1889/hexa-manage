@@ -49,15 +49,16 @@ function ViewData() {
   return (
     <div className="flex flex-col items-start w-full">
       <div className="flex flex-col items-start text-left">
-        <div className="text-xl">
+        <div className="text-s font-bold">
           Cuti Tahunan Balance
         </div>
-        <div className="text-2xl font-semibold ">
+        <div className="text-s font-semibold ">
           {cutiMandiri !== null ? `${cutiMandiri} Days` : '0'}
         </div>
-        <a className="flex flex-row mt-2 font-semibold border-b-2 border-indigo-500" href="/cuti">
+        <a className="flex flex-row mt-2 font-semibold" href="/cuti">
           Form Cuti
           <svg
+            className='ml-2'
             viewBox="0 0 24 24"
             fill="currentColor"
             height="1.5em"
@@ -68,15 +69,16 @@ function ViewData() {
         </a>
       </div>
       <div className="flex flex-col items-start text-left mt-3">
-        <div className="text-xl">
-          Jumlah Izin Digunakan 
+        <div className="text-s font-bold">
+          Izin yang Digunakan 
         </div>
-        <div className="text-2xl font-semibold ">
+        <div className="text-s font-semibold ">
           {sisaJatah !== null ? `${sisaJatah} Days` : '0'}
         </div>
-        <a className="flex flex-row mt-2 font-semibold border-b-2 border-indigo-500 " href="/izin">
+        <a className="flex flex-row mt-2 font-semibold" href="/izin">
           Form izin
           <svg
+            className='ml-2'
             viewBox="0 0 24 24"
             fill="currentColor"
             height="1.5em"
@@ -87,15 +89,16 @@ function ViewData() {
         </a>
       </div>
       <div className="flex flex-col items-start text-left mt-3">
-        <div className="text-xl">
+        <div className="text-s font-bold">
           Who's Off 
         </div>
-        <div className="text-2xl font-semibold ">
+        <div className="text-s font-semibold ">
           0 
         </div>
-        <a className="flex flex-row mb-5 font-semibold border-b-2 border-indigo-500 " href="/Timeoff">
+        <a className="flex flex-row mb-5 font-semibold" href="/Timeoff">
           Lihat
           <svg
+            className='ml-2'
             viewBox="0 0 24 24"
             fill="currentColor"
             height="1.5em"

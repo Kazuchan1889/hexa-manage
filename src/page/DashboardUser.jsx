@@ -9,7 +9,7 @@ import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataGender from "../feature/ChartDataGender";
 import ChartDataLama from "../feature/ChartDataLama";
-import Quick from "../minicomponent/Anounce";
+import Announcement from "../minicomponent/Anounce";
 
 
 import StatusApproval from "./StatusApproval";
@@ -92,24 +92,19 @@ function DashboardUser() {
               <ProfileDashboard />
             </div>
           </div>
-          <div className="h-[40rem]lg:h-[17rem] w-full flex flex-col lg:flex-row justify-between items center">
-            {/* <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md w-[100%] lg:w-[34%] h-[13rem]">
-              <StatusApproval />
-            </div> */}
-          </div>
-          <div className="mb-12 flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
+          <div className="w-full mb-6 justify-center flex flex-col h-fit ">
           {!isMobile && (
-              <div className="flex flex-row justify-center gap-6">
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+              <div className="w-full flex items-center justify-center gap-4">
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKehadiranUser />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKaryawan />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKehadiran />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataLama />
                 </div>
               </div>
@@ -117,7 +112,7 @@ function DashboardUser() {
           </div>
           <div className="flex flex-wrap flex-row justify-self-auto  w-full h-fit lg:h-1/2">
           <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
-              <Quick/>
+              <Announcement/>
             </div>
             <div className="w-full lg:w-[57%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <LaporanKegiatanDashboard />

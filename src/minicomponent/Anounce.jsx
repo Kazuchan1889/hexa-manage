@@ -44,7 +44,7 @@ function Announcement() {
       />
 
       {/* Button to upload attachment */}
-      <input type="file" multiple onChange={e => setAttachments([...attachments, ...e.target.files])} className="mb-4"/>
+      <input type="file" multiple onChange={e => setAttachments([...attachments, ...e.target.files])} className="mb-4 w-full"/>
 
       {/* Button to submit announcement */}
       <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

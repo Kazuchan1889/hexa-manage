@@ -69,63 +69,71 @@ function Taskform() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto flex">
-            <div className="w-1/2 p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold">Daftar Jadwal</h2>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setModalIsOpen(true)}>Tambah</button>
-                </div>
-                <table className="w-full">
-                    <thead>
-                        <tr>
-                            <th className="text-left">Kegiatan</th>
-                            <th className="text-left">Tanggal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {selectedDateSchedules.map((schedule, index) => (
-                            <tr key={index}>
-                                <td>{schedule.task}</td>
-                                <td>{schedule.endDate.toLocaleString()}</td>
-                            </tr>
-                        ))}
-                        {selectedDateSchedules.length === 0 && (
+        <section>
+            <NavbarUser />
+            <div className='mx-20 text-left my-2'>
+                <h1 className='text-3xl font-bold'>Calender</h1>
+            </div>
+            <div className="max-w-6xl mx-auto flex mt-6 border-black border">
+                <div className="w-3/4 p-6 border-r border-black">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-bold">Daftar Jadwal</h2>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setModalIsOpen(true)}>Tambah</button>
+                    </div>
+                    <table className="w-full">
+                        <thead>
                             <tr>
-                                <td colSpan="2">Tidak ada jadwal untuk tanggal ini.</td>
+                                <th className="text-left">Kegiatan</th>
+                                <th className="text-left">Tanggal</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-            <div className="w-1/2 p-6">
-                <h2 className="text-2xl font-bold mb-4">Pilih Tanggal</h2>
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date) => handleDateClick(date)}
-                    inline
-                />
-            </div>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
-                contentLabel="Add Schedule Modal"
-            >
-                <h2>Tambah Jadwal</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label>Kegiatan:</label>
-                        <input type="text" value={activity} onChange={(e) => setActivity(e.target.value)} className="border rounded-md py-2 px-3" />
+                        </thead>
+                        <tbody>
+                            {selectedDateSchedules.map((schedule, index) => (
+                                <tr key={index}>
+                                    <td>{schedule.task}</td>
+                                    <td>{schedule.endDate.toLocaleString()}</td>
+                                </tr>
+                            ))}
+                            {selectedDateSchedules.length === 0 && (
+                                <tr>
+                                    <td colSpan="2">Tidak ada jadwal untuk tanggal ini.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="w-1/4 p-6">
+                    {/* <h2 className="text-2xl font-bold mb-4">Pilih Tanggal</h2> */}
+                    <div className='w-full'>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => handleDateClick(date)}
+                            inline
+                            calendarClassName="full-width-calendar"
+                        />
                     </div>
-                    <div className="mb-4">
-                        <label>Waktu Selesai (Format 24 Jam):</label>
-                        <input type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded-md py-2 px-3" />
-                    </div>
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-                </form>
-            </Modal>
-        </div>
+                </div>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={() => setModalIsOpen(false)}
+                    contentLabel="Add Schedule Modal"
+                >
+                    <h2>Tambah Jadwal</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label>Kegiatan:</label>
+                            <input type="text" value={activity} onChange={(e) => setActivity(e.target.value)} className="border rounded-md py-2 px-3" />
+                        </div>
+                        <div className="mb-4">
+                            <label>Waktu Selesai (Format 24 Jam):</label>
+                            <input type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded-md py-2 px-3" />
+                        </div>
+                        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+                    </form>
+                </Modal>
+            </div>
+        </section>
     );
 }
 
 export default Taskform;
-  

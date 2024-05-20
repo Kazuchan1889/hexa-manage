@@ -66,9 +66,9 @@ function ChartDataKehadiran() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">Data Kehadiran Hari Ini</Typography>
+        <Typography variant="h6">Data Kehadiran</Typography>
       </div>
-      <div className="mx-auto w-full h-52 lg:h-72">
+      <div className="mx-auto w-full h-52 lg:h-60">
         <Pie data={data} options={options} />
       </div>
     </div>

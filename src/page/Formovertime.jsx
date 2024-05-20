@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NavbarUser from '../feature/NavbarUser';
 import axios from 'axios';
-import NavbarUser from "../feature/NavbarUser";
 
 function ActivityForm() {
     const [formData, setFormData] = useState({
