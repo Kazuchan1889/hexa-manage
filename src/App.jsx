@@ -29,7 +29,9 @@ import Timeoff from "./page/Timeoff";
 import Povertime from "./page/Formovertime";
 import Schedjule from "./page/Schedjule";
 import Cal from "./page/calen";
-import Test from "./page/Test"
+
+
+
 function App() {
   // Untuk mengganti color primary
   const theme = createTheme({
@@ -70,6 +72,7 @@ function App() {
           <Route path="/Cal" element={<Cal />} />
           <Route path="/Over" element={<Povertime />} />
           <Route path="/TimeOff" element={<Timeoff />} />
+       
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

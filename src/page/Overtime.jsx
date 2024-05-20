@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
+import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -30,8 +31,7 @@ import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 
-
-const TableApprovalCuti = () => {
+const TableOverTime = () => {
   const [page, setPage] = useState(0);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -42,12 +42,11 @@ const TableApprovalCuti = () => {
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
   const [data, setData] = useState(null);
-  
 
   const jabatan = localStorage.getItem("jabatan");
 
   const fetchData = (string) => {
-    const apiURLCuti = `${ip}/api/pengajuan/get/cuti`;
+    const apiURLover = `${ip}/api/overtime/list`;
 
     const requestBody = {
       search: string,
@@ -64,7 +63,8 @@ const TableApprovalCuti = () => {
 
     console.log(search);
     axios
-      .post(apiURLCuti, requestBody, config)
+     //search belom jalan kurang api baru 
+      .get(apiURLover,config)
       .then((response) => {
         console.log("Response Data:", response.data);
         setRows(response.data);
@@ -91,22 +91,25 @@ const TableApprovalCuti = () => {
   };
 
   useEffect(() => {
-    fetchData(""); // Initial data fetch
+    fetchData(); // Initial data fetch
   }, [selectedDate]);
 
   const handleApproval = (data) => {
-    if (data && data.id) {
+    console.log(data);
+    if (data) {
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-
-      const apiApprovalURL = `${ip}/api/pengajuan/patch/cuti/${data.id}/true`;
-
+  
+      const status = true;
+      const id = data.id
+      const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
+  
       axios
-        .patch(apiApprovalURL, {}, config)
+        .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after approval
@@ -128,20 +131,23 @@ const TableApprovalCuti = () => {
         });
     }
   };
-
+  
   const handleReject = (data) => {
-    if (data && data.id) {
+    if (data) {
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-
-      const apiReject = `${ip}/api/pengajuan/patch/cuti/${data.id}/false`;
-
+  
+      const status = false;
+      console.log(data)
+      const id = data.id
+      const apiReject = `${ip}/api/overtime/status/${id}`;
+  
       axios
-        .patch(apiReject, {}, config)
+        .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after rejection
@@ -163,6 +169,7 @@ const TableApprovalCuti = () => {
         });
     }
   };
+  
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -196,20 +203,6 @@ const TableApprovalCuti = () => {
     }
   };
 
-  const handleReportTypeChange = (newReportType) => {
-    setPage(0);
-    setReportType(newReportType);
-    handleMenuClose();
-  };
-
-  const handleMenuOpen = (event, index) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const filteredRows = rows.filter((row) =>
     reportType === "approval" ? row.status === null : row.status !== null
   );
@@ -222,40 +215,12 @@ const TableApprovalCuti = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const handleExcel = () => {
-    const api = `${ip}/api/export/data/2`;
-
-    const requestBody = {
-      tipe: "cuti",
-    };
-
-    axios({
-      url: api,
-      method: "POST",
-      responseType: "blob",
-      data: requestBody,
-      headers: {
-        Authorization: localStorage.getItem("accessToken"),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "Approval Cuti.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        if (error.message.includes("400")) alert("Tidak Ada Data");
-        console.error("Error downloading Excel file:", error);
-      });
-  };
-
+  // const handleReportTypeChange = (newReportType) => {
+  //   setPage(0);
+  //   setReportType(newReportType);
+  //   handleMenuClose();
+  // };
+  
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isPaidLeaveOpen, setIsPaidLeaveOpen] = useState(false);
   const [isDatePaidLeaveOpen, setIsDatePaidLeaveOpen] = useState(false);
@@ -285,16 +250,28 @@ const TableApprovalCuti = () => {
   const handleSettingsClose = () => {
     setIsSettingsOpen(null);
   };
-  const goToPover = () => {
-    history.push('/Pover'); // Navigate to '/Pover' route
-};
+
+  const handleReportTypeChange = (newReportType) => {
+    setPage(0);
+    setReportType(newReportType);
+    handleMenuClose();
+  };
+
+  const handleMenuOpen = (event, index) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Over Time
+            Request Overtime
           </Typography>
         </div>
       </div>
@@ -324,7 +301,7 @@ const TableApprovalCuti = () => {
                     size="small"
                     style={{ backgroundColor: "#204684" }}
                     onClick={handleSearch}
-                  >
+                  > 
                     Search
                   </Button>
                   <Dialog
@@ -353,7 +330,18 @@ const TableApprovalCuti = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
+                <div className="flex space-x-4">
+                  <Button 
+                    size="small"
+                    variant="outlined"
+                    onClick={(event) => handleMenuOpen(event)}
+                  >
+                    {reportType === "approval" ? (
+                      <Typography variant="button">Approval</Typography>
+                    ) : (
+                      <Typography variant="button">History</Typography>
+                    )}
+                  </Button>
                   <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
@@ -368,35 +356,12 @@ const TableApprovalCuti = () => {
                       <p className="text-gray-500">History</p>
                     </MenuItem>
                   </Menu>
-
-                  <Menu
-                    anchorEl={isSettingsOpen}
-                    open={Boolean(isSettingsOpen)}
-                    onClose={handleSettingsClose}
-                  >
-                    <MenuItem
-                      onClick={handleOpenPaidLeave}
-                      onClose={handleMenuClose}
-                    >
-                      <p className="text-gray-500">set time off</p>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleOpenDatePaidLeave}
-                      onClose={handleMenuClose}
-                    >
-                      <p className="text-gray-500">set time off</p>
-                    </MenuItem>
-                  </Menu>
-
-                  <SettingJatahCuti
-                    isOpen={isPaidLeaveOpen}
-                    onClose={handleClosePaidLeave}
-                  />
-                  <SettingJadwalCuti
-                    isOpen={isDatePaidLeaveOpen}
-                    onClose={handleCloseDatePaidLeave}
-                  />
-                  <Button
+                </div>
+              </div>
+              <div className="flex items-center justify-between mx-auto">
+                <div className="flex space-x-4">
+                  
+                  <Button 
                     size="small"
                     variant="contained"
                     style={{ backgroundColor: "#1E6D42" }}
@@ -422,31 +387,30 @@ const TableApprovalCuti = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
+                        <p className="text-white font-semibold">Note</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
-                          Tanggal Mulai
+                          mulai
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
-                          Tanggal Selesai
+                          Selesai
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Keterangan</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Sisa Cuti</p>
+                        <p className="text-white font-semibold">tanggal</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
-                          Pengganti
+                          tipe overtime
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Progress</p>
+                        <p className="text-white font-semibold text-center">
+                          
+                        </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Action</p>
@@ -462,52 +426,37 @@ const TableApprovalCuti = () => {
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>
-                        <TableCell align="center">{row.nama}</TableCell>
+                        <TableCell align="center">{row.note}</TableCell>
                         <TableCell align="center">{row.mulai}</TableCell>
                         <TableCell align="center">{row.selesai}</TableCell>
-                        <TableCell align="center">{row.alasan}</TableCell>
-                        <TableCell align="center">{row.alasan}</TableCell>
-                        <TableCell align="center">{row.pengganti}</TableCell>
-                        <TableCell align="center">{row.progress}</TableCell>
+                        <TableCell align="center">{row.tanggal_overtime}</TableCell>
+                        <TableCell align="center">{row.tipe}</TableCell>
+                        <TableCell align="center">{row.breaktime}</TableCell>
                         <TableCell
-                          align="center"
-                          style={{
-                            color:
-                              jabatan.toLowerCase() === "direktur"
-                                ? row.shead
-                                  ? "black"
-                                  : "red"
-                                : row.shr
-                                ? "black"
-                                : "red",
-                          }}
-                        >
-                          {row.status === null ? (
-                            jabatan.toLowerCase() === "direktur" ? (
-                              row.shead === null ? (
-                                <ActionButton
-                                  onAccept={handleApproval}
-                                  onReject={handleReject}
-                                  data={row}
-                                  tipe={"nonIzin"}
-                                  string={"Cuti"}
-                                />
-                              ) : null
-                            ) : row.shr === null ? (
+                            align="center"
+                            style={{ color: row.status ? "black" : "red" }}
+                          >
+                            {row.status === null ? (
+                              // <DropdownButton
+                              //   onApproveSakit={handleApproveSakit}
+                              //   onApproval={handleApproval}
+                              //   data={row}
+                              //   onReject={handleReject}
+                              // />
                               <ActionButton
                                 onAccept={handleApproval}
                                 onReject={handleReject}
+                          
                                 data={row}
                                 tipe={"nonIzin"}
-                                string={"Cuti"}
-                              />
-                            ) : null
-                          ) : row.status ? (
-                            "Accepted"
-                          ) : (
-                            "Rejected"
-                          )}
-                        </TableCell>
+                                string={"Overtime"}
+                              ></ActionButton>
+                            ) : row.status ? (
+                              "accepted"
+                            ) : (
+                              "rejected"
+                            )}
+                          </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -535,4 +484,4 @@ const TableApprovalCuti = () => {
   );
 };
 
-export default TableApprovalCuti;
+export default TableOverTime;
