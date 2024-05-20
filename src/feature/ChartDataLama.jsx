@@ -96,9 +96,9 @@ function ChartDataGenderKaryawan() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">Data Lama Kerja Karyawan</Typography>
+        <Typography variant="h6">Data Lama Kerja</Typography>
       </div>
-      <div className="flex justify-center items-center mx-auto w-full h-full lg:h-72">
+      <div className="flex justify-center items-center mx-auto w-full h-full lg:h-60">
         <Bar 
           data={data}
           options={options}
