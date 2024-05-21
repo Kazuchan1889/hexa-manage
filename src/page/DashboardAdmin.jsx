@@ -40,6 +40,9 @@ import StatusDashboard from "./StatusApproval";
 import StatusRequest from "../minicomponent/StatusRequest";
 import ChartAdminSlider from "./ChartAdminSlider";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
+import Announcement from "../minicomponent/Anounce";
+import View from "../minicomponent/viewdata";
+
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -94,9 +97,9 @@ function DashboardAdmin() {
             )} */}
           </div>
           {checkOperation.includes("SELF_ABSENSI") ? (
-            <div className="w-full mb-6 justify-center flex flex-col h-fit ">
+            <div className="w-full mb-6 justify-center flex flex-col h-fit">
               {!isMobile && (
-                <div className="w-full flex items-center justify-center gap-4">
+                <div className="w-full flex items-center justify-center gap-4 mb-4">
                   <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                     <ChartDataKehadiranUser />
                   </div>
@@ -112,8 +115,16 @@ function DashboardAdmin() {
                 </div>
               )}
               {checkOperation.includes("SELF_ABSENSI") && (
-                <div className="w-[100%] lg:w-[69.5%] h-fit lg:h-[23rem] mb-3 lg:m-0 drop-shadow- bg-white p-10 rounded-xl border">
-                  <LaporanKegiatanDashboard />
+                <div className="flex flex-row justify-self-auto w-full h-fit lg:h-1/2">
+                  <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
+                    <Announcement />
+                  </div>
+                  <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+                    <LaporanKegiatanDashboard />
+                  </div>
+                  <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+                    <View />
+                  </div>
                 </div>
               )}
             </div>
