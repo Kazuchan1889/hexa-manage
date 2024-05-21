@@ -67,7 +67,7 @@ function App() {
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
           <Route path="/Timeoff" element={<Timeoff />} />
           <Route path="/Over" element={<Overtime />} />
-          <Route path="/pover" element={<Povertime />} />
+          <Route path="/Fover" element={<Povertime />} />
           <Route path="/Schejule" element={<Schedjule />} />
           <Route path="/Cal" element={<Cal />} />
           <Route path="/Over" element={<Povertime />} />
