@@ -49,10 +49,10 @@ function ViewData() {
   return (
     <div className="flex flex-col items-start w-full">
       <div className="flex flex-col items-start text-left">
-        <div className="text-s font-bold">
+        <div className="text-lg font-bold">
           Cuti Tahunan Balance
         </div>
-        <div className="text-s font-semibold ">
+        <div className="text-base font-semibold ">
           {cutiMandiri !== null ? `${cutiMandiri} Days` : '0'}
         </div>
         <a className="flex flex-row mt-2 font-semibold" href="/cuti">
@@ -69,10 +69,10 @@ function ViewData() {
         </a>
       </div>
       <div className="flex flex-col items-start text-left mt-3">
-        <div className="text-s font-bold">
+        <div className="text-lg font-bold">
           Izin yang Digunakan 
         </div>
-        <div className="text-s font-semibold ">
+        <div className="text-base font-semibold ">
           {sisaJatah !== null ? `${sisaJatah} Days` : '0'}
         </div>
         <a className="flex flex-row mt-2 font-semibold" href="/izin">
@@ -89,10 +89,10 @@ function ViewData() {
         </a>
       </div>
       <div className="flex flex-col items-start text-left mt-3">
-        <div className="text-s font-bold">
+        <div className="text-lg font-bold">
           Who's Off 
         </div>
-        <div className="text-s font-semibold ">
+        <div className="text-base font-semibold ">
           0 
         </div>
         <a className="flex flex-row mb-5 font-semibold" href="/Timeoff">

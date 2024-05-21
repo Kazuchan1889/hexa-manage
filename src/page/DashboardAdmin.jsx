@@ -24,6 +24,7 @@ import {
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
+import ChartDataLama from "../feature/ChartDataLama";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -93,10 +94,21 @@ function DashboardAdmin() {
             )} */}
           </div>
           {checkOperation.includes("SELF_ABSENSI") ? (
-            <div className="flex flex-col mt-4 lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
+            <div className="w-full mb-6 justify-center flex flex-col h-fit ">
               {!isMobile && (
-                <div className="w-[100%] lg:w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                  <ChartAdminSlider setSlideIndex={setSlideIndex} />
+                <div className="w-full flex items-center justify-center gap-4">
+                  <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                    <ChartDataKehadiranUser />
+                  </div>
+                  <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                    <ChartDataKaryawan />
+                  </div>
+                  <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                    <ChartDataKehadiran />
+                  </div>
+                  <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                    <ChartDataLama />
+                  </div>
                 </div>
               )}
               {checkOperation.includes("SELF_ABSENSI") && (
