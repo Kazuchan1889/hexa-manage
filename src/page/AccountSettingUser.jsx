@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SettingUser from './SettingUser';
+import CompanyBio from './Company';
 import NavbarUser from '../feature/NavbarUser';
 import Swal from "sweetalert2";
 import ip from "../ip";
@@ -108,11 +109,11 @@ function AccountSettingUser() {
             {/* Add billing settings options */}
           </div>
         );
-      case 'connected':
+      case 'CompanyBio':
         return (
           <div>
-            <h2 className="text-xl font-bold mb-4">Connected Accounts</h2>
-            {/* Add connected accounts options */}
+            <h2 className="text-xl font-bold mb-4">CompanyBio</h2>
+            <CompanyBio />
           </div>
         );
       case 'preferences':
@@ -169,8 +170,8 @@ function AccountSettingUser() {
             <li className={`py-2 px-4 cursor-pointer ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
               Billing Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'connected' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('connected')}>
-              Connected Accounts
+            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
+            CompanyBio
             </li>
             <li className={`py-2 px-4 cursor-pointer ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
               Preferences

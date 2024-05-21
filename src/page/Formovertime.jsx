@@ -12,7 +12,6 @@ function Formover() {
         breaktime: "",
     });
     const [submitStatus, setSubmitStatus] = useState(null); // Menambahkan state untuk menyimpan status pengiriman
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -27,7 +26,8 @@ function Formover() {
                 selesai: formData.selesai,
                 tanggal_overtime: new Date().toISOString(),
                 tipe: formData.overtimeType === "Sebelum Shift",
-                breaktime: formData.breakTime
+                breaktime: formData.breakTime,
+                file: formData.file
             }, {
                 headers: {
                     Authorization: localStorage.getItem("accessToken"),
@@ -40,6 +40,20 @@ function Formover() {
             console.error("Error submitting overtime:", error);
             setSubmitStatus('error'); // Atur status pengiriman menjadi error
         }
+    };
+    
+    const handleFileChange = (e) => {
+        const file = e.target.files[0]; // Mendapatkan file yang diunggah
+        const reader = new FileReader(); // Membuat objek FileReader
+    
+        // Mengatur fungsi onload untuk menjalankan setelah file selesai dibaca
+        reader.onload = () => {
+            const base64Data = reader.result; // Mendapatkan data URL (base64) dari file
+            setFile(base64Data); // Menyimpan data URL ke state
+        };
+    
+        // Membaca file sebagai data URL
+        reader.readAsDataURL(file);
     };
 
     useEffect(() => {
@@ -75,14 +89,15 @@ function Formover() {
                             className=" w-80 rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
                     <div className="mb-5">
-                        <label htmlFor="overtimeType" className='block text-sm font-medium leading-6 text-gray-900 mr-60'>Jenis Overtime:</label>
-                        <select id="overtimeType" name="overtimeType" value={formData.tipe} onChange={handleInputChange}
-                            className="w-80 rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option value="">Pilih Jenis Overtime</option>
-                            <option value="Sesudah Shift">Sesudah Shift</option>
-                            <option value="Sebelum Shift">Sebelum Shift</option>
+                          <label htmlFor="overtimeType" className='block text-sm font-medium leading-6 text-gray-900 mr-60'>Jenis Overtime:</label>
+                            <select id="overtimeType" name="tipe" value={formData.tipe} onChange={handleInputChange}
+                                        className="w-80 rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Pilih Jenis Overtime</option>
+                                <option value="Sesudah Shift">Sesudah Shift</option>
+                                <option value="Sebelum Shift">Sebelum Shift</option>
                         </select>
                     </div>
+
                     <div className="mb-5">
                         <label htmlFor="startTime" className='block text-sm font-medium leading-6 text-gray-900 mr-60'>Dari Jam:</label>
                         <input type="time" id="mulai" name="mulai" value={formData.mulai} onChange={handleInputChange}
@@ -95,6 +110,11 @@ function Formover() {
                         <label htmlFor="breakTime" className='block text-sm font-medium leading-6 text-gray-900 mr-60'>Istirahat (menit):</label>
                         <input type="number" id="breakTime" name="breakTime" value={formData.breakTime} onChange={handleInputChange}
                             className=" w-1/5 rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                    </div>
+                    <div className="mb-5">
+                        <label htmlFor="file" className='block text-sm font-medium leading-6 text-gray-900 mr-60'>Upload Foto:</label>
+                        <input type="file" id="file" name="file" onChange={handleFileChange}
+                            className=" w-80 text-gray-900" />
                     </div>
                     <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Submit
