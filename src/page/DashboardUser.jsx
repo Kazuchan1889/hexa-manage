@@ -93,37 +93,37 @@ function DashboardUser() {
             </div>
           </div>
           <div className="w-full mb-6 justify-center flex flex-col h-fit ">
-          {!isMobile && (
+            {!isMobile && (
               <div className="w-full flex items-center justify-center gap-4">
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKehadiranUser />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKaryawan />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataKehadiran />
                 </div>
-                <div className="flex items-center justify-center h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+                <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataLama />
                 </div>
               </div>
             )}
           </div>
-          <div className="flex flex-wrap flex-row justify-self-auto  w-full h-fit lg:h-1/2">
-          <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
-              <Announcement/>
+          <div className="flex flex-row justify-self-auto  w-full h-fit lg:h-1/2">
+            <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
+              <Announcement />
             </div>
-            <div className="w-full lg:w-[57%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+            <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <LaporanKegiatanDashboard />
             </div>
-            <div className="w-full lg:w-[20%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+            <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <View />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 export default DashboardUser;
