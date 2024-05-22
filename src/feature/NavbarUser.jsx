@@ -167,7 +167,7 @@ const NavbarUser = () => {
   // Untuk set menu apa saja yang akan ada
   const subItems = [
     { label: "Izin", active: false },
-    { label: "Cuti", active: false },
+    // { label: "Cuti", active: false },
     { label: "Reimburse", active: false },
     { label: "Resign", active: false },
   ];
@@ -438,7 +438,7 @@ const NavbarUser = () => {
                         // handleClose();
                       }}
                       component={Link}
-                      to="/TimeOff"
+                      to="/cuti"
                       style={{ width: "10rem" }}
                     >
                       <Typography variant="button">Time Off</Typography>

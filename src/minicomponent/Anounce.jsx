@@ -18,7 +18,7 @@ function Announcement() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className="text-xl font-semibold border-b-2 border-indigo-600 mb-4">
+      <div className="text-xl font-semibold mb-4">
         Announcement
       </div>
       

@@ -42,7 +42,7 @@ import ChartAdminSlider from "./ChartAdminSlider";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import Announcement from "../minicomponent/Anounce";
 import View from "../minicomponent/viewdata";
-
+import ChartDataGender from "../feature/ChartDataGender";
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -68,7 +68,7 @@ function DashboardAdmin() {
       <NavbarUser />
 
       <div className="flex flex-col h-fit lg:h-screen w-screen">
-        <div className="h-full w-[90%] flex flex-col  items-center mx-auto">
+        <div className="h-full w-[95%] flex flex-col  items-center mx-auto">
           <div className="w-full h-full lg:h-full w-full flex flex-col lg:flex-row justify-between">
             {checkOperation.includes("SELF_ABSENSI") ? (
               <div className="flex justify-between items-center drop-shadow-lg bg-home px-10 py-10 my-5 rounded-md w-[100%]">
@@ -107,7 +107,7 @@ function DashboardAdmin() {
                     <ChartDataKaryawan />
                   </div>
                   <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
-                    <ChartDataKehadiran />
+                    <ChartDataGender />
                   </div>
                   <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                     <ChartDataLama />

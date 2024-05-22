@@ -263,8 +263,8 @@ function FormCuti() {
         <div className="w-screen h-fit flex">
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
-              <div className="w-[90%] mb-4 flex justify-between items-center ">
-                <Typography variant="h5">Form Cuti</Typography>
+              <div className="w-[90%] mb-4 flex justify-between items-center font-bold">
+                <Typography variant="h5">Form Time Off</Typography>
               </div>
               <form
                 onSubmit={handleSubmit}
