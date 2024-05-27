@@ -104,8 +104,9 @@ const TableOverTime = () => {
         },
       };
   
-      const status = true;
+      const status = 1;
       const id = data.id
+      // const overtime_id = data.id
       const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
   
       axios
