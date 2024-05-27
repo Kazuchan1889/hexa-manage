@@ -3,10 +3,32 @@ import axios from 'axios';
 import ip from "../ip";
 
 const CompanyProfile = () => {
-  const [companyData, setCompanyData] = useState(null);
+  const [formData, setFormData] = useState({
+    logo: '',
+    company_name: '',
+    company_pnumber: '',
+    email: '',
+    address: '',
+    province: '',
+    city: '',
+    industry: '',
+    company_size: '',
+    npwp_lama: '',
+    npwp_baru: '',
+    company_taxable_date: '',
+    taxperson_npwp: '',
+    taxperson_npwp_16_digit: '',
+    hq_initial: '',
+    hq_code: '',
+    show_branch_name: false,
+    umr: '',
+    umr_province: '',
+    umr_city: '',
+    bpjs_ketenagakerjaan: '',
+    jkk: ''
+  });
 
   useEffect(() => {
-    // Fetch data dari backend dengan header Authorization
     const apiUrl = `${ip}/api/perusahaan/get`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -14,105 +36,66 @@ const CompanyProfile = () => {
 
     axios.get(apiUrl, { headers })
       .then(response => {
-        console.log(response)
-        setCompanyData(response.data); // Mengatur data yang diterima dari backend ke state
+        console.log(response);
+        if (response.data && response.data.length > 0) {
+          const data = response.data[0];
+          setFormData({
+            logo: data.logo || '',
+            company_name: data.company_name || '',
+            company_pnumber: data.company_pnumber || '',
+            email: data.email || '',
+            address: data.address || '',
+            province: data.province || '',
+            city: data.city || '',
+            industry: data.industry || '',
+            company_size: data.company_size || '',
+            npwp_lama: data.npwp_lama || '',
+            npwp_baru: data.npwp_baru || '',
+            company_taxable_date: data.company_taxable_date || '',
+            taxperson_npwp: data.taxperson_npwp || '',
+            taxperson_npwp_16_digit: data.taxperson_npwp_16_digit || '',
+            hq_initial: data.hq_initial || '',
+            hq_code: data.hq_code || '',
+            show_branch_name: data.show_branch_name || false,
+            umr: data.umr || '',
+            umr_province: data.umr_province || '',
+            umr_city: data.umr_city || '',
+            bpjs_ketenagakerjaan: data.bpjs_ketenagakerjaan || '',
+            jkk: data.jkk || ''
+          });
+        }
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
 
-  if (!companyData) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <div className="flex flex-col items-center">
-        <img src={companyData.logo} alt="Company Logo" className="w-32 h-32 object-cover mb-4"/>
-        <h1 className="text-2xl font-bold mb-2">{companyData.company_name}</h1>
-        <p className="text-gray-700">{companyData.industry}</p>
-      </div>
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">Company Information</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <strong>Phone Number:</strong>
-            <p>{companyData.company_pnumber}</p>
+      <h1 className="text-2xl font-bold mb-4">Company Profile</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {Object.keys(formData).map((key) => (
+          <div key={key}>
+            <label className="block font-semibold">{key.replace(/_/g, ' ')}:</label>
+            {key === 'show_branch_name' ? (
+              <input 
+                type="checkbox" 
+                name={key} 
+                checked={formData[key]} 
+                readOnly 
+                className="mt-1"
+              />
+            ) : (
+              <input 
+                type="text" 
+                name={key} 
+                value={formData[key]} 
+                readOnly 
+                className="mt-1 p-2 w-full border rounded bg-gray-100"
+              />
+            )}
           </div>
-          <div>
-            <strong>Email:</strong>
-            <p>{companyData.email}</p>
-          </div>
-          <div>
-            <strong>Address:</strong>
-            <p>{companyData.address}</p>
-          </div>
-          <div>
-            <strong>Province:</strong>
-            <p>{companyData.province}</p>
-          </div>
-          <div>
-            <strong>City:</strong>
-            <p>{companyData.city}</p>
-          </div>
-          <div>
-            <strong>Company Size:</strong>
-            <p>{companyData.company_size}</p>
-          </div>
-          <div>
-            <strong>Old NPWP:</strong>
-            <p>{companyData.npwp_lama}</p>
-          </div>
-          <div>
-            <strong>New NPWP:</strong>
-            <p>{companyData.npwp_baru}</p>
-          </div>
-          <div>
-            <strong>Company Taxable Date:</strong>
-            <p>{companyData.company_taxable_date}</p>
-          </div>
-          <div>
-            <strong>Taxperson NPWP:</strong>
-            <p>{companyData.taxperson_npwp}</p>
-          </div>
-          <div>
-            <strong>Taxperson NPWP 16 Digit:</strong>
-            <p>{companyData.taxperson_npwp_16_digit}</p>
-          </div>
-          <div>
-            <strong>HQ Initial:</strong>
-            <p>{companyData.hq_initial}</p>
-          </div>
-          <div>
-            <strong>HQ Code:</strong>
-            <p>{companyData.hq_code}</p>
-          </div>
-          <div>
-            <strong>Show Branch Name:</strong>
-            <p>{companyData.show_branch_name}</p>
-          </div>
-          <div>
-            <strong>UMR:</strong>
-            <p>{companyData.umr}</p>
-          </div>
-          <div>
-            <strong>UMR Province:</strong>
-            <p>{companyData.umr_province}</p>
-          </div>
-          <div>
-            <strong>UMR City:</strong>
-            <p>{companyData.umr_city}</p>
-          </div>
-          <div>
-            <strong>BPJS Ketenagakerjaan:</strong>
-            <p>{companyData.bpjs_ketenagakerjaan}</p>
-          </div>
-          <div>
-            <strong>JKK:</strong>
-            <p>{companyData.jkk}</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

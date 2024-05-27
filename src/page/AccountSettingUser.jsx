@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SettingUser from './SettingUser';
-import CompanyBio from './Company_Post';
+import CompanyBioP from './Company_Post';
+import CompanyBio from './Company';
 import NavbarUser from '../feature/NavbarUser';
 import Swal from "sweetalert2";
 import ip from "../ip";
@@ -13,8 +14,11 @@ function AccountSettingUser() {
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
-
+  localStorage.getItem("accessToken")
+  const role = localStorage.getItem("role")
+  
   useEffect(() => {
+   
     const apiUrl = `${ip}/api/karyawan/get/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -113,7 +117,7 @@ function AccountSettingUser() {
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">CompanyBio</h2>
-            <CompanyBio />
+            {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
       case 'preferences':
@@ -155,6 +159,9 @@ function AccountSettingUser() {
                 {nama}
               </h1>
             </div>
+            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
+            CompanyBio
+            </li>
             <li className={`py-2 px-4 cursor-pointer ${activeTab === 'profile' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('profile')}>
               Profile Settings
             </li>
@@ -169,9 +176,6 @@ function AccountSettingUser() {
             </li>
             <li className={`py-2 px-4 cursor-pointer ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
               Billing Settings
-            </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
-            CompanyBio
             </li>
             <li className={`py-2 px-4 cursor-pointer ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
               Preferences
