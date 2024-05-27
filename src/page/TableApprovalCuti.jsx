@@ -290,7 +290,7 @@ const TableApprovalCuti = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Approval Cuti
+            Data Approval Time Off
           </Typography>
         </div>
       </div>
