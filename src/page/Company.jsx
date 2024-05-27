@@ -71,15 +71,15 @@ const CompanyProfile = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
+    <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg">
       <div className="text-center mb-4">
         <img src={formData.logo} alt="Company Logo" className="mx-auto w-24 h-24 rounded-full object-cover" />
       </div>
       <h1 className="text-2xl font-bold mb-4">Company Profile</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {Object.keys(formData).map((key) => (
           <div key={key}>
-            <label className="block font-semibold">{key.replace(/_/g, ' ')}:</label>
+            <label className="block font-semibold text-left">{key.replace(/_/g, ' ')}:</label>
             {key === 'show_branch_name' ? (
               <input 
                 type="checkbox" 
@@ -94,7 +94,7 @@ const CompanyProfile = () => {
                 name={key} 
                 value={formData[key]} 
                 readOnly 
-                className="mt-1 p-2 w-full border rounded bg-gray-100"
+                className="mt-1 p-2 w-full border rounded bg-gray-100 drop-shadow-md"
               />
             )}
           </div>
