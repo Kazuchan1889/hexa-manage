@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SettingUser from './SettingUser';
-import CompanyBio from './Company';
+import CompanyBio from './Company_Post';
 import NavbarUser from '../feature/NavbarUser';
 import Swal from "sweetalert2";
 import ip from "../ip";

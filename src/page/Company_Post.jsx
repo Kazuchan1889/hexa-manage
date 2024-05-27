@@ -29,7 +29,6 @@ const AddCompanyProfile = () => {
   });
 
   useEffect(() => {
-    // Fetch data dari backend dengan header Authorization
     const apiUrl = `${ip}/api/perusahaan/get`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -79,22 +78,21 @@ const AddCompanyProfile = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const apiUrl = `${ip}/api/perusahaan/post`;
+    const apiUrl = `${ip}/api/perusahaan/update`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
     };
 
-    axios.post(apiUrl, formData, { headers })
-      .then(response => {
-        console.log(response.data);
-        alert('Data berhasil ditambahkan');
-      })
-      .catch(error => {
-        console.error('Error posting data:', error);
-        alert('Gagal menambahkan data');
-      });
+    try {
+      const response = await axios.patch(apiUrl, formData, { headers });
+      console.log(response.data);
+      alert('Data berhasil ditambahkan');
+    } catch (error) {
+      console.error('Error posting data:', error);
+      alert('Gagal menambahkan data');
+    }
   };
 
   return (
