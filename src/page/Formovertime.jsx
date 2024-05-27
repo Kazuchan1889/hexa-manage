@@ -17,21 +17,8 @@ function Formover() {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-    const handleFileUpload = (acceptedFiles) => {
-        const file = acceptedFiles[0];
-        setUploadedFile(file);
+    //ini mulai ngide
     
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const base64String = event.target.result;
-          setUploadedFileBase64(base64String);
-        };
-    
-        reader.readAsDataURL(file);
-      };
-    
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -111,7 +98,6 @@ function Formover() {
                         <input type="number" id="breakTime" name="breakTime" value={formData.breakTime} onChange={handleInputChange}
                             className=" w-1/5 rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     </div>
-                    
                     <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         Submit
                     </button>

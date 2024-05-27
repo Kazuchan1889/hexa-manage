@@ -30,6 +30,7 @@ import Povertime from "./page/Formovertime";
 import Schedjule from "./page/Schedjule";
 import Cal from "./page/calen";
 import CompanyBio from "./page/Company";
+import CompanyBioP from "./page/Company_Post";
 
 
 function App() {
@@ -73,6 +74,7 @@ function App() {
           <Route path="/Over" element={<Povertime />} />
           <Route path="/TimeOff" element={<Timeoff />} />
           <Route path="/CompanyBio" element={<CompanyBio />} />
+          <Route path="/CompanyBioP" element={<CompanyBioP />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
