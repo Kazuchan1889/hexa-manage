@@ -122,10 +122,10 @@ const AddCompanyProfile = () => {
       </div>
       <form onSubmit={handleSubmit}>
         <h1 className="text-2xl font-bold mb-4">Add Company Profile</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {Object.keys(formData).map((key) => (
             <div key={key}>
-              <label className="block font-semibold">{key.replace(/_/g, ' ')}:</label>
+              <label className="block font-semibold text-left">{key.replace(/_/g, ' ')}:</label>
               {key === 'show_branch_name' ? (
                 <input 
                   type="checkbox" 
@@ -140,7 +140,7 @@ const AddCompanyProfile = () => {
                   name={key} 
                   value={formData[key]} 
                   onChange={handleChange} 
-                  className="mt-1 p-2 w-full border rounded"
+                  className="mt-1 p-2 w-full border rounded drop-shadow-md"
                 />
               )}
             </div>

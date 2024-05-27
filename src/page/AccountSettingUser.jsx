@@ -142,10 +142,10 @@ function AccountSettingUser() {
   return (
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
-      <div  className="flex m-4 rounded-xl bg-white drop-shadow ">
-        <div className="h-full w-1/4 p-4 border border-gray" >
+      <div  className="flex m-4 rounded-xl bg-white drop-shadow-lg ">
+        <div className="h-[folH] w-1/4 p-4 border border-gray" >
           <ul className="h-full flex flex-col space-y-2">
-            <div className='flex justify-center h-full w-full pl-4 pt-4 pr-4'>
+            <div className='flex justify-center w-full pl-4 pt-4 pr-4'>
               {dokumen && (
                 <Avatar
                   alt="User Avatar"
@@ -159,33 +159,33 @@ function AccountSettingUser() {
                 {nama}
               </h1>
             </div>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
-            CompanyBio
-            </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'profile' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('profile')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'profile' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('profile')}>
               Profile Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'security' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('security')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
+            Company Bio
+            </li>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'security' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('security')}>
               Security Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'notifications' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('notifications')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'notifications' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('notifications')}>
               Notification Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'privacy' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('privacy')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'privacy' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('privacy')}>
               Privacy Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
               Billing Settings
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
               Preferences
             </li>
-            <li className={`py-2 px-4 cursor-pointer ${activeTab === 'help' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('help')}>
+            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'help' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('help')}>
               Help & Support
             </li>
           </ul>
         </div>
-        <div className="w-full bg-200 p-4 border-t border-r border-b border-gray">
+        <div id='folH' className="w-full bg-200 p-4 border-t border-r border-b border-gray">
           {renderContent()}
         </div>
       </div>
