@@ -81,7 +81,6 @@ function DashboardUser() {
   return (
     <div
       className="w-full h-fit lg:h-screen"
-      style={{ backgroundColor: "#F0F0F0" }}
     >
       <NavbarUser />
       <div className="flex h-fit "
@@ -102,7 +101,7 @@ function DashboardUser() {
                   <ChartDataKaryawan />
                 </div>
                 <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
-                  <ChartDataKehadiran />
+                  <ChartDataGender />
                 </div>
                 <div className="flex items-center justify-center w-1/4 h-full my-8w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
                   <ChartDataLama />

@@ -6,7 +6,7 @@ import ip from "../ip";
 function Formover() {
     const [formData, setFormData] = useState({
         note: "",
-        tipe: "", 
+        tipe: "",
         mulai: "",
         selesai: "",
         breaktime: "",
@@ -53,7 +53,7 @@ function Formover() {
     }, [submitStatus]);
 
     return (
-        <div className="">
+        <div className="" style={{ backgroundColor: "#F0F0F0" }}>
             <NavbarUser />
             {submitStatus === 'success' && (
                 <div className="bg-green-200 text-green-900 p-2 mb-4">

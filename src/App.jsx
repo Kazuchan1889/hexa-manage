@@ -72,7 +72,7 @@ function App() {
           <Route path="/Schejule" element={<Schedjule />} />
           <Route path="/Cal" element={<Cal />} />
           <Route path="/Over" element={<Povertime />} />
-          <Route path="/TimeOff" element={<Timeoff />} />
+          {/* <Route path="/TimeOff" element={<Timeoff />} /> */}
           <Route path="/CompanyBio" element={<CompanyBio />} />
           <Route path="/CompanyBioP" element={<CompanyBioP />} />
         </Routes>
