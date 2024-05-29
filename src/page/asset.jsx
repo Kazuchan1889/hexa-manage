@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -17,10 +17,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TablePagination from "@mui/material/TablePagination";
-import SettingsIcon from "@mui/icons-material/Settings";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -40,7 +38,7 @@ const TableAsset = () => {
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const [reportType, setReportType] = useState("approval");
+  const [reportType, setReportType] = useState("history"); // Nilai default diatur menjadi "history"
 
   const jabatan = localStorage.getItem("jabatan");
 
@@ -63,8 +61,9 @@ const TableAsset = () => {
       .get(apiURLasset, config)
       .then((response) => {
         console.log("Response Data:", response.data);
-        setRows(response.data);
-        setOriginalRows(response.data);
+        const assets = response.data.asset || [];
+        setRows(assets);
+        setOriginalRows(assets);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -86,78 +85,8 @@ const TableAsset = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [selectedDate]);
-
-  const handleApproval = (data) => {
-    if (data) {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
-        },
-      };
-
-      const status = 1;
-      const id = data.id;
-      const apiApprovalURL = `${ip}/api/asset/list/${id}`;
-
-      axios
-        .patch(apiApprovalURL, { status }, config)
-        .then((response) => {
-          console.log(response.data);
-          fetchData();
-          Swal.fire({
-            icon: "success",
-            title: "Approval Success",
-            text: "The request has been approved successfully.",
-          });
-        })
-        .catch((error) => {
-          console.error("Error approving data:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Approval Error",
-            text: "An error occurred while approving the request. Please try again.",
-          });
-        });
-    }
-  };
-
-  const handleReject = (data) => {
-    if (data) {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
-        },
-      };
-
-      const status = false;
-      const id = data.id;
-      const apiReject = `${ip}/api/asset/list/${id}`;
-
-      axios
-        .patch(apiReject, { status }, config)
-        .then((response) => {
-          console.log(response.data);
-          fetchData();
-          Swal.fire({
-            icon: "success",
-            title: "Rejection Success",
-            text: "The request has been rejected successfully.",
-          });
-        })
-        .catch((error) => {
-          console.error("Error rejecting data:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Rejection Error",
-            text: "An error occurred while rejecting the request. Please try again.",
-          });
-        });
-    }
-  };
+    fetchData(); // Panggil fetchData() saat komponen dimount
+  }, [selectedDate, search, reportType]);
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -202,36 +131,6 @@ const TableAsset = () => {
     setPage(0);
   };
 
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isPaidLeaveOpen, setIsPaidLeaveOpen] = useState(false);
-  const [isDatePaidLeaveOpen, setIsDatePaidLeaveOpen] = useState(false);
-
-  const handleSettingsOpen = (event) => {
-    setIsSettingsOpen(event.currentTarget);
-  };
-
-  const handleOpenPaidLeave = () => {
-    setIsPaidLeaveOpen(true);
-    handleMenuClose();
-  };
-
-  const handleClosePaidLeave = () => {
-    setIsPaidLeaveOpen(false);
-  };
-
-  const handleOpenDatePaidLeave = () => {
-    setIsDatePaidLeaveOpen(true);
-    handleMenuClose();
-  };
-
-  const handleCloseDatePaidLeave = () => {
-    setIsDatePaidLeaveOpen(false);
-  };
-
-  const handleSettingsClose = () => {
-    setIsSettingsOpen(null);
-  };
-
   const handleReportTypeChange = (newReportType) => {
     setPage(0);
     setReportType(newReportType);
@@ -246,13 +145,16 @@ const TableAsset = () => {
     setAnchorEl(null);
   };
 
+  // Kalkulasi total harga dari filteredRows
+  const totalHarga = filteredRows.reduce((sum, row) => sum + parseFloat(row.harga || 0), 0);
+
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Request Overtime
+            Company Asset
           </Typography>
         </div>
       </div>
@@ -286,6 +188,7 @@ const TableAsset = () => {
                     Search
                   </Button>
                   <Dialog
+                    
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
@@ -310,33 +213,7 @@ const TableAsset = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-4">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(event) => handleMenuOpen(event)}
-                  >
-                    {reportType === "approval" ? (
-                      <Typography variant="button">Approval</Typography>
-                    ) : (
-                      <Typography variant="button">History</Typography>
-                    )}
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem
-                      onClick={() => handleReportTypeChange("approval")}
-                    >
-                      <p className="text-gray-500">Approval</p>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleReportTypeChange("history")}>
-                      <p className="text-gray-500">History</p>
-                    </MenuItem>
-                  </Menu>
-                </div>
+                
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-4">
@@ -346,7 +223,7 @@ const TableAsset = () => {
                     style={{ backgroundColor: "#1E6D42" }}
                     href="/fover"
                   >
-                    Request
+                    + Add
                   </Button>
                 </div>
               </div>
@@ -366,27 +243,21 @@ const TableAsset = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Note</p>
+                        <p className="text-white font-semibold">Name</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Mulai</p>
+                        <p className="text-white font-semibold">Brand</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Selesai</p>
+                        <p className="text-white font-semibold">Type</p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Tanggal</p>
+                        <p className="text-white font-semibold">Price</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
-                          Tipe Overtime
+                          Quantity
                         </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold text-center"></p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Action</p>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -404,14 +275,17 @@ const TableAsset = () => {
                         <TableCell align="center">{row.model_tipe}</TableCell>
                         <TableCell align="center">{row.harga}</TableCell>
                         <TableCell align="center">{row.jumlah}</TableCell>
-                        <TableCell
-                          align="center"
-                          style={{ color: row.status ? "black" : "red" }}
-                        >
-                          
-                        </TableCell>
                       </TableRow>
                     ))}
+                    <TableRow>
+                      <TableCell colSpan={3} align="center">
+                        <strong>Total Harga</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>{totalHarga}</strong>
+                      </TableCell>
+                      <TableCell colSpan={1} />
+                    </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
