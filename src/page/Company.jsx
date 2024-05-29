@@ -17,29 +17,26 @@ const CompanyProfile = () => {
     npwp_baru: '',
     company_taxable_date: '',
     taxperson_npwp: '',
-    taxperson_npwp_16_digit: '',
     hq_initial: '',
     hq_code: '',
     show_branch_name: false,
-    umr: '',
-    umr_province: '',
-    umr_city: '',
     bpjs_ketenagakerjaan: '',
-    jkk: ''
+    jumlah_karyawan: '' // Added field for number of employees
   });
 
   useEffect(() => {
-    const apiUrl = `${ip}/api/perusahaan/get`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-    };
+    const fetchData = async () => {
+      try {
+        const apiUrl = `${ip}/api/perusahaan/get`;
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
 
-    axios.get(apiUrl, { headers })
-      .then(response => {
-        console.log(response);
-        if (response.data && response.data.length > 0) {
-          const data = response.data[0];
-          setFormData({
+        const companyResponse = await axios.get(apiUrl, { headers });
+        if (companyResponse.data && companyResponse.data.length > 0) {
+          const data = companyResponse.data[0];
+          setFormData(prevState => ({
+            ...prevState,
             logo: data.logo || '',
             company_name: data.company_name || '',
             company_pnumber: data.company_pnumber || '',
@@ -53,21 +50,27 @@ const CompanyProfile = () => {
             npwp_baru: data.npwp_baru || '',
             company_taxable_date: data.company_taxable_date || '',
             taxperson_npwp: data.taxperson_npwp || '',
-            taxperson_npwp_16_digit: data.taxperson_npwp_16_digit || '',
             hq_initial: data.hq_initial || '',
             hq_code: data.hq_code || '',
             show_branch_name: data.show_branch_name || false,
-            umr: data.umr || '',
-            umr_province: data.umr_province || '',
-            umr_city: data.umr_city || '',
             bpjs_ketenagakerjaan: data.bpjs_ketenagakerjaan || '',
-            jkk: data.jkk || ''
-          });
+          }));
         }
-      })
-      .catch(error => {
+
+        // Fetch the number of employees
+        const jumlahKaryawanResponse = await axios.get(`${ip}/api/perusahaan/jumlah`, { headers });
+        if (jumlahKaryawanResponse.data && jumlahKaryawanResponse.data.length > 0) {
+          setFormData(prevState => ({
+            ...prevState,
+            jumlah_karyawan: jumlahKaryawanResponse.data[0].jumlah_karyawan || '0'
+          }));
+        }
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (

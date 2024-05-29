@@ -22,7 +22,7 @@ import {
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import SettingsIcon from "@mui/icons-material/Settings";
+import SettingsIcon from "@mui/icons-material/Settings";  
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import VacationIcon from "@mui/icons-material/FlightTakeoff";
@@ -207,7 +207,7 @@ const NavbarUser = () => {
       ? { label: "Izin", active: false, to: "/masterizin" }
       : null,
     checkOp("READ_CUTI")
-      ? { label: "Cuti", active: false, to: "/mastercuti" }
+      ? { label: "Time Off", active: false, to: "/mastercuti" }
       : null,
     checkOp("READ_REIMBURST")
       ? { label: "Reimburse", active: false, to: "/masterreimburst" }
