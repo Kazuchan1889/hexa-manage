@@ -39,6 +39,7 @@ const TableAsset = () => {
   const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [reportType, setReportType] = useState("history"); // Nilai default diatur menjadi "history"
+  const [TotalHarga, setTotalHarga] = useState([]);
 
   const jabatan = localStorage.getItem("jabatan");
 
@@ -64,6 +65,7 @@ const TableAsset = () => {
         const assets = response.data.asset || [];
         setRows(assets);
         setOriginalRows(assets);
+        setTotalHarga(response.data.total_harga)
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -145,9 +147,6 @@ const TableAsset = () => {
     setAnchorEl(null);
   };
 
-  // Kalkulasi total harga dari filteredRows
-  const totalHarga = filteredRows.reduce((sum, row) => sum + parseFloat(row.harga || 0), 0);
-
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -221,7 +220,7 @@ const TableAsset = () => {
                     size="small"
                     variant="contained"
                     style={{ backgroundColor: "#1E6D42" }}
-                    href="/fover"
+                    href="/Fasset"
                   >
                     + Add
                   </Button>
@@ -282,7 +281,7 @@ const TableAsset = () => {
                         <strong>Total Harga</strong>
                       </TableCell>
                       <TableCell align="center">
-                        <strong>{totalHarga}</strong>
+                        <strong>{TotalHarga}</strong>
                       </TableCell>
                       <TableCell colSpan={1} />
                     </TableRow>

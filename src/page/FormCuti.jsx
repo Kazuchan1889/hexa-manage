@@ -371,12 +371,12 @@ function FormCuti() {
               {!isMobile && (
                 <div className="w-[90%] flex flex-col justify-center items-center mt-3 mx-auto rounded-md bg-card p-5">
                   <div className="w-full">
-                    <div className="flex justify-between">
-                      <Typography variant="h6" id="history-modal-title">
+                    <div className="flex justify-between mx-2">
+                      <Typography variant="h6" id="history-modal-title" >
                         History Table
                       </Typography>
                       <div className="mt-1">
-                        <Typography variant="h7" className="font-semibold">
+                        <Typography variant="h7" className="font-bold text-lg">
                           Sisa Cuti : {sisaCuti}
                         </Typography>
                       </div>

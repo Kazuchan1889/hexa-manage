@@ -27,13 +27,16 @@ function Formover() {
                 tanggal_overtime: new Date().toISOString(),
                 tipe: formData.overtimeType === "Sebelum Shift",
                 breaktime: formData.breakTime,
+                
             }, {
                 headers: {
                     Authorization: localStorage.getItem("accessToken"),
                     "Content-Type": "application/json",
                 }
+                
             });
             console.log(response.data);
+            window.location.href = '/Over';
             setSubmitStatus('success'); // Atur status pengiriman menjadi berhasil
         } catch (error) {
             console.error("Error submitting overtime:", error);
@@ -87,7 +90,7 @@ function Formover() {
                             <label htmlFor="startTime" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Dari Jam:</label>
                             <input type="time" id="mulai" name="mulai" value={formData.mulai} onChange={handleInputChange}
                                 className=" w-[36%] rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            <span className='mx-4'> sampai </span>
+                            <span className='mx-2'> sampai </span>
                             <input type="time" id="selesai" name="selesai" value={formData.selesai} onChange={handleInputChange}
                                 className=" w-[36%] rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>

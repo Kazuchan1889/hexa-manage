@@ -388,11 +388,11 @@ const TableOverTime = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Note</p>
+                        <p className="text-white font-semibold">Catatan</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
-                          mulai
+                          Mulai
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
@@ -401,11 +401,11 @@ const TableOverTime = () => {
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">tanggal</p>
+                        <p className="text-white font-semibold">Tanggal</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
-                          tipe overtime
+                          Tipe Overtime
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">

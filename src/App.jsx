@@ -32,6 +32,7 @@ import Cal from "./page/calen";
 import CompanyBio from "./page/Company";
 import CompanyBioP from "./page/Company_Post";
 import Asset from "./page/asset";
+import Fasset from "./page/Formasset";
 
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
           <Route path="/CompanyBio" element={<CompanyBio />} />
           <Route path="/CompanyBioP" element={<CompanyBioP />} />
           <Route path="/Asset" element={<Asset />} />
+          <Route path="/Fasset" element={<Fasset />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
