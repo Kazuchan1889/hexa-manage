@@ -34,6 +34,7 @@ import CompanyBioP from "./page/Company_Post";
 import Asset from "./page/asset";
 import Fasset from "./page/Formasset";
 import Ann from "./minicomponent/Announcment";
+import ViewA from "./minicomponent/ViewAnnounce";
 
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
           <Route path="/Asset" element={<Asset />} />
           <Route path="/Fasset" element={<Fasset />} />
           <Route path="/Announce" element={<Ann />} />
+          <Route path="/ViewAnounce" element={<ViewA />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
