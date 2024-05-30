@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import NavbarUser from '../feature/NavbarUser';
 import axios from 'axios';
 import ip from "../ip";
+import CloseIcon from "@mui/icons-material/Close";
+import Swal from "sweetalert2";
 
-function Formover() {
+const Formover = ({onClick, onclose}) => {
     const [formData, setFormData] = useState({
         note: "",
         tipe: "",
@@ -19,6 +21,7 @@ function Formover() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        onClose();
         try {
             const response = await axios.post(`${ip}/api/overtime/post`, {
                 note: formData.note,
@@ -27,20 +30,27 @@ function Formover() {
                 tanggal_overtime: new Date().toISOString(),
                 tipe: formData.overtimeType === "Sebelum Shift",
                 breaktime: formData.breakTime,
-                
+
             }, {
                 headers: {
                     Authorization: localStorage.getItem("accessToken"),
                     "Content-Type": "application/json",
                 }
-                
+
             });
             console.log(response.data);
-            window.location.href = '/Over';
-            setSubmitStatus('success'); // Atur status pengiriman menjadi berhasil
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Request Overtime Sent!",
+              });
         } catch (error) {
             console.error("Error submitting overtime:", error);
-            setSubmitStatus('error'); // Atur status pengiriman menjadi error
+            Swal.fire({
+                icon: "error",
+                title: "error",
+                text: "Data created successfully!",
+              })
         }
     };
 
@@ -54,24 +64,16 @@ function Formover() {
     }, [submitStatus]);
 
     return (
-        <div className="">
-            <NavbarUser />
-            {submitStatus === 'success' && (
-                <div className="bg-green-200 text-green-900 p-2 mb-4">
-                    Overtime berhasil dikirim!
-                </div>
-            )}
-            {submitStatus === 'error' && (
-                <div className="bg-red-200 text-red-900 p-2 mb-4">
-                    Terjadi kesalahan saat mengirim overtime. Silakan coba lagi.
-                </div>
-            )}
-            <div className="my-4 flex justify-center ">
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-3xl flex justify-center">
                 <form onSubmit={handleSubmit}>
-                    <div className='w-full border border-black p-8 rounded-3xl'>
-                        <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                            Request Overtime
-                        </h2>
+                    <div className='w-full border p-8 rounded-3xl'>
+                        <div className='flex items-center justify-between mb-2'>
+                            <h2 className="text-left text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                                Request Overtime
+                            </h2>
+                            <CloseIcon />
+                        </div>
                         <div className="mb-2">
                             <label htmlFor="note" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Catatan:</label>
                             <input type="text" id="note" name="note" value={formData.note} onChange={handleInputChange}
@@ -105,8 +107,18 @@ function Formover() {
                     </div>
                 </form>
             </div>
+            {submitStatus === 'success' && (
+                <div className="bg-green-200 text-green-900 p-2 mb-4">
+                    Overtime berhasil dikirim!
+                </div>
+            )}
+            {submitStatus === 'error' && (
+                <div className="bg-red-200 text-red-900 p-2 mb-4">
+                    Terjadi kesalahan saat mengirim overtime. Silakan coba lagi.
+                </div>
+            )}
         </div>
     );
-}
+};
 
 export default Formover;
