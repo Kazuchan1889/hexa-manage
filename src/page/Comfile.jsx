@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ip from "../ip";
+import NavbarUser from "../feature/NavbarUser";
 import {
   Table,
   TableBody,
@@ -11,10 +12,11 @@ import {
   Paper,
   Card,
   CardContent,
-  Typography
+  Typography,
+  Button
 } from "@mui/material";
 
-const apiURL = `${ip}/api/CompanyFile`; // Ganti dengan IP address Anda
+const apiURL = `${ip}/api/CompanyFile/list`; // Ganti dengan IP address Anda
 
 const CompanyFilePage = () => {
   const [files, setFiles] = useState([]);
@@ -41,18 +43,32 @@ const CompanyFilePage = () => {
     fetchData();
   }, []);
 
+  const handleAddFileClick = () => {
+    window.location.href = "/upfile";
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
+      <NavbarUser />
       <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
+        <div className="flex w-[90%] items-start justify-between my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
             Company Files
           </Typography>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleAddFileClick}
+            style={{ alignSelf: 'center' }}
+          >
+            Add File
+          </Button>
         </div>
       </div>
+      
       <div className="flex justify-center items-center w-screen my-2">
         <Card className="w-[90%]">
           <CardContent>

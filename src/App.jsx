@@ -36,6 +36,7 @@ import Fasset from "./page/Formasset";
 import Ann from "./minicomponent/Announcment";
 import ViewA from "./minicomponent/ViewAnnounce";
 import Compf from "./page/Comfile";
+import UpFile from "./minicomponent/AddFile";
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
+          <Route path="/UpFile" element={<UpFile />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
