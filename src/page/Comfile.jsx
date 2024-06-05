@@ -16,7 +16,7 @@ import {
   Button
 } from "@mui/material";
 
-const apiURL = `${ip}/api/CompanyFile/list`; // Ganti dengan IP address Anda
+const apiURL = `${ip}/api/CompanyFile/list/company`; // Ganti dengan IP address Anda
 
 const CompanyFilePage = () => {
   const [files, setFiles] = useState([]);
