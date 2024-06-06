@@ -71,6 +71,7 @@ const AddFile = () => {
     }
 
     const formData = new FormData();
+    formData.append('userId', id);
     formData.append('karyawan_file', uploadedFile);
     formData.append('nama_file', namaFile);
     formData.append('tanggal_publish', formattedDate);
@@ -95,7 +96,7 @@ const AddFile = () => {
       setMessage('File uploaded successfully');
     } catch (error) {
       setMessage(error.response ? error.response.data.error : 'Error uploading file');
-      window.location.href = '/companyfile';
+      
     }
   };
 
