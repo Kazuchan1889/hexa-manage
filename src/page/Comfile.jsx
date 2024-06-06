@@ -16,7 +16,7 @@ import {
   Button
 } from "@mui/material";
 
-const apiURL = `${ip}/api/CompanyFile/list/company`; // Ganti dengan IP address Anda
+const apiURL = `${ip}/api/CompanyFile/list/other`; // Ganti dengan IP address Anda
 
 const CompanyFilePage = () => {
   const [files, setFiles] = useState([]);
@@ -98,10 +98,10 @@ const CompanyFilePage = () => {
                     {files.map((file, index) => (
                       <TableRow key={index}>
                         <TableCell align="center">{file.nama}</TableCell>
-                        <TableCell align="center">{file.id}</TableCell>
+                        <TableCell align="center">{file.uploader_id}</TableCell>
                         <TableCell align="center">{file.nama_file}</TableCell>
                         <TableCell align="center">{file.karyawan_file}</TableCell>
-                        <TableCell align="center">{file.tanggal}</TableCell>
+                        <TableCell align="center">{file.tanggal_publish}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

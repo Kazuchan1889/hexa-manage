@@ -9,7 +9,6 @@ const AddFile = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [message, setMessage] = useState('');
   const [namaFile, setNamaFile] = useState('');
-  const [tanggalPublish, setTanggalPublish] = useState('');
 
   const handleFileUpload = async (acceptedFiles) => {
     const maxSizeInBytes = 5000000; // 5 MB
@@ -61,48 +60,43 @@ const AddFile = () => {
       setMessage('Please select a file to upload');
       return;
     }
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    const accessToken = localStorage.getItem('accessToken');
+    const id = getIdFromToken(accessToken);
+
+    if (!id) {
+      setMessage('Invalid access token');
+      return;
+    }
 
     const formData = new FormData();
-    formData.append('file', uploadedFile);
+    formData.append('karyawan_file', uploadedFile);
     formData.append('nama_file', namaFile);
-    formData.append('tanggal_publish', tanggalPublish);
+    formData.append('tanggal_publish', formattedDate);
+    formData.append('access_list', JSON.stringify([id])); // Append id as an array
 
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      console.log("Access Token:", accessToken);
-      if (!accessToken) {
-        setMessage('Access token not found');
-        return;
-      }
-
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+          Authorization: accessToken,
         },
       };
 
-      const id = getIdFromToken(accessToken);
-      console.log("ID from Token:", id);
-      console.log("Form Data:", {
-        file: uploadedFile,
-        nama_file: namaFile,
-        tanggal_publish: tanggalPublish,
-      });
-
       await axios.post(
-        `${ip}/api/Companyfile/upload/${id}`,
+        `${ip}/api/CompanyFile/list/company/upload`,
         formData,
         config
       );
 
+      // Redirect to /companyfile after form submission
+      window.location.href = '/companyfile';
       setMessage('File uploaded successfully');
     } catch (error) {
       setMessage(error.response ? error.response.data.error : 'Error uploading file');
+      window.location.href = '/companyfile';
     }
-
-    // Redirect to /companyfile after form submission
-    window.location.href = '/companyfile';
   };
 
   const getIdFromToken = (token) => {
