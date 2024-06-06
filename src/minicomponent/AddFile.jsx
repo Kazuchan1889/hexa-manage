@@ -8,9 +8,8 @@ import ip from "../ip";
 const AddFile = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [message, setMessage] = useState('');
-
-  // Tambahkan konstanta atau gunakan state untuk IP server
- // Ganti dengan alamat server Anda
+  const [namaFile, setNamaFile] = useState('');
+  const [tanggalPublish, setTanggalPublish] = useState('');
 
   const handleFileUpload = async (acceptedFiles) => {
     const maxSizeInBytes = 5000000; // 5 MB
@@ -65,34 +64,52 @@ const AddFile = () => {
 
     const formData = new FormData();
     formData.append('file', uploadedFile);
-
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: localStorage.getItem('accessToken'),
-      },
-    };
+    formData.append('nama_file', namaFile);
+    formData.append('tanggal_publish', tanggalPublish);
 
     try {
       const accessToken = localStorage.getItem('accessToken');
-      const id = getIdFromToken(accessToken); // Extract ID from accessToken
-       await axios.post(
-        `${ip}/api/CompanyFile/upload/${id}`,
+      console.log("Access Token:", accessToken);
+      if (!accessToken) {
+        setMessage('Access token not found');
+        return;
+      }
+
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+
+      const id = getIdFromToken(accessToken);
+      console.log("ID from Token:", id);
+      console.log("Form Data:", {
+        file: uploadedFile,
+        nama_file: namaFile,
+        tanggal_publish: tanggalPublish,
+      });
+
+      await axios.post(
+        `${ip}/api/Companyfile/upload/${id}`,
         formData,
         config
       );
-    
+
       setMessage('File uploaded successfully');
     } catch (error) {
       setMessage(error.response ? error.response.data.error : 'Error uploading file');
     }
   };
 
-  // Function to extract ID from accessToken (dummy implementation, replace with actual logic)
   const getIdFromToken = (token) => {
-    // Assuming the token is a JWT and the ID is stored in the payload
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.id;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (error) {
+      setMessage('Invalid access token');
+      return null;
+    }
   };
 
   return (
@@ -106,6 +123,13 @@ const AddFile = () => {
             <p className="text-xs text-gray-500">Accepted file types: .png, .jpg, .jpeg, .pdf, .docx</p>
           </div>
           {uploadedFile && <p className="text-center text-gray-700">{uploadedFile.name}</p>}
+          <input
+            type="text"
+            placeholder="Nama File"
+            value={namaFile}
+            onChange={(e) => setNamaFile(e.target.value)}
+            className="w-full px-4 py-2 border rounded"
+          />
           <button
             type="submit"
             className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
