@@ -221,6 +221,12 @@ const NavbarUser = () => {
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,
+      checkOp("READ_KARYAWAN")
+      ? { label: "Asset", active: false, to: "/Asset" }
+      : null,
+      checkOp("READ_KARYAWAN")
+      ? { label: "Company File", active: false, to: "/companyfile" }
+      : null,
     
   ].filter((item) => item !== null);
 
@@ -442,6 +448,18 @@ const NavbarUser = () => {
                       style={{ width: "10rem" }}
                     >
                       <Typography variant="button">Time Off</Typography>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleTimeManagementClose();
+                        // handleMenuItemClick(item);
+                        // handleClose();
+                      }}
+                      component={Link}
+                      to="/Cal"
+                      style={{ width: "10rem" }}
+                    >
+                      <Typography variant="button">schejule</Typography>
                     </MenuItem>
                   </List>
                 </Menu>

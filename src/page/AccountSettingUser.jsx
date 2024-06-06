@@ -160,22 +160,22 @@ function AccountSettingUser() {
               </h1>
             </div>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'profile' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('profile')}>
-              Profile Settings
+              Profile
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
             Company Bio
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'security' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('security')}>
-              Security Settings
+              Security
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'notifications' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('notifications')}>
-              Notification Settings
+              Notification
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'privacy' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('privacy')}>
-              Privacy Settings
+              Privacy
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
-              Billing Settings
+              Billing
             </li>
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
               Preferences

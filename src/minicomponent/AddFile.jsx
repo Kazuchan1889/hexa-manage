@@ -100,6 +100,9 @@ const AddFile = () => {
     } catch (error) {
       setMessage(error.response ? error.response.data.error : 'Error uploading file');
     }
+
+    // Redirect to /companyfile after form submission
+    window.location.href = '/companyfile';
   };
 
   const getIdFromToken = (token) => {

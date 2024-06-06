@@ -148,7 +148,7 @@ function FormCuti() {
       sisaCuti: sisaCuti,
     };
 
-    const apiSubmit = `${ip}/api/pengajuan/post/cuti`;
+    const apiSubmit = `${ip}/api/pengajuan/post/cuti/bersama`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
       "Content-Type": "application/json",

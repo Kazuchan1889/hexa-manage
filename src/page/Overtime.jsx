@@ -54,12 +54,12 @@ const TableOverTime = () => {
       date: selectedDate,
     };
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    };
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      };
 
     console.log(search);
     axios
