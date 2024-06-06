@@ -5,7 +5,7 @@ import ip from "../ip";
 import CloseIcon from "@mui/icons-material/Close";
 import Swal from "sweetalert2";
 
-const Formover = ({onClick, onclose}) => {
+const Formover = ({ onClick, onClose, fetchData }) => {
     const [formData, setFormData] = useState({
         note: "",
         tipe: "",
@@ -43,15 +43,16 @@ const Formover = ({onClick, onclose}) => {
                 icon: "success",
                 title: "Success",
                 text: "Request Overtime Sent!",
-              });
+            });
         } catch (error) {
             console.error("Error submitting overtime:", error);
             Swal.fire({
                 icon: "error",
                 title: "error",
                 text: "Data created successfully!",
-              })
+            })
         }
+        fetchData("");
     };
 
     useEffect(() => {
@@ -72,7 +73,9 @@ const Formover = ({onClick, onclose}) => {
                             <h2 className="text-left text-2xl font-bold leading-9 tracking-tight text-gray-900">
                                 Request Overtime
                             </h2>
-                            <CloseIcon />
+                            <button onClick={onClose} className="focus:outline-none">
+                                <CloseIcon />
+                            </button>
                         </div>
                         <div className="mb-2">
                             <label htmlFor="note" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Catatan:</label>

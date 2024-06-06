@@ -30,6 +30,7 @@ import ip from "../ip";
 import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
+import Formovertime from "../page/Formovertime";
 
 const TableOverTime = () => {
   const [page, setPage] = useState(0);
@@ -42,7 +43,7 @@ const TableOverTime = () => {
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
   const [data, setData] = useState(null);
-
+  const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const jabatan = localStorage.getItem("jabatan");
 
   const fetchData = (string) => {
@@ -360,13 +361,12 @@ const TableOverTime = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-4">
-                  
+                <div className="flex space-x-4">   
                   <Button 
                     size="small"
                     variant="contained"
                     style={{ backgroundColor: "#1E6D42" }}
-                    href="/fover"
+                    onClick={() => setTambahFormOpen(true)}
                   >
                     Request
                   </Button>
@@ -481,6 +481,12 @@ const TableOverTime = () => {
           />
         </div>
       </div>
+      {isTambahFormOpen && (
+        <Formovertime 
+        onClose={() => setTambahFormOpen(false)}
+        fetchData={fetchData}
+        />
+      )}
     </div>
   );
 };
