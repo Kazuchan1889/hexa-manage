@@ -19,9 +19,14 @@ const Announcement = () => {
       return;
     }
 
+    const today = new Date();
+    const formatDate = today.toISOString().split('T')[0];
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
+    formData.append('tanggal_upload', formatDate);
+    
     if (attachment) {
       const reader = new FileReader();
       reader.readAsDataURL(attachment);

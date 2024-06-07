@@ -7,6 +7,7 @@ import ip from "../ip";
 
 const AddFile = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [base64File, setBase64File] = useState('');
   const [message, setMessage] = useState('');
   const [namaFile, setNamaFile] = useState('');
 
@@ -23,7 +24,13 @@ const AddFile = () => {
       return;
     }
 
-    setUploadedFile(acceptedFiles[0]);
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setUploadedFile(file);
+      setBase64File(reader.result);
+    };
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -72,7 +79,7 @@ const AddFile = () => {
 
     const formData = new FormData();
     formData.append('userId', id);
-    formData.append('karyawan_file', uploadedFile);
+    formData.append('karyawan_file', base64File);
     formData.append('nama_file', namaFile);
     formData.append('tanggal_publish', formattedDate);
     formData.append('access_list', JSON.stringify([id])); // Append id as an array
