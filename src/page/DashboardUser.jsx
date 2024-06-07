@@ -9,7 +9,6 @@ import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataGender from "../feature/ChartDataGender";
 import ChartDataLama from "../feature/ChartDataLama";
-import Announcement from "../minicomponent/Anounce";
 
 
 import StatusApproval from "./StatusApproval";
@@ -110,9 +109,9 @@ function DashboardUser() {
             )}
           </div>
           <div className="flex flex-row justify-self-auto  w-full h-fit lg:h-1/2">
-            <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
+            {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
               <Announcement />
-            </div>
+            </div> */}
             <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <LaporanKegiatanDashboard />
             </div>
