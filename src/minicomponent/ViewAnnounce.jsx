@@ -22,10 +22,11 @@ const AnnouncementList = () => {
           'Content-Type': 'application/json'
         }
       });
-      console.log(response);
+      // console.log(response);
       setAnnouncements(response.data);
       // setDeleteAnnouncement(respon.data.id);
     } catch (error) {
+      console.log(response.data)
       console.error('Error fetching announcements:', error);
     }
   };
