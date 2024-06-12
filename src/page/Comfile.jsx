@@ -153,7 +153,7 @@ const CompanyFilePage = () => {
                       <TableRow key={index}>
                         <TableCell align="center">{file.nama_file}</TableCell>
                         <TableCell align="center">{file.uploader_id}</TableCell>
-                        <TableCell align="center">{formatDate(file.tanggal_publish)}</TableCell>
+                        <TableCell align="center">{formatDate(file.tanggal_upload)}</TableCell>
                         <TableCell align="center">
                           <Button 
                             variant="contained" 
