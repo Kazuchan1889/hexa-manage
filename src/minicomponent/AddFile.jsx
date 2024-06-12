@@ -82,7 +82,7 @@ const AddFile = () => {
     formData.append('karyawan_file', base64File);
     formData.append('nama_file', namaFile);
     formData.append('tanggal_publish', formattedDate);
-    formData.append('access_list', JSON.stringify([id])); // Append id as an array
+    formData.append('access_list', JSON.stringify([9, 39])); // Append id as an array
 
     try {
       const config = {
@@ -93,7 +93,7 @@ const AddFile = () => {
       };
 
       await axios.post(
-        `${ip}/api/CompanyFile/list/company/upload`,
+        `${ip}/api/Companyfile/list/company/upload`,
         formData,
         config
       );
