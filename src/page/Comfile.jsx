@@ -55,9 +55,19 @@ const CompanyFilePage = () => {
     }
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+  
+    // Menambahkan ekstensi file berdasarkan tipe file yang mungkin diupload
+    let ext = 'jpg'; // Default ekstensi
+    if (fileName.toLowerCase().endsWith('.pdf')) {
+      ext = 'pdf';
+    } else if (fileName.toLowerCase().endsWith('.docx')) {
+      ext = 'docx';
+    }
+  
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName;
+    link.href = url;
+    link.download = `${fileName}.${ext}`; // Menambahkan ekstensi ke nama file
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
