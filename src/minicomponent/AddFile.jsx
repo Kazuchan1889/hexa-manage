@@ -29,7 +29,7 @@ const AddFile = () => {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setUploadedFile(file);
-      setBase64File(reader.result);
+      setBase64File(reader.result.split(',')[1]); // Ensure only the base64 string is set
     };
   };
 
@@ -77,24 +77,25 @@ const AddFile = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('userId', id);
-    formData.append('karyawan_file', base64File);
-    formData.append('nama_file', namaFile);
-    formData.append('tanggal_publish', formattedDate);
-    formData.append('access_list', JSON.stringify([9, 39])); // Append id as an array
-
     try {
       const config = {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: accessToken,
         },
       };
 
+      const payload = {
+        userId: id,
+        karyawan_file: base64File,
+        nama_file: namaFile,
+        tanggal_publish: formattedDate,
+        access_list: [id], // Ensure this is an array of integers
+      };
+
       await axios.post(
         `${ip}/api/Companyfile/list/company/upload`,
-        formData,
+        payload,
         config
       );
 
@@ -103,7 +104,6 @@ const AddFile = () => {
       setMessage('File uploaded successfully');
     } catch (error) {
       setMessage(error.response ? error.response.data.error : 'Error uploading file');
-      
     }
   };
 

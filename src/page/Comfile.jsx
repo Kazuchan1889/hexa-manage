@@ -47,6 +47,27 @@ const CompanyFilePage = () => {
     window.location.href = "/upfile";
   };
 
+  const handleDownload = (base64File, fileName) => {
+    const byteCharacters = atob(base64File);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -77,31 +98,35 @@ const CompanyFilePage = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">ID</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[30%]">
+                      <TableCell align="center" className="w-[40%]">
                         <p className="text-white font-semibold">Nama File</p>
                       </TableCell>
-                      <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">File</p>
+                      <TableCell align="center" className="w-[20%]">
+                        <p className="text-white font-semibold">Uploader ID</p>
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
-                        <p className="text-white font-semibold">Tanggal</p>
+                        <p className="text-white font-semibold">Tanggal Upload</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[20%]">
+                        <p className="text-white font-semibold">Download</p>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
                     {files.map((file, index) => (
                       <TableRow key={index}>
-                        <TableCell align="center">{file.nama}</TableCell>
-                        <TableCell align="center">{file.uploader_id}</TableCell>
                         <TableCell align="center">{file.nama_file}</TableCell>
-                        <TableCell align="center">{file.karyawan_file}</TableCell>
-                        <TableCell align="center">{file.tanggal_publish}</TableCell>
+                        <TableCell align="center">{file.uploader_id}</TableCell>
+                        <TableCell align="center">{formatDate(file.tanggal_publish)}</TableCell>
+                        <TableCell align="center">
+                          <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => handleDownload(file.karyawan_file, file.nama_file)}
+                          >
+                            Download
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
