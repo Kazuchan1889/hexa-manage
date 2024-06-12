@@ -8,6 +8,7 @@ import ip from "../ip";
 const AddFile = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [base64File, setBase64File] = useState('');
+  const [fileExtension, setFileExtension] = useState('');
   const [message, setMessage] = useState('');
   const [namaFile, setNamaFile] = useState('');
 
@@ -25,6 +26,9 @@ const AddFile = () => {
     }
 
     const file = acceptedFiles[0];
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    setFileExtension(fileExtension);
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
@@ -88,7 +92,7 @@ const AddFile = () => {
       const payload = {
         userId: id,
         karyawan_file: base64File,
-        nama_file: namaFile,
+        nama_file: `${namaFile}.${fileExtension}`, // Include the file extension in the file name
         tanggal_publish: formattedDate,
         access_list: [id], // Ensure this is an array of integers
       };

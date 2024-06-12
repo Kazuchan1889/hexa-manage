@@ -15,8 +15,10 @@ import {
   Typography,
   Button
 } from "@mui/material";
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
-const apiURL = `${ip}/api/CompanyFile/list/other`; // Ganti dengan IP address Anda
+const apiURL = `${ip}/api/CompanyFile/list/other`;
 
 const CompanyFilePage = () => {
   const [files, setFiles] = useState([]);
@@ -55,22 +57,46 @@ const CompanyFilePage = () => {
     }
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: 'application/octet-stream' });
-  
-    // Menambahkan ekstensi file berdasarkan tipe file yang mungkin diupload
-    let ext = 'jpg'; // Default ekstensi
-    if (fileName.toLowerCase().endsWith('.pdf')) {
-      ext = 'pdf';
+
+    let ext = 'pdf'; // Default extension
+    if (fileName.toLowerCase().endsWith('.jpg')) {
+      ext = 'jpg';
     } else if (fileName.toLowerCase().endsWith('.docx')) {
       ext = 'docx';
     }
-  
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${fileName}.${ext}`; // Menambahkan ekstensi ke nama file
+    link.download = fileName; // Use the original file name
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDelete = async (fileId) => {
+    try {
+      await axios.delete(`${ip}/api/CompanyFile/delete/${fileId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+
+      setFiles(files.filter(file => file.id !== fileId));
+
+      Swal.fire({
+        icon: 'success',
+        title: 'File Deleted',
+        text: 'The file has been successfully deleted.',
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to delete the file. Please try again.',
+      });
+    }
   };
 
   const formatDate = (dateString) => {
@@ -108,7 +134,7 @@ const CompanyFilePage = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-[40%]">
+                      <TableCell align="center" className="w-[30%]">
                         <p className="text-white font-semibold">Nama File</p>
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
@@ -117,8 +143,8 @@ const CompanyFilePage = () => {
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold">Tanggal Upload</p>
                       </TableCell>
-                      <TableCell align="center" className="w-[20%]">
-                        <p className="text-white font-semibold">Download</p>
+                      <TableCell align="center" className="w-[30%]">
+                        <p className="text-white font-semibold">Actions</p>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -135,6 +161,14 @@ const CompanyFilePage = () => {
                             onClick={() => handleDownload(file.karyawan_file, file.nama_file)}
                           >
                             Download
+                          </Button>
+                          <Button 
+                            variant="contained" 
+                            color="secondary"
+                            onClick={() => handleDelete(file.id)} // Use file.id here
+                            style={{ marginLeft: '10px' }}
+                          >
+                            Delete
                           </Button>
                         </TableCell>
                       </TableRow>
