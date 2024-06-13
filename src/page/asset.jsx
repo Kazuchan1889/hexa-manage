@@ -250,12 +250,17 @@ const TableAsset = () => {
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Type</p>
                       </TableCell>
-                      <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Price</p>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Unit Price</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
                           Quantity
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold text-center">
+                          Price
                         </p>
                       </TableCell>
                     </TableRow>
@@ -274,10 +279,11 @@ const TableAsset = () => {
                         <TableCell align="center">{row.model_tipe}</TableCell>
                         <TableCell align="center">{row.harga}</TableCell>
                         <TableCell align="center">{row.jumlah}</TableCell>
+                        <TableCell align="center">{row.hargatotal}</TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
-                      <TableCell colSpan={3} align="center">
+                      <TableCell colSpan={4} align="center">
                         <strong>Total Harga</strong>
                       </TableCell>
                       <TableCell align="center">
