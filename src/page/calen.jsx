@@ -1,3 +1,5 @@
+// CalendarComponent.js
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -5,6 +7,10 @@ import Modal from "react-modal";
 import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
 import ip from "../ip";
+
+// Set the main application element for react-modal
+Modal.setAppElement("#root");
+
 const apiURL = `${ip}/api/schedjul`;
 
 const CalendarComponent = () => {
@@ -12,19 +18,24 @@ const CalendarComponent = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formData, setFormData] = useState({
+    id: null,
     judul: "",
     deskripsi: "",
     mulai: "",
     selesai: "",
+    karyawan: [],
   });
-
+  const [selectedKaryawan, setSelectedKaryawan] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  
   useEffect(() => {
-    fetchEventsByKaryawanId(); // Mengambil jadwal berdasarkan ID karyawan saat komponen dimuat
+    fetchEventsByKaryawanId();
+    fetchEmployees();
   }, []);
-
+  
   const fetchEventsByKaryawanId = async () => {
     try {
-      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {  // Ganti dengan ID karyawan yang sesuai
+      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("accessToken"),
@@ -36,13 +47,27 @@ const CalendarComponent = () => {
     }
   };
 
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get(`${ip}/api/karyawan/nama&id`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      setEmployees(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
-        tgl_mulai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
-        tgl_selesai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
+        tgl_mulai: selectedDate.toISOString().split("T")[0],
+        tgl_selesai: selectedDate.toISOString().split("T")[0],
+        karyawan: selectedKaryawan,
       };
       await axios.post(`${apiURL}/scheduler/post`, payload, {
         headers: {
@@ -50,13 +75,16 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menambahkan jadwal baru
+      fetchEventsByKaryawanId();
       setFormData({
+        id: null,
         judul: "",
         deskripsi: "",
         mulai: "",
         selesai: "",
+        karyawan: [],
       });
+      setSelectedKaryawan([]);
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
@@ -71,7 +99,53 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menghapus jadwal
+      fetchEventsByKaryawanId();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEdit = (schedule) => {
+    const selectedKaryawanIds = schedule.karyawan ? schedule.karyawan.map(k => k.id) : [];
+    setFormData({
+      id: schedule.schedule_id,
+      judul: schedule.judul,
+      deskripsi: schedule.deskripsi,
+      mulai: schedule.mulai,
+      selesai: schedule.selesai,
+      karyawan: selectedKaryawanIds,
+    });
+    setSelectedDate(new Date(schedule.tanggal_mulai));
+    setSelectedKaryawan(selectedKaryawanIds);
+    setModalIsOpen(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        ...formData,
+        tgl_mulai: selectedDate.toISOString().split("T")[0],
+        tgl_selesai: selectedDate.toISOString().split("T")[0],
+        karyawan: selectedKaryawan,
+      };
+      await axios.patch(`${apiURL}/scheduler/patch/${formData.id}`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      fetchEventsByKaryawanId();
+      setFormData({
+        id: null,
+        judul: "",
+        deskripsi: "",
+        mulai: "",
+        selesai: "",
+        karyawan: [],
+      });
+      setSelectedKaryawan([]);
+      setModalIsOpen(false);
     } catch (error) {
       console.error(error);
     }
@@ -123,6 +197,12 @@ const CalendarComponent = () => {
                   <td>{schedule.mulai} - {schedule.selesai}</td>
                   <td>
                     <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mr-2"
+                      onClick={() => handleEdit(schedule)}
+                    >
+                      Edit
+                    </button>
+                    <button
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
                       onClick={() => handleDelete(schedule.schedule_id)}
                     >
@@ -153,10 +233,10 @@ const CalendarComponent = () => {
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}
-          contentLabel="Add Schedule Modal"
+          contentLabel={formData.id ? "Edit Schedule Modal" : "Add Schedule Modal"}
         >
-          <h2>Tambah Jadwal</h2>
-          <form onSubmit={handleSubmit}>
+          <h2>{formData.id ? "Edit Jadwal" : "Tambah Jadwal"}</h2>
+          <form onSubmit={formData.id ? handleUpdate : handleSubmit}>
             <div className="mb-4">
               <label>Kegiatan:</label>
               <input
@@ -192,11 +272,26 @@ const CalendarComponent = () => {
                 className="border rounded-md py-2 px-3 w-full"
               />
             </div>
+            <div className="mb-4">
+              <label>Karyawan:</label>
+              <select
+                value={selectedKaryawan}
+                onChange={(e) => setSelectedKaryawan(Array.from(e.target.selectedOptions, option => option.value))}
+                className="border rounded-md py-2 px-3 w-full"
+                multiple
+              >
+                {employees.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.nama}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Submit
+              {formData.id ? "Update" : "Submit"}
             </button>
           </form>
         </Modal>
