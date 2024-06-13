@@ -187,7 +187,7 @@ const TableAsset = () => {
                     Search
                   </Button>
                   <Dialog
-                    
+
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
@@ -212,7 +212,7 @@ const TableAsset = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                
+
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-4">
@@ -232,6 +232,9 @@ const TableAsset = () => {
       </div>
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
+          <span className="font-bold flex justify-end mr-4 mt-2 text-lg">
+            Total Asset: {TotalHarga}
+          </span>
           <CardContent>
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
               <TableContainer
@@ -268,9 +271,9 @@ const TableAsset = () => {
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredRows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>
@@ -282,7 +285,7 @@ const TableAsset = () => {
                         <TableCell align="center">{row.hargatotal}</TableCell>
                       </TableRow>
                     ))}
-                    <TableRow>
+                    {/* <TableRow>
                       <TableCell colSpan={4} align="center">
                         <strong>Total Harga</strong>
                       </TableCell>
@@ -290,7 +293,7 @@ const TableAsset = () => {
                         <strong>{TotalHarga}</strong>
                       </TableCell>
                       <TableCell colSpan={1} />
-                    </TableRow>
+                    </TableRow> */}
                   </TableBody>
                 </Table>
               </TableContainer>
