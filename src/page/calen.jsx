@@ -1,3 +1,5 @@
+// CalendarComponent.js
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -5,6 +7,7 @@ import Modal from "react-modal";
 import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
 import ip from "../ip";
+
 const apiURL = `${ip}/api/schedjul`;
 
 const CalendarComponent = () => {
@@ -16,15 +19,19 @@ const CalendarComponent = () => {
     deskripsi: "",
     mulai: "",
     selesai: "",
+    karyawan: [], // Changed to array for multiple selection
   });
-
+  const [selectedKaryawan, setSelectedKaryawan] = useState([]); // State to hold selected employee IDs
+  const [employees, setEmployees] = useState([]);
+  
   useEffect(() => {
-    fetchEventsByKaryawanId(); // Mengambil jadwal berdasarkan ID karyawan saat komponen dimuat
+    fetchEventsByKaryawanId();
+    fetchEmployees();
   }, []);
-
+  
   const fetchEventsByKaryawanId = async () => {
     try {
-      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {  // Ganti dengan ID karyawan yang sesuai
+      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("accessToken"),
@@ -36,13 +43,27 @@ const CalendarComponent = () => {
     }
   };
 
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get(`${ip}/api/karyawan/nama&id`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      setEmployees(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
-        tgl_mulai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
-        tgl_selesai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
+        tgl_mulai: selectedDate.toISOString().split("T")[0],
+        tgl_selesai: selectedDate.toISOString().split("T")[0],
+        karyawan: selectedKaryawan,
       };
       await axios.post(`${apiURL}/scheduler/post`, payload, {
         headers: {
@@ -50,13 +71,15 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menambahkan jadwal baru
+      fetchEventsByKaryawanId();
       setFormData({
         judul: "",
         deskripsi: "",
         mulai: "",
         selesai: "",
+        karyawan: [], // Reset selected employees
       });
+      setSelectedKaryawan([]);
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
@@ -71,7 +94,7 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menghapus jadwal
+      fetchEventsByKaryawanId();
     } catch (error) {
       console.error(error);
     }
@@ -192,6 +215,21 @@ const CalendarComponent = () => {
                 className="border rounded-md py-2 px-3 w-full"
               />
             </div>
+            <div className="mb-4">
+              <label>Karyawan:</label>
+              <select
+                value={selectedKaryawan}
+                onChange={(e) => setSelectedKaryawan(Array.from(e.target.selectedOptions, option => option.value))}
+                className="border rounded-md py-2 px-3 w-full"
+                multiple
+              >
+                {employees.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.nama}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -206,3 +244,4 @@ const CalendarComponent = () => {
 };
 
 export default CalendarComponent;
+
