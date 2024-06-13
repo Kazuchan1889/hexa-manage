@@ -125,8 +125,8 @@ const CalendarComponent = () => {
     try {
       const payload = {
         ...formData,
-        tgl_mulai: selectedDate.toISOString().split("T")[0],
-        tgl_selesai: selectedDate.toISOString().split("T")[0],
+        tanggal_mulai: selectedDate.toISOString().split("T")[0],
+        tanggal_selesai: selectedDate.toISOString().split("T")[0],
         karyawan: selectedKaryawan,
       };
       await axios.patch(`${apiURL}/scheduler/patch/${formData.id}`, payload, {
