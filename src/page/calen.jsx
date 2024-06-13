@@ -1,144 +1,152 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import DatePicker from "react-datepicker";
+import Modal from "react-modal";
+import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Modal from 'react-modal';
-import axios from 'axios';
 import ip from "../ip";
+const apiURL = `${ip}/api/schedjul`;
 
-Modal.setAppElement('#root');
-
-const apiUrl = `${ip}/api/asset/post`;
-const accessToken = localStorage.getItem("accessToken");
-const config = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: accessToken ? accessToken : '',
-  },
-};
-
-function Taskform() {
-  const [activity, setActivity] = useState('');
-  const [location, setLocation] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState('');
+const CalendarComponent = () => {
+  const [events, setEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [schedules, setSchedules] = useState([]);
-  const [selectedDateSchedules, setSelectedDateSchedules] = useState([]);
-  const [nationalHolidays, setNationalHolidays] = useState([]);
+  const [formData, setFormData] = useState({
+    judul: "",
+    deskripsi: "",
+    mulai: "",
+    selesai: "",
+  });
 
   useEffect(() => {
-    fetchNationalHolidays();
-    fetchSchedules();
+    fetchEventsByKaryawanId(); // Mengambil jadwal berdasarkan ID karyawan saat komponen dimuat
   }, []);
 
-  useEffect(() => {
-    const selectedDate = startDate.toLocaleDateString();
-    const filteredSchedules = schedules.filter(schedule => {
-      const scheduleDate = new Date(schedule.tanggal_selesai).toLocaleDateString();
-      return scheduleDate === selectedDate;
-    });
-    setSelectedDateSchedules(filteredSchedules);
-  }, [startDate, schedules]);
-
-  const fetchNationalHolidays = () => {
-    // Ganti URL_API dengan URL yang sesuai untuk mendapatkan data libur nasional
-    fetch('URL_API')
-      .then(response => response.json())
-      .then(data => {
-        // Sesuaikan cara menyimpan data dengan struktur respons API
-        setNationalHolidays(data);
-      })
-      .catch(error => console.error('Error fetching national holidays:', error));
-  };
-
-  const fetchSchedules = async () => {
+  const fetchEventsByKaryawanId = async () => {
     try {
-      const response = await axios.get(`${ip}/api/scheduler/assigned`, config);
-      setSchedules(response.data);
+      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {  // Ganti dengan ID karyawan yang sesuai
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      setEvents(response.data);
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      console.error(error);
     }
   };
 
-  const isHoliday = (date) => {
-    const formattedDate = date.toISOString().split('T')[0];
-    return nationalHolidays.includes(formattedDate);
-  };
-
-  const handleDateClick = (date) => {
-    if (isHoliday(date)) {
-      alert('Ini adalah hari libur nasional!');
-    }
-    setStartDate(date);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const newSchedule = {
-      tgl_mulai: startDate,
-      tgl_selesai: endDate,
-      judul: activity,
-      deskripsi: location,
-      mulai: startDate,
-      selesai: endDate,
-      karyawan: null
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.post(`${ip}/api/scheduler/post`, newSchedule, config);
-      fetchSchedules();
-      setActivity('');
-      setLocation('');
-      setStartDate(new Date());
-      setEndDate('');
+      const payload = {
+        ...formData,
+        tgl_mulai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
+        tgl_selesai: selectedDate.toISOString().split("T")[0], // Format YYYY-MM-DD
+      };
+      await axios.post(`${apiURL}/scheduler/post`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menambahkan jadwal baru
+      setFormData({
+        judul: "",
+        deskripsi: "",
+        mulai: "",
+        selesai: "",
+      });
       setModalIsOpen(false);
-      alert('Data telah disimpan!');
     } catch (error) {
-      console.error('Error posting schedule:', error);
+      console.error(error);
     }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${apiURL}/scheduler/delete/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+      fetchEventsByKaryawanId(); // Memuat ulang jadwal setelah menghapus jadwal
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const selectedDateSchedules = events.filter(
+    (event) => new Date(event.tanggal_mulai).toDateString() === selectedDate.toDateString()
+  );
+
+  const isDateHasEvents = (date) => {
+    return events.some((event) => new Date(event.tanggal_mulai).toDateString() === date.toDateString());
   };
 
   return (
     <section>
       <NavbarUser />
-      <div className='mx-20 text-left my-2'>
-        <h1 className='text-3xl font-bold'>Calender</h1>
+      <div className="mx-20 text-left my-2">
+        <h1 className="text-3xl font-bold">Calendar</h1>
       </div>
-      <div className="max-w-6xl mx-auto flex mt-6 border-black border">
+      <div className="max-w-6xl mx-auto flex mt-6 border border-black">
         <div className="w-3/4 p-6 border-r border-black">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Daftar Jadwal</h2>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setModalIsOpen(true)}>Tambah</button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setModalIsOpen(true)}
+            >
+              Tambah
+            </button>
           </div>
           <table className="w-full">
             <thead>
               <tr>
                 <th className="text-left">Kegiatan</th>
                 <th className="text-left">Tanggal</th>
+                <th className="text-left">Jam</th>
+                <th className="text-left">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {selectedDateSchedules.map((schedule, index) => (
                 <tr key={index}>
                   <td>{schedule.judul}</td>
-                  <td>{new Date(schedule.tanggal_selesai).toLocaleString()}</td>
+                  <td>{new Date(schedule.tanggal_mulai).toLocaleDateString()}</td>
+                  <td>{schedule.mulai} - {schedule.selesai}</td>
+                  <td>
+                    <button
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                      onClick={() => handleDelete(schedule.schedule_id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
               {selectedDateSchedules.length === 0 && (
                 <tr>
-                  <td colSpan="2">Tidak ada jadwal untuk tanggal ini.</td>
+                  <td colSpan="4">Tidak ada jadwal untuk tanggal ini.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
         <div className="w-1/4 p-6">
-          <div className='w-full'>
+          <div className="w-full">
             <DatePicker
-              selected={startDate}
-              onChange={(date) => handleDateClick(date)}
+              selected={selectedDate}
+              onChange={(date) => handleDateChange(date)}
               inline
               calendarClassName="full-width-calendar"
+              dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200" : undefined)}
             />
           </div>
         </div>
@@ -151,18 +159,50 @@ function Taskform() {
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label>Kegiatan:</label>
-              <input type="text" value={activity} onChange={(e) => setActivity(e.target.value)} className="border rounded-md py-2 px-3" />
+              <input
+                type="text"
+                value={formData.judul}
+                onChange={(e) => setFormData({ ...formData, judul: e.target.value })}
+                className="border rounded-md py-2 px-3"
+              />
             </div>
             <div className="mb-4">
-              <label>Waktu Selesai (Format 24 Jam):</label>
-              <input type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded-md py-2 px-3" />
+              <label>Deskripsi:</label>
+              <textarea
+                value={formData.deskripsi}
+                onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
+                className="border rounded-md py-2 px-3 w-full"
+              />
             </div>
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+            <div className="mb-4">
+              <label>Waktu Mulai:</label>
+              <input
+                type="time"
+                value={formData.mulai}
+                onChange={(e) => setFormData({ ...formData, mulai: e.target.value })}
+                className="border rounded-md py-2 px-3 w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label>Waktu Selesai:</label>
+              <input
+                type="time"
+                value={formData.selesai}
+                onChange={(e) => setFormData({ ...formData, selesai: e.target.value })}
+                className="border rounded-md py-2 px-3 w-full"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Submit
+            </button>
           </form>
         </Modal>
       </div>
     </section>
   );
-}
+};
 
-export default Taskform;
+export default CalendarComponent;
