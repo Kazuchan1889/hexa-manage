@@ -142,7 +142,7 @@ const TableAsset = () => {
 
     const handleMenuOpen = (event, id) => {
       setMenuAnchorEl(event.currentTarget);
-      setSelectedRowId(id);
+      setSelectedRowId(row.id);
     };
 
     const handleMenuClose = () => {
