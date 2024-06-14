@@ -2,19 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
-import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, IconButton } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -22,12 +22,10 @@ import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Swal from "sweetalert2";
 import ip from "../ip";
-import ActionButton from "../feature/ActionButton";
-import SettingJatahCuti from "../feature/SettingJatahCuti";
-import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 
 const TableAsset = () => {
   const [page, setPage] = useState(0);
@@ -37,11 +35,11 @@ const TableAsset = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [reportType, setReportType] = useState("history"); // Nilai default diatur menjadi "history"
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [TotalHarga, setTotalHarga] = useState([]);
-
-  const jabatan = localStorage.getItem("jabatan");
+  const [reportType, setReportType] = useState("history");
 
   const fetchData = () => {
     const apiURLasset = `${ip}/api/asset/list`;
@@ -65,7 +63,7 @@ const TableAsset = () => {
         const assets = response.data.asset || [];
         setRows(assets);
         setOriginalRows(assets);
-        setTotalHarga(response.data.total_harga)
+        setTotalHarga(response.data.total_harga);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -87,7 +85,7 @@ const TableAsset = () => {
   };
 
   useEffect(() => {
-    fetchData(); // Panggil fetchData() saat komponen dimount
+    fetchData();
   }, [selectedDate, search, reportType]);
 
   const searchInRows = (query) => {
@@ -133,18 +131,46 @@ const TableAsset = () => {
     setPage(0);
   };
 
-  const handleReportTypeChange = (newReportType) => {
-    setPage(0);
-    setReportType(newReportType);
-    handleMenuClose();
-  };
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleMenuOpen = (event, id) => {
+    setMenuAnchorEl(event.currentTarget);
+    setSelectedRowId(id);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setMenuAnchorEl(null);
+  };
+
+  const handleDelete = () => {
+    const apiURLdelete = `${ip}/api/asset/list/${selectedRowId}`;
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    };
+
+    axios
+      .delete(apiURLdelete, config)
+      .then((response) => {
+        console.log("Delete Response:", response.data);
+        fetchData();
+        setIsDeleteDialogOpen(false);
+        Swal.fire("Deleted!", "The asset has been deleted.", "success");
+      })
+      .catch((error) => {
+        console.error("Error deleting data:", error);
+        Swal.fire("Error!", "There was an error deleting the asset.", "error");
+      });
+  };
+
+  const handleDeleteDialogOpen = () => {
+    setIsDeleteDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteDialogClose = () => {
+    setIsDeleteDialogOpen(false);
   };
 
   return (
@@ -187,7 +213,6 @@ const TableAsset = () => {
                     Search
                   </Button>
                   <Dialog
-
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
@@ -210,9 +235,6 @@ const TableAsset = () => {
                     </DialogContent>
                   </Dialog>
                 </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-4">
@@ -266,6 +288,11 @@ const TableAsset = () => {
                           Price
                         </p>
                       </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold text-center">
+                          Actions
+                        </p>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
@@ -283,17 +310,25 @@ const TableAsset = () => {
                         <TableCell align="center">{row.harga}</TableCell>
                         <TableCell align="center">{row.jumlah}</TableCell>
                         <TableCell align="center">{row.hargatotal}</TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            onClick={(event) => handleMenuOpen(event, row.id)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            anchorEl={menuAnchorEl}
+                            keepMounted
+                            open={Boolean(menuAnchorEl)}
+                            onClose={handleMenuClose}
+                          >
+                            <MenuItem onClick={handleDeleteDialogOpen}>
+                              Delete
+                            </MenuItem>
+                          </Menu>
+                        </TableCell>
                       </TableRow>
                     ))}
-                    {/* <TableRow>
-                      <TableCell colSpan={4} align="center">
-                        <strong>Total Harga</strong>
-                      </TableCell>
-                      <TableCell align="center">
-                        <strong>{TotalHarga}</strong>
-                      </TableCell>
-                      <TableCell colSpan={1} />
-                    </TableRow> */}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -315,6 +350,20 @@ const TableAsset = () => {
           />
         </div>
       </div>
+      <Dialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this asset?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
