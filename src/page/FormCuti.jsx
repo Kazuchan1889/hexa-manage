@@ -253,7 +253,7 @@ function FormCuti() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-primary overflow-y-hidden">
+    <div className="w-screen h-screen bg-primary ">
       <NavbarUser />
       {loading ? (
         <div className="w-screen h-full flex justify-center items-center mx-auto">

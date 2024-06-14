@@ -459,7 +459,7 @@ const NavbarUser = () => {
                       to="/Cal"
                       style={{ width: "10rem" }}
                     >
-                      <Typography variant="button">schejule</Typography>
+                      <Typography variant="button">schedule</Typography>
                     </MenuItem>
                   </List>
                 </Menu>
