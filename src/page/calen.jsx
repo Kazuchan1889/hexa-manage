@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import Modal from "react-modal";
+import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
 import ip from "../ip";
@@ -75,7 +76,7 @@ const CalendarComponent = () => {
         ...formData,
         tgl_mulai: selectedDate.toISOString().split("T")[0],
         tgl_selesai: selectedDate.toISOString().split("T")[0],
-        karyawan: selectedKaryawan,
+        karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.post(`${apiURL}/scheduler/post`, payload, {
         headers: {
@@ -114,17 +115,17 @@ const CalendarComponent = () => {
   };
 
   const handleEdit = (schedule) => {
-    const selectedKaryawanIds = schedule.karyawan ? schedule.karyawan.map(k => k.id) : [];
+    const selectedKaryawanOptions = schedule.karyawan ? schedule.karyawan.map((k) => ({ value: k.id, label: k.nama })) : [];
     setFormData({
       id: schedule.schedule_id,
       judul: schedule.judul,
       deskripsi: schedule.deskripsi,
       mulai: schedule.mulai,
       selesai: schedule.selesai,
-      karyawan: selectedKaryawanIds,
+      karyawan: selectedKaryawanOptions,
     });
     setSelectedDate(new Date(schedule.tanggal_mulai));
-    setSelectedKaryawan(selectedKaryawanIds);
+    setSelectedKaryawan(selectedKaryawanOptions);
     setModalIsOpen(true);
   };
 
@@ -135,7 +136,7 @@ const CalendarComponent = () => {
         ...formData,
         tanggal_mulai: selectedDate.toISOString().split("T")[0],
         tanggal_selesai: selectedDate.toISOString().split("T")[0],
-        karyawan: selectedKaryawan,
+        karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.patch(`${apiURL}/scheduler/patch/${formData.id}`, payload, {
         headers: {
@@ -183,7 +184,18 @@ const CalendarComponent = () => {
             <h2 className="text-2xl font-bold">Daftar Jadwal</h2>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setModalIsOpen(true)}
+              onClick={() => {
+                setFormData({
+                  id: null,
+                  judul: "",
+                  deskripsi: "",
+                  mulai: "",
+                  selesai: "",
+                  karyawan: [],
+                });
+                setSelectedKaryawan([]);
+                setModalIsOpen(true);
+              }}
             >
               Tambah
             </button>
@@ -283,18 +295,14 @@ const CalendarComponent = () => {
             </div>
             <div className="mb-4">
               <label>Karyawan:</label>
-              <select
+              <Select
+                options={employees.map((employee) => ({ value: employee.id, label: employee.nama }))}
+                isMulti
                 value={selectedKaryawan}
-                onChange={(e) => setSelectedKaryawan(Array.from(e.target.selectedOptions, option => option.value))}
-                className="border rounded-md py-2 px-3 w-full"
-                multiple
-              >
-                {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.nama}
-                  </option>
-                ))}
-              </select>
+                onChange={(selectedOptions) => setSelectedKaryawan(selectedOptions)}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
             </div>
             <button
               type="submit"
