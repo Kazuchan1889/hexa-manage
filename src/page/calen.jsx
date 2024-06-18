@@ -11,6 +11,14 @@ import ip from "../ip";
 // Set the main application element for react-modal
 Modal.setAppElement("#root");
 
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
 const apiURL = `${ip}/api/schedjul`;
 
 const CalendarComponent = () => {
@@ -27,12 +35,12 @@ const CalendarComponent = () => {
   });
   const [selectedKaryawan, setSelectedKaryawan] = useState([]);
   const [employees, setEmployees] = useState([]);
-  
+
   useEffect(() => {
     fetchEventsByKaryawanId();
     fetchEmployees();
   }, []);
-  
+
   const fetchEventsByKaryawanId = async () => {
     try {
       const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {
@@ -231,11 +239,12 @@ const CalendarComponent = () => {
           </div>
         </div>
         <Modal
+          style={customStyles}
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}
           contentLabel={formData.id ? "Edit Schedule Modal" : "Add Schedule Modal"}
         >
-          <h2>{formData.id ? "Edit Jadwal" : "Tambah Jadwal"}</h2>
+          <h2 className="font-bold text-xl text-center">{formData.id ? "Edit Jadwal" : "Tambah Jadwal"}</h2>
           <form onSubmit={formData.id ? handleUpdate : handleSubmit}>
             <div className="mb-4">
               <label>Kegiatan:</label>
@@ -289,7 +298,7 @@ const CalendarComponent = () => {
             </div>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               {formData.id ? "Update" : "Submit"}
             </button>
