@@ -42,6 +42,8 @@ import ChartAdminSlider from "./ChartAdminSlider";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import View from "../minicomponent/viewdata";
 import ChartDataGender from "../feature/ChartDataGender";
+import Announcment from "../minicomponent/Announcment";
+import AnnouncementList from "../minicomponent/ViewAnnounce";
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -65,7 +67,6 @@ function DashboardAdmin() {
   return (
     <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
       <NavbarUser />
-
       <div className="flex flex-col h-fit lg:h-screen w-screen">
         <div className="h-full w-[95%] flex flex-col  items-center mx-auto">
           <div className="w-full h-full lg:h-full w-full flex flex-col lg:flex-row justify-between">
@@ -113,19 +114,19 @@ function DashboardAdmin() {
                   </div>
                 </div>
               )}
-              {checkOperation.includes("SELF_ABSENSI") && (
-                <div className="flex flex-row justify-self-auto w-full h-fit lg:h-1/2">
-                  {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
+              <div className="flex flex-row justify-self-auto w-full h-fit lg:h-1/2 mb-6">
+                {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
                     <Announcement />
                   </div> */}
-                  <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <LaporanKegiatanDashboard />
-                  </div>
+                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border overflow-hidden">
+                  <AnnouncementList />
+                </div>
+                {checkOperation.includes("SELF_ABSENSI") && (
                   <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
                     <View />
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ) : (
             <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">

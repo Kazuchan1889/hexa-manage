@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ip from "../ip";
 
-const Announcement = () => {
+const Announcment = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachment, setAttachment] = useState(null);
@@ -111,4 +111,4 @@ const Announcement = () => {
   );
 };
 
-export default Announcement;
+export default Announcment;
