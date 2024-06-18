@@ -60,7 +60,7 @@ const AnnouncementList = () => {
       <h1 className="text-xl font-bold mb-4">Announcement</h1>
       <div id="announcement-list" className="h-[12rem] mb-8 overflow-scroll">
         {announcements.map((announcement, index) => (
-          <div key={index} className="w-[50rem] bg-white p-4 rounded-xl drop-shadow-lg mb-4">
+          <div key={index} className="bg-white p-4 rounded-xl drop-shadow-lg mb-4">
             <h2 className="text-2xl font-semibold">{announcement.title}</h2>
             <p>{announcement.description}</p>
             <p>{formatDate(announcement.tanggal_upload)}</p>
