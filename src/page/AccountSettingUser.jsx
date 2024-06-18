@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SettingUser from './SettingUser';
+import Calend from '../minicomponent/ViewAnnounce';
 import CompanyBioP from './Company_Post';
 import CompanyBio from './Company';
 import NavbarUser from '../feature/NavbarUser';
@@ -96,7 +97,7 @@ function AccountSettingUser() {
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Notification Settings</h2>
-            {/* Add notification settings options */}
+            <Calend />
           </div>
         );
       case 'privacy':
