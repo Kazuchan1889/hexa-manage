@@ -58,9 +58,9 @@ const AnnouncementList = () => {
   return (
     <div className="container mx-auto p-4 h-[23rem]">
       <h1 className="text-xl font-bold mb-4">Announcement</h1>
-      <div id="announcement-list" className="h-[12rem] mb-8 overflow-scroll">
+      <div id="announcement-list" className="h-[12rem] mb-2 overflow-scroll">
         {announcements.map((announcement, index) => (
-          <div key={index} className="bg-white p-4 rounded-xl drop-shadow-lg mb-4 border">
+          <div key={index} className="bg-white p-4 rounded-xl drop-shadow-lg border">
             <h2 className="text-2xl font-semibold">{announcement.title}</h2>
             <p>{announcement.description}</p>
             <p>{formatDate(announcement.tanggal_upload)}</p>
@@ -86,9 +86,14 @@ const AnnouncementList = () => {
           </div>
         ))}
       </div>
-      <div>
-        dfjdsjkdf
-      </div>
+      {/* <div>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded"
+          onClick={() => setEditAnnouncement(true)}
+        >
+          Add
+        </button>
+      </div> */}
       {editAnnouncement && (
         <AnnouncementEdit
           announcement={editAnnouncement}

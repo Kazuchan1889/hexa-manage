@@ -110,7 +110,7 @@ const Formover = ({ onClick, onClose, fetchData }) => {
                     </div>
                 </form>
             </div>
-            {submitStatus === 'success' && (
+            {/* {submitStatus === 'success' && (
                 <div className="bg-green-200 text-green-900 p-2 mb-4">
                     Overtime berhasil dikirim!
                 </div>
@@ -119,7 +119,7 @@ const Formover = ({ onClick, onClose, fetchData }) => {
                 <div className="bg-red-200 text-red-900 p-2 mb-4">
                     Terjadi kesalahan saat mengirim overtime. Silakan coba lagi.
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

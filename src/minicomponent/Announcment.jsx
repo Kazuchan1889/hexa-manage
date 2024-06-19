@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import ip from "../ip";
+import CloseIcon from "@mui/icons-material/Close";
+import Swal from "sweetalert2";
 
-const Announcment = () => {
+const Announcment = ({ onClick, onClose, fetchData }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachment, setAttachment] = useState(null);
-  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const apiUrl = `${ip}/api/announcment`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!title) {
-      setError('Title is required');
-      return;
-    }
+    onClose();
 
     const today = new Date();
     const formatDate = today.toISOString().split('T')[0];
@@ -26,7 +23,7 @@ const Announcment = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('tanggal_upload', formatDate);
-    
+
     if (attachment) {
       const reader = new FileReader();
       reader.readAsDataURL(attachment);
@@ -37,6 +34,7 @@ const Announcment = () => {
     } else {
       await postAnnouncement(formData);
     }
+    fetchData("");
   };
 
   const postAnnouncement = async (formData) => {
@@ -47,31 +45,41 @@ const Announcment = () => {
           'Content-Type': 'application/json'
         }
       });
-      setMessage('Announcement posted successfully');
       setError('');
       setTitle('');
       setDescription('');
       setAttachment(null);
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Announcement Posted Successfully",
+      });
     } catch (error) {
       console.error('Error posting announcement:', error);
       console.log(error.response);  // Log the response for better debugging
-      setMessage('');
-      setError(error.response?.data || 'Failed to post announcement');
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to Post Announcement",
+      });
     }
+    fetchData("");
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Announcements</h1>
-
-      {error && <div className="mb-4 text-red-500">{error}</div>}
-      {message && <div className="mb-4 text-green-500">{message}</div>}
-
-      <div className="bg-white p-4 rounded shadow-md">
-        <h2 className="text-2xl font-semibold mb-4">Post New Announcement</h2>
+    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg drop-shadow-lg">
         <form onSubmit={handleSubmit}>
+          <div className='text-right'>
+            <button onClick={onClose} className="focus:outline-none">
+              <CloseIcon />
+            </button>
+          </div>
+          <h1 className="text-2xl font-bold mb-4">Post New Announcement</h1>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title</label>
+            <label className="text-left block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title</label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="title"
@@ -79,22 +87,20 @@ const Announcment = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title"
-              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Description</label>
+            <label className="text-left l-4 block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Description</label>
             <textarea
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description"
-              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="attachment">Attachment</label>
+            <label className="text-left block text-gray-700 text-sm font-bold mb-2" htmlFor="attachment">Attachment</label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="attachment"
@@ -102,7 +108,7 @@ const Announcment = () => {
               onChange={(e) => setAttachment(e.target.files[0])}
             />
           </div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+          <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
             Submit
           </button>
         </form>

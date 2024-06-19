@@ -47,8 +47,8 @@ import AnnouncementList from "../minicomponent/ViewAnnounce";
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-  const [slideIndex, setSlideIndex] = useState(0);
-
+  // const [slideIndex, setSlideIndex] = useState(0);
+  const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const checkOperation = localStorage.getItem("operation");
 
   // Untuk membuat responsive
@@ -118,8 +118,20 @@ function DashboardAdmin() {
                 {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
                     <Announcement />
                   </div> */}
-                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border overflow-hidden">
-                  <AnnouncementList />
+                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-6 rounded-xl border overflow-hidden">
+                  <div className="h-[80%] mb-2">
+                    <AnnouncementList />
+                  </div>
+                  <div className="h-[20%]">
+                    <Button
+                      size="small"
+                      variant="contained"
+                      style={{ backgroundColor: "#1E6D42" }}
+                      onClick={() => setTambahFormOpen(true)}
+                    >
+                      Request
+                    </Button>
+                  </div>
                 </div>
                 {checkOperation.includes("SELF_ABSENSI") && (
                   <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
@@ -144,6 +156,12 @@ function DashboardAdmin() {
           )}
         </div>
       </div>
+      {isTambahFormOpen && (
+        <Announcment
+          onClose={() => setTambahFormOpen(false)}
+          // fetchData={fetchData}
+        />
+      )}
     </div>
   );
 }

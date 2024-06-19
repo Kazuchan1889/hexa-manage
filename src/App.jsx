@@ -37,7 +37,7 @@ import Ann from "./minicomponent/Announcment";
 import ViewA from "./minicomponent/ViewAnnounce";
 import Compf from "./page/Comfile";
 import UpFile from "./minicomponent/AddFile";
-
+import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 
 function App() {
   // Untuk mengganti color primary
@@ -86,6 +86,7 @@ function App() {
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
           <Route path="/UpFile" element={<UpFile />} />
+          <Route path="/editt" element={<AnnouncementEdit />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
