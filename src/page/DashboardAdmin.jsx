@@ -129,7 +129,7 @@ function DashboardAdmin() {
                       style={{ backgroundColor: "#1E6D42" }}
                       onClick={() => setTambahFormOpen(true)}
                     >
-                      Request
+                      Add Announcement
                     </Button>
                   </div>
                 </div>

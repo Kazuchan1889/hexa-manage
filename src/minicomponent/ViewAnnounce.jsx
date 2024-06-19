@@ -11,8 +11,10 @@ const AnnouncementList = () => {
 
   useEffect(() => {
     fetchAnnouncements();
+    
   }, []);
 
+  
   const fetchAnnouncements = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
