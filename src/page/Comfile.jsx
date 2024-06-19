@@ -129,7 +129,7 @@ const CompanyFilePage = () => {
       <div className="flex justify-center items-center w-screen my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
+            <div className="max-h-72 rounded-lg overflow-y-auto">
               <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
