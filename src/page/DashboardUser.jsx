@@ -9,11 +9,11 @@ import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataGender from "../feature/ChartDataGender";
 import ChartDataLama from "../feature/ChartDataLama";
-import Announcment from "../minicomponent/Announcment";
-
+// import Announcment from "../minicomponent/Announcment";
 import StatusApproval from "./StatusApproval";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import View from "../minicomponent/viewdata";
+import AnnouncementList from "../minicomponent/ViewAnnounce";
 
 function DashboardUser() {
   const [nama, setNama] = useState("");
@@ -112,9 +112,8 @@ function DashboardUser() {
             {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
               <Announcement />
             </div> */}
-            <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
-              {/* <LaporanKegiatanDashboard /> */}
-              <Announcment />
+            <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-6 rounded-xl border overflow-hidden">
+              <AnnouncementList />
             </div>
             <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
               <View />
