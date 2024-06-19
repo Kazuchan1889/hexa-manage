@@ -6,15 +6,13 @@ import AnnouncementEdit from './AnnouncementEdit';
 const AnnouncementList = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [editAnnouncement, setEditAnnouncement] = useState(null);
-  // const [deleteAnnouncement, setDeleteAnnouncement] = useState(null);
   const apiUrl = `${ip}/api/announcment`;
+  const isUserAdmin = localStorage.getItem("role");
 
   useEffect(() => {
     fetchAnnouncements();
-    
   }, []);
 
-  
   const fetchAnnouncements = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
@@ -24,11 +22,8 @@ const AnnouncementList = () => {
           'Content-Type': 'application/json'
         }
       });
-      // console.log(response);
       setAnnouncements(response.data);
-      // setDeleteAnnouncement(respon.data.id);
     } catch (error) {
-      console.log(response.data)
       console.error('Error fetching announcements:', error);
     }
   };
@@ -41,10 +36,10 @@ const AnnouncementList = () => {
     return `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
   };
 
-  const handleDelete = async (title) => {
+  const handleDelete = async (id) => {
     try {
       const accessToken = localStorage.getItem('accessToken');
-      await axios.delete(`${apiUrl}/delete/${title}`, {
+      await axios.delete(`${apiUrl}/delete/${id}`, {
         headers: {
           'Authorization': accessToken,
           'Content-Type': 'application/json'
@@ -73,29 +68,25 @@ const AnnouncementList = () => {
                 </a>
               </div>
             )}
-            <button
-              className="bg-blue-500 text-white px-4 py-2 mt-4 mr-2 rounded"
-              onClick={() => setEditAnnouncement(announcement)}
-            >
-              Edit
-            </button>
-            <button
-              className="bg-red-500 text-white px-4 py-2 mt-4 rounded"
-              onClick={() => handleDelete(announcement.id)}
-            >
-              Delete
-            </button>
+            {isUserAdmin === "admin" && (
+              <>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 mt-4 mr-2 rounded"
+                  onClick={() => setEditAnnouncement(announcement)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 mt-4 rounded"
+                  onClick={() => handleDelete(announcement.id)}
+                >
+                  Delete
+                </button>
+              </>
+            )}
           </div>
         ))}
       </div>
-      {/* <div>
-        <button
-          className="bg-red-500 text-white px-4 py-2 rounded"
-          onClick={() => setEditAnnouncement(true)}
-        >
-          Add
-        </button>
-      </div> */}
       {editAnnouncement && (
         <AnnouncementEdit
           announcement={editAnnouncement}
