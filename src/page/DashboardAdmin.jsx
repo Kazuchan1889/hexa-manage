@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from "react";
 import {
-  TextField,
   Button,
-  Grid,
-  MenuItem,
-  CircularProgress,
-  Dialog,
-  Alert,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
-  TablePagination,
-  Paper,
-  Modal,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
+import axios from "axios";
+import ip from "../ip";
+import NavbarUser from "../feature/NavbarUser";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
 import ChartDataLama from "../feature/ChartDataLama";
-import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import Swal from "sweetalert2";
-import ip from "../ip";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useDropzone } from "react-dropzone";
-import LaporanKegiatanDashboard from "../minicomponent/LaporanKegiatanDashboard";
-import CheckinDashboard from "../minicomponent/CheckinDashboard";
-import StatusDashboard from "./StatusApproval";
-import StatusRequest from "../minicomponent/StatusRequest";
-import ChartAdminSlider from "./ChartAdminSlider";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import View from "../minicomponent/viewdata";
 import ChartDataGender from "../feature/ChartDataGender";
@@ -47,7 +23,6 @@ import AnnouncementList from "../minicomponent/ViewAnnounce";
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-  // const [slideIndex, setSlideIndex] = useState(0);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const checkOperation = localStorage.getItem("operation");
 
@@ -64,11 +39,26 @@ function DashboardAdmin() {
     };
   }, []);
 
+  const handleSubmit = () => {
+    // Perform your submission logic here
+
+    // Example logic: Simulate submission success
+    Swal.fire({
+      icon: "success",
+      title: "Announcement added successfully!",
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      // Reload the page after the success message
+      window.location.reload();
+    });
+  };
+
   return (
     <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
       <NavbarUser />
       <div className="flex flex-col h-fit lg:h-screen w-screen">
-        <div className="h-full w-[95%] flex flex-col  items-center mx-auto">
+        <div className="h-full w-[95%] flex flex-col items-center mx-auto">
           <div className="w-full h-full lg:h-full w-full flex flex-col lg:flex-row justify-between">
             {checkOperation.includes("SELF_ABSENSI") ? (
               <div className="flex justify-between items-center drop-shadow-lg bg-home px-10 py-10 my-5 rounded-md w-[100%]">
@@ -79,22 +69,6 @@ function DashboardAdmin() {
                 <ProfileDashboard />
               </div>
             )}
-            {/* {checkOperation.includes("SELF_ABSENSI") ? (
-              !isMobile && (
-                <div className="flex justify-between drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md mx-auto w-80 lg:w-[33%]">
-                  <StatusRequest />
-                </div>
-              )
-            ) : (
-              <div className="flex justify-between drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md mx-auto lg:mx-0 w-80 lg:w-[49%]">
-                <StatusRequest />
-              </div>
-            )}
-            {checkOperation.includes("SELF_ABSENSI") && (
-              <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-11 my-5 rounded-md mx-auto lg:mx:0 w-[100%] lg:w-[30%] h-[13rem] lg:h-[14.5rem]">
-                <CheckinDashboard />
-              </div>
-            )} */}
           </div>
           {checkOperation.includes("SELF_ABSENSI") ? (
             <div className="w-full mb-6 justify-center flex flex-col h-fit">
@@ -115,16 +89,39 @@ function DashboardAdmin() {
                 </div>
               )}
               <div className="flex flex-row justify-self-auto w-full h-fit lg:h-1/2 mb-6">
-                {/* <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg mr-4 bg-white p-10 rounded-xl border">
-                    <Announcement />
-                  </div> */}
-                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-6 rounded-xl border overflow-hidden">
+                <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl">
+                  <h2 className="text-xl font-bold mb-4">Quick Links</h2>
+                  <ul className="space-y-2">
+                    <li>
+                      <a href="/cal" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
+                        📅 <span>Scheduler</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/companyfile" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
+                        🗂 <span>Company File</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/Asset" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
+                        📦 <span>Asset</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/companyfile" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
+                        💸 <span>PayRoll</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-6 rounded-xl border ml-5 overflow-hidden">
                   <div className="h-[80%] mb-2">
                     <AnnouncementList />
                   </div>
-                  <div className="h-[20%]">
+                  <div className="h-[22%] flex justify-center items-end">
                     <Button
-                      size="small"
+                      size="large"
                       variant="contained"
                       style={{ backgroundColor: "#1E6D42" }}
                       onClick={() => setTambahFormOpen(true)}

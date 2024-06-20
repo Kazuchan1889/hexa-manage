@@ -4,7 +4,7 @@ import ip from "../ip";
 import CloseIcon from "@mui/icons-material/Close";
 import Swal from "sweetalert2";
 
-const Announcment = ({ onClick, onClose, fetchData }) => {
+const Announcement = ({ onClick, onClose, fetchData }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [attachment, setAttachment] = useState(null);
@@ -34,7 +34,6 @@ const Announcment = ({ onClick, onClose, fetchData }) => {
     } else {
       await postAnnouncement(formData);
     }
-    fetchData("");
   };
 
   const postAnnouncement = async (formData) => {
@@ -42,8 +41,8 @@ const Announcment = ({ onClick, onClose, fetchData }) => {
       await axios.post(`${apiUrl}/post`, formData, {
         headers: {
           'Authorization': localStorage.getItem('accessToken'),
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
       setError('');
       setTitle('');
@@ -77,7 +76,7 @@ const Announcment = ({ onClick, onClose, fetchData }) => {
               <CloseIcon />
             </button>
           </div>
-          <h1 className="text-2xl font-bold mb-4">Post New Announcement</h1>
+          <h1 className="text-2xl font-bold mb-4 text-left">Post New Announcement</h1>
           <div className="mb-4">
             <label className="text-left block text-gray-700 text-sm font-bold mb-2" htmlFor="title">Title</label>
             <input
@@ -90,7 +89,7 @@ const Announcment = ({ onClick, onClose, fetchData }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="text-left l-4 block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Description</label>
+            <label className="text-left block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Description</label>
             <textarea
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="description"
@@ -117,4 +116,4 @@ const Announcment = ({ onClick, onClose, fetchData }) => {
   );
 };
 
-export default Announcment;
+export default Announcement;

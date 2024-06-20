@@ -53,37 +53,32 @@ const AnnouncementList = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 h-[23rem]">
+    <div className="container mx-auto p-4 border border-gray-400 rounded-lg">
       <h1 className="text-xl font-bold mb-4">Announcement</h1>
       <div id="announcement-list" className="h-[12rem] mb-2 overflow-scroll">
         {announcements.map((announcement, index) => (
-          <div key={index} className="bg-white p-4 rounded-xl drop-shadow-lg border">
-            <h2 className="text-2xl font-semibold">{announcement.title}</h2>
-            <p>{announcement.description}</p>
-            <p>{formatDate(announcement.tanggal_upload)}</p>
-            {announcement.attachment && (
-              <div>
-                <a href={announcement.attachment} download className="text-blue-500">
-                  View Attachment
-                </a>
-              </div>
-            )}
-            {isUserAdmin === "admin" && (
-              <>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 mt-4 mr-2 rounded"
-                  onClick={() => setEditAnnouncement(announcement)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 mt-4 rounded"
-                  onClick={() => handleDelete(announcement.id)}
-                >
-                  Delete
-                </button>
-              </>
-            )}
+          <div key={index} className="flex items-start bg-white p-4 rounded-xl border mb-4">
+            <div className="flex-1 pr-4">
+              <h2 className="text-2xl font-semibold">{announcement.title}</h2>
+              <p className="text-left">{announcement.description}</p>
+            </div>
+            <div className="flex flex-col items-end justify-between ml-auto">
+              <p>{formatDate(announcement.tanggal_upload)}</p>
+              {isUserAdmin === "admin" && (
+                <div className="relative inline-block">
+                  <button className="bg-blue-500 text-white px-4 py-2 mt-2 rounded mr-2"
+                    onClick={() => setEditAnnouncement(announcement)}
+                  >
+                    Edit
+                  </button>
+                  <button className="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                    onClick={() => handleDelete(announcement.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>
