@@ -11,7 +11,7 @@ const AnnouncementList = () => {
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []);
+  });
 
   const fetchAnnouncements = async () => {
     try {
@@ -71,7 +71,6 @@ const AnnouncementList = () => {
               <p>{formatDate(announcement.tanggal_upload)}</p>
               {isUserAdmin === "admin" && (
                 <div className="relative inline-block">
-                  
                   <button className="bg-blue-500 text-white px-4 py-2 mt-2 rounded mr-2"
                     onClick={() => setEditAnnouncement(announcement)}
                   >

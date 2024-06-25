@@ -34,6 +34,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
     } else {
       await postAnnouncement(formData);
     }
+    // fetchData("");
   };
 
   const postAnnouncement = async (formData) => {
@@ -41,14 +42,14 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
       await axios.post(`${apiUrl}/post`, formData, {
         headers: {
           'Authorization': localStorage.getItem('accessToken'),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       setError('');
       setTitle('');
       setDescription('');
       setAttachment(null);
-
+      
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -64,7 +65,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
         text: "Failed to Post Announcement",
       });
     }
-    fetchData("");
+    // fetchData("");
   };
 
   return (
