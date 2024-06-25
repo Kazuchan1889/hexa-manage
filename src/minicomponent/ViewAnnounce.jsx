@@ -61,6 +61,11 @@ const AnnouncementList = () => {
             <div className="flex-1 pr-4">
               <h2 className="text-2xl font-semibold">{announcement.title}</h2>
               <p className="text-left">{announcement.description}</p>
+              <div>
+                <a href={announcement.attachment} download className="text-blue-500">
+                  Download Attachment
+                </a>
+              </div>
             </div>
             <div className="flex flex-col items-end justify-between ml-auto">
               <p>{formatDate(announcement.tanggal_upload)}</p>

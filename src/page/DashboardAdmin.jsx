@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
 } from "@mui/material";
+
 import axios from "axios";
 import ip from "../ip";
 import NavbarUser from "../feature/NavbarUser";
@@ -20,7 +21,7 @@ import View from "../minicomponent/viewdata";
 import ChartDataGender from "../feature/ChartDataGender";
 import Announcment from "../minicomponent/Announcment";
 import AnnouncementList from "../minicomponent/ViewAnnounce";
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
@@ -94,7 +95,7 @@ function DashboardAdmin() {
                   <ul className="space-y-2">
                     <li>
                       <a href="/cal" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
-                        📅 <span>Scheduler</span>
+                      <CalendarMonthIcon /> <span>Scheduler</span>
                       </a>
                     </li>
                     <li>
