@@ -108,7 +108,7 @@ function DashboardAdmin() {
                       </a>
                     </li>
                     <li>
-                      <a href="/companyfile" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
+                      <a href="/masterpayroll" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
                         💸 <span>PayRoll</span>
                       </a>
                     </li>

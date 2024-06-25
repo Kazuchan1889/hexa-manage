@@ -100,20 +100,8 @@ function AccountSettingUser() {
             <Calend />
           </div>
         );
-      case 'privacy':
-        return (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Privacy Settings</h2>
-            {/* Add privacy settings options */}
-          </div>
-        );
-      case 'billing':
-        return (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Billing Settings</h2>
-            {/* Add billing settings options */}
-          </div>
-        );
+      
+      
       case 'CompanyBio':
         return (
           <div>
@@ -121,20 +109,8 @@ function AccountSettingUser() {
             {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
-      case 'preferences':
-        return (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Preferences</h2>
-            {/* Add preferences options */}
-          </div>
-        );
-      case 'help':
-        return (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Help & Support</h2>
-            {/* Add help & support options */}
-          </div>
-        );
+      
+      
       default:
         return null;
     }
@@ -172,18 +148,7 @@ function AccountSettingUser() {
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'notifications' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('notifications')}>
               Notification
             </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'privacy' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('privacy')}>
-              Privacy
-            </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'billing' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('billing')}>
-              Billing
-            </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'preferences' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('preferences')}>
-              Preferences
-            </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'help' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('help')}>
-              Help & Support
-            </li>
+            
           </ul>
         </div>
         <div id='folH' className="w-full bg-200 p-4 border-t border-r border-b border-gray">
