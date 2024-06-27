@@ -26,7 +26,7 @@ function ChartDataKaryawan() {
         console.error("Error", error);
       });
     // Lakukan panggilan API di sini untuk mendapatkan data pengguna);
-  });
+  }, []);
 
   const data = {
     labels: ["Tetap", "Kontrak", "Probation", "Magang", "Resign"],

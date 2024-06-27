@@ -44,6 +44,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
     } else {
       await postAnnouncement(data);
     }
+    // fetchData("");
   };
 
   const postAnnouncement = async (data) => {
@@ -58,7 +59,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
       setTitle('');
       setDescription('');
       setAttachment(null);
-
+      
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -76,7 +77,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
         text: "Failed to Post Announcement",
       });
     }
-    fetchData("");
+    // fetchData("");
   };
 
   return (

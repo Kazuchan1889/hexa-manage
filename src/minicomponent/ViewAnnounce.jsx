@@ -11,7 +11,7 @@ const AnnouncementList = () => {
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []);
+  });
 
   const fetchAnnouncements = async () => {
     try {

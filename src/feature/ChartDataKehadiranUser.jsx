@@ -25,7 +25,7 @@ function ChartDataKehadiranUser() {
         console.error("Error", error);
       });
     // Lakukan panggilan API di sini untuk mendapatkan data pengguna);
-  });
+  }, []);
   const data = {
     labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
     datasets: [
