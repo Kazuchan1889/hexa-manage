@@ -19,29 +19,39 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
     const today = new Date();
     const formatDate = today.toISOString().split('T')[0];
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('tanggal_upload', formatDate);
+    const data = {
+      title: title,
+      description: description,
+      tanggal_upload: formatDate,
+      attachment: ''  
+    };
 
     if (attachment) {
       const reader = new FileReader();
       reader.readAsDataURL(attachment);
       reader.onload = async () => {
-        formData.append('attachment', reader.result);
-        await postAnnouncement(formData);
+        data.attachment = reader.result;
+        await postAnnouncement(data);
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to read attachment file",
+        });
       };
     } else {
-      await postAnnouncement(formData);
+      await postAnnouncement(data);
     }
   };
 
-  const postAnnouncement = async (formData) => {
+  const postAnnouncement = async (data) => {
     try {
-      await axios.post(`${apiUrl}/post`, formData, {
+      await axios.post(`${apiUrl}/post`, data, {
         headers: {
           'Authorization': localStorage.getItem('accessToken'),
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       setError('');
@@ -53,6 +63,8 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
         icon: "success",
         title: "Success",
         text: "Announcement Posted Successfully",
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       console.error('Error posting announcement:', error);

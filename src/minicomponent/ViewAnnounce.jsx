@@ -52,6 +52,17 @@ const AnnouncementList = () => {
     }
   };
 
+  const renderDownloadButton = (attachment) => {
+    if (attachment && attachment.trim() !== '') {
+      return (
+        <a href={attachment} download className="text-blue-500 underline mt-2">
+          Download Attachment
+        </a>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="container mx-auto p-4 border border-gray-400 rounded-lg">
       <h1 className="text-xl font-bold mb-4">Announcement</h1>
@@ -61,17 +72,12 @@ const AnnouncementList = () => {
             <div className="flex-1 pr-4">
               <h2 className="text-2xl font-semibold">{announcement.title}</h2>
               <p className="text-left">{announcement.description}</p>
-              <div>
-                <a href={announcement.attachment} download className="text-blue-500">
-                  Download Attachment
-                </a>
-              </div>
+              {renderDownloadButton(announcement.attachment)}
             </div>
             <div className="flex flex-col items-end justify-between ml-auto">
               <p>{formatDate(announcement.tanggal_upload)}</p>
               {isUserAdmin === "admin" && (
                 <div className="relative inline-block">
-                  
                   <button className="bg-blue-500 text-white px-4 py-2 mt-2 rounded mr-2"
                     onClick={() => setEditAnnouncement(announcement)}
                   >
