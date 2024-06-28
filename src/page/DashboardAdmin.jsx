@@ -22,6 +22,9 @@ import ChartDataGender from "../feature/ChartDataGender";
 import Announcment from "../minicomponent/Announcment";
 import AnnouncementList from "../minicomponent/ViewAnnounce";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import PaidIcon from '@mui/icons-material/Paid';
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
@@ -100,17 +103,17 @@ function DashboardAdmin() {
                     </li>
                     <li>
                       <a href="/companyfile" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
-                        🗂 <span>Company File</span>
+                        <InsertDriveFileIcon /> <span>Company File</span>
                       </a>
                     </li>
                     <li>
                       <a href="/Asset" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
-                        📦 <span>Asset</span>
+                        <WarehouseIcon /> <span>Asset</span>
                       </a>
                     </li>
                     <li>
                       <a href="/masterpayroll" className="flex items-center p-2 text-gray-800 hover:bg-gray-200 rounded-lg gap-3">
-                        💸 <span>PayRoll</span>
+                        <PaidIcon /> <span>PayRoll</span>
                       </a>
                     </li>
                   </ul>
