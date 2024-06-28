@@ -181,7 +181,7 @@ const CalendarComponent = () => {
       <div className="max-w-6xl mx-auto flex mt-6 border border-black">
         <div className="w-3/4 p-6 border-r border-black">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Daftar Jadwal</h2>
+            <h2 className="text-2xl font-bold">Schedule</h2>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
@@ -197,16 +197,16 @@ const CalendarComponent = () => {
                 setModalIsOpen(true);
               }}
             >
-              Tambah
+              Add
             </button>
           </div>
           <table className="w-full">
             <thead>
               <tr>
-                <th className="text-left">Kegiatan</th>
-                <th className="text-left">Tanggal</th>
-                <th className="text-left">Jam</th>
-                <th className="text-left">Aksi</th>
+                <th className="text-center">Activity</th>
+                <th className="text-center">Date</th>
+                <th className="text-center">Hour</th>
+                <th className="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
