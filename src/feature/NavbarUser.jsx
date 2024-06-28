@@ -227,6 +227,9 @@ const NavbarUser = () => {
       checkOp("READ_KARYAWAN")
       ? { label: "Company File", active: false, to: "/companyfile" }
       : null,
+      checkOp("READ_KARYAWAN")
+      ? { label: "Overtime", active: false, to: "/Over" }
+      : null,
     
   ].filter((item) => item !== null);
 
@@ -432,7 +435,7 @@ const NavbarUser = () => {
                         // handleClose();
                       }}
                       component={Link}
-                      to="/Over"
+                      to="/OverUser"
                       style={{ width: "10rem" }}
                     >
                       <Typography variant="button">Overtime</Typography>

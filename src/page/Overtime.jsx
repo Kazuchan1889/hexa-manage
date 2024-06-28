@@ -361,16 +361,7 @@ const TableOverTime = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-4">   
-                  <Button 
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={() => setTambahFormOpen(true)}
-                  >
-                    Request
-                  </Button>
-                </div>
+                
               </div>
             </div>
           </CardContent>
