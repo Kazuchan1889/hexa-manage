@@ -38,6 +38,7 @@ import ViewA from "./minicomponent/ViewAnnounce";
 import Compf from "./page/Comfile";
 import UpFile from "./minicomponent/AddFile";
 import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
+import OverUser from "./page/OvertimeUser";
 
 function App() {
   // Untuk mengganti color primary
@@ -87,6 +88,7 @@ function App() {
           <Route path="/Companyfile" element={<Compf />} />
           <Route path="/UpFile" element={<UpFile />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
+          <Route path="/OverUser" element={<OverUser />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
