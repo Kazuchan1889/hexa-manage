@@ -39,6 +39,7 @@ import Compf from "./page/Comfile";
 import UpFile from "./minicomponent/AddFile";
 import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 import OverUser from "./page/OvertimeUser";
+import Pagechangpass from "./page/ChangePassPage";
 
 function App() {
   // Untuk mengganti color primary
@@ -89,6 +90,7 @@ function App() {
           <Route path="/UpFile" element={<UpFile />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
+          <Route path="/Changepass" element={<Pagechangpass />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

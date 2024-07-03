@@ -4,6 +4,7 @@ import Calend from '../minicomponent/ViewAnnounce';
 import CompanyBioP from './Company_Post';
 import CompanyBio from './Company';
 import NavbarUser from '../feature/NavbarUser';
+import Changepass from './ChangePassPage';
 import Swal from "sweetalert2";
 import ip from "../ip";
 import { Avatar } from "@mui/material";
@@ -90,7 +91,7 @@ function AccountSettingUser() {
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Change Password</h2>
-            {/* Add change password form */}
+           <Changepass />
           </div>
         );
       case 'notifications':
