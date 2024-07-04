@@ -17,13 +17,14 @@ import {
 } from "@mui/material";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-
+import AddFile from '../minicomponent/AddFile';
 const apiURL = `${ip}/api/CompanyFile/list/other`;
 
 const CompanyFilePage = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isTambahFormOpen, setTambahFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,10 +45,6 @@ const CompanyFilePage = () => {
 
     fetchData();
   }, []);
-
-  const handleAddFileClick = () => {
-    window.location.href = "/upfile";
-  };
 
   const handleDownload = (base64File, fileName) => {
     const byteCharacters = atob(base64File);
@@ -118,8 +115,8 @@ const CompanyFilePage = () => {
           <Button 
             variant="contained" 
             color="primary" 
-            onClick={handleAddFileClick}
             style={{ alignSelf: 'center' }}
+            onClick={() => setTambahFormOpen(true)}
           >
             Add File
           </Button>
@@ -180,6 +177,12 @@ const CompanyFilePage = () => {
           </CardContent>
         </Card>
       </div>
+      {isTambahFormOpen && (
+        <AddFile
+          onClose={() => setTambahFormOpen(false)}
+          // fetchData={fetchData}
+        />
+      )}
     </div>
   );
 };

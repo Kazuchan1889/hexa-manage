@@ -4,8 +4,9 @@ import { useDropzone } from 'react-dropzone';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import ip from "../ip";
+import CloseIcon from "@mui/icons-material/Close";
 
-const AddFile = () => {
+const AddFile = ({ onClick, onClose, fetchData }) => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [base64File, setBase64File] = useState('');
   const [fileExtension, setFileExtension] = useState('');
@@ -67,6 +68,7 @@ const AddFile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    onClose();
     if (!uploadedFile) {
       setMessage('Please select a file to upload');
       return;
@@ -102,13 +104,23 @@ const AddFile = () => {
         payload,
         config
       );
-
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "File Added!",
+      });
       // Redirect to /companyfile after form submission
-      window.location.href = '/companyfile';
-      setMessage('File uploaded successfully');
+      // window.location.href = '/companyfile';
+      // setMessage('File uploaded successfully');
     } catch (error) {
-      setMessage(error.response ? error.response.data.error : 'Error uploading file');
+      // setMessage(error.response ? error.response.data.error : 'Error uploading file');
+      Swal.fire({
+        icon: "error",
+        title: "error",
+        text: "File Can't Added!",
+      })
     }
+    fetchData("");
   };
 
   const getIdFromToken = (token) => {
@@ -122,31 +134,38 @@ const AddFile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-700">Upload File</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div {...getRootProps()} className="border-dashed border-2 border-gray-300 p-4 rounded cursor-pointer text-center">
-            <input {...getInputProps()} />
-            <p>Drag & drop your file here, or click to select one</p>
-            <p className="text-xs text-gray-500">Accepted file types: .png, .jpg, .jpeg, .pdf, .docx</p>
+    <div className='absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50'>
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
+          <div className='flex'>
+            <h2 className="text-2xl font-bold text-center text-gray-700 m-auto">Upload File</h2>
+            <button onClick={onClose} className="focus:outline-none">
+              <CloseIcon />
+            </button>
           </div>
-          {uploadedFile && <p className="text-center text-gray-700">{uploadedFile.name}</p>}
-          <input
-            type="text"
-            placeholder="Nama File"
-            value={namaFile}
-            onChange={(e) => setNamaFile(e.target.value)}
-            className="w-full px-4 py-2 border rounded"
-          />
-          <button
-            type="submit"
-            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            Upload
-          </button>
-        </form>
-        {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div {...getRootProps()} className="border-dashed border-2 border-gray-300 p-4 rounded cursor-pointer text-center">
+              <input {...getInputProps()} />
+              <p>Drag & drop your file here, or click to select one</p>
+              <p className="text-xs text-gray-500">Accepted file types: .png, .jpg, .jpeg, .pdf, .docx</p>
+            </div>
+            {uploadedFile && <p className="text-center text-gray-700">{uploadedFile.name}</p>}
+            <input
+              type="text"
+              placeholder="Nama File"
+              value={namaFile}
+              onChange={(e) => setNamaFile(e.target.value)}
+              className="w-full px-4 py-2 border rounded"
+            />
+            <button
+              type="submit"
+              className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              Upload
+            </button>
+          </form>
+          {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+        </div>
       </div>
     </div>
   );

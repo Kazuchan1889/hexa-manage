@@ -83,11 +83,11 @@ function App() {
           <Route path="/CompanyBio" element={<CompanyBio />} />
           <Route path="/CompanyBioP" element={<CompanyBioP />} />
           <Route path="/Asset" element={<Asset />} />
-          <Route path="/Fasset" element={<Fasset />} />
+          {/* <Route path="/Fasset" element={<Fasset />} /> */}
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
-          <Route path="/UpFile" element={<UpFile />} />
+          {/* <Route path="/UpFile" element={<UpFile />} /> */}
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
