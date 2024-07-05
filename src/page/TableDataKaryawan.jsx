@@ -142,6 +142,7 @@ const TableDataKaryawan = () => {
   };
 
   const handleDelete = (index) => {
+    console.log(index)
     setDeleteConfirmDataId(page * rowsPerPage + index);
     setDeleteConfirmationOpen(true);
     handleMenuClose();
