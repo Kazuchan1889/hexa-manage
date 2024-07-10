@@ -45,7 +45,7 @@ function ViewData() {
   };
 
   return (
-    <div className="container mx-auto p-6 min-h-[50vh] max-h-[70vh] overflow-y-auto">
+    <div className="container mx-auto p-6 h-[20rem] overflow-y-auto">
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-800">Cuti Tahunan Balance</h2>
         <p className="text-lg font-semibold text-gray-700">{cutiMandiri !== null ? `${cutiMandiri} Days` : '0'}</p>
@@ -66,7 +66,7 @@ function ViewData() {
           </svg>
         </a>
       </div>
-      <div className="mb-6">
+      <div className="">
         <h2 className="text-xl font-bold text-gray-800">Who's Off</h2>
         <p className="text-lg font-semibold text-gray-700">0</p>
         <a className="flex justify-center items-center mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300" href="/Timeoff">

@@ -135,7 +135,7 @@ function DashboardAdmin() {
                   </div>
                 </div>
                 {checkOperation.includes("SELF_ABSENSI") && (
-                  <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border min-h-[50vh] max-h-[70vh] overflow-y-auto">
+                  <div className="w-full lg:w-[22%] h-[23rem] lg:h-[23rem] drop-shadow-lg bg-white p-6 rounded-xl border overflow-hidden">
                   <View />
                 </div>
                 
