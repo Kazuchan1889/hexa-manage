@@ -146,9 +146,7 @@ function AccountSettingUser() {
             <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'security' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('security')}>
               Security
             </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'notifications' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('notifications')}>
-              Notification
-            </li>
+            
             
           </ul>
         </div>
