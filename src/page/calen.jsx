@@ -256,45 +256,45 @@ const CalendarComponent = () => {
           onRequestClose={() => setModalIsOpen(false)}
           contentLabel={formData.id ? "Edit Schedule Modal" : "Add Schedule Modal"}
         >
-          <h2 className="font-bold text-xl text-center">{formData.id ? "Edit Jadwal" : "Tambah Jadwal"}</h2>
+          <h2 className="font-bold text-xl text-center">{formData.id ? "Edit Schedule" : "Add Schedule"}</h2>
           <form onSubmit={formData.id ? handleUpdate : handleSubmit}>
             <div className="mb-4">
-              <label>Kegiatan:</label>
+              <label>Activity:</label>
               <input
                 type="text"
                 value={formData.judul}
                 onChange={(e) => setFormData({ ...formData, judul: e.target.value })}
-                className="border rounded-md py-2 px-3"
+                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
             <div className="mb-4">
-              <label>Deskripsi:</label>
+              <label>Description:</label>
               <textarea
                 value={formData.deskripsi}
                 onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                className="border rounded-md py-2 px-3 w-full"
+                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
             <div className="mb-4">
-              <label>Waktu Mulai:</label>
+              <label>Start Time:</label>
               <input
                 type="time"
                 value={formData.mulai}
                 onChange={(e) => setFormData({ ...formData, mulai: e.target.value })}
-                className="border rounded-md py-2 px-3 w-full"
+                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
             <div className="mb-4">
-              <label>Waktu Selesai:</label>
+              <label>Finish Time:</label>
               <input
                 type="time"
                 value={formData.selesai}
                 onChange={(e) => setFormData({ ...formData, selesai: e.target.value })}
-                className="border rounded-md py-2 px-3 w-full"
+                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
             <div className="mb-4">
-              <label>Karyawan:</label>
+              <label>Employee:</label>
               <Select
                 options={employees.map((employee) => ({ value: employee.id, label: employee.nama }))}
                 isMulti
