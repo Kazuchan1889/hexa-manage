@@ -79,7 +79,7 @@ function App() {
           <Route path="/Fover" element={<Povertime />} />
           <Route path="/Schejule" element={<Schedjule />} />
           <Route path="/Cal" element={<Cal />} />
-          {/* <Route path="/TimeOff" element={<Timeoff />} /> */}
+           <Route path="/TimeOff" element={<Timeoff />} /> 
           <Route path="/CompanyBio" element={<CompanyBio />} />
           <Route path="/CompanyBioP" element={<CompanyBioP />} />
           <Route path="/Asset" element={<Asset />} />
@@ -87,7 +87,7 @@ function App() {
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
-          {/* <Route path="/UpFile" element={<UpFile />} /> */}
+           <Route path="/UpFile" element={<UpFile />} /> 
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
