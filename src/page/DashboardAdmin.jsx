@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-} from "@mui/material";
-
+import { Button, IconButton } from "@mui/material";
 import axios from "axios";
 import ip from "../ip";
 import NavbarUser from "../feature/NavbarUser";
@@ -25,9 +22,13 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import PaidIcon from '@mui/icons-material/Paid';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
+  const [isBubbleOpen, setIsBubbleOpen] = useState(false);
   const checkOperation = localStorage.getItem("operation");
 
   // Untuk membuat responsive
@@ -164,6 +165,48 @@ function DashboardAdmin() {
           // fetchData={fetchData}
         />
       )}
+      {/* Floating Bubble with Expandable Dropdown */}
+      <div className={`fixed bottom-5 right-5 p-3  z-50  duration-0 ${isBubbleOpen ? "bg-blue-500 rounded-lg w-40 min-h-24   " : " bg-blue-500 flex rounded-full items-center justify-center"}`}>
+        <IconButton onClick={() => setIsBubbleOpen(!isBubbleOpen)}>
+          {isBubbleOpen ? <CloseIcon style={{ color: "white" }} /> : <MenuIcon style={{ color: "white" }} />}
+        </IconButton>
+        {isBubbleOpen && (
+          <div className="flex flex-col gap-2 mt-2 p-3   rounded-lg ">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.location.href = "/cal"}
+              style={{ backgroundColor: "#FFFFFF", color: "black" }}
+            >
+              Schejuler
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.location.href = "/companyfile"}
+              style={{ backgroundColor: "#FFFFFF", color: "black" }}
+            >
+              Company File
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.location.href = "/Asset"}
+              style={{ backgroundColor: "#FFFFFF", color: "black" }}
+            >
+              Asset
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.location.href = "/masterpayroll"}
+              style={{ backgroundColor: "#FFFFFF", color: "black" }}
+            >
+              Payroll
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
