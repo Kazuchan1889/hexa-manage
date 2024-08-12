@@ -77,37 +77,47 @@ function DashboardAdmin() {
   ];
 
   const renderCharts = () => (
-    <>
-      <div className="flex items-center justify-center w-1/4 h-full my-8 w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+    <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-4'} w-full`}>
+      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
         <ChartDataKehadiranUser />
       </div>
-      <div className="flex items-center justify-center w-1/4 h-full my-8 w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
         <ChartDataKaryawan />
       </div>
-      <div className="flex items-center justify-center w-1/4 h-full my-8 w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
         <ChartDataGender />
       </div>
-      <div className="flex items-center justify-center w-1/4 h-full my-8 w-[30%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-4 rounded-xl border">
+      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
         <ChartDataLama />
       </div>
-    </>
+    </div>
   );
 
   return (
     <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
       <NavbarUser />
       <div className="flex flex-col h-fit lg:h-screen w-screen">
-        <div className="h-full w-[95%] flex flex-col items-center mx-auto">
-          <div className="w-full h-full lg:h-full flex flex-col lg:flex-row justify-between">
-            <div className={`flex justify-between items-center drop-shadow-lg bg-home px-10 py-10 my-5 rounded-md w-[100%] ${!checkOperation.includes("SELF_ABSENSI") && "lg:px-5"}`}>
+        <div className="w-[95%] mx-auto flex flex-col h-fit lg:h-screen">
+          <div className="flex flex-col lg:flex-row justify-between w-full">
+            <div className="drop-shadow-lg bg-home px-5 py-5 my-5 rounded-md w-full">
               <ProfileDashboard />
             </div>
+            {!checkOperation.includes("SELF_ABSENSI") && !isMobile && (
+              <div className="drop-shadow-lg bg-white p-5 rounded-md w-full lg:w-[48%]">
+                <div className="flex justify-center items-center h-full">
+                  <ChartDataKaryawan />
+                  <ChartDataKehadiran />
+                </div>
+              </div>
+            )}
           </div>
           {checkOperation.includes("SELF_ABSENSI") ? (
-            <div className="w-full mb-6 justify-center flex flex-col h-fit">
-              {!isMobile && <div className="w-full flex items-center justify-center gap-4 mb-4">{renderCharts()}</div>}
-              <div className="flex flex-row justify-self-auto w-full h-fit lg:h-1/2 mb-6">
-                <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl overflow-y-auto">
+            <div className="flex flex-col w-full">
+              <div className="w-full flex justify-center gap-4 mb-4">
+                {renderCharts()}
+              </div>
+              <div className="flex flex-col lg:flex-row justify-between gap-4">
+                <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] overflow-y-auto lg:w-[22%]">
                   <h2 className="text-xl font-bold mb-4">Today's Absences</h2>
                   <ul className="space-y-4">
                     {absentEmployees.map((employee, index) => (
@@ -122,35 +132,22 @@ function DashboardAdmin() {
                     ))}
                   </ul>
                 </div>
-                <div className="w-full lg:w-[53%] h-[23rem] lg:h-[23rem] lg:mr-4 mb-4 drop-shadow-lg bg-white p-6 rounded-xl border ml-5 overflow-hidden">
-                  <div className="h-[80%] mb-2">
+                <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[53%]">
+                  <div className="h-[80%] mb-2 overflow-y-auto">
                     <AnnouncementList />
                   </div>
-                  <div className="h-[22%] flex justify-center items-end">
+                  <div className="h-[20%] flex justify-center items-center">
                     <Button size="large" variant="contained" style={{ backgroundColor: "#1E6D42" }} onClick={() => setTambahFormOpen(true)}>
                       Add Announcement
                     </Button>
                   </div>
                 </div>
-                <div className="w-full lg:w-[22%] h-[23rem] lg:h-[23rem] drop-shadow-lg bg-white p-6 rounded-xl border overflow-hidden">
+                <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[22%]">
                   <View />
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
-              {!isMobile && (
-                <div className="w-[100%] lg:w-full h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
-                  <div className="flex items-center justify-center h-full">
-                    <div className="w-full h-72 mx-auto flex">
-                      <ChartDataKaryawan />
-                      <ChartDataKehadiran />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
       {isTambahFormOpen && <Announcment onClose={() => setTambahFormOpen(false)} />}
