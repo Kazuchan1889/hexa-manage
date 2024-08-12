@@ -6,12 +6,12 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
 
-//ini
-
 function LiveAttendance() {
     const [masuk, setMasuk] = useState("");
     const [keluar, setKeluar] = useState("");
     const [serverTime, setServerTime] = useState("");
+    const [photo, setPhoto] = useState(null);
+    const [location, setLocation] = useState({ lat: null, lon: null });
 
     const [checkInStatus, setCheckInStatus] = useState(
         localStorage.getItem("result")
@@ -39,24 +39,7 @@ function LiveAttendance() {
             .catch((error) => {
                 console.error("Error", error);
             });
-    }, []); // Add an empty dependency array to useEffect to run once
-
-    const fetchData = () => {
-        const apiCheckIn = `${ip}/api/absensi/get/today/self`;
-        const headers = {
-            Authorization: localStorage.getItem("accessToken"),
-        };
-
-        axios
-            .get(apiCheckIn, { headers })
-            .then((response) => {
-                setMasuk(response.data.masuk);
-                setKeluar(response.data.keluar);
-            })
-            .catch((error) => {
-                console.error("Error", error);
-            });
-    };
+    }, []);
 
     useEffect(() => {
         const fetchServerTime = () => {
@@ -76,49 +59,32 @@ function LiveAttendance() {
                 });
         };
 
-        // Fetch initial server time
         fetchServerTime();
 
-        // Set up interval to fetch server time every, for example, 1 minute (adjust as needed)
-        const intervalId = setInterval(fetchServerTime, 1000); // 60000 milliseconds = 1 minute
+        const intervalId = setInterval(fetchServerTime, 1000);
 
-        // Clean up the interval on component unmount
         return () => clearInterval(intervalId);
-    }, []); // Add an empty dependency array to useEffect to run once
+    }, []);
 
-    // Untuk mengatur check in
     const handleCheckIn = () => {
-        const checkInSuccessful = true;
-        if (checkInSuccessful) {
-            localStorage.setItem("result", "udahMasuk");
-            setCheckInStatus("udahMasuk");
+        if (photo && location.lat && location.lon) {
             const apiSubmit = `${ip}/api/absensi/patch/masuk`;
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
                 "Content-Type": "application/json",
             };
 
-            axios
-                .patch(apiSubmit, {}, { headers })
-                .then((response) => {
-                    const apiCheckIn = `${ip}/api/absensi/get/today/self`;
-                    const headers = {
-                        Authorization: localStorage.getItem("accessToken"),
-                    };
-                    axios
-                        .get(apiCheckIn, { headers })
-                        .then((response) => {
-                            setMasuk(response.data.masuk);
-                            setKeluar(response.data.keluar);
+            const data = {
+                photo,
+                location,
+            };
 
-                            console.log(response.data);
-                            fetchData();
-                        })
-                        // .then(() => {})
-                        .catch((error) => {
-                            console.error("Error", error);
-                        });
-                    console.log(response);
+            axios
+                .patch(apiSubmit, data, { headers })
+                .then((response) => {
+                    localStorage.setItem("result", "udahMasuk");
+                    setCheckInStatus("udahMasuk");
+                    setMasuk(response.data.masuk);
                     Swal.fire({
                         icon: "success",
                         title: "Check In Sukses!",
@@ -133,26 +99,36 @@ function LiveAttendance() {
                         text: "An error occurred while processing your request.",
                     });
                 });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Check In Gagal!",
+                text: "Please allow access to your camera and location.",
+            });
         }
     };
 
-    // Untuk mengatur check out
     const handleCheckOut = () => {
         const apiSubmit = `${ip}/api/absensi/patch/keluar`;
         const headers = {
             Authorization: localStorage.getItem("accessToken"),
             "Content-Type": "application/json",
         };
+
+        const data = {
+            photo,
+            location,
+        };
+
         axios
-            .patch(apiSubmit, {}, { headers })
+            .patch(apiSubmit, data, { headers })
             .then((response) => {
-                if (!response.data.includes("dapat dilakukan")) setKeluar(true);
-                console.log(response);
+                localStorage.setItem("result", "udahKeluar");
+                setCheckInStatus("udahKeluar");
+                setKeluar(response.data.keluar);
                 Swal.fire({
-                    icon: response.data.includes("dapat dilakukan") ? "error" : "success",
-                    title: response.data.includes("dapat dilakukan")
-                        ? "Check Out Gagal!"
-                        : "Check Out Sukses!",
+                    icon: "success",
+                    title: "Check Out Sukses!",
                     text: response.data,
                 });
             })
@@ -164,14 +140,63 @@ function LiveAttendance() {
                     text: "An error occurred while processing your request.",
                 });
             });
-        if (keluar) {
-            localStorage.setItem("result", "udahKeluar");
-            setCheckInStatus("udahKeluar");
-        }
     };
 
-    //Untuk mendapatkan tanggal hari ini
-    const day = new Date().toLocaleDateString("en-US", { weekday: "short" })
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                setLocation({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
+                });
+            }, (error) => {
+                console.error("Error getting location", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to get location. Please enable location services.",
+                });
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Geolocation is not supported by this browser.",
+            });
+        }
+    }, []);
+
+    const capturePhoto = () => {
+        const video = document.createElement("video");
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+
+                video.addEventListener("canplay", () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    setPhoto(canvas.toDataURL("image/png"));
+
+                    video.pause();
+                    stream.getTracks()[0].stop();
+                });
+            })
+            .catch((error) => {
+                console.error("Error accessing camera", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to access camera. Please enable camera permissions.",
+                });
+            });
+    };
+
+    const day = new Date().toLocaleDateString("en-US", { weekday: "short" });
     const date = new Date().toLocaleDateString("id-ID", {
         day: "2-digit",
         month: "short",
@@ -179,7 +204,6 @@ function LiveAttendance() {
     }).replace(",", "");
 
     const formattedDate = `${day}, ${date}`;
-
     const scheduleDate = `Schedule, ${date}`;
 
     function formatServerTime(serverTime) {
@@ -190,9 +214,7 @@ function LiveAttendance() {
     }
 
     return (
-        <div
-            className="w-full h-full"
-            style={{ backgroundColor: "#F0F0F0" }}>
+        <div className="w-full h-full" style={{ backgroundColor: "#F0F0F0" }}>
             <NavbarUser />
             <div className="m-10 p-6 border rounded-lg drop-shadow-lg bg-white">
                 <h1 className="text-left text-2xl font-semibold">Live Attendance</h1>
@@ -248,11 +270,13 @@ function LiveAttendance() {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* Check In Button */}
                                         <div className="flex justify-center items-center w-full">
                                             <Button
                                                 variant="contained"
-                                                onClick={handleCheckIn}
+                                                onClick={() => {
+                                                    capturePhoto();
+                                                    handleCheckIn();
+                                                }}
                                                 fullWidth
                                                 disabled={checkInStatus !== "belumMasuk"}
                                             >
@@ -260,8 +284,6 @@ function LiveAttendance() {
                                             </Button>
                                         </div>
                                     </div>
-
-                                    {/* Check Out Section */}
                                     <div className="w-full flex flex-col justify-center items-center h-20">
                                         <div className="w-full flex flex-row justify-between items-center">
                                             <div
@@ -290,11 +312,13 @@ function LiveAttendance() {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* Check Out Button */}
                                         <div className="flex justify-center items-center w-full">
                                             <Button
                                                 variant="contained"
-                                                onClick={handleCheckOut}
+                                                onClick={() => {
+                                                    capturePhoto();
+                                                    handleCheckOut();
+                                                }}
                                                 fullWidth
                                                 disabled={checkInStatus !== "udahMasuk"}
                                             >

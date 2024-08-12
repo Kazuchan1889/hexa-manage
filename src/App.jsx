@@ -60,7 +60,7 @@ function App() {
           <Route path="/reimburst" element={<FormReimburst />} />
           <Route path="/cuti" element={<FormCuti />} />
           <Route path="/resign" element={<FormResign />} />
-          <Route path="laporan" element={<LaporanKegiatan />} />
+          <Route path="/laporan" element={<LaporanKegiatan />} />
           <Route path="/setting" element={<AccountSettings />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/payroll" element={<Payroll />} />

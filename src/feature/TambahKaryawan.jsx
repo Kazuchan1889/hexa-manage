@@ -22,7 +22,7 @@ import axios from "axios";
 import ip from "../ip";
 import OperationSelection from "./OperationSelection";
 
-const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
+const   TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
   // const [searchValue, setSearchValue] = useState("");
   // const [searchValue2, setSearchValue2] = useState("");
@@ -407,15 +407,15 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   label="Salary"
                   variant="outlined"
                   fullWidth
-                  name="salary"
+                  name="salary" 
                   value={formatSalary(formData.salary)} // Format the displayed value
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="flex justify-end mr-2 mt-5">
+              <div className="sticky bottom-0 flex justify-end bg-white py-3 mt-4">
                 <Button
                   variant="contained"
-                  size="small"
+                  size="small"  
                   style={{ backgroundColor: "#204684" }}
                   onClick={() => setActiveStep(2)}
                 >

@@ -198,10 +198,10 @@ const NavbarUser = () => {
   // Untuk show master apa saja yang ada dengan menggunakan operation
   const masterSubItems = [
     checkOp("READ_ABSENSI")
-      ? { label: "Absen", active: false, to: "/masterabsen" }
+      ? { label: "Attendance", active: false, to: "/masterabsen" }
       : null,
     checkOp("READ_KARYAWAN")
-      ? { label: "Data Karyawan", active: false, to: "/masterkaryawan" }
+      ? { label: "Employe Data ", active: false, to: "/masterkaryawan" }
       : null,
     checkOp("READ_IZIN")
       ? { label: "Izin", active: false, to: "/masterizin" }
@@ -215,18 +215,18 @@ const NavbarUser = () => {
     checkOp("READ_RESIGN")
       ? { label: "Resign", active: false, to: "/masterresign" }
       : null,
-    checkOp("READ_LAPORAN")
-      ? { label: "Laporan", active: false, to: "/masterlaporan" }
-      : null,
+    // checkOp("READ_LAPORAN")
+    //   ? { label: "Laporan", active: false, to: "/masterlaporan" }
+    //   : null,
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,
-      checkOp("READ_KARYAWAN")
-      ? { label: "Asset", active: false, to: "/Asset" }
-      : null,
-      checkOp("READ_KARYAWAN")
-      ? { label: "Company File", active: false, to: "/companyfile" }
-      : null,
+      // checkOp("READ_KARYAWAN")
+      // ? { label: "Asset", active: false, to: "/Asset" }
+      // : null,
+      // checkOp("READ_KARYAWAN")
+      // ? { label: "Company File", active: false, to: "/companyfile" }
+      // : null,
       checkOp("READ_KARYAWAN")
       ? { label: "Overtime", active: false, to: "/Over" }
       : null,
@@ -290,6 +290,7 @@ const NavbarUser = () => {
                 src="../../public/logo-login.png"
                 className="h-10"
                 alt="logo"
+                href="/dashboard"
               ></img>
             </Typography>
           )}

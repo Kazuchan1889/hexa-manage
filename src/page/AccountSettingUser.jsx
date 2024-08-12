@@ -153,8 +153,11 @@ function AccountSettingUser() {
         <div id='folH' className="w-full bg-200 p-4 border-t border-r border-b border-gray">
           {renderContent()}
         </div>
+        
       </div>
     </div>
+    
+    
   );
 }
 

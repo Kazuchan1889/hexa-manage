@@ -1,5 +1,3 @@
-// CalendarComponent.js
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
@@ -36,6 +34,7 @@ const CalendarComponent = () => {
   });
   const [selectedKaryawan, setSelectedKaryawan] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [selectAll, setSelectAll] = useState(false); // State for 'Select All'
 
   useEffect(() => {
     fetchEventsByKaryawanId();
@@ -69,13 +68,22 @@ const CalendarComponent = () => {
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedKaryawan([]);
+    } else {
+      setSelectedKaryawan(employees.map((employee) => ({ value: employee.id, label: employee.nama })));
+    }
+    setSelectAll(!selectAll);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
-        tgl_mulai: selectedDate.toISOString().split("T")[0],
-        tgl_selesai: selectedDate.toISOString().split("T")[0],
+        tgl_mulai: selectedDate.toLocaleDateString('en-CA'),
+        tgl_selesai: selectedDate.toLocaleDateString('en-CA'),
         karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.post(`${apiURL}/scheduler/post`, payload, {
@@ -94,6 +102,7 @@ const CalendarComponent = () => {
         karyawan: [],
       });
       setSelectedKaryawan([]);
+      setSelectAll(false);
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
@@ -126,6 +135,7 @@ const CalendarComponent = () => {
     });
     setSelectedDate(new Date(schedule.tanggal_mulai));
     setSelectedKaryawan(selectedKaryawanOptions);
+    setSelectAll(selectedKaryawanOptions.length === employees.length); // Check if all employees are selected
     setModalIsOpen(true);
   };
 
@@ -134,8 +144,8 @@ const CalendarComponent = () => {
     try {
       const payload = {
         ...formData,
-        tanggal_mulai: selectedDate.toISOString().split("T")[0],
-        tanggal_selesai: selectedDate.toISOString().split("T")[0],
+        tanggal_mulai: selectedDate.toLocaleDateString('en-CA'),
+        tanggal_selesai: selectedDate.toLocaleDateString('en-CA'),
         karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.patch(`${apiURL}/scheduler/patch/${formData.id}`, payload, {
@@ -154,6 +164,7 @@ const CalendarComponent = () => {
         karyawan: [],
       });
       setSelectedKaryawan([]);
+      setSelectAll(false);
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
@@ -161,7 +172,7 @@ const CalendarComponent = () => {
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    setSelectedDate(date);  
   };
 
   const selectedDateSchedules = events.filter(
@@ -194,50 +205,40 @@ const CalendarComponent = () => {
                   karyawan: [],
                 });
                 setSelectedKaryawan([]);
+                setSelectAll(false); // Reset 'Select All' when adding new schedule
                 setModalIsOpen(true);
               }}
             >
               Add
             </button>
           </div>
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-center">Activity</th>
-                <th className="text-center">Date</th>
-                <th className="text-center">Hour</th>
-                <th className="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedDateSchedules.map((schedule, index) => (
-                <tr key={index}>
-                  <td>{schedule.judul}</td>
-                  <td>{new Date(schedule.tanggal_mulai).toLocaleDateString()}</td>
-                  <td>{schedule.mulai} - {schedule.selesai}</td>
-                  <td>
-                    <button
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mr-2"
-                      onClick={() => handleEdit(schedule)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-                      onClick={() => handleDelete(schedule.schedule_id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {selectedDateSchedules.length === 0 && (
-                <tr>
-                  <td colSpan="4">Tidak ada jadwal untuk tanggal ini.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <div className="space-y-4 overflow-y-auto h-96">
+            {selectedDateSchedules.map((schedule, index) => (
+              <div key={index} className="border p-4 rounded-md shadow-md">
+                <h3 className="text-lg font-bold text-left">{schedule.judul}</h3>
+                <p className="text-left">{schedule.deskripsi}</p> {/* Deskripsi ditambahkan di sini */}
+                <p className="text-left">{new Date(schedule.tanggal_mulai).toLocaleDateString()}</p>
+                <p className="text-left">{schedule.mulai} - {schedule.selesai}</p>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded"
+                    onClick={() => handleEdit(schedule)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                    onClick={() => handleDelete(schedule.schedule_id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+            {selectedDateSchedules.length === 0 && (
+              <div>Tidak ada jadwal untuk tanggal ini.</div>
+            )}
+          </div>
         </div>
         <div className="w-1/4 p-6">
           <div className="w-full">
@@ -264,7 +265,7 @@ const CalendarComponent = () => {
                 type="text"
                 value={formData.judul}
                 onChange={(e) => setFormData({ ...formData, judul: e.target.value })}
-                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="w-full border rounded p-2"
               />
             </div>
             <div className="mb-4">
@@ -272,8 +273,8 @@ const CalendarComponent = () => {
               <textarea
                 value={formData.deskripsi}
                 onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+                className="w-full border rounded p-2"
+              ></textarea>
             </div>
             <div className="mb-4">
               <label>Start Time:</label>
@@ -281,35 +282,55 @@ const CalendarComponent = () => {
                 type="time"
                 value={formData.mulai}
                 onChange={(e) => setFormData({ ...formData, mulai: e.target.value })}
-                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="w-full border rounded p-2"
               />
             </div>
             <div className="mb-4">
-              <label>Finish Time:</label>
+              <label>End Time:</label>
               <input
                 type="time"
                 value={formData.selesai}
                 onChange={(e) => setFormData({ ...formData, selesai: e.target.value })}
-                className="w-full py-2 px-3 rounded-md border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="w-full border rounded p-2"
               />
             </div>
             <div className="mb-4">
               <label>Employee:</label>
+              <div className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  className="mr-2"
+                />
+                <label>Select All</label>
+              </div>
               <Select
-                options={employees.map((employee) => ({ value: employee.id, label: employee.nama }))}
                 isMulti
                 value={selectedKaryawan}
                 onChange={(selectedOptions) => setSelectedKaryawan(selectedOptions)}
-                className="basic-multi-select"
-                classNamePrefix="select"
+                options={employees.map((employee) => ({
+                  value: employee.id,
+                  label: employee.nama,
+                }))}
+                className="w-full border rounded p-2"
               />
             </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              {formData.id ? "Update" : "Submit"}
-            </button>
+            <div className="flex justify-end">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                type="submit"
+              >
+                {formData.id ? "Update" : "Add"}
+              </button>
+              <button
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2"
+                onClick={() => setModalIsOpen(false)}
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         </Modal>
       </div>

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Avatar } from "@mui/material";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-
 import axios from "axios";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import Shortcut from "./Shortcut";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function ProfileDashboard() {
-  const [nama, setNama] = useState("");
-  const [dokumen, setDokumen] = useState(null);
-  const [jabatan, setJabatan] = useState("");
-  const [data, setData] = useState(null);
+  const [userData, setUserData] = useState({
+    nama: "",
+    dokumen: null,
+    jabatan: "",
+    cutimandiri: ""
+  });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   const isUserBelumCheckin = localStorage.getItem("result") === "belumMasuk";
@@ -30,43 +31,17 @@ function ProfileDashboard() {
       .get(apiUrl, { headers })
       .then((response) => {
         const userData = response.data[0];
-
-        console.log(apiUrl);
-        // Check if any of the required properties in userData are null or empty
-        const requiredProperties = [
-          "alamat",
-          "email",
-          "notelp",
-          "nik",
-          "bankname",
-          "bankacc",
-          "maritalstatus",
-        ];
-        const emptyProperties = requiredProperties.filter(
-          (property) => !userData[property]
-        );
-
-        if (emptyProperties.length > 0) {
-          // Display an alert if any of the required properties are null or empty
-          Swal.fire({
-            icon: "warning",
-            title: "Incomplete User Data",
-            text: `Please fill out all required user data fields: ${emptyProperties.join(
-              ", "
-            )}`,
-          });
-        }
-
-        setNama(userData.nama || "");
-        setDokumen(userData.dokumen || null);
-        setJabatan(userData.jabatan || "");
-        setData(userData);
+        checkRequiredProperties(userData, ["alamat", "email", "notelp", "nik", "bankname", "bankacc", "maritalstatus"]);
+        setUserData({
+          nama: userData.nama || "",
+          dokumen: userData.dokumen || null,
+          jabatan: userData.jabatan || "",
+          cutimandiri: userData.cutimandiri || ""
+        });
         localStorage.setItem("cutimandiri", userData.cutimandiri);
       })
       .catch((error) => {
         console.error("Error", error);
-
-        // Display alert if data is not available
         Swal.fire({
           icon: "error",
           title: "Data Not Available",
@@ -76,16 +51,21 @@ function ProfileDashboard() {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const checkRequiredProperties = (data, requiredProperties) => {
+    const emptyProperties = requiredProperties.filter(property => !data[property]);
+    if (emptyProperties.length > 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Incomplete User Data",
+        text: `Please fill out all required user data fields: ${emptyProperties.join(", ")}`,
+      });
+    }
+  };
 
   const date = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -101,12 +81,12 @@ function ProfileDashboard() {
         <div className="font-semibold text-xl lg:text-3xl">
           <Typography variant="h5" className="text-neutral-200">
             <div className="w-full font-semibold">
-              {hour >= 12 ? hour >= 17 ? <h1>Good Evening, {nama}! </h1> : <h1>Good Afternoon, {nama}! </h1> : <h1>Good Morning, {nama}! </h1>}
+              {hour >= 12 ? (hour >= 17 ? <h1>Good Evening, {userData.nama}! </h1> : <h1>Good Afternoon, {userData.nama}! </h1>) : <h1>Good Morning, {userData.nama}! </h1>}
             </div>
             <h2 className="text-sm">It's {date}</h2>
             <Shortcut />
           </Typography>
-          {isUserBelumCheckin ? (
+          {isUserBelumCheckin && (
             <div className="flex">
               <ReportProblemIcon className="text-yellow-400" />
               <div className="mt-1">
@@ -115,13 +95,13 @@ function ProfileDashboard() {
                 </Typography>
               </div>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
-      {dokumen && (
+      {userData.dokumen && (
         <Avatar
           alt="User Avatar"
-          src={dokumen}
+          src={userData.dokumen}
           sx={{ width: isMobile ? 70 : 110, height: isMobile ? 70 : 110 }}
         />
       )}
