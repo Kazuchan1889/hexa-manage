@@ -214,7 +214,7 @@ const OperationSelection = ({
           </div>
         </div>
       </div>
-      <div className="flex justify-end mt-5 mr-2">
+      <div className="sticky bottom-0 flex justify-end bg-white mt-4">
         <Button
           variant="contained"
           size="small"
