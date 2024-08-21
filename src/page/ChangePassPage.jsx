@@ -1,91 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import ip from "../ip";
 import Swal from "sweetalert2";
+import ip from "../ip";
 
 function ChangePasswordPage() {
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [resetPassword, setResetPassword] = useState(false);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [step, setStep] = useState(1);
 
-  useEffect(() => {
-    setPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setResetPassword(false);
-  }, []);
-
-  const handleAnswerCheck = (e) => {
-    e.preventDefault();
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-    };
-    axios
-      .post(`${ip}/api/auth/check/jawaban`, { password: password }, { headers })
-      .then((response) => {
-        if (response.data.bool === true) {
-          setResetPassword(true);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Password Salah!",
-            text: response.data.message,
-            customClass: {
-              container: "z-30",
-            },
-          });
-        }
-      })
-      .catch((error) => {
-        Swal.fire({
-          icon: "error",
-          title: "Error!",
-          text: error.response.data.message,
-          customClass: {
-            container: "z-30",
-          },
-        });
-      });
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  const handlePasswordReset = async (e) => {
-    e.preventDefault();
+  const handleOtpChange = (e) => {
+    setOtp(e.target.value);
+  };
+
+  const handleNewPasswordChange = (e) => {
+    setNewPassword(e.target.value);
+  };
+
+  const handleSendOtp = async () => {
     try {
-      const headers = {
-        Authorization: localStorage.getItem("accessToken"),
-      };
-      const response = await axios.post(
-        `${ip}/api/auth/changepass/inside`,
-        {
-          changepass: newPassword,
-          confirmpass: confirmPassword,
-        },
-        { headers }
-      );
+      const response = await axios.post(`${ip}/api/auth/generateotp`, { email });
 
       if (response.data.bool === true) {
+        setStep(2);
         Swal.fire({
           icon: "success",
-          title: "Password berhasil diubah!",
-          text: response.data.message,
-          customClass: {
-            container: "z-30",
-          },
-        }).then(() => {
-          // Redirect to login page after success message
-          window.location.href = "/*"; // Replace with your login page URL
+          title: "OTP Sent",
+          text: "Please check your email for the OTP.",
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Password Tidak Sama!",
+          title: "Error",
           text: response.data.message,
-          customClass: {
-            container: "z-30",
-          },
+        });
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      const response = await axios.post(`${ip}/api/auth/check/otp`, {
+        otp,
+        email,
+      });
+
+      if (response.data.bool) {
+        setStep(3);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.data.message,
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+    }
+  };
+
+  const handleSaveNewPassword = async () => {
+    try {
+      console.log("Sending request to change password with data:", {
+        email,
+        newPassword,
+        confirmNewPassword,
+      });
+
+      const response = await axios.post(`${ip}/api/auth/changepass/otp`, {
+        email,
+        changepass: newPassword,
+        confirmpass: confirmNewPassword,
+      });
+
+      console.log("Password change response:", response.data);
+
+      if (response.data.bool === true) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Password changed successfully!",
+        });
+        window.location.href = "/"; // Redirect to login page or any other page
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.data.message,
         });
       }
     } catch (error) {
@@ -97,57 +107,89 @@ function ChangePasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-blue-500 mb-6 text-center">Change Password</h2>
-        <form className="space-y-6">
-          <div>
+        {step === 1 && (
+          <div className="space-y-6">
             <TextField
-              label={!resetPassword ? "Current Password" : "New Password"}
-              type="password"
-              value={!resetPassword ? password : newPassword}
-              onChange={(e) => !resetPassword ? setPassword(e.target.value) : setNewPassword(e.target.value)}
+              size="small"
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              label="Email"
+              variant="outlined"
               fullWidth
               required
-              className="mb-4"
             />
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={handleSendOtp}
+              className="w-full bg-blue-500 text-white"
+            >
+              Send OTP
+            </Button>
           </div>
-          {!resetPassword ? (
-            <div>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className="w-full bg-blue-500 text-white"
-                onClick={handleAnswerCheck}
-              >
-                Submit
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div>
-                <TextField
-                  label="Confirm New Password"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  fullWidth
-                  required
-                  className="mb-4"
-                />
-              </div>
-              <div>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className="w-full bg-blue-500 text-white"
-                  onClick={handlePasswordReset}
-                >
-                  Reset Password
-                </Button>
-              </div>
-            </>
-          )}
-        </form>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-6">
+            <TextField
+              size="small"
+              id="otp"
+              value={otp}
+              onChange={handleOtpChange}
+              label="OTP"
+              variant="outlined"
+              fullWidth
+              required
+            />
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={handleResetPassword}
+              className="w-full bg-blue-500 text-white"
+            >
+              Verify OTP
+            </Button>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="space-y-6">
+            <TextField
+              size="small"
+              id="newPassword"
+              value={newPassword}
+              onChange={handleNewPasswordChange}
+              label="New Password"
+              variant="outlined"
+              fullWidth
+              type="password"
+              required
+            />
+            <TextField
+              size="small"
+              id="confirmNewPassword"
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              label="Confirm New Password"
+              variant="outlined"
+              fullWidth
+              type="password"
+              required
+            />
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={handleSaveNewPassword}
+              className="w-full bg-blue-500 text-white"
+            >
+              Save New Password
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import { Avatar } from "@mui/material";
 import axios from "axios";
+import Bub from "../minicomponent/Bubble";
 
 function AccountSettingUser() {
   const [nama, setNama] = useState("");
@@ -120,6 +121,7 @@ function AccountSettingUser() {
   return (
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
+      <Bub />
       <div  className="flex m-4 rounded-xl bg-white drop-shadow-lg ">
         <div className="h-[folH] w-1/4 p-4 border border-gray" >
           <ul className="h-full flex flex-col space-y-2">
@@ -155,6 +157,7 @@ function AccountSettingUser() {
         </div>
         
       </div>
+      
     </div>
     
     

@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useDropzone } from "react-dropzone";
 import {
   TextField,
   Button,
+  Grid,
+  CircularProgress,
+  Typography,
   Avatar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
 } from "@mui/material";
-import { useDropzone } from "react-dropzone";
+import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import ip from "../ip";
 
 function AccountSettings() {
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploading] = useState(false);
+  const [uploadInProgress] = useState(false);
   const [uploadedFileBase64, setUploadedFileBase64] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [formData, setFormData] = useState({
     alamat: "",
     email: "",
@@ -24,7 +28,6 @@ function AccountSettings() {
     bankacc: "",
     maritalstatus: "",
   });
-  const [modalOpen, setModalOpen] = useState(false);
 
   // Untuk mendapatkan data user
   useEffect(() => {
@@ -37,7 +40,7 @@ function AccountSettings() {
       .get(apiUrl, { headers })
       .then((response) => {
         const data = response.data[0];
-        setUploadedFileBase64(data.dokumen);
+        setUploadedFileBase64(response.data[0].dokumen);
         setFormData({
           alamat: data.alamat || "",
           email: data.email || "",
@@ -47,11 +50,26 @@ function AccountSettings() {
           bankacc: data.bankacc || "",
           maritalstatus: data.maritalstatus || "",
         });
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error", error);
       });
   }, []);
+
+  // Untuk upload file (image) untuk profile picture
+  const handleFileUpload = (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setUploadedFile(file);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target.result;
+      setUploadedFileBase64(base64String);
+    };
+
+    reader.readAsDataURL(file);
+  };
 
   // Untuk melakukan filter file yang dikirim
   const { getRootProps, getInputProps } = useDropzone({
@@ -61,28 +79,23 @@ function AccountSettings() {
       "image/jpeg": [".jpeg"],
     },
     onDrop: (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64String = event.target.result;
-        setUploadedFileBase64(base64String);
-      };
-      reader.readAsDataURL(file);
+      const allowedExtensions = ["png", "jpg", "jpeg"];
+      const filteredFiles = acceptedFiles.filter((file) => {
+        const fileExtension = file.name.split(".").pop().toLowerCase();
+        return allowedExtensions.includes(fileExtension);
+      });
+
+      if (filteredFiles.length === 1) {
+        handleFileUpload(filteredFiles);
+      }
     },
     multiple: false,
   });
 
-  // Untuk membuka dan menutup modal
-  const handleModalOpen = () => {
-    setModalOpen(true);
-  };
+  // Untuk melakukan submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  // Untuk melakukan request ke admin
-  const handleRequest = async () => {
     const requestBody = {
       dokumen: uploadedFileBase64,
       alamat: formData.alamat,
@@ -94,32 +107,73 @@ function AccountSettings() {
       bankacc: formData.bankacc,
     };
 
-    const apiRequest = `${ip}/api/karyawan/request/update`;
+    if (uploadInProgress) {
+      return;
+    }
+
+    const apiSubmit = `${ip}/api/karyawan/patch/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
     };
 
     try {
-      const response = await axios.post(apiRequest, requestBody, { headers });
+      const response = await axios.patch(apiSubmit, requestBody, { headers });
       console.log(response.data);
+      console.log(uploadedFileBase64.split(",")[1].slice(0, 20));
 
       Swal.fire({
         icon: "success",
-        title: "Request Sent!",
-        text: "Your request has been sent to the admin.",
+        title: "Update Successful!",
+        text: response.data,
       }).then(() => {
-        handleModalClose();
+        window.location.reload();
       });
     } catch (error) {
       console.error(error);
 
       Swal.fire({
         icon: "error",
-        title: "Request Failed!",
-        text: "An error occurred while sending your request.",
+        title: "Update Failed!",
+        text: "An error occurred while processing your request.",
       });
     }
   };
+
+  //Untuk mengganti input
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  //Untuk mengganti input (int)
+  const handleInputNumberChange = (e) => {
+    const { name, value } = e.target;
+
+    // Ensure only numbers are entered
+    const numericValue = value.replace(/\D/g, "");
+
+    setFormData({
+      ...formData,
+      [name]: numericValue,
+    });
+  };
+
+  // Untuk membuat responsive
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="w-full h-full bg-white flex flex-col items-center p-4">
@@ -127,21 +181,41 @@ function AccountSettings() {
       <div className="flex justify-center mb-6">
         <div {...getRootProps()} className="flex items-center justify-center">
           <input {...getInputProps()} id="fileInput" />
-          <Avatar
-            src={uploadedFileBase64}
-            alt="Profile Picture"
-            sx={{
-              width: 130, // Ukuran lebar avatar
-              height: 130, // Ukuran tinggi avatar
-              cursor: "pointer",
-            }}
-          />
+
+          {uploading ? (
+            <div className="flex items-center">
+              <CircularProgress color="primary" size={24} />
+              <Typography variant="body1" className="ml-2">
+                Uploading...
+              </Typography>
+            </div>
+          ) : uploadedFile ? (
+            <div className="flex flex-col items-center">
+              <CheckCircleIcon color="primary" />
+              <Typography variant="body1" className="mt-2">
+                Upload successful: {uploadedFile.name}
+              </Typography>
+            </div>
+          ) : (
+            <Avatar
+              src={uploadedFileBase64}
+              alt="Upload File"
+              sx={{
+                width: 130, // Ukuran lebar avatar
+                height: 130, // Ukuran tinggi avatar
+                cursor: "pointer",
+              }}
+            />
+          )}
         </div>
       </div>
 
       {/* Form */}
       <div className="w-full max-w-3xl border p-4">
-        <form className="flex flex-col space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-4"
+        >
           {/* Alamat */}
           <TextField
             size="small"
@@ -152,7 +226,8 @@ function AccountSettings() {
             label="Alamat"
             name="alamat"
             value={formData.alamat}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* Email */}
@@ -165,7 +240,8 @@ function AccountSettings() {
             label="Email Address"
             name="email"
             value={formData.email}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* Phone Number */}
@@ -179,7 +255,8 @@ function AccountSettings() {
             name="notelp"
             type="text"
             value={formData.notelp}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputNumberChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* Marital Status */}
@@ -192,7 +269,8 @@ function AccountSettings() {
             label="Marital Status"
             name="maritalstatus"
             value={formData.maritalstatus}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* Bank Account */}
@@ -205,7 +283,8 @@ function AccountSettings() {
             label="Bank Account"
             name="bankacc"
             value={formData.bankacc}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputNumberChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* Bank Account Name */}
@@ -218,7 +297,8 @@ function AccountSettings() {
             label="Bank Account Name"
             name="bankname"
             value={formData.bankname}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           {/* NIK Kependudukan */}
@@ -231,163 +311,21 @@ function AccountSettings() {
             label="Nomor Induk Kependudukan"
             name="nik"
             value={formData.nik}
-            InputProps={{ readOnly: true, style: { paddingLeft: 0 } }}
+            onChange={handleInputNumberChange}
+            InputProps={{ style: { paddingLeft: 0 } }}
           />
 
           <Button
             size="small"
+            type="submit"
             variant="contained"
             color="primary"
             fullWidth
-            onClick={handleModalOpen}
           >
-            Request Changes
+            Save Changes
           </Button>
         </form>
       </div>
-
-      {/* Modal */}
-      <Dialog open={modalOpen} onClose={handleModalClose}>
-        <DialogTitle>Request Changes</DialogTitle>
-        <DialogContent>
-          <form className="flex flex-col space-y-4">
-            {/* Alamat */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="alamat"
-              label="Alamat"
-              name="alamat"
-              value={formData.alamat}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  alamat: e.target.value,
-                }))
-              }
-            />
-
-            {/* Email */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                }))
-              }
-            />
-
-            {/* Phone Number */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="notelp"
-              label="No HP"
-              name="notelp"
-              type="text"
-              value={formData.notelp}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  notelp: e.target.value,
-                }))
-              }
-            />
-
-            {/* Marital Status */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="maritalstatus"
-              label="Marital Status"
-              name="maritalstatus"
-              value={formData.maritalstatus}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  maritalstatus: e.target.value,
-                }))
-              }
-            />
-
-            {/* Bank Account */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="bankacc"
-              label="Bank Account"
-              name="bankacc"
-              value={formData.bankacc}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  bankacc: e.target.value,
-                }))
-              }
-            />
-
-            {/* Bank Account Name */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="bankname"
-              label="Bank Account Name"
-              name="bankname"
-              value={formData.bankname}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  bankname: e.target.value,
-                }))
-              }
-            />
-
-            {/* NIK Kependudukan */}
-            <TextField
-              size="small"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="nik"
-              label="Nomor Induk Kependudukan"
-              name="nik"
-              value={formData.nik}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  nik: e.target.value,
-                }))
-              }
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleRequest} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 }

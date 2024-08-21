@@ -22,7 +22,7 @@ import axios from "axios";
 import ip from "../ip";
 import OperationSelection from "./OperationSelection";
 
-const   TambahKaryawan = ({ onClick, onClose, fetchData }) => {
+const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
   // const [searchValue, setSearchValue] = useState("");
   // const [searchValue2, setSearchValue2] = useState("");
@@ -407,15 +407,15 @@ const   TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   label="Salary"
                   variant="outlined"
                   fullWidth
-                  name="salary" 
+                  name="salary"
                   value={formatSalary(formData.salary)} // Format the displayed value
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="sticky bottom-0 flex justify-end bg-white py-3 mt-4">
+              <div className="sticky bottom-0 flex justify-end bg-white mt-4">
                 <Button
                   variant="contained"
-                  size="small"  
+                  size="small"
                   style={{ backgroundColor: "#204684" }}
                   onClick={() => setActiveStep(2)}
                 >
@@ -576,32 +576,34 @@ const   TambahKaryawan = ({ onClick, onClose, fetchData }) => {
             />
           )}
           {activeStep === 3 && step3Data && (
-            <div className="max-h-96 text-left overflow-auto">
-              <h2 className="text-xl font-semibold mb-4">Data yang Diisi</h2>
-              <div className="space-y-2">
-                {Object.entries(step3Data).map(([key, value]) =>
-                  key !== "Authority" ? ( // Exclude Authority from display here
-                    <div key={key}>
-                      <strong>{key}:</strong> {value}
+            <div>
+              <div className="max-h-96 text-left">
+                <h2 className="text-xl font-semibold mb-4">Data yang Diisi</h2>
+                <div className="space-y-2">
+                  {Object.entries(step3Data).map(([key, value]) =>
+                    key !== "Authority" ? ( // Exclude Authority from display here
+                      <div key={key}>
+                        <strong>{key}:</strong> {value}
+                      </div>
+                    ) : null
+                  )}
+                  {step3Data.Authority.length > 0 && ( // Display Authority only if it exists
+                    <div className="mt-4">
+                      <div className="w-1/2 pr-4">
+                        <strong>Authority:</strong>
+                      </div>
+                      <div className="w-1/2">
+                        <ul>
+                          {step3Data.Authority.map((authority, index) => (
+                            <li key={index}>{authority}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  ) : null
-                )}
-                {step3Data.Authority.length > 0 && ( // Display Authority only if it exists
-                  <div className="mt-4">
-                    <div className="w-1/2 pr-4">
-                      <strong>Authority:</strong>
-                    </div>
-                    <div className="w-1/2">
-                      <ul>
-                        {step3Data.Authority.map((authority, index) => (
-                          <li key={index}>{authority}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-              <div className="flex justify-end">
+              <div className="sticky bottom-0 flex justify-end bg-white ">
                 <Button
                   variant="contained"
                   size="small"

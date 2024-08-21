@@ -13,13 +13,11 @@ const AddCompanyProfile = () => {
     city: '',
     industry: '',
     company_size: '',
-    npwp_lama: '',
-    npwp_baru: '',
-    company_taxable_date: '',
+    
     taxperson_npwp: '',
     hq_initial: '',
     hq_code: '',
-    show_branch_name: false,
+    
     bpjs_ketenagakerjaan: '',
     jumlah_karyawan: '' // Added field for number of employees
   });
@@ -48,13 +46,8 @@ const AddCompanyProfile = () => {
             city: data.city || '',
             industry: data.industry || '',
             company_size: data.company_size || '',
-            npwp_lama: data.npwp_lama || '',
-            npwp_baru: data.npwp_baru || '',
-            company_taxable_date: data.company_taxable_date || '',
-            taxperson_npwp: data.taxperson_npwp || '',
             hq_initial: data.hq_initial || '',
             hq_code: data.hq_code || '',
-            show_branch_name: data.show_branch_name || false,
             bpjs_ketenagakerjaan: data.bpjs_ketenagakerjaan || ''
           }));
         }
