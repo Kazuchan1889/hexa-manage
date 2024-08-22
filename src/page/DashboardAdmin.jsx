@@ -1,205 +1,113 @@
-import React, { useState, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
-import {
-  TextField,
-  Button,
-  Grid,
-  MenuItem,
-  CircularProgress,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TablePagination,
-  Dialog,
-  DialogContent,
-  Alert,
-} from "@mui/material";
-import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { Button, IconButton } from "@mui/material";
 import Swal from "sweetalert2";
-import { CloudDownload } from "@mui/icons-material";
-
-import ip from "../ip";
 import NavbarUser from "../feature/NavbarUser";
+import ChartDataKaryawan from "../feature/ChartDataKaryawan";
+import ChartDataKehadiran from "../feature/ChartDataKehadiran";
+import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
+import ChartDataLama from "../feature/ChartDataLama";
+import ChartDataGender from "../feature/ChartDataGender";
+import ProfileDashboard from "../minicomponent/ProfileDashboard";
+import View from "../minicomponent/viewdata";
+import AnnouncementList from "../minicomponent/ViewAnnounce";
+import Announcment from "../minicomponent/Announcment";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
-function LaporanKegiatan() {
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [uploadedFileBase64s, setUploadedFileBase64s] = useState([]);
-  const [tableData, setTableData] = useState([]);
-  const [scheduleData, setScheduleData] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [showUploadFile, setShowUploadFile] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [uploadAlert, setUploadAlert] = useState(false);
+function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-
-  const [formData, setFormData] = useState({
-    lokasi: "",
-    keterangan: "",
-    time: "",
-    tanggal: "",
-    jenis: "",
-  });
+  const [isTambahFormOpen, setTambahFormOpen] = useState(false);
+  const [isBubbleOpen, setIsBubbleOpen] = useState(false);
+  const checkOperation = localStorage.getItem("operation");
 
   useEffect(() => {
-    // Fetch Laporan Data
-    const apiUrl = `${ip}/api/laporan/get/data/self`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-    };
-
-    setLoading(true);
-
-    axios
-      .get(apiUrl, { headers })
-      .then((response) => {
-        const data = response.data;
-        setTableData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error(error);
-      });
-
-    // Fetch Scheduler Data
-    const schedulerApiUrl = `${ip}/api/schedjul/assigned`;
-    axios
-      .get(schedulerApiUrl, { headers })
-      .then((response) => {
-        const data = response.data;
-        setScheduleData(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  const handleFileUpload = (acceptedFiles) => {
-    const newUploadedFiles = [...uploadedFiles, ...acceptedFiles];
-    setUploadedFiles(newUploadedFiles);
-
-    const newFileBase64s = acceptedFiles.map((file) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      return reader;
-    });
-    setUploadedFileBase64s(newFileBase64s);
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      const allowedExtensions = ["png", "jpg", "jpeg"];
-      const filteredFiles = acceptedFiles.filter((file) => {
-        const fileExtension = file.name.split(".").pop().toLowerCase();
-        return allowedExtensions.includes(fileExtension);
-      });
-
-      if (filteredFiles.length > 0) {
-        handleFileUpload(filteredFiles);
-      }
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (formData.jenis === "Keluar kantor" && uploadedFiles.length === 0) {
-      return setUploadAlert(true);
-    }
-
-    const requestBody = {
-      lokasi: formData.lokasi,
-      keterangan: formData.keterangan,
-      jenis: formData.jenis,
-      time: formData.time,
-      tanggal: formData.tanggal,
-      dokumen: uploadedFileBase64s.map((reader) => reader.result),
-    };
-
-    const apiSubmit = `${ip}/api/laporan/post`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-      "Content-Type": "application/json",
-    };
-
-    axios
-      .post(apiSubmit, requestBody, { headers })
-      .then((response) => {
-        console.log(response);
-        setUploadedFiles([]);
-        setUploadedFileBase64s([]);
-        Swal.fire({
-          icon: "success",
-          title: "Submit Sukses",
-          text: response.data,
-          customClass: {
-            container: "z-30",
-          },
-        }).then(() => {
-          window.location.reload();
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-        Swal.fire({
-          icon: "error",
-          title: "Submit Gagal",
-          text: "error",
-          customClass: {
-            container: "z-30",
-          },
-        });
-      });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    if (name === "jenis" && value === "Keluar kantor") {
-      setShowUploadFile(true);
-    } else {
-      setShowUploadFile(false);
-    }
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    const newRowsPerPage = parseInt(event.target.value, 10);
-    setRowsPerPage(newRowsPerPage);
-    setPage(0);
-  };
-
-  const handleImageClick = (imageSrc) => {
-    setSelectedImage(imageSrc);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleSubmit = () => {
+    Swal.fire({
+      icon: "success",
+      title: "Announcement added successfully!",
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      window.location.reload();
+    });
+  };
+
+  const absentEmployees = [
+    {
+      photo: "https://www.shutterstock.com/image-photo/asian-man-wearing-traditional-javanese-260nw-2201100881.jpg",
+      name: "John Doe",
+      reason: "Sick leave",
+      date: "2024-07-25",
+    },
+    {
+      photo: "https://c.pxhere.com/photos/cc/14/man_person_guy_male_hoodie-1410020.jpg!d",
+      name: "Jane Smith",
+      reason: "Family emergency",
+      date: "2024-07-25",
+    },
+    {
+      photo: "https://img.freepik.com/free-photo/young-beautiful-woman-pink-warm-sweater-natural-look-smiling-portrait-isolated-long-hair_285396-896.jpg",
+      name: "Alice Johnson",
+      reason: "Vacation",
+      date: "2024-07-25",
+    },
+    {
+      photo: "",
+      name: "Michael Brown",
+      reason: "Medical appointment",
+      date: "2024-07-25",
+    },
+    {
+      photo: "https://i.pinimg.com/originals/df/96/67/df96679570925cdd4cff9a67d7ef89a5.png",
+      name: "Laura Wilson",
+      reason: "Personal reasons",
+      date: "2024-07-25",
+    },
+    {
+      photo: "https://asset.kompas.com/crops/uWy9sjOHu_N21k29z9PxyS63OPg=/0x0:1000x667/1200x800/data/photo/2022/05/04/6271c5c7d49c9.jpg",
+      name: "Robert Lee",
+      reason: "Conference",
+      date: "2024-07-25",
+    },
+  ];
+
+  const scheduleItems = [
+    {
+      title: "Meeting with Marketing Team",
+      date: "2024-08-22",
+      time: "10:00 AM - 11:00 AM"
+    },
+    {
+      title: "Project Deadline",
+      date: "2024-08-23",
+      time: "5:00 PM"
+    },
+    {
+      title: "Team Building Activity",
+      date: "2024-08-25",
+      time: "2:00 PM - 4:00 PM"
+    },
+    {
+      title: "Quarterly Review Meeting",
+      date: "2024-08-28",
+      time: "1:00 PM - 3:00 PM"
+    },
+    {
+      title: "Client Presentation",
+      date: "2024-08-30",
+      time: "11:00 AM - 12:00 PM"
+    },
+    {
+      title: "Office Renovation",
+      date: "2024-09-01",
+      time: "All Day"
+    }
+  ];
 
   const renderCharts = () => (
     <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-4'} w-full`}>
