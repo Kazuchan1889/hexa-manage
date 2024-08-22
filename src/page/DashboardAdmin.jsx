@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Button, IconButton } from "@mui/material";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
@@ -13,17 +14,34 @@ import AnnouncementList from "../minicomponent/ViewAnnounce";
 import Announcment from "../minicomponent/Announcment";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import ip from "../ip";
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const [isBubbleOpen, setIsBubbleOpen] = useState(false);
+  const [scheduleItems, setScheduleItems] = useState([]);
   const checkOperation = localStorage.getItem("operation");
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const fetchScheduleItems = async () => {
+      try {
+        const response = await axios.get(`${ip}/api/schedjul/assigned`, {
+          headers: { Authorization: localStorage.getItem("accessToken") },
+        });
+        setScheduleItems(response.data);
+      } catch (error) {
+        console.error("Error fetching schedule items:", error);
+      }
+    };
+
+    fetchScheduleItems();
   }, []);
 
   const handleSubmit = () => {
@@ -36,7 +54,6 @@ function DashboardAdmin() {
       window.location.reload();
     });
   };
-
   const absentEmployees = [
     {
       photo: "https://www.shutterstock.com/image-photo/asian-man-wearing-traditional-javanese-260nw-2201100881.jpg",
@@ -74,39 +91,6 @@ function DashboardAdmin() {
       reason: "Conference",
       date: "2024-07-25",
     },
-  ];
-
-  const scheduleItems = [
-    {
-      title: "Meeting with Marketing Team",
-      date: "2024-08-22",
-      time: "10:00 AM - 11:00 AM"
-    },
-    {
-      title: "Project Deadline",
-      date: "2024-08-23",
-      time: "5:00 PM"
-    },
-    {
-      title: "Team Building Activity",
-      date: "2024-08-25",
-      time: "2:00 PM - 4:00 PM"
-    },
-    {
-      title: "Quarterly Review Meeting",
-      date: "2024-08-28",
-      time: "1:00 PM - 3:00 PM"
-    },
-    {
-      title: "Client Presentation",
-      date: "2024-08-30",
-      time: "11:00 AM - 12:00 PM"
-    },
-    {
-      title: "Office Renovation",
-      date: "2024-09-01",
-      time: "All Day"
-    }
   ];
 
   const renderCharts = () => (
