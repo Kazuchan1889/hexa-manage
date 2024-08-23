@@ -120,7 +120,7 @@ function LiveAttendance() {
                 const isWithinArea = (latitude, longitude) => {
                     const targetLat = -6.1675795; 
                     const targetLng = 106.7824544; 
-                    const radius = 520; // 80 meters radius
+                    const radius = 5000; // 80 meters radius
 
                     const distance = calculateDistance(latitude, longitude, targetLat, targetLng);
 

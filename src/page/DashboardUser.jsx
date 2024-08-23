@@ -46,6 +46,38 @@ function DashboardUser() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  const scheduleItems = [
+    {
+      title: "Meeting with Marketing Team",
+      date: "2024-08-22",
+      time: "10:00 AM - 11:00 AM"
+    },
+    {
+      title: "Project Deadline",
+      date: "2024-08-23",
+      time: "5:00 PM"
+    },
+    {
+      title: "Team Building Activity",
+      date: "2024-08-25",
+      time: "2:00 PM - 4:00 PM"
+    },
+    {
+      title: "Quarterly Review Meeting",
+      date: "2024-08-28",
+      time: "1:00 PM - 3:00 PM"
+    },
+    {
+      title: "Client Presentation",
+      date: "2024-08-30",
+      time: "11:00 AM - 12:00 PM"
+    },
+    {
+      title: "Office Renovation",
+      date: "2024-09-01",
+      time: "All Day"
+    }
+  ];
 
   return (
     <div className="w-full min-h-screen bg-gray-100 overflow-y-auto">
@@ -69,8 +101,18 @@ function DashboardUser() {
             </div>
           </div>
           <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
-                    <View />
+          <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
+                    <ul className="space-y-4 mt-4">
+                      {scheduleItems.map((item, index) => (
+                        <li key={index} className="border p-4 rounded-lg shadow-sm">
+                          <h3 className="text-lg font-semibold">{item.title}</h3>
+                          <p className="text-sm text-gray-600">{item.date}</p>
+                          <p className="text-sm text-gray-600">{item.time}</p>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
+           </div>
         </div>
       </div>
     </div>

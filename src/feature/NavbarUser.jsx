@@ -166,22 +166,28 @@ const NavbarUser = () => {
 
   // Untuk set menu apa saja yang akan ada
   const subItems = [
-    { label: "Izin", active: false },
+    { label: "Time off", active: false },
     // { label: "Cuti", active: false },
     { label: "Reimburse", active: false },
     { label: "Resign", active: false },
+    { label: "Overtime", active: false },
+    { label: "Laporan", active: false }
   ];
-
+  
   // Untuk nge set redirectnya
   const handleMenuItemClick = (item) => {
-    if (item.label === "Izin") {
-      navigate("/izin");
-    } else if (item.label === "Cuti") {
-      navigate("/cuti");
+    if (item.label === "Time off") {
+      navigate("/Cuti");
     } else if (item.label === "Reimburse") {
       navigate("/reimburst");
     } else if (item.label === "Resign") {
       navigate("/resign");
+    }
+    else if (item.label === "Overtime") {
+      navigate("/Over");
+    }
+    else if (item.label === "Laporan") {
+      navigate("/laporan");
     }
   };
 
@@ -403,23 +409,21 @@ const NavbarUser = () => {
               <div className="text-black flex items-center justify-center">
                 <Button
                   variant="button"
-                  onClick={handleTimeManagementClick}
-                  endIcon={
-                    <ExpandMoreIcon
-                      style={{
-                        transform: `rotate(${
-                          timeManagementOpen ? "180deg" : "360deg"
-                        })`,
-                        transition: "transform 0.3s",
-                      }}
-                    />
-                  }
+                  onClick={() => {
+                    handleTimeManagementClose();
+                    // handleMenuItemClick(item);
+                    // handleClose();
+                  }}
+                  component={Link}
+                  to="/Cal"
+                  style={{ width: "10rem" }}
+                  
                 >
                   <Typography
                     variant="button"
                     style={{ whiteSpace: "nowrap" }}
                   >
-                    Time Management
+                    Schedjule
                   </Typography>
                 </Button>
                 <Menu
@@ -428,44 +432,6 @@ const NavbarUser = () => {
                   onClose={handleTimeManagementClose}
                   style={{ marginTop: "0.7rem" }}
                 >
-                  <List>
-                    <MenuItem
-                      onClick={() => {
-                        handleTimeManagementClose();
-                        // handleMenuItemClick(item);
-                        // handleClose();
-                      }}
-                      component={Link}
-                      to="/OverUser"
-                      style={{ width: "10rem" }}
-                    >
-                      <Typography variant="button">Overtime</Typography>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleTimeManagementClose();
-                        // handleMenuItemClick(item);
-                        // handleClose();
-                      }}
-                      component={Link}
-                      to="/cuti"
-                      style={{ width: "10rem" }}
-                    >
-                      <Typography variant="button">Time Off</Typography>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        handleTimeManagementClose();
-                        // handleMenuItemClick(item);
-                        // handleClose();
-                      }}
-                      component={Link}
-                      to="/Cal"
-                      style={{ width: "10rem" }}
-                    >
-                      <Typography variant="button">schedule</Typography>
-                    </MenuItem>
-                  </List>
                 </Menu>
               </div>
               {/* End of Time Management Dropdown */}
@@ -497,11 +463,11 @@ const NavbarUser = () => {
               </ListItemIcon>
               <ListItemText primary="Laporan Kegiatan" />
             </ListItem>
-            <ListItem button component={Link} to="/izin">
+            <ListItem button component={Link} to="/cuti">
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="Izin" />
+              <ListItemText primary="time off" />
             </ListItem>
             <ListItem button component={Link} to="/cuti">
               <ListItemIcon>

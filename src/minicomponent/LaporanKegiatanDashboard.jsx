@@ -1,3 +1,5 @@
+// src/pages/LaporanKegiatanDashboardPage.js
+
 import React, { useState, useEffect } from "react";
 import {
   TextField,
@@ -17,7 +19,6 @@ import {
   TablePagination,
   Paper,
   Modal,
-  DialogContent,
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
@@ -26,7 +27,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
-function LaporanKegiatanDashboard() {
+function LaporanKegiatanDashboardPage() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadedFileBase64s, setUploadedFileBase64s] = useState([]);
@@ -47,7 +48,7 @@ function LaporanKegiatanDashboard() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    // Untuk Fetch data table
+    // Fetch table data
     const apiUrl = `${ip}/api/laporan/get/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -61,7 +62,6 @@ function LaporanKegiatanDashboard() {
           setTableData(response.data);
         } else {
           console.error("Invalid response data:", response.data);
-          // If the response is not an array, set an empty array or handle it accordingly
           setTableData([]);
         }
       })
@@ -70,17 +70,14 @@ function LaporanKegiatanDashboard() {
       });
   }, []);
 
-  //Untuk membuka history
   const handleDetailButtonClick = () => {
     setShowHistoryModal(true);
   };
 
-  //Untuk menutup history
   const handleCloseHistoryModal = () => {
     setShowHistoryModal(false);
   };
 
-  // Untuk upload file(image)
   const handleFileUpload = async (acceptedFiles) => {
     const maxSizeInBytes = 5000000; // 5 MB
     const newUploadedFiles = [...uploadedFiles, ...acceptedFiles];
@@ -89,7 +86,6 @@ function LaporanKegiatanDashboard() {
     );
 
     if (oversizedFiles.length > 0) {
-      // Display a SweetAlert for oversized files using async function
       await Swal.fire({
         icon: "error",
         title: "File Too Big",
@@ -109,7 +105,6 @@ function LaporanKegiatanDashboard() {
     setUploadedFileBase64s(newFileBase64s);
   };
 
-  // Untuk restriction file
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png"],
@@ -130,15 +125,12 @@ function LaporanKegiatanDashboard() {
   });
 
   useEffect(() => {
-    // Untuk mengecek field yang kosong
     const requiredFields = ["lokasi", "keterangan", "time", "tanggal", "jenis"];
     const isAnyFieldEmpty = requiredFields.some((field) => !formData[field]);
 
-    // Kalau ada field yang kosong maka form tidak valid (disable)
     setIsFormValid(!isAnyFieldEmpty);
   }, [formData]);
 
-  // Untuk mengupload data
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -166,28 +158,23 @@ function LaporanKegiatanDashboard() {
       .then((response) => {
         console.log(response);
 
-        // Show success alert
         Swal.fire({
           icon: "success",
           title: "Submission Success",
           text: "The report has been submitted successfully.",
         }).then(() => {
-          // Reload the page after the user clicks "OK"
           window.location.reload();
         });
       })
       .catch((error) => {
         console.error(error);
-        console.log(error.response);
         if (error.response && error.response.status === 402) {
-          // Custom error message for status code 402
           Swal.fire({
             icon: "error",
-            title: "Kamu gagal submit",
+            title: "Submission Failed",
             text: `${error.response.data.message}`,
           });
         } else {
-          // Default error handling for other errors
           Swal.fire({
             icon: "error",
             title: "Submission Error",
@@ -197,7 +184,6 @@ function LaporanKegiatanDashboard() {
       });
   };
 
-  // Untuk mengganti input pada fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -212,19 +198,16 @@ function LaporanKegiatanDashboard() {
     }
   };
 
-  // Untuk mengganti page
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Untuk mengganti jumlah row pada page
   const handleChangeRowsPerPage = (event) => {
     const newRowsPerPage = parseInt(event.target.value, 10);
     setRowsPerPage(newRowsPerPage);
     setPage(0);
   };
 
-  // Untuk memperbesar gambar pada table history
   const handleImageClick = (imageSrc) => {
     setSelectedImage(imageSrc);
   };
@@ -246,7 +229,6 @@ function LaporanKegiatanDashboard() {
           Detail
         </Button>
       </div>
-      {/* Alert untuk user yang kerja diluar namun tidak mengirim file bukti */}
       {uploadAlert && (
         <Alert
           severity="error"
@@ -258,7 +240,6 @@ function LaporanKegiatanDashboard() {
         </Alert>
       )}
       <Grid container spacing={2}>
-        {/* Keterangan */}
         <Grid item xs={12} sm={6}>
           <div className="mb-2">
             <TextField
@@ -275,7 +256,6 @@ function LaporanKegiatanDashboard() {
           </div>
         </Grid>
 
-        {/* Lokasi */}
         <Grid item xs={12} sm={6}>
           <TextField
             label="Lokasi"
@@ -289,7 +269,6 @@ function LaporanKegiatanDashboard() {
             onChange={handleInputChange}
           />
         </Grid>
-        {/* Waktu */}
         <Grid item xs={12} sm={4}>
           <TextField
             name="time"
@@ -305,13 +284,9 @@ function LaporanKegiatanDashboard() {
             InputLabelProps={{
               shrink: true,
             }}
-            InputProps={{
-              placeholder: "",
-            }}
           />
         </Grid>
 
-        {/* Tanggal Laporan */}
         <Grid item xs={12} sm={4}>
           <TextField
             name="tanggal"
@@ -327,246 +302,163 @@ function LaporanKegiatanDashboard() {
             InputLabelProps={{
               shrink: true,
             }}
-            InputProps={{
-              placeholder: "",
-            }}
           />
         </Grid>
-
-        {/* Jenis */}
         <Grid item xs={12} sm={4}>
           <TextField
-            label="Jenis"
-            name="jenis"
-            id="Jenis"
             select
-            size="small"
+            name="jenis"
+            label="Jenis"
+            id="jenis"
             variant="outlined"
+            size="small"
             fullWidth
             className="mb-2"
             value={formData.jenis}
             onChange={handleInputChange}
           >
-            <MenuItem value="Didalam kantor">
-              <div className="text-left">Didalam kantor</div>
-            </MenuItem>
-            <MenuItem value="Keluar kantor">
-              <div className="text-left">Keluar kantor</div>
-            </MenuItem>
+            <MenuItem value="Keluar kantor">Keluar kantor</MenuItem>
+            <MenuItem value="Dalam kantor">Dalam kantor</MenuItem>
           </TextField>
         </Grid>
-
-        {/* Image */}
-        {showUploadFile && (
-          <Grid item xs={12}>
-            <p className="text-left break-words">Upload Files</p>
-            <div {...getRootProps()} className="mb-2">
-              <input {...getInputProps()} id="fileInput" />
-
-              {uploading ? (
-                <div className="flex items-center">
-                  <CircularProgress color="primary" size={24} />
-                  <p className="ml-2">Uploading...</p>
-                </div>
-              ) : uploadedFiles.length > 0 ? (
-                <div>
-                  <Typography variant="body2">
-                    {uploadedFiles.length} Files Uploaded
-                  </Typography>
-                  <ul>
-                    {uploadedFiles.map((file, index) => (
-                      <li key={index}>
-                        <CheckCircleIcon color="primary" />
-                        <span className="ml-2 break-words">{file.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <Button size="small" variant="outlined">
-                  Drop files here
-                </Button>
-              )}
-            </div>
-          </Grid>
-        )}
       </Grid>
-      <div className="mt-5">
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={
-            !isFormValid ||
-            (formData.jenis === "Keluar kantor" && uploadedFiles.length === 0)
-          }
-        >
-          Submit
-        </Button>
-      </div>
-      <Modal open={showHistoryModal} onClose={handleCloseHistoryModal}>
-        <div
-          className="mx-auto flex flex-col items-center justify-center absolute w-10/12"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <div className="w-full rounded-lg text-center align-center p-5 bg-primary">
-            <div className="flex justify-between">
-              <Typography variant="h6" id="history-modal-title">
-                History Table
-              </Typography>
 
-              <HighlightOffIcon onClick={handleCloseHistoryModal} />
+      {showUploadFile && (
+        <div>
+          <div
+            {...getRootProps()}
+            className={`w-full h-20 flex justify-center items-center border-2 border-dashed border-gray-400 rounded-md mb-2`}
+            style={{
+              backgroundColor: uploadedFiles.length > 0 ? "#f0f0f0" : "inherit",
+              position: "relative",
+            }}
+          >
+            <input {...getInputProps()} />
+            {uploading ? (
+              <CircularProgress size={30} />
+            ) : (
+              <p>
+                {uploadedFiles.length > 0
+                  ? "Drag & drop files to upload more"
+                  : "Drag & drop a file here, or click to select a file"}
+              </p>
+            )}
+          </div>
+
+          {uploadedFiles.length > 0 && (
+            <div className="w-full mb-2">
+              {uploadedFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center mb-1"
+                >
+                  <div className="flex items-center">
+                    <CheckCircleIcon style={{ marginRight: "5px" }} />
+                    <span>{file.name}</span>
+                  </div>
+                  <HighlightOffIcon
+                    onClick={() =>
+                      setUploadedFiles((prevFiles) =>
+                        prevFiles.filter((_, i) => i !== index)
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
+                  />
+                </div>
+              ))}
             </div>
-            <TableContainer
-              className="rounded-md overflow-y-auto"
-              component={Paper}
-            >
-              <Table size="small">
-                <TableHead style={{ backgroundColor: "#204684" }}>
-                  <TableRow>
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Keterangan
-                      </Typography>
-                    </TableCell>
+          )}
+        </div>
+      )}
 
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Lokasi
-                      </Typography>
-                    </TableCell>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        disabled={!isFormValid}
+        fullWidth
+      >
+        Submit
+      </Button>
 
+      {/* Table */}
+      <TableContainer component={Paper} className="mt-4">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Time</TableCell>
+              <TableCell>Jenis</TableCell>
+              <TableCell>Lokasi</TableCell>
+              <TableCell>Keterangan</TableCell>
+              <TableCell>Dokumen</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData.length > 0 ? (
+              tableData
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.time}</TableCell>
+                    <TableCell>{row.jenis}</TableCell>
+                    <TableCell>{row.lokasi}</TableCell>
+                    <TableCell>{row.keterangan}</TableCell>
                     <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Waktu
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Tanggal Laporan
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Tanggal Kirim
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Jenis
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        className="font-semibold text-white flex justify-center"
-                      >
-                        Bukti
-                      </Typography>
+                      {row.dokumen.map((doc, docIndex) => (
+                        <img
+                          key={docIndex}
+                          src={doc}
+                          alt="Dokumen"
+                          className="cursor-pointer"
+                          onClick={() => handleImageClick(doc)}
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                      ))}
                     </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tableData
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.keterangan}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.lokasi}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.time}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.target}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.tanggal}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <div className="text-center">{row.jenis}</div>
-                        </TableCell>
-                        <TableCell className="align-center">
-                          {row.dokumen && (
-                            <div className="flex justify-center gap-[20%]">
-                              {row.dokumen[0] && (
-                                <img
-                                  src={row.dokumen}
-                                  className="h-7 cursor-pointer m-auto"
-                                  onClick={() => handleImageClick(row.dokumen)}
-                                />
-                              )}
-                              {row.dokumen[1] && (
-                                <img
-                                  src={row.dokumen}
-                                  className="h-7 cursor-pointer m-auto"
-                                  onClick={() => handleImageClick(row.dokumen)}
-                                />
-                              )}
-                            </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={tableData.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No Data Available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <TablePagination
+          component="div"
+          count={tableData.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      </TableContainer>
+
+      {/* History Modal */}
+      <Modal open={showHistoryModal} onClose={handleCloseHistoryModal}>
+        <div className="flex items-center justify-center h-full">
+          <div className="bg-white p-8 rounded-lg">
+            <Typography variant="h6">History Modal</Typography>
+            <Button onClick={handleCloseHistoryModal}>Close</Button>
           </div>
         </div>
       </Modal>
-      <Dialog
-        open={Boolean(selectedImage)}
-        onClose={() => setSelectedImage(null)}
-        maxWidth="lg"
-      >
-        <DialogContent>
-          <img
-            src={selectedImage}
-            style={{ maxWidth: "100%", maxHeight: "80vh" }}
-          />
-        </DialogContent>
-      </Dialog>
+
+      {/* Image Preview Modal */}
+      {selectedImage && (
+        <Dialog
+          open={!!selectedImage}
+          onClose={() => setSelectedImage(null)}
+          maxWidth="md"
+        >
+          <img src={selectedImage} alt="Preview" style={{ width: "100%" }} />
+        </Dialog>
+      )}
     </form>
   );
 }
 
-export default LaporanKegiatanDashboard;
+export default LaporanKegiatanDashboardPage;
