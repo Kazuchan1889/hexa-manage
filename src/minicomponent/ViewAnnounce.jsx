@@ -86,7 +86,9 @@ const AnnouncementList = () => {
 
   return (
     <div className="container mx-auto p-4 rounded-lg">
-      <h1 className="text-xl font-bold mb-4">Announcement</h1>
+      <div className="sticky top-0 bg-white z-10">
+        <h1 className="text-xl font-bold mb-4">Announcement</h1>
+      </div>
       <div id="announcement-list" className="h-[12rem] mb-2 overflow-scroll">
         {announcements.map((announcement, index) => (
           <div key={index} className="flex items-start bg-white p-4 rounded-xl border border-gray-400 mb-4 shadow">

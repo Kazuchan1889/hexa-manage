@@ -184,7 +184,7 @@ const NavbarUser = () => {
       navigate("/resign");
     }
     else if (item.label === "Overtime") {
-      navigate("/Over");
+      navigate("/OverUser");
     }
     else if (item.label === "Laporan") {
       navigate("/laporan");

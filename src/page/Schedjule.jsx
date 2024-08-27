@@ -87,24 +87,24 @@ function Taskform() {
                         Submit
                     </button>
                 </form>
-                <div className="mt-10 ">
+                <div className="mt-10">
                     <h2 className="text-xl font-semibold mb-3 text-center">Daftar Jadwal</h2>
-                    <table className="w-full">
+                    <table className="w-full border-collapse">
                         <thead>
-                            <tr>  
-                                <th className="text-left">Kegiatan</th>
-                                <th className="text-left">Tanggal Mulai</th>
-                                <th className="text-left">Tanggal Selesai</th>
-                                <th className="text-left">Countdown</th> {/* Add column for countdown */}
+                            <tr>
+                                <th className="text-left px-4 py-2 border-b border-gray-200">Kegiatan</th>
+                                <th className="text-left px-4 py-2 border-b border-gray-200">Tanggal Mulai</th>
+                                <th className="text-left px-4 py-2 border-b border-gray-200">Tanggal Selesai</th>
+                                <th className="text-left px-4 py-2 border-b border-gray-200">Countdown</th>
                             </tr>
                         </thead>
-                        <tbody >
+                        <tbody>
                             {schedules.map((schedule, index) => (
-                                <tr key={index}>
-                                    <td>{schedule.task}</td>
-                                    <td>{schedule.startDate.toLocaleDateString()}</td>
-                                    <td>{schedule.endDate.toLocaleDateString()}</td>
-                                    <td>{calculateCountdown(schedule.startDate, schedule.endDate)}</td> {/* Display countdown */}
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-4 py-2 border-b border-gray-200">{schedule.task}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200">{schedule.startDate.toLocaleDateString()}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200">{schedule.endDate.toLocaleDateString()}</td>
+                                    <td className="px-4 py-2 border-b border-gray-200">{calculateCountdown(schedule.startDate, schedule.endDate)}</td>
                                 </tr>
                             ))}
                         </tbody>
