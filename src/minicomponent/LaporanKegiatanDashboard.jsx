@@ -1,5 +1,3 @@
-// src/pages/LaporanKegiatanDashboardPage.js
-
 import React, { useState, useEffect } from "react";
 import {
   TextField,
@@ -48,6 +46,19 @@ function LaporanKegiatanDashboardPage() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
+    // Set the current time and date
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hours}:${minutes}`;
+    const currentDate = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      time: currentTime,
+      tanggal: currentDate,
+    }));
+
     // Fetch table data
     const apiUrl = `${ip}/api/laporan/get/data/self`;
     const headers = {
@@ -271,45 +282,10 @@ function LaporanKegiatanDashboardPage() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <TextField
-            name="time"
-            label="Time"
-            id="time"
-            type="time"
-            variant="outlined"
-            fullWidth
-            className="mb-2"
-            size="small"
-            value={formData.time}
-            onChange={handleInputChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={4}>
-          <TextField
-            name="tanggal"
-            label="Tanggal"
-            id="tanggal"
-            type="date"
-            variant="outlined"
-            fullWidth
-            className="mb-2"
-            size="small"
-            value={formData.tanggal}
-            onChange={handleInputChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            select
             name="jenis"
             label="Jenis"
             id="jenis"
+            select
             variant="outlined"
             size="small"
             fullWidth

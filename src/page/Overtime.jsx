@@ -268,7 +268,7 @@ const TableOverTime = () => {
   };
   
   return (
-    <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
+    <div className="flex flex-col lg:flex-row w-full mr-5 h-full">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">

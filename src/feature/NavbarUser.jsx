@@ -221,9 +221,9 @@ const NavbarUser = () => {
     checkOp("READ_RESIGN")
       ? { label: "Resign", active: false, to: "/masterresign" }
       : null,
-    // checkOp("READ_LAPORAN")
-    //   ? { label: "Laporan", active: false, to: "/masterlaporan" }
-    //   : null,
+    checkOp("READ_LAPORAN")
+      ? { label: "Laporan", active: false, to: "/masterlaporan" }
+      : null,
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,

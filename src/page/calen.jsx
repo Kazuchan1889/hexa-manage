@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
 import ip from "../ip";
 
-// Set the main application element for react-modal
 Modal.setAppElement("#root");
 
 const customStyles = {
@@ -15,6 +14,11 @@ const customStyles = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    padding: '0',
+    borderRadius: '12px',
+    border: 'none',
+    width: '500px',
+    height: '700px',
   },
 };
 
@@ -34,7 +38,7 @@ const CalendarComponent = () => {
   });
   const [selectedKaryawan, setSelectedKaryawan] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [selectAll, setSelectAll] = useState(false); // State for 'Select All'
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     fetchEventsByKaryawanId();
@@ -117,7 +121,7 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId();
+      fetchEventsByKaryawanId();  // Refresh the list after deletion
     } catch (error) {
       console.error(error);
     }
@@ -135,7 +139,7 @@ const CalendarComponent = () => {
     });
     setSelectedDate(new Date(schedule.tanggal_mulai));
     setSelectedKaryawan(selectedKaryawanOptions);
-    setSelectAll(selectedKaryawanOptions.length === employees.length); // Check if all employees are selected
+    setSelectAll(selectedKaryawanOptions.length === employees.length);
     setModalIsOpen(true);
   };
 
@@ -189,12 +193,12 @@ const CalendarComponent = () => {
       <div className="mx-20 text-left my-2">
         <h1 className="text-3xl font-bold">Calendar</h1>
       </div>
-      <div className="max-w-6xl mx-auto flex mt-6 border border-black">
-        <div className="w-3/4 p-6 border-r border-black">
+      <div className="max-w-6xl mx-auto flex mt-6 border border-gray-200 rounded-lg shadow-lg">
+        <div className="w-2/3 p-4 bg-white">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Schedule</h2>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow"
               onClick={() => {
                 setFormData({
                   id: null,
@@ -205,7 +209,7 @@ const CalendarComponent = () => {
                   karyawan: [],
                 });
                 setSelectedKaryawan([]);
-                setSelectAll(false); // Reset 'Select All' when adding new schedule
+                setSelectAll(false);
                 setModalIsOpen(true);
               }}
             >
@@ -214,126 +218,119 @@ const CalendarComponent = () => {
           </div>
           <div className="space-y-4 overflow-y-auto h-96">
             {selectedDateSchedules.map((schedule, index) => (
-              <div key={index} className="border p-4 rounded-md shadow-md">
-                <h3 className="text-lg font-bold text-left">{schedule.judul}</h3>
-                <p className="text-left">{schedule.deskripsi}</p> {/* Deskripsi ditambahkan di sini */}
-                <p className="text-left">{new Date(schedule.tanggal_mulai).toLocaleDateString()}</p>
-                <p className="text-left">{schedule.mulai} - {schedule.selesai}</p>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded"
-                    onClick={() => handleEdit(schedule)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-                    onClick={() => handleDelete(schedule.schedule_id)}
-                  >
-                    Delete
-                  </button>
+              <div key={index} className="border-l-4 border-blue-500 pl-4 pr-4 py-3 bg-gray-50 rounded-lg shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-800">{schedule.judul}</h3>
+                    <p className="text-gray-600">{schedule.deskripsi}</p>
+                    <p className="text-gray-500">{new Date(schedule.tanggal_mulai).toLocaleDateString()}</p>
+                    <p className="text-gray-500">{schedule.mulai} - {schedule.selesai}</p>
+                  </div>
+                  <div className="flex flex-col items-end space-y-2">
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => handleEdit(schedule)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-600 hover:underline"
+                      onClick={() => handleDelete(schedule.schedule_id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
-            {selectedDateSchedules.length === 0 && (
-              <div>Tidak ada jadwal untuk tanggal ini.</div>
-            )}
           </div>
         </div>
-        <div className="w-1/4 p-6">
-          <div className="w-full">
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => handleDateChange(date)}
-              inline
-              calendarClassName="full-width-calendar"
-              dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200" : undefined)}
-            />
-          </div>
+        <div className="w-1/3 bg-gray-100 p-4">
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            inline
+            highlightDates={events.map((event) => new Date(event.tanggal_mulai))}
+            dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200 rounded-full" : undefined)}
+          />
         </div>
-        <Modal
-          style={customStyles}
-          isOpen={modalIsOpen}
-          onRequestClose={() => setModalIsOpen(false)}
-          contentLabel={formData.id ? "Edit Schedule Modal" : "Add Schedule Modal"}
-        >
-          <h2 className="font-bold text-xl text-center">{formData.id ? "Edit Schedule" : "Add Schedule"}</h2>
-          <form onSubmit={formData.id ? handleUpdate : handleSubmit}>
-            <div className="mb-4">
-              <label>Activity:</label>
+      </div>
+
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={customStyles}>
+        <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+          <h2 className="text-xl font-bold mb-4">{formData.id ? "Edit Schedule" : "Add Schedule"}</h2>
+          <form onSubmit={formData.id ? handleUpdate : handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Title</label>
               <input
                 type="text"
                 value={formData.judul}
                 onChange={(e) => setFormData({ ...formData, judul: e.target.value })}
-                className="w-full border rounded p-2"
+                className="block w-full border border-gray-300 rounded-lg py-2 px-3"
+                required
               />
             </div>
-            <div className="mb-4">
-              <label>Description:</label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
               <textarea
                 value={formData.deskripsi}
                 onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                className="w-full border rounded p-2"
-              ></textarea>
-            </div>
-            <div className="mb-4">
-              <label>Start Time:</label>
-              <input
-                type="time"
-                value={formData.mulai}
-                onChange={(e) => setFormData({ ...formData, mulai: e.target.value })}
-                className="w-full border rounded p-2"
+                className="block w-full border border-gray-300 rounded-lg py-2 px-3"
+                required
               />
             </div>
-            <div className="mb-4">
-              <label>End Time:</label>
-              <input
-                type="time"
-                value={formData.selesai}
-                onChange={(e) => setFormData({ ...formData, selesai: e.target.value })}
-                className="w-full border rounded p-2"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Start Time</label>
+                <input
+                  type="time"
+                  value={formData.mulai}
+                  onChange={(e) => setFormData({ ...formData, mulai: e.target.value })}
+                  className="block w-full border border-gray-300 rounded-lg py-2 px-3"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">End Time</label>
+                <input
+                  type="time"
+                  value={formData.selesai}
+                  onChange={(e) => setFormData({ ...formData, selesai: e.target.value })}
+                  className="block w-full border border-gray-300 rounded-lg py-2 px-3"
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-4">
-              <label>Employee:</label>
-              <div className="flex items-center mb-2">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Employees</label>
+              <Select
+                isMulti
+                options={employees.map((employee) => ({ value: employee.id, label: employee.nama }))}
+                value={selectedKaryawan}
+                onChange={setSelectedKaryawan}
+                className="w-full"
+              />
+              <div className="flex items-center mt-2">
                 <input
                   type="checkbox"
                   checked={selectAll}
                   onChange={handleSelectAll}
                   className="mr-2"
                 />
-                <label>Select All</label>
+                <label className="text-sm font-semibold text-gray-700">Select All Employees</label>
               </div>
-              <Select
-                isMulti
-                value={selectedKaryawan}
-                onChange={(selectedOptions) => setSelectedKaryawan(selectedOptions)}
-                options={employees.map((employee) => ({
-                  value: employee.id,
-                  label: employee.nama,
-                }))}
-                className="w-full border rounded p-2"
-              />
             </div>
             <div className="flex justify-end">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow"
               >
-                {formData.id ? "Update" : "Add"}
-              </button>
-              <button
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2"
-                onClick={() => setModalIsOpen(false)}
-                type="button"
-              >
-                Cancel
+                {formData.id ? "Update" : "Save"}
               </button>
             </div>
           </form>
-        </Modal>
-      </div>
+        </div>
+      </Modal>
     </section>
   );
 };

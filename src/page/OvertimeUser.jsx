@@ -28,6 +28,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import ActionButton from "../feature/ActionButton";
 import Formovertime from "../page/Formovertime";
+import dayjs from 'dayjs';
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
@@ -265,7 +266,7 @@ const OvertimeUser = () => {
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">Selesai</p>
                       </TableCell>
-                      <TableCell align="center" className="w-[30%]">
+                      <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold">Tanggal</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
@@ -287,7 +288,9 @@ const OvertimeUser = () => {
                           <TableCell align="center">{row.note}</TableCell>
                           <TableCell align="center">{row.mulai}</TableCell>
                           <TableCell align="center">{row.selesai}</TableCell>
-                          <TableCell align="center">{row.tanggal_overtime}</TableCell>
+                          <TableCell align="center">
+                          {dayjs(row.tanggal_overtime).format('DD-MM-YYYY')}
+                        </TableCell>
                           <TableCell align="center">{row.tipe}</TableCell>
                           <TableCell align="center">{row.break}</TableCell>
                           <TableCell

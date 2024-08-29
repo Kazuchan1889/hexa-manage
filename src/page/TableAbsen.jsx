@@ -463,20 +463,39 @@ const TableAbsen = () => {
                       : rows
                     )
                       .sort((a, b) => a.nama.localeCompare(b.nama))
-                      .map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">{row.nama}</TableCell>
-                          <TableCell align="center">{row.masuk}</TableCell>
-                          <TableCell align="center">{row.keluar}</TableCell>
-                          <TableCell align="center">{row.date}</TableCell>
-                          <TableCell
-                            align="center"
-                            className="flex items-center"
-                          >
-                            <PatchStatus string={row.status} id={row.id} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      .map((row, index) => {
+                        // Parse the 'masuk' and 'keluar' times from the row data
+                        const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                        const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                      
+                        // Compare with the `timeMasuk` and `timeKeluar`
+                        const isLateMasuk = jamMasukRow > timeMasuk;
+                        const isLateKeluar = jamKeluarRow > timeKeluar;
+                      
+                        return (
+                          <TableRow key={index}>
+                            <TableCell align="center">{row.nama}</TableCell>
+                            <TableCell 
+                              align="center" 
+                              style={{ color: isLateMasuk ? 'red' : 'black' }}
+                            >
+                              {row.masuk}
+                            </TableCell>
+                            <TableCell 
+                              align="center" 
+                              style={{ color: isLateKeluar ? 'red' : 'black' }}
+                            >
+                              {row.keluar}
+                            </TableCell>
+                            <TableCell align="center">{row.date}</TableCell>
+                            <TableCell align="center" className="flex items-center">
+                              <PatchStatus string={row.status} id={row.id} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    }
+                      
                   </TableBody>
                 </Table>
               </TableContainer>
