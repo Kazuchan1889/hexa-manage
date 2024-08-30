@@ -40,7 +40,7 @@ const AnnouncementEdit = ({ announcement, onClose, onUpdate }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-10">
       <div className="bg-white p-4 rounded shadow-md w-full max-w-lg">
         <h2 className="text-2xl font-semibold mb-4">Edit Announcement</h2>
         <input

@@ -69,17 +69,7 @@ function LiveAttendance() {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-            const photoDataUrl = canvas.toDataURL("image/jpeg");
-
-            // Create a link element to download the photo
-            const link = document.createElement("a");
-            link.href = photoDataUrl;
-            link.download = "checkin_photo.jpg";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            return photoDataUrl;
+            return canvas.toDataURL("image/jpeg");  // Return the Base64 encoded string
         };
 
         const getLocation = () => {
@@ -118,9 +108,9 @@ function LiveAttendance() {
                 setLocation(location);
 
                 const isWithinArea = (latitude, longitude) => {
-                    const targetLat = -6.1675795; 
-                    const targetLng = 106.7824544; 
-                    const radius = 5000; // 80 meters radius
+                    const targetLat = -6.1721198; 
+                    const targetLng = 106.6409313; 
+                    const radius = 8000; // 80 meters radius
 
                     const distance = calculateDistance(latitude, longitude, targetLat, targetLng);
 
@@ -148,9 +138,14 @@ function LiveAttendance() {
                         Authorization: localStorage.getItem("accessToken"),
                         "Content-Type": "application/json",
                     };
+                    const payload = {
+                        photo, 
+                        location,
+                        
+                    };  
 
                     axios
-                        .patch(apiSubmit, { photo, location }, { headers })
+                    .patch(apiSubmit, payload, { headers })
                         .then((response) => {
                             const apiCheckIn = `${ip}/api/absensi/get/today/self`;
                             axios
@@ -201,13 +196,27 @@ function LiveAttendance() {
     }, []);
 
     const handleCheckOut = () => {
+        const capturePhoto = () => {
+            const video = videoRef.current;
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL("image/jpeg");
+        };
+    
+        const photo = capturePhoto();
+    
         const apiSubmit = `${ip}/api/absensi/patch/keluar`;
         const headers = {
             Authorization: localStorage.getItem("accessToken"),
             "Content-Type": "application/json",
         };
+        const payload = {
+            photo
+        };
         axios
-            .patch(apiSubmit, {}, { headers })
+            .patch(apiSubmit, payload, { headers })
             .then((response) => {
                 if (!response.data.includes("dapat dilakukan")) setKeluar(true);
                 console.log(response);

@@ -12,10 +12,7 @@ function Shortcut() {
                     <a className="text-sm" href="/reimburst">Request Reimbursement</a>
                 </div>
                 <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <a className="text-sm" href="/cuti">Request Cuti</a>
-                </div>
-                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <a className="text-sm" href="/izin">Request Izin</a>
+                    <a className="text-sm" href="/cuti">Request Time Off</a>
                 </div>
             </div>
         </div>
