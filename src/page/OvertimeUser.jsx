@@ -289,7 +289,7 @@ const OvertimeUser = () => {
                           <TableCell align="center">{row.mulai}</TableCell>
                           <TableCell align="center">{row.selesai}</TableCell>
                           <TableCell align="center">
-                          {dayjs(row.tanggal_overtime).format('DD-MM-YYYY')}
+                          {row.tanggal_overtime}
                         </TableCell>
                           <TableCell align="center">{row.tipe}</TableCell>
                           <TableCell align="center">{row.break}</TableCell>

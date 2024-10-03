@@ -82,7 +82,7 @@ function Login() {
     <div className="lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md m-auto">
       <div className="absolute left-18 top-24 lg:left-5 lg:top-5">
         <img
-          src="../../public/logo-login.png"
+         src="/logo-login.png"
           className="rounded-md h-14"
         ></img>
       </div>
@@ -160,7 +160,7 @@ function Login() {
       <div className="w-1/2 flex justify-center items-center">
         {!isMobile && (
           <img
-            src="../../public/login.png"
+            src="/login.png"
             className="rounded-md h-full"
             alt="Login"
           />

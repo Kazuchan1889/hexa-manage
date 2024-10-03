@@ -76,24 +76,22 @@ function ProfileDashboard() {
   const hour = new Date().getHours();
 
   return (
-    <div className="flex justify-between items-center w-full">
-      <div className="flex flex-col text-left">
-        <div className="font-semibold text-xl lg:text-3xl">
+    <div className="flex flex-col md:flex-row justify-between items-center w-full p-4">
+      <div className="flex flex-col text-left mb-4 md:mb-0">
+        <div className="font-semibold text-lg md:text-2xl lg:text-3xl">
           <Typography variant="h5" className="text-neutral-200">
             <div className="w-full font-semibold">
               {hour >= 12 ? (hour >= 17 ? <h1>Good Evening, {userData.nama}! </h1> : <h1>Good Afternoon, {userData.nama}! </h1>) : <h1>Good Morning, {userData.nama}! </h1>}
             </div>
-            <h2 className="text-sm">It's {date}</h2>
+            <h2 className="text-sm md:text-base">It's {date}</h2>
             <Shortcut />
           </Typography>
           {isUserBelumCheckin && (
-            <div className="flex">
-              <ReportProblemIcon className="text-yellow-400" />
-              <div className="mt-1">
-                <Typography variant="body2" className="text-yellow-400">
-                  Jangan Lupa Check in Hari ini!
-                </Typography>
-              </div>
+            <div className="flex items-center mt-2">
+              <ReportProblemIcon className="text-yellow-400 mr-2" />
+              <Typography variant="body2" className="text-yellow-400">
+                Jangan Lupa Check in Hari ini!
+              </Typography>
             </div>
           )}
         </div>

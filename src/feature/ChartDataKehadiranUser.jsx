@@ -24,8 +24,8 @@ function ChartDataKehadiranUser() {
       .catch((error) => {
         console.error("Error", error);
       });
-    // Lakukan panggilan API di sini untuk mendapatkan data pengguna);
-  });
+  }, []);  // Menambahkan dependency array kosong untuk pemanggilan API satu kali
+
   const data = {
     labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
     datasets: [
@@ -56,19 +56,19 @@ function ChartDataKehadiranUser() {
     plugins: {
       legend: {
         display: true,
-        position: "right", // Adjust the legend position as needed
+        position: "right",
       },
     },
-    cutout: 0, // Change the cutout to 0 to make it a pie chart
+    cutout: 0,
   };
 
   return (
     <div className="h-fit w-[16rem] mx-auto flex flex-col items-center">
       <div className="">
-        <Typography variant="h6">Data Kehadiranmu Hari ini</Typography>
+        <Typography variant="h6">Data Kehadiranmu Bulan Ini</Typography>
       </div>
       <div className="mx-auto w-full h-full lg:h-72">
-        <Pie data={data} options={options} /> {/* Change to Pie chart */}
+        <Pie data={data} options={options} />
       </div>
     </div>
   );

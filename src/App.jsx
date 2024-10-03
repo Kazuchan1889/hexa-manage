@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState, useEffect } from "react";
 import DashboardAdmin from "./page/DashboardAdmin";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DashboardUser from "./page/DashboardUser";
@@ -41,6 +42,9 @@ import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
 
+// Import komponen loading
+import Loading from "./page/loading"; 
+
 function App() {
   // Untuk mengganti color primary
   const theme = createTheme({
@@ -50,6 +54,22 @@ function App() {
       },
     },
   });
+
+  // State untuk loading
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulasi loading, bisa diganti dengan request API atau logika lainnya
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000); // 2 detik loading
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <Loading />; // Tampilkan loading page selama state isLoading true
+  }
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -72,26 +92,25 @@ function App() {
           <Route path="/masterlaporan" element={<TableLaporanKegiatan />} />
           <Route path="/masterpayroll" element={<TablePayroll />} />
           <Route path="/masterresign" element={<TableResign />} />
-          <Route path="/LiveAttendance" element={<LiveAttendance />} />
+          <Route path="/liveattendance" element={<LiveAttendance />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
           <Route path="/Timeoff" element={<Timeoff />} />
           <Route path="/Over" element={<Overtime />} />
           <Route path="/Fover" element={<Povertime />} />
           <Route path="/Schejule" element={<Schedjule />} />
           <Route path="/Cal" element={<Cal />} />
-           <Route path="/TimeOff" element={<Timeoff />} /> 
+          <Route path="/TimeOff" element={<Timeoff />} />
           <Route path="/CompanyBio" element={<CompanyBio />} />
           <Route path="/CompanyBioP" element={<CompanyBioP />} />
           <Route path="/Asset" element={<Asset />} />
-           <Route path="/Fasset" element={<Fasset />} /> 
+          <Route path="/Fasset" element={<Fasset />} />
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
-           <Route path="/UpFile" element={<UpFile />} /> 
+          <Route path="/UpFile" element={<UpFile />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
-          
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

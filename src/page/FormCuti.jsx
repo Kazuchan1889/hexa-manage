@@ -123,7 +123,7 @@ function FormPage() {
 
     const apiSubmit = selectedForm === "Izin"
       ? `${ip}/api/pengajuan/post/izin`
-      : `${ip}/api/pengajuan/post/cuti/bersama`;
+      : `${ip}/api/pengajuan/post/cuti`;
 
     try {
       const response = await axios.post(apiSubmit, requestBody, {
@@ -342,13 +342,13 @@ function FormPage() {
                             </TableCell>
                             
                             <TableCell className="w-1/5">
-                              <Typography variant="body2" className="text-center">
-                                {new Date(row.mulai).toLocaleDateString()}
+                              <Typography variant="body2" type="date" className="text-center">
+                                {(row.mulai)}
                               </Typography>
                             </TableCell>
                             <TableCell className="w-1/5">
                               <Typography variant="body2" className="text-center">
-                                {new Date(row.selesai).toLocaleDateString()}
+                                {(row.selesai)}
                               </Typography>
                             </TableCell>
                             <TableCell className="w-1/5">

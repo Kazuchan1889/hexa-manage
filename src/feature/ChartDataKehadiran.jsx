@@ -24,8 +24,7 @@ function ChartDataKehadiran() {
       .catch((error) => {
         console.error("Error", error);
       });
-    // Lakukan panggilan API di sini untuk mendapatkan data pengguna);
-  });
+  }, []); // Tambahkan array kosong [] agar useEffect hanya dipanggil sekali
 
   const data = {
     labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
@@ -66,7 +65,7 @@ function ChartDataKehadiran() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">Data Kehadiran</Typography>
+        <Typography variant="h6">OverAll Attendance Data</Typography>
       </div>
       <div className="mx-auto w-full h-52 lg:h-60">
         <Pie data={data} options={options} />

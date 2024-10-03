@@ -17,23 +17,23 @@ function AccountSettingUser() {
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
-  localStorage.getItem("accessToken")
-  const role = localStorage.getItem("role")
   
+  // Fetching accessToken and role from localStorage
+  const role = localStorage.getItem("role");
+
   useEffect(() => {
-   
     const apiUrl = `${ip}/api/karyawan/get/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
     };
 
+    // Fetch user data
     axios
       .get(apiUrl, { headers })
       .then((response) => {
         const userData = response.data[0];
 
-        console.log(apiUrl);
-        // Check if any of the required properties in userData are null or empty
+        // Check if any required user properties are missing
         const requiredProperties = [
           "alamat",
           "email",
@@ -47,8 +47,8 @@ function AccountSettingUser() {
           (property) => !userData[property]
         );
 
+        // Alert if required properties are empty
         if (emptyProperties.length > 0) {
-          // Display an alert if any of the required properties are null or empty
           Swal.fire({
             icon: "warning",
             title: "Incomplete User Data",
@@ -58,6 +58,7 @@ function AccountSettingUser() {
           });
         }
 
+        // Update user data in state
         setNama(userData.nama || "");
         setDokumen(userData.dokumen || null);
         setJabatan(userData.jabatan || "");
@@ -65,9 +66,7 @@ function AccountSettingUser() {
         localStorage.setItem("cutimandiri", userData.cutimandiri);
       })
       .catch((error) => {
-        console.error("Error", error);
-
-        // Display alert if data is not available
+        // Error alert if data is unavailable
         Swal.fire({
           icon: "error",
           title: "Data Not Available",
@@ -83,16 +82,12 @@ function AccountSettingUser() {
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
-        return (
-          <div className=''>
-            <SettingUser />
-          </div>
-        );
+        return <SettingUser />;
       case 'security':
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Change Password</h2>
-           <Changepass />
+            <Changepass />
           </div>
         );
       case 'notifications':
@@ -102,8 +97,6 @@ function AccountSettingUser() {
             <Calend />
           </div>
         );
-      
-      
       case 'CompanyBio':
         return (
           <div>
@@ -111,8 +104,6 @@ function AccountSettingUser() {
             {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
-      
-      
       default:
         return null;
     }
@@ -122,45 +113,68 @@ function AccountSettingUser() {
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
       <Bub />
-      <div  className="flex m-4 rounded-xl bg-white drop-shadow-lg ">
-        <div className="h-[folH] w-1/4 p-4 border border-gray" >
+      <div className="flex m-4 rounded-xl bg-white drop-shadow-lg">
+        {/* Sidebar for user info and navigation */}
+        <div className="h-[folH] w-1/4 p-4 border border-gray">
           <ul className="h-full flex flex-col space-y-2">
-            <div className='flex justify-center w-full pl-4 pt-4 pr-4'>
+            <div className="flex justify-center w-full pl-4 pt-4 pr-4">
+              {/* Responsive Avatar */}
               {dokumen && (
                 <Avatar
                   alt="User Avatar"
                   src={dokumen}
-                  sx={{ width: 144, height: 144 }}
+                  // Responsive width and height
+                  className="w-36 h-36 md:w-32 md:h-32 sm:w-28 sm:h-28"
+                  // Adjust size for very small screens
+                  sx={{
+                    '@media (max-width: 640px)': {
+                      width: 72, // equivalent to w-18 in Tailwind
+                      height: 72,
+                    },
+                  }}
                 />
               )}
             </div>
-            <div className='flex justify-center pb-4'>
-              <h1 className='font-bold'>
-                {nama}
-              </h1>
+            {/* User's name */}
+            <div className="flex justify-center pb-4">
+              <h1 className="font-bold text-lg sm:text-base md:text-lg lg:text-xl">{nama}</h1>
             </div>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'profile' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('profile')}>
+            {/* Navigation links */}
+            <li
+              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
+                activeTab === 'profile' ? 'bg-blue-500 text-white' : ''
+              }`}
+              onClick={() => handleTabClick('profile')}
+            >
               Profile
             </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('CompanyBio')}>
-            Company Bio
+            <li
+              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
+                activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''
+              }`}
+              onClick={() => handleTabClick('CompanyBio')}
+            >
+              Company Bio
             </li>
-            <li className={`py-2 px-4 cursor-pointer rounded-lg ${activeTab === 'security' ? 'bg-blue-500 text-white' : ''}`} onClick={() => handleTabClick('security')}>
+            <li
+              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
+                activeTab === 'security' ? 'bg-blue-500 text-white' : ''
+              }`}
+              onClick={() => handleTabClick('security')}
+            >
               Security
             </li>
-            
-            
           </ul>
         </div>
-        <div id='folH' className="w-full bg-200 p-4 border-t border-r border-b border-gray">
+        {/* Main content area */}
+        <div
+          id="folH"
+          className="w-full bg-200 p-4 border-t border-r border-b border-gray text-justify text-sm sm:text-base md:text-lg"
+        >
           {renderContent()}
         </div>
-        
       </div>
-      
     </div>
-    
-    
   );
 }
 

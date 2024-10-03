@@ -65,7 +65,7 @@ function ChartDataKaryawan() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">Data Karyawan</Typography>
+        <Typography variant="h6">Employee Data</Typography>
       </div>
       <div className="mx-auto w-full h-fit lg:h-60">
         <Pie data={data} options={options} /> {/* Change to Pie chart */}

@@ -293,7 +293,7 @@ const NavbarUser = () => {
               className="text-center font-bold ml-4"
             >
               <img
-                src="../../public/logo-login.png"
+                src="/logo-login.png"
                 className="h-10"
                 alt="logo"
                 href="/dashboard"

@@ -7,10 +7,30 @@ import AnnouncementList from "../minicomponent/ViewAnnounce";
 import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import View from "../minicomponent/viewdata";
 
+const getIdFromToken = () => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) return null;
+
+  // Split token untuk mendapatkan payload (bagian kedua dari JWT)
+  const base64Url = token.split('.')[1]; 
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  
+  // Dekode payload
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  const payload = JSON.parse(jsonPayload);
+
+  // Ambil id dari payload
+  return payload.id; 
+};
+
 function DashboardUser() {
   const [nama, setNama] = useState("");
   const [dokumen, setDokumen] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [scheduleItems, setScheduleItems] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
@@ -46,38 +66,33 @@ function DashboardUser() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  const scheduleItems = [
-    {
-      title: "Meeting with Marketing Team",
-      date: "2024-08-22",
-      time: "10:00 AM - 11:00 AM"
-    },
-    {
-      title: "Project Deadline",
-      date: "2024-08-23",
-      time: "5:00 PM"
-    },
-    {
-      title: "Team Building Activity",
-      date: "2024-08-25",
-      time: "2:00 PM - 4:00 PM"
-    },
-    {
-      title: "Quarterly Review Meeting",
-      date: "2024-08-28",
-      time: "1:00 PM - 3:00 PM"
-    },
-    {
-      title: "Client Presentation",
-      date: "2024-08-30",
-      time: "11:00 AM - 12:00 PM"
-    },
-    {
-      title: "Office Renovation",
-      date: "2024-09-01",
-      time: "All Day"
-    }
-  ];
+  useEffect(() => {
+    const fetchScheduleItems = async () => {
+      try {
+        const id = getIdFromToken("accessToken"); // Ambil id dari accessToken
+        if (!id) {
+          console.error('ID not found in token');
+          return;
+        }
+
+        const response = await axios.get(`${ip}/api/schedjul/scheduler/assigned/karyawan/${id}`, {
+          headers: { Authorization: localStorage.getItem("accessToken") },
+        });
+        setScheduleItems(response.data);
+      } catch (error) {
+        console.error("Error fetching schedule items:", error);
+      }
+    };
+
+    fetchScheduleItems();
+  }, []);
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
+  };
+  
+ 
 
   return (
     <div className="w-full min-h-screen bg-gray-100 overflow-y-auto">
@@ -100,15 +115,20 @@ function DashboardUser() {
               <AnnouncementList />
             </div>
           </div>
+          
           <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
+          <div className="sticky top-0 bg-white p-2 z-10">
+                    <div className="text-xl font-bold">Upcoming Schedule</div>
+                  </div>
           <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
                     <ul className="space-y-4 mt-4">
-                      {scheduleItems.map((item, index) => (
-                        <li key={index} className="border p-4 rounded-lg shadow-sm">
-                          <h3 className="text-lg font-semibold">{item.title}</h3>
-                          <p className="text-sm text-gray-600">{item.date}</p>
-                          <p className="text-sm text-gray-600">{item.time}</p>
-                        </li>
+                      {scheduleItems
+                      .map((item, index) => (
+                       <li key={index} className="border p-4 rounded-lg shadow-sm">
+                       <div className="text-lg font-semibold">{item.judul}</div>
+                       <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
+                       <div className="text-sm text-gray-600">{item.mulai}</div>
+                     </li>
                       ))}
                     </ul>
                   </div>

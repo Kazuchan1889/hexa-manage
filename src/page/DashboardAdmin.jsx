@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, IconButton } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
@@ -16,6 +17,25 @@ import CloseIcon from "@mui/icons-material/Close";
 import ip from "../ip";
 import UserIcon from '@mui/icons-material/AccountCircle'; // Menggunakan ikon pengguna dari Material UI
 
+const getIdFromToken = () => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) return null;
+
+  // Split token untuk mendapatkan payload (bagian kedua dari JWT)
+  const base64Url = token.split('.')[1]; 
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  
+  // Dekode payload
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  const payload = JSON.parse(jsonPayload);
+
+  // Ambil id dari payload
+  return payload.id; 
+};
+
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -23,7 +43,9 @@ function DashboardAdmin() {
   const [isBubbleOpen, setIsBubbleOpen] = useState(false);
   const [scheduleItems, setScheduleItems] = useState([]);
   const [absensiItems, setAbsensiItems] = useState([]);
+  const [selectedChart, setSelectedChart] = useState("kehadiranUser");
   const checkOperation = localStorage.getItem("operation");
+  const karyawanId = localStorage.getItem('karyawan_id');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -34,7 +56,13 @@ function DashboardAdmin() {
   useEffect(() => {
     const fetchScheduleItems = async () => {
       try {
-        const response = await axios.get(`${ip}/api/schedjul/assigned`, {
+        const id = getIdFromToken("accessToken"); // Ambil id dari accessToken
+        if (!id) {
+          console.error('ID not found in token');
+          return;
+        }
+
+        const response = await axios.get(`${ip}/api/schedjul/scheduler/assigned/karyawan/${id}`, {
           headers: { Authorization: localStorage.getItem("accessToken") },
         });
         setScheduleItems(response.data);
@@ -42,6 +70,7 @@ function DashboardAdmin() {
         console.error("Error fetching schedule items:", error);
       }
     };
+    
 
     const fetchAbsensiItems = async () => {
       try {
@@ -80,22 +109,63 @@ function DashboardAdmin() {
     return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
   };
 
-  const renderCharts = () => (
-    <div className={`grid gap-4 ${isMobile ? "grid-cols-1" : "grid-cols-4"} w-full`}>
-      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-        <ChartDataKehadiranUser />
+  const handleChartChange = (event) => {
+    setSelectedChart(event.target.value);
+  };
+
+  const renderCharts = () => {
+    if (isMobile) {
+      // Jika mobile, tampilkan dropdown di dalam kotak chart
+      return (
+        <div className="w-full">
+          <div className="flex justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+            <div className="w-full flex flex-col">
+              <div className="flex justify-end mb-2">
+                <FormControl variant="outlined" size="small" style={{ width: '150px' }}>
+                  <InputLabel id="chart-select-label">Select Chart</InputLabel>
+                  <Select
+                    labelId="chart-select-label"
+                    value={selectedChart}
+                    onChange={handleChartChange}
+                    label="Select Chart"
+                  >
+                    <MenuItem value="kehadiranUser">Kehadiran User</MenuItem>
+                    <MenuItem value="kehadiran">Kehadiran</MenuItem>
+                    <MenuItem value="gender">Gender</MenuItem>
+                    <MenuItem value="karyawan">Karyawan</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="flex justify-center items-center h-full">
+                {selectedChart === "kehadiranUser" && <ChartDataKehadiranUser />}
+                {selectedChart === "kehadiran" && <ChartDataKehadiran />}
+                {selectedChart === "gender" && <ChartDataGender />}
+                {selectedChart === "karyawan" && <ChartDataKaryawan />}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Jika bukan mobile, tampilkan semua chart dalam grid
+    return (
+      <div className="grid grid-cols-4 gap-4 w-full">
+        <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+          <ChartDataKehadiranUser />
+        </div>
+        <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+          <ChartDataKehadiran />
+        </div>
+        <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+          <ChartDataGender />
+        </div>
+        <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+          <ChartDataKaryawan />
+        </div>
       </div>
-      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-        <ChartDataKehadiran />
-      </div>
-      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-        <ChartDataGender />
-      </div>
-      <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-        <ChartDataKaryawan />
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
@@ -169,7 +239,8 @@ function DashboardAdmin() {
                   </div>
                   <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
                     <ul className="space-y-4 mt-4">
-                      {scheduleItems.map((item, index) => (
+                      {scheduleItems
+                      .map((item, index) => (
                        <li key={index} className="border p-4 rounded-lg shadow-sm">
                        <div className="text-lg font-semibold">{item.judul}</div>
                        <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>

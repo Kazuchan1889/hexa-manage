@@ -39,23 +39,63 @@ const CalendarComponent = () => {
   const [selectedKaryawan, setSelectedKaryawan] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // State untuk cek apakah user admin
 
   useEffect(() => {
     fetchEventsByKaryawanId();
     fetchEmployees();
+    checkUserRole(); // Cek role user saat page dibuka
   }, []);
+
+  const checkUserRole = async () => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        console.error("Access token not found.");
+        return;
+      }
+
+      // Ambil informasi dari token (asumsi menggunakan JWT)
+      const userData = JSON.parse(atob(accessToken.split('.')[1])); // Decode payload token
+      const role = userData?.role; // Ambil role dari payload token
+
+      // Jika role admin (bisa ganti sesuai nilai yang ada di token)
+      if (role === "admin") {
+        setIsAdmin(true); // Set state jika user admin
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+    }
+  };
 
   const fetchEventsByKaryawanId = async () => {
     try {
-      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${39}`, {
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        console.error("Access token not found.");
+        return;
+      }
+
+      const userData = JSON.parse(atob(accessToken.split('.')[1]));
+      const userId = userData?.id;
+
+      if (!userId) {
+        console.error("User ID not found in token.");
+        return;
+      }
+
+      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${userId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
+          Authorization: accessToken,
         },
       });
+      
       setEvents(response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching events by karyawan ID:", error);
     }
   };
 
@@ -197,24 +237,26 @@ const CalendarComponent = () => {
         <div className="w-2/3 p-4 bg-white">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold">Schedule</h2>
-            <button
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow"
-              onClick={() => {
-                setFormData({
-                  id: null,
-                  judul: "",
-                  deskripsi: "",
-                  mulai: "",
-                  selesai: "",
-                  karyawan: [],
-                });
-                setSelectedKaryawan([]);
-                setSelectAll(false);
-                setModalIsOpen(true);
-              }}
-            >
-              Add
-            </button>
+            {isAdmin && (
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow"
+                onClick={() => {
+                  setFormData({
+                    id: null,
+                    judul: "",
+                    deskripsi: "",
+                    mulai: "",
+                    selesai: "",
+                    karyawan: [],
+                  });
+                  setSelectedKaryawan([]);
+                  setSelectAll(false);
+                  setModalIsOpen(true);
+                }}
+              >
+                Add
+              </button>
+            )}
           </div>
           <div className="space-y-4 overflow-y-auto h-96">
             {selectedDateSchedules.map((schedule, index) => (
@@ -223,41 +265,46 @@ const CalendarComponent = () => {
                   <div>
                     <h3 className="text-lg font-bold text-gray-800">{schedule.judul}</h3>
                     <p className="text-gray-600">{schedule.deskripsi}</p>
-                    <p className="text-gray-500">{new Date(schedule.tanggal_mulai).toLocaleDateString()}</p>
-                    <p className="text-gray-500">{schedule.mulai} - {schedule.selesai}</p>
                   </div>
-                  <div className="flex flex-col items-end space-y-2">
-                    <button
-                      className="text-blue-600 hover:underline"
-                      onClick={() => handleEdit(schedule)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="text-red-600 hover:underline"
-                      onClick={() => handleDelete(schedule.schedule_id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  {isAdmin && (
+                    <div className="flex space-x-2">
+                      <button
+                        className="bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded"
+                        onClick={() => handleEdit(schedule)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
+                        onClick={() => handleDelete(schedule.schedule_id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="w-1/3 bg-gray-100 p-4">
+        <div className="w-1/3 p-4 bg-gray-50 border-l border-gray-200">
           <DatePicker
             selected={selectedDate}
             onChange={handleDateChange}
             inline
             highlightDates={events.map((event) => new Date(event.tanggal_mulai))}
-            dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200 rounded-full" : undefined)}
+            dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200" : undefined)}
           />
         </div>
       </div>
 
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} style={customStyles}>
-        <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+      {/* Modal for Add/Edit */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        style={customStyles}
+      >
+         <div className="bg-white p-6 rounded-lg shadow-lg h-full">
           <h2 className="text-xl font-bold mb-4">{formData.id ? "Edit Schedule" : "Add Schedule"}</h2>
           <form onSubmit={formData.id ? handleUpdate : handleSubmit} className="space-y-4">
             <div>
