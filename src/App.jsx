@@ -1,7 +1,12 @@
 import "./App.css";
-import { useState, useEffect } from "react";
-import DashboardAdmin from "./page/DashboardAdmin";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { stopLoading } from "./store/loadingSlice"; // Import action stopLoading dari redux slice
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+// Import komponen halaman
+import DashboardAdmin from "./page/DashboardAdmin";
 import DashboardUser from "./page/DashboardUser";
 import FormIzin from "./page/FormIzin";
 import Login from "./page/Login";
@@ -23,7 +28,6 @@ import TableLaporanKegiatan from "./page/TableLaporanKegiatan";
 import TablePayroll from "./page/TablePayroll";
 import TableResign from "./page/TableResign";
 import Overtime from "./page/Overtime";
-import { createTheme, ThemeProvider } from "@mui/material";
 import LiveAttendance from "./page/LiveAttendance";
 import AccountSettingUser from "./page/AccountSettingUser";
 import Timeoff from "./page/Timeoff";
@@ -43,10 +47,10 @@ import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
 
 // Import komponen loading
-import Loading from "./page/loading"; 
+import Loading from "./page/Loading"; 
 
 function App() {
-  // Untuk mengganti color primary
+  // Setup tema untuk aplikasi
   const theme = createTheme({
     palette: {
       primary: {
@@ -55,21 +59,24 @@ function App() {
     },
   });
 
-  // State untuk loading
-  const [isLoading, setIsLoading] = useState(true);
+  // Ambil loading state dari Redux
+  const isLoading = useSelector((state) => state.loading.isLoading);
+  const dispatch = useDispatch();
 
-  // Simulasi loading, bisa diganti dengan request API atau logika lainnya
+  // Menghentikan loading setelah 2 detik
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      dispatch(stopLoading()); // Memanggil stopLoading action untuk menghentikan loading
     }, 2000); // 2 detik loading
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch]);
 
+  // Jika sedang loading, tampilkan komponen Loading
   if (isLoading) {
-    return <Loading />; // Tampilkan loading page selama state isLoading true
+    return <Loading />;
   }
 
+  // Jika tidak loading, tampilkan konten aplikasi
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
