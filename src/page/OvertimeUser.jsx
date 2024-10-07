@@ -29,6 +29,7 @@ import ip from "../ip";
 import ActionButton from "../feature/ActionButton";
 import Formovertime from "../page/Formovertime";
 import dayjs from 'dayjs';
+import Loading from "../page/Loading"; // Import komponen Loading
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
@@ -40,6 +41,7 @@ const OvertimeUser = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // State loading
 
   const apiURLover = `${ip}/api/overtime/list`;
 
@@ -51,6 +53,7 @@ const OvertimeUser = () => {
   };
 
   const fetchData = async () => {
+    setLoading(true); // Mulai loading
     try {
       const response = await axios.get(apiURLover, config);
       const data = response.data.map((item) => ({
@@ -61,6 +64,8 @@ const OvertimeUser = () => {
       setOriginalRows(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Akhiri loading
     }
   };
 
@@ -170,6 +175,11 @@ const OvertimeUser = () => {
     return 0;
   });
 
+  // Format tanggal menjadi dd/mm/yyyy
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format('DD/MM/YYYY');
+  };
+
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -250,75 +260,77 @@ const OvertimeUser = () => {
         <Card className="w-[90%]">
           <CardContent>
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
-              <TableContainer
-                component={Paper}
-                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-              >
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Catatan</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Mulai</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Selesai</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[20%]">
-                        <p className="text-white font-semibold">Tanggal</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold text-center">Tipe Overtime</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold text-center">Break</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Action</p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {sortedRows
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">{row.note}</TableCell>
-                          <TableCell align="center">{row.mulai}</TableCell>
-                          <TableCell align="center">{row.selesai}</TableCell>
-                          <TableCell align="center">
-                          {row.tanggal_overtime}
+              {loading ? ( // Tampilkan komponen Loading ketika loading true
+                <Loading />
+              ) : (
+                <TableContainer
+                  component={Paper}
+                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+                >
+                  <Table aria-label="simple table" size="small">
+                    <TableHead style={{ backgroundColor: "#204684" }}>
+                      <TableRow>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Catatan</p>
                         </TableCell>
-                          <TableCell align="center">{row.tipe}</TableCell>
-                          <TableCell align="center">{row.break}</TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              color:
-                                row.status === "waiting for approval"
-                                  ? "black"
-                                  : row.status
-                                  ? "green"
-                                  : "red",
-                            }}
-                          >
-                            {row.status === "waiting for approval" ? (
-                              <div>
-                                waiting for aproval
-                              </div>
-                            ) : row.status ? (
-                              "Approved"
-                            ) : (
-                              "Rejected"
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Mulai</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Selesai</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[20%]">
+                          <p className="text-white font-semibold">Tanggal</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold text-center">Tipe Overtime</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold text-center">Break</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Action</p>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody className="bg-gray-100">
+                      {sortedRows
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell align="center">{row.note}</TableCell>
+                            <TableCell align="center">{row.mulai}</TableCell>
+                            <TableCell align="center">{row.selesai}</TableCell>
+                            <TableCell align="center">{formatDate(row.tanggal_overtime)}</TableCell>
+                            <TableCell align="center">{row.tipe}</TableCell>
+                            <TableCell align="center">{row.break}</TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                color:
+                                  row.status === "waiting for approval"
+                                    ? "black"
+                                    : row.status
+                                    ? "green"
+                                    : "red",
+                              }}
+                            >
+                              {row.status === "waiting for approval" ? (
+                                <div>
+                                  waiting for approval
+                                </div>
+                              ) : row.status ? (
+                                "Approved"
+                              ) : (
+                                "Rejected"
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
             </div>
           </CardContent>
         </Card>

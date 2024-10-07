@@ -15,7 +15,6 @@ import {
   Paper,
   TablePagination,
   Typography,
-  Modal,
   Dialog,
   DialogContent,
 } from "@mui/material";
@@ -27,13 +26,12 @@ import DownloadIcon from "@mui/icons-material/Download";
 
 function FormReimburst() {
   const [uploadedFile, setUploadedFile] = useState(null);
-  const [uploading] = useState(false);
-  const [uploadInProgress] = useState(false);
+  const [uploading, setUploading] = useState(false); // Menambahkan state untuk status upload
+  const [loading, setLoading] = useState(true); // Untuk status loading tabel dan form
   const [uploadedFileBase64, setUploadedFileBase64] = useState("");
   const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -45,29 +43,29 @@ function FormReimburst() {
     tanggal: "",
   });
 
-  //Untuk menghubungkan melalui accessToken
   useEffect(() => {
     const apiUrl = `${ip}/api/karyawan/get/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
     };
 
-    setLoading(true);
+    setLoading(true); // Aktifkan loading sebelum data dimuat
 
     axios
       .get(apiUrl, { headers })
       .then((response) => {
         fetchTableData();
         console.log(response.data);
-        setLoading(false);
+        setLoading(false); // Matikan loading setelah data berhasil dimuat
       })
       .catch((error) => {
         console.error(error);
-        setLoading(false);
+        setLoading(false); // Matikan loading jika terjadi kesalahan
       });
   }, []);
 
   const handleFileUpload = async (acceptedFiles) => {
+    setUploading(true); // Aktifkan loading saat file diunggah
     const maxSizeInBytes = 5000000; // 5 MB
     const newUploadedFiles = [...acceptedFiles];
     const oversizedFiles = acceptedFiles.filter(
@@ -75,12 +73,12 @@ function FormReimburst() {
     );
 
     if (oversizedFiles.length > 0) {
-      // Display a SweetAlert for oversized files using async function
       await Swal.fire({
         icon: "error",
         title: "File Too Big",
         text: "File size exceeds the limit of 5 MB",
       });
+      setUploading(false); // Matikan loading saat upload gagal
       return;
     }
 
@@ -92,6 +90,7 @@ function FormReimburst() {
     });
 
     setUploadedFileBase64s(newFileBase64s[0]);
+    setUploading(false); // Matikan loading setelah file berhasil diunggah
 
     console.log(acceptedFiles[0].path);
   };
@@ -106,7 +105,6 @@ function FormReimburst() {
       "file/rar": [".rar"],
     },
     onDrop: (acceptedFiles) => {
-      // Untuk melakukan Filter acceptedFiles hanya  png, jpg, and jpeg files
       const allowedExtensions = ["png", "jpg", "jpeg", "xlxs", "zip", "rar"];
       const filteredFiles = acceptedFiles.filter((file) => {
         const fileExtension = file.name.split(".").pop().toLowerCase();
@@ -120,7 +118,6 @@ function FormReimburst() {
     multiple: false,
   });
 
-  // Untuk membuat biaya menggunakan template (Rp.) dan setiap 3 angka akan memunculkan dots (.)
   const handleBiayaChange = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^\d]/g, "");
@@ -144,7 +141,7 @@ function FormReimburst() {
   };
 
   const fetchTableData = () => {
-    // Untuk Fetch updated data
+    setLoading(true); // Aktifkan loading sebelum data dimuat
     const apiUrl = `${ip}/api/reimburst/get/data/self`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -156,29 +153,26 @@ function FormReimburst() {
         const data = response.data;
         console.log(response.data);
         setTableData(data);
-        console.log(tableData);
+        setLoading(false); // Matikan loading setelah data berhasil dimuat
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false); // Matikan loading jika terjadi kesalahan
       });
   };
 
   useEffect(() => {
-    // Untuk mengecek field yang kosong
     const requiredFields = ["keterangan", "biaya", "tanggal", "image"];
     const isAnyFieldEmpty = requiredFields.some((field) => {
       if (field === "image") {
-        // Untuk mengecek image sudah terisi
         return !uploadedFile;
       }
       return !formData[field];
     });
 
-    // Untuk memastikan semua field terisi
     setIsFormValid(!isAnyFieldEmpty);
   }, [formData, uploadedFile]);
 
-  // Untuk melakukan Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(uploadedFile);
@@ -194,7 +188,6 @@ function FormReimburst() {
       return;
     }
 
-    // Untuk post menggunakan axios
     const apiSubmit = `${ip}/api/reimburst/post`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -251,7 +244,6 @@ function FormReimburst() {
       });
   }, []);
 
-  // Untuk pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -261,7 +253,6 @@ function FormReimburst() {
     setPage(0);
   };
 
-  // Untuk mengganti input pada field form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -270,10 +261,9 @@ function FormReimburst() {
     });
   };
 
-  // Untuk membuat responsive
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     window.addEventListener("resize", handleResize);
@@ -302,7 +292,6 @@ function FormReimburst() {
                 className="w-[90%] h-8/12 rounded-md bg-card p-5"
               >
                 <Grid container spacing={2}>
-                  {/* Keterangan */}
                   <Grid item xs={12} sm={6}>
                     <TextField
                       name="keterangan"
@@ -316,7 +305,6 @@ function FormReimburst() {
                     />
                   </Grid>
 
-                  {/* Biaya */}
                   <Grid item xs={12} sm={6}>
                     <TextField
                       name="biaya"
@@ -330,7 +318,6 @@ function FormReimburst() {
                     />
                   </Grid>
 
-                  {/* Tanggal */}
                   <Grid item xs={12} sm={6}>
                     <div className="mb-2">
                       <TextField
@@ -352,7 +339,6 @@ function FormReimburst() {
                     </div>
                   </Grid>
 
-                  {/* Image */}
                   <Grid item xs={12} sm={6}>
                     <Typography variant="body2" className="text-left">
                       Upload File

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -39,11 +41,12 @@ const TableAproIzin = () => {
   const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
-  const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
 
   const fetchData = () => {
     const apiURLIzin = `${ip}/api/pengajuan/get/izin`;
-
     const requestBody = { search: "", jenis: reportType, date: selectedDate };
 
     const config = {
@@ -52,11 +55,11 @@ const TableAproIzin = () => {
         Authorization: localStorage.getItem("accessToken"),
       },
     };
-    setLoading(true);
+
+    dispatch(loadingAction.startLoading(true)); // Start loading
     axios
       .post(apiURLIzin, requestBody, config)
       .then((response) => {
-        console.log("Response Data:", response.data);
         setRows(response.data);
         setOriginalRows(response.data);
       })
@@ -64,7 +67,7 @@ const TableAproIzin = () => {
         console.error("Error fetching data:", error);
       })
       .finally(() => {
-        setLoading(false); // Set loading to false regardless of success or error
+        dispatch(loadingAction.startLoading(false)); // Stop loading
       });
   };
 
@@ -80,7 +83,6 @@ const TableAproIzin = () => {
     setSelectedDate(date);
     setPage(0);
     setIsDateFilterOpen(false);
-    // console.log(date.toISOString(),selectedDate);
   };
 
   useEffect(() => {
@@ -100,10 +102,8 @@ const TableAproIzin = () => {
 
       axios
         .patch(apiApprovalURL, { suratsakit: true }, config)
-        .then((response) => {
-          console.log(response.data);
+        .then(() => {
           fetchData(); // Refresh data after approval
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Approval Success",
@@ -111,8 +111,6 @@ const TableAproIzin = () => {
           });
         })
         .catch((error) => {
-          console.error("Error approving data:", error);
-          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Approval Error",
@@ -135,10 +133,8 @@ const TableAproIzin = () => {
 
       axios
         .patch(apiApprovalURL, {}, config)
-        .then((response) => {
-          console.log(response.data);
+        .then(() => {
           fetchData(); // Refresh data after approval
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Approval Success",
@@ -146,8 +142,6 @@ const TableAproIzin = () => {
           });
         })
         .catch((error) => {
-          console.error("Error approving data:", error);
-          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Approval Error",
@@ -170,10 +164,8 @@ const TableAproIzin = () => {
 
       axios
         .patch(apiReject, {}, config)
-        .then((response) => {
-          console.log(response.data);
+        .then(() => {
           fetchData(); // Refresh data after rejection
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Rejection Success",
@@ -181,8 +173,6 @@ const TableAproIzin = () => {
           });
         })
         .catch((error) => {
-          console.error("Error rejecting data:", error);
-          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Rejection Error",
@@ -193,10 +183,9 @@ const TableAproIzin = () => {
   };
 
   const searchInRows = (query) => {
-    const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
-      return row.nama.toLowerCase().includes(query.toLowerCase());
-    });
+    const filteredRows = originalRows.filter((row) =>
+      row.nama.toLowerCase().includes(query.toLowerCase())
+    );
 
     setRows(filteredRows);
     setPage(0);
@@ -213,7 +202,6 @@ const TableAproIzin = () => {
     setPage(0);
 
     if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
   };
@@ -230,7 +218,7 @@ const TableAproIzin = () => {
     handleMenuClose();
   };
 
-  const handleMenuOpen = (event, index) => {
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -269,7 +257,6 @@ const TableAproIzin = () => {
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -283,6 +270,14 @@ const TableAproIzin = () => {
         console.error("Error downloading Excel file:", error);
       });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
@@ -329,7 +324,6 @@ const TableAproIzin = () => {
                     onClose={handleCloseDateFilter}
                   >
                     <DialogTitle>Pilih Tanggal</DialogTitle>
-                    {/* Judul "Pilih Tanggal" */}
                     <DialogContent>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -393,105 +387,93 @@ const TableAproIzin = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <CircularProgress />
-              </div>
-            ) : (
-              <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
-                <TableContainer
-                  component={Paper}
-                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead style={{ backgroundColor: "#204684" }}>
-                      <TableRow>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Nama</p>
+            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+              <TableContainer
+                component={Paper}
+                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+              >
+                <Table aria-label="simple table" size="small">
+                  <TableHead style={{ backgroundColor: "#204684" }}>
+                    <TableRow>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Nama</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[14%]">
+                        <p className="text-white font-semibold">
+                          Tanggal Mulai
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[14%]">
+                        <p className="text-white font-semibold">
+                          Tanggal Selesai
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[30%]">
+                        <p className="text-white font-semibold">Keterangan</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Dokumen</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold text-center">
+                          Action
+                        </p>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className="bg-gray-100">
+                    {(rowsPerPage > 0
+                      ? filteredRows.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                      : filteredRows
+                    ).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.nama}</TableCell>
+                        <TableCell align="center">{row.mulai}</TableCell>
+                        <TableCell align="center">{row.selesai}</TableCell>
+                        <TableCell align="center">{row.alasan}</TableCell>
+                        <TableCell align="center">
+                          {row.dokumen && (
+                            <div className="flex justify-center">
+                              <Button
+                                size="small"
+                                href={row.dokumen}
+                                target="_blank "
+                                download
+                                className="cursor-pointer"
+                              >
+                                <DownloadIcon className="text-gray-400" />
+                              </Button>
+                            </div>
+                          )}
                         </TableCell>
-                        <TableCell align="center" className="w-[14%]">
-                          <p className="text-white font-semibold">
-                            Tanggal Mulai
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[14%]">
-                          <p className="text-white font-semibold">
-                            Tanggal Selesai
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[30%]">
-                          <p className="text-white font-semibold">Keterangan</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Dokumen</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold text-center">
-                            Action
-                          </p>
+                        <TableCell
+                          align="center"
+                          style={{ color: row.status ? "black" : "red" }}
+                        >
+                          {row.status === null ? (
+                            <ActionButton
+                              onAccept={handleApproval}
+                              onReject={handleReject}
+                              onSakit={handleApproveSakit}
+                              data={row}
+                              tipe={"izin"}
+                              string={"izin"}
+                            />
+                          ) : row.status ? (
+                            "accepted"
+                          ) : (
+                            "rejected"
+                          )}
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody className="bg-gray-100">
-                      {(rowsPerPage > 0
-                        ? filteredRows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                        : filteredRows
-                      ).map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">{row.nama}</TableCell>
-                          <TableCell align="center">{row.mulai}</TableCell>
-                          <TableCell align="center">{row.selesai}</TableCell>
-                          <TableCell align="center">{row.alasan}</TableCell>
-                          <TableCell align="center">
-                            {row.dokumen && (
-                              <div className="flex justify-center">
-                                <Button
-                                  size="small"
-                                  href={row.dokumen}
-                                  target="_blank "
-                                  download
-                                  className="cursor-pointer"
-                                >
-                                  <DownloadIcon className="text-gray-400" />
-                                </Button>
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{ color: row.status ? "black" : "red" }}
-                          >
-                            {row.status === null ? (
-                              // <DropdownButton
-                              //   onApproveSakit={handleApproveSakit}
-                              //   onApproval={handleApproval}
-                              //   data={row}
-                              //   onReject={handleReject}
-                              // />
-                              <ActionButton
-                                onAccept={handleApproval}
-                                onReject={handleReject}
-                                onSakit={handleApproveSakit}
-                                data={row}
-                                tipe={"izin"}
-                                string={"izin"}
-                              ></ActionButton>
-                            ) : row.status ? (
-                              "accepted"
-                            ) : (
-                              "rejected"
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            )}
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </CardContent>
         </Card>
       </div>

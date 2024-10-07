@@ -21,7 +21,6 @@ import {
   Alert,
 } from "@mui/material";
 import { CheckCircle as CheckCircleIcon, Height } from "@mui/icons-material";
-import NavbarUser from "../feature/NavbarUser";
 import DownloadIcon from "@mui/icons-material/Download";
 import Swal from "sweetalert2";
 import ip from "../ip";
@@ -296,7 +295,6 @@ function FormIzin() {
 
   return (
     <div className="w-screen h-screen bg-primary overflow-y-hidden">
-      <NavbarUser />
       {loading ? (
         <div className="w-screen h-screen flex justify-center items-center mx-auto">
           <CircularProgress />

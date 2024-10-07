@@ -5,12 +5,18 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Typography } from "@mui/material";
 import ip from "../ip";
+import { useDispatch, useSelector } from "react-redux";
+import { loadingAction } from "../store/store";
+import Loading from "../page/Loading";
 
 function ChartDataKehadiranUser() {
   Chart.register(ArcElement, Tooltip, Legend);
   const [userData, setUserData] = useState(null);
+  const loading = useSelector((state) => state.loading.isLoading);
+  const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(loadingAction.startLoading(true))
     const apiUrl = `${ip}/api/absensi/get/status/month`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
@@ -20,6 +26,10 @@ function ChartDataKehadiranUser() {
       .get(apiUrl, { headers })
       .then((response) => {
         setUserData(response.data);
+    
+          dispatch(loadingAction.startLoading(false))
+        
+        console.log(userData)
       })
       .catch((error) => {
         console.error("Error", error);
@@ -61,6 +71,10 @@ function ChartDataKehadiranUser() {
     },
     cutout: 0,
   };
+
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <div className="h-fit w-[16rem] mx-auto flex flex-col items-center">

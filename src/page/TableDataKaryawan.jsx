@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import TambahKaryawan from "../feature/TambahKaryawan";
@@ -30,6 +32,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
+import Loading from "../page/Loading"; // Importing Loading component
 
 const TableDataKaryawan = () => {
   const [rows, setRows] = useState([]);
@@ -51,7 +54,8 @@ const TableDataKaryawan = () => {
 
   const apiURLDataKaryawan = `${ip}/api/karyawan/get/data/search`;
 
-  const requestBody = {};
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
 
   const config = {
     headers: {
@@ -61,16 +65,15 @@ const TableDataKaryawan = () => {
   };
 
   const fetchData = async () => {
+    dispatch(loadingAction.startLoading(true)); // Start loading
     try {
-      const response = await axios.post(
-        apiURLDataKaryawan,
-        requestBody,
-        config
-      );
+      const response = await axios.post(apiURLDataKaryawan, {}, config);
       setRows(response.data);
       setOriginalRows(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      dispatch(loadingAction.startLoading(false)); // Stop loading
     }
   };
 
@@ -90,7 +93,6 @@ const TableDataKaryawan = () => {
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
       return row.nama.toLowerCase().includes(query.toLowerCase());
     });
 
@@ -109,7 +111,6 @@ const TableDataKaryawan = () => {
     setPage(0);
 
     if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
   };
@@ -142,7 +143,6 @@ const TableDataKaryawan = () => {
   };
 
   const handleDelete = (index) => {
-    console.log(index)
     setDeleteConfirmDataId(page * rowsPerPage + index);
     setDeleteConfirmationOpen(true);
     handleMenuClose();
@@ -151,11 +151,9 @@ const TableDataKaryawan = () => {
   const handleDeleteConfirm = () => {
     if (deleteConfirmDataId !== null) {
       const idToDelete = rows[deleteConfirmDataId].id;
-      // Contoh penggunaan Axios untuk melakukan DELETE request
-      // Gantilah URL dengan endpoint yang sesuai dengan aplikasi Anda
       axios
         .delete(`${ip}/api/karyawan/del/${idToDelete}`, config)
-        .then((response) => {
+        .then(() => {
           const updatedRows = [...rows];
           updatedRows.splice(deleteConfirmDataId, 1);
           setRows(updatedRows);
@@ -183,9 +181,9 @@ const TableDataKaryawan = () => {
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      responseType: "blob",
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
@@ -193,7 +191,7 @@ const TableDataKaryawan = () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "TableDataKaryawan.xlsx"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "TableDataKaryawan.xlsx");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -204,14 +202,17 @@ const TableDataKaryawan = () => {
       });
   };
 
+  if (loading) {
+    return <Loading />; // Render loading spinner when data is being fetched
+  }
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-auto">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            {" "}
-            Data Karyawan{" "}
+            Data Karyawan
           </Typography>
         </div>
       </div>
@@ -319,7 +320,6 @@ const TableDataKaryawan = () => {
                         )
                         .sort((a, b) => a.nama.localeCompare(b.nama))
                         .map((row, index) => (
-                          // {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                           <TableRow key={index}>
                             <TableCell align="center" style={{ width: "20%" }}>
                               {row.nama}

@@ -1,7 +1,6 @@
 import "./App.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { stopLoading } from "./store/loadingSlice"; // Import action stopLoading dari redux slice
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
 
@@ -45,6 +44,7 @@ import UpFile from "./minicomponent/AddFile";
 import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
+import Form from "./page/formizinn";
 
 // Import komponen loading
 import Loading from "./page/Loading"; 
@@ -59,22 +59,22 @@ function App() {
     },
   });
 
-  // Ambil loading state dari Redux
-  const isLoading = useSelector((state) => state.loading.isLoading);
-  const dispatch = useDispatch();
+  // // Ambil loading state dari Redux
+  // const isLoading = useSelector((state) => state.loading.isLoading);
+  // const dispatch = useDispatch();
 
-  // Menghentikan loading setelah 2 detik
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(stopLoading()); // Memanggil stopLoading action untuk menghentikan loading
-    }, 2000); // 2 detik loading
-    return () => clearTimeout(timer);
-  }, [dispatch]);
+  // // Menghentikan loading setelah 2 detik
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     dispatch(stopLoading()); // Memanggil stopLoading action untuk menghentikan loading
+  //   }, 2000); // 2 detik loading
+  //   return () => clearTimeout(timer);
+  // }, [dispatch]);
 
-  // Jika sedang loading, tampilkan komponen Loading
-  if (isLoading) {
-    return <Loading />;
-  }
+  // // Jika sedang loading, tampilkan komponen Loading
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   // Jika tidak loading, tampilkan konten aplikasi
   return (
@@ -118,6 +118,7 @@ function App() {
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
+          <Route path="/Form" element={<Form />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { loadingAction } from "../store/store";
 
 const AuthInterceptor = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Add your Axios interceptors to check for a 403 response.
@@ -24,6 +27,7 @@ const AuthInterceptor = () => {
             navigate("/");
           });
         }
+        dispatch(loadingAction.startLoading(false))
         return Promise.reject(error);
       }
     );

@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -38,11 +40,13 @@ const TableApprovalReimburst = () => {
   const [originalRows, setOriginalRows] = useState([]);
   const [reportType, setReportType] = useState("approval");
   const [anchorEl, setAnchorEl] = useState();
-  const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(null);
+
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
 
   const monthsIndex = {
     All: null,
@@ -63,7 +67,6 @@ const TableApprovalReimburst = () => {
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
     setPage(0);
-    // Di sini Anda dapat menyusun ulang data dalam tabel berdasarkan bulan yang dipilih.
   };
 
   const months = [
@@ -85,7 +88,7 @@ const TableApprovalReimburst = () => {
   const fetchData = (string) => {
     const apiUrlReimburst = `${ip}/api/reimburst/get`;
 
-    setLoading(true);
+    dispatch(loadingAction.startLoading(true)); // Start loading
     const requestBody = {
       search: string,
       jenis: reportType,
@@ -103,7 +106,6 @@ const TableApprovalReimburst = () => {
     axios
       .post(apiUrlReimburst, requestBody, config)
       .then((response) => {
-        console.log("Response Data:", response.data);
         setRows(response.data);
         setOriginalRows(response.data);
       })
@@ -111,7 +113,7 @@ const TableApprovalReimburst = () => {
         console.error("Error fetching data:", error);
       })
       .finally(() => {
-        setLoading(false); // Set loading to false regardless of success or error
+        dispatch(loadingAction.startLoading(false)); // Stop loading
       });
   };
 
@@ -128,18 +130,15 @@ const TableApprovalReimburst = () => {
 
       axios
         .patch(apiApprovalURL, {}, config)
-        .then((response) => {
+        .then(() => {
           fetchData(""); // Refresh data after approval
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Approval Success",
             text: "The request has been approved successfully.",
           });
         })
-        .catch((error) => {
-          console.error("Error approving data:", error);
-          // Show error alert
+        .catch(() => {
           Swal.fire({
             icon: "error",
             title: "Approval Error",
@@ -170,18 +169,15 @@ const TableApprovalReimburst = () => {
 
       axios
         .patch(apiReject, {}, config)
-        .then((response) => {
+        .then(() => {
           fetchData(""); // Refresh data after rejection
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Rejection Success",
             text: "The request has been rejected successfully.",
           });
         })
-        .catch((error) => {
-          console.error("Error rejecting data:", error);
-          // Show error alert
+        .catch(() => {
           Swal.fire({
             icon: "error",
             title: "Rejection Error",
@@ -191,24 +187,14 @@ const TableApprovalReimburst = () => {
     }
   };
 
-  const handleRejectAll = (data) => {
-    if (data.detail.length > 0) {
-      data.detail.forEach((item) => {
-        handleReject(item);
-      });
-    }
-  };
-
   useEffect(() => {
-    console.log(search); // Log the input value
     fetchData(""); // Initial data fetch
   }, [reportType, selectedMonth, selectedYear]);
 
   const searchInRows = (query) => {
-    const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
-      return row.nama.toLowerCase().includes(query.toLowerCase());
-    });
+    const filteredRows = originalRows.filter((row) =>
+      row.nama.toLowerCase().includes(query.toLowerCase())
+    );
 
     setRows(filteredRows);
     setPage(0);
@@ -231,7 +217,6 @@ const TableApprovalReimburst = () => {
     setPage(0);
 
     if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
   };
@@ -242,7 +227,7 @@ const TableApprovalReimburst = () => {
     handleMenuClose();
   };
 
-  const handleMenuOpen = (event, index) => {
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -262,8 +247,6 @@ const TableApprovalReimburst = () => {
       : row.progres === "accepted"
   );
 
-  console.log(filteredRows);
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -277,19 +260,18 @@ const TableApprovalReimburst = () => {
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      responseType: "blob",
       data: requestBody,
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Approval Reimburst.xlsx"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "Approval Reimburst.xlsx");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -303,75 +285,30 @@ const TableApprovalReimburst = () => {
   const handleDetailClick = (row) => {
     setSelectedRowData(row);
     setIsOpen(true);
-    console.log(row);
   };
 
   const handleCloseModal = () => {
     setIsOpen(false);
   };
 
-  const handleApproveDetail = (data) => {
-    if (data && data.id) {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
-        },
-      };
-
-      const apiApprovalURL = `${ip}/api/reimburst/patch/${data.id}/true`;
-
-      axios
-        .patch(apiApprovalURL, {}, config)
-        .then((response) => {
-          fetchData(""); // Refresh data after approval
-          // Show success alert
-          Swal.fire({
-            icon: "success",
-            title: "Approval Success",
-            text: "The request has been approved successfully.",
-          });
-        })
-        .catch((error) => {
-          console.error("Error approving data:", error);
-          // Show error alert
-          Swal.fire({
-            icon: "error",
-            title: "Approval Error",
-            text: "An error occurred while approving the request. Please try again.",
-          });
-        });
-    }
-  };
-
-  function monthNames(bulan, tahun) {
-    const monthName = new Date(tahun, bulan - 1, 1).toLocaleString("default", {
-      month: "long",
-    });
-    return monthName;
-  }
-
   const handleDownloadDetail = () => {
     const api = `${ip}/api/export/reimburse/detail/pdf`;
-
-    const requestBody = {};
 
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      responseType: "blob",
       data: { data: selectedRowData },
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Approval Reimburst.pdf"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "Approval Reimburst.pdf");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -381,6 +318,14 @@ const TableApprovalReimburst = () => {
         console.error("Error downloading PDF file:", error);
       });
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
@@ -488,108 +433,109 @@ const TableApprovalReimburst = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <CircularProgress />
-              </div>
-            ) : (
-              <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
-                <TableContainer
-                  component={Paper}
-                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead style={{ backgroundColor: "#204684" }}>
-                      <TableRow>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Nama</p>
-                        </TableCell>
-                        {(reportType === "approval" ||
-                          reportType === "history") && (
-                          <>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-white font-semibold">
-                                Jabatan
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[35%]">
-                              <p className="text-white font-semibold">
-                                Keterangan
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Biaya</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[15%]">
-                              <p className="text-white font-semibold">
-                                Tanggal Pengajuan
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-white font-semibold">
-                                Dokumen
-                              </p>
-                            </TableCell>
-                          </>
-                        )}
-                        {reportType === "history" && (
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Status</p>
+            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+              <TableContainer
+                component={Paper}
+                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+              >
+                <Table aria-label="simple table" size="small">
+                  <TableHead style={{ backgroundColor: "#204684" }}>
+                    <TableRow>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Nama</p>
+                      </TableCell>
+                      {(reportType === "approval" ||
+                        reportType === "history") && (
+                        <>
+                          <TableCell align="center" className="w-[5%]">
+                            <p className="text-white font-semibold">Jabatan</p>
                           </TableCell>
-                        )}
-                        {reportType === "approval" && (
+                          <TableCell align="center" className="w-[35%]">
+                            <p className="text-white font-semibold">
+                              Keterangan
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold">Biaya</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[15%]">
+                            <p className="text-white font-semibold">
+                              Tanggal Pengajuan
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[5%]">
+                            <p className="text-white font-semibold">Dokumen</p>
+                          </TableCell>
+                        </>
+                      )}
+                      {reportType === "history" && (
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Status</p>
+                        </TableCell>
+                      )}
+                      {reportType === "approval" && (
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold text-center">
+                            Action
+                          </p>
+                        </TableCell>
+                      )}
+                      {reportType === "accepted" && (
+                        <>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold text-center">
+                              Jabatan
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold">Bulan</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold">Jumlah</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[15%]">
+                            <p className="text-white font-semibold">Bank Name</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[15%]">
+                            <p className="text-white font-semibold">
+                              No. Rekening
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-white font-semibold">Detail</p>
+                          </TableCell>
                           <TableCell align="center" className="w-[10%]">
                             <p className="text-white font-semibold text-center">
                               Action
                             </p>
                           </TableCell>
-                        )}
-                        {reportType === "accepted" && (
+                        </>
+                      )}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className="bg-gray-100">
+                    {(rowsPerPage > 0
+                      ? filteredRows.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                      : filteredRows
+                    ).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell
+                          align="center"
+                          style={{
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                            maxHeight: "100px",
+                            maxWidth: "100px",
+                          }}
+                        >
+                          {row.nama}
+                        </TableCell>
+                        {(reportType === "approval" ||
+                          reportType === "history") && (
                           <>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold text-center">
-                                Jabatan
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Bulan</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Jumlah</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[15%]">
-                              <p className="text-white font-semibold">
-                                Bank Name
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[15%]">
-                              <p className="text-white font-semibold">
-                                No. Rekening
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Detail</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold text-center">
-                                Action
-                              </p>
-                            </TableCell>
-                          </>
-                        )}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody className="bg-gray-100">
-                      {(rowsPerPage > 0
-                        ? filteredRows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                        : filteredRows
-                      )
-                        // .filter(row => row.progres === "waiting" || row.progres === "accepted")
-                        .map((row, index) => (
-                          <TableRow key={index}>
                             <TableCell
                               align="center"
                               style={{
@@ -599,292 +545,252 @@ const TableApprovalReimburst = () => {
                                 maxWidth: "100px",
                               }}
                             >
-                              {row.nama}
+                              {row.jabatan}
                             </TableCell>
-                            {(reportType === "approval" ||
-                              reportType === "history") && (
-                              <>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.jabatan}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.keterangan}
-                                </TableCell>
-                                <TableCell align="center">
-                                  {row.biaya}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "120px",
-                                  }}
-                                >
-                                  {row.date}
-                                </TableCell>
-                                <TableCell align="center">
-                                  {row.dokumen && (
-                                    <div className="flex justify-center">
-                                      <Button
-                                        size="small"
-                                        href={row.dokumen}
-                                        target="_blank "
-                                        download
-                                        className="cursor-pointer"
-                                      >
-                                        <DownloadIcon className="text-gray-400" />
-                                      </Button>
-                                    </div>
-                                  )}
-                                </TableCell>
-                                {reportType === "history" ? (
-                                  <TableCell
-                                    align="center"
-                                    style={{
-                                      whiteSpace: "normal",
-                                      wordWrap: "break-word",
-                                      maxHeight: "100px",
-                                      maxWidth: "100px",
-                                    }}
-                                  >
-                                    {row.progres}
-                                  </TableCell>
-                                ) : null}
-                                {/* {reportType === "approval" ? (
-                                  <TableCell align="center">
-                                    <DropdownButton
-                                      onApproval={handleApprove}
-                                      data={row}
-                                      onReject={handleReject}
-                                    />
-                                  </TableCell>
-                                ) : null} */}
-                                {row.status === null ? (
-                                  <>
-                                    <TableCell
-                                      align="center"
-                                      style={{
-                                        color: row.status ? "black" : "red",
-                                      }}
-                                    >
-                                      {row.status === null ? (
-                                        // <DropdownButton
-                                        //   onApproveSakit={handleApproveSakit}
-                                        //   onApproval={handleApproval}
-                                        //   data={row}
-                                        //   onReject={handleReject}
-                                        // />
-                                        <ActionButton
-                                          data={row}
-                                          onAccept={handleApprove}
-                                          onReject={handleReject}
-                                          tipe={"nonIzin"}
-                                          string={"Reimburse"}
-                                        ></ActionButton>
-                                      ) : null}
-                                    </TableCell>
-                                  </>
-                                ) : null}
-                              </>
-                            )}
-                            {reportType === "accepted" && (
-                              <>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.jabatan}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {`${monthNames(row.bulan, row.tahun)} ${
-                                    row.tahun
-                                  }`}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.jumlah}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.bankname}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.norek}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {row.keterangan}
+                            </TableCell>
+                            <TableCell align="center">{row.biaya}</TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "120px",
+                              }}
+                            >
+                              {row.date}
+                            </TableCell>
+                            <TableCell align="center">
+                              {row.dokumen && (
+                                <div className="flex justify-center">
                                   <Button
-                                    variant="outlined"
                                     size="small"
-                                    onClick={() => {
-                                      handleDetailClick(row);
-                                    }}
+                                    href={row.dokumen}
+                                    target="_blank "
+                                    download
+                                    className="cursor-pointer"
                                   >
-                                    Detail
+                                    <DownloadIcon className="text-gray-400" />
                                   </Button>
-                                </TableCell>
+                                </div>
+                              )}
+                            </TableCell>
+                            {reportType === "history" ? (
+                              <TableCell
+                                align="center"
+                                style={{
+                                  whiteSpace: "normal",
+                                  wordWrap: "break-word",
+                                  maxHeight: "100px",
+                                  maxWidth: "100px",
+                                }}
+                              >
+                                {row.progres}
+                              </TableCell>
+                            ) : null}
+                            {row.status === null ? (
+                              <>
                                 <TableCell
                                   align="center"
                                   style={{
                                     color: row.status ? "black" : "red",
                                   }}
                                 >
-                                  <ActionButton
-                                    data={row}
-                                    onAccept={handleApproveAll}
-                                    onReject={handleRejectAll}
-                                    tipe={"nonIzin"}
-                                    string={"Reimburse"}
-                                  ></ActionButton>
+                                  {row.status === null ? (
+                                    <ActionButton
+                                      data={row}
+                                      onAccept={handleApprove}
+                                      onReject={handleReject}
+                                      tipe={"nonIzin"}
+                                      string={"Reimburse"}
+                                    ></ActionButton>
+                                  ) : null}
                                 </TableCell>
                               </>
-                            )}
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            )}
+                            ) : null}
+                          </>
+                        )}
+                        {reportType === "accepted" && (
+                          <>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {row.jabatan}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {`${monthNames(row.bulan, row.tahun)} ${
+                                row.tahun
+                              }`}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {row.jumlah}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {row.bankname}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {row.norek}
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                onClick={() => {
+                                  handleDetailClick(row);
+                                }}
+                              >
+                                Detail
+                              </Button>
+                            </TableCell>
+                            <TableCell
+                              align="center"
+                              style={{
+                                color: row.status ? "black" : "red",
+                              }}
+                            >
+                              <ActionButton
+                                data={row}
+                                onAccept={handleApproveAll}
+                                onReject={handleRejectAll}
+                                tipe={"nonIzin"}
+                                string={"Reimburse"}
+                              ></ActionButton>
+                            </TableCell>
+                          </>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
-      {selectedRowData && reportType == "accepted" && (
-        <>
-          {
-            <Modal
-              open={isOpen}
-              onClose={handleCloseModal}
-              aria-labelledby="modal-title"
-              aria-describedby="modal-description"
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  boxShadow: 24,
-                  borderRadius: "8px",
-                  padding: "1rem",
-                }}
-                className="bg-white w-1/2 h-2/5"
-              >
-                <div className="flex justify-between">
-                  <div className="my-2 font-semibold text-lg">
-                    {selectedRowData.nama}
-                  </div>
-                  <div className="my-2 font-semibold text-lg">
-                    Jumlah : {selectedRowData.jumlah}
-                  </div>
-                </div>
-                <div className="w-full h-full mx-auto">
-                  <TableContainer className="border rounded-md max-h-44 overflow-y-auto">
-                    <Table size="small">
-                      <TableHead style={{ backgroundColor: "#204684" }}>
-                        <TableRow>
-                          <TableCell align="center" className="w-1/2">
-                            <p className="text-white font-semibold">
-                              Keterangan
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-1/4">
-                            <p className="text-white font-semibold">Biaya</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-1/4">
-                            <p className="text-white font-semibold">
-                              Tanggal Pengajuan
-                            </p>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {selectedRowData.detail.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="center">
-                              {row.keterangan}
-                            </TableCell>
-                            <TableCell align="center">{row.biaya}</TableCell>
-                            <TableCell align="center">{row.date}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className="mt-3 flex justify-end">
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={handleDownloadDetail}
-                    >
-                      Download
-                    </Button>
-                  </div>
-                </div>
+      {selectedRowData && reportType === "accepted" && (
+        <Modal
+          open={isOpen}
+          onClose={handleCloseModal}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              boxShadow: 24,
+              borderRadius: "8px",
+              padding: "1rem",
+            }}
+            className="bg-white w-1/2 h-2/5"
+          >
+            <div className="flex justify-between">
+              <div className="my-2 font-semibold text-lg">
+                {selectedRowData.nama}
               </div>
-            </Modal>
-          }
-        </>
+              <div className="my-2 font-semibold text-lg">
+                Jumlah : {selectedRowData.jumlah}
+              </div>
+            </div>
+            <div className="w-full h-full mx-auto">
+              <TableContainer className="border rounded-md max-h-44 overflow-y-auto">
+                <Table size="small">
+                  <TableHead style={{ backgroundColor: "#204684" }}>
+                    <TableRow>
+                      <TableCell align="center" className="w-1/2">
+                        <p className="text-white font-semibold">Keterangan</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-1/4">
+                        <p className="text-white font-semibold">Biaya</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-1/4">
+                        <p className="text-white font-semibold">
+                          Tanggal Pengajuan
+                        </p>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {selectedRowData.detail.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.keterangan}</TableCell>
+                        <TableCell align="center">{row.biaya}</TableCell>
+                        <TableCell align="center">{row.date}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div className="mt-3 flex justify-end">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleDownloadDetail}
+                >
+                  Download
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Modal>
       )}
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">

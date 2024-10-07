@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -25,9 +25,20 @@ import CreatePayroll from "../feature/CreatePayroll";
 import SettingRumusPayroll from "../feature/SettingRumusPayroll";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loadingAction } from "../store/store";
+import Loading from "../page/Loading";
 
 const TablePayroll = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.isLoading);
+
+  dispatch(loadingAction.startLoading(false));
+
+  if (loading) {
+    return <Loading />;
+  }
+
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -76,7 +87,6 @@ const TablePayroll = () => {
     axios
       .post(apiURLPayroll, requestBody, config)
       .then((response) => {
-        // console.log('Response Data:', response.data);
         setRows(response.data);
         setOriginalRows(response.data);
       })
@@ -99,7 +109,6 @@ const TablePayroll = () => {
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
       return row.nama.toLowerCase().includes(query.toLowerCase());
     });
 
@@ -118,7 +127,6 @@ const TablePayroll = () => {
     setPage(0);
 
     if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
   };
@@ -160,18 +168,17 @@ const TablePayroll = () => {
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      responseType: "blob",
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `Slip Payroll.${file}`); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", `Slip Payroll.${file}`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -183,24 +190,22 @@ const TablePayroll = () => {
   };
 
   const handleExcel = () => {
-    // Kode untuk mengekspor data ke Excel
     const api = `${ip}/api/export/data/5`;
 
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
+      responseType: "blob",
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Data Payroll.xlsx"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "Data Payroll.xlsx");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -214,7 +219,6 @@ const TablePayroll = () => {
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
     setPage(0);
-    // Di sini Anda dapat menyusun ulang data dalam tabel berdasarkan bulan yang dipilih.
   };
 
   const months = [

@@ -8,13 +8,15 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import DescriptionIcon from "@mui/icons-material/Description";
 import TablePagination from "@mui/material/TablePagination";
 import Paper from "@mui/material/Paper";
 import ip from "../ip";
+import { useDispatch, useSelector } from "react-redux";
+import { loadingAction } from "../store/store";
 
 const TableResign = () => {
   const [page, setPage] = useState(0);
@@ -22,6 +24,9 @@ const TableResign = () => {
   const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
+
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.isLoading);
 
   const requestBody = {};
 
@@ -33,20 +38,24 @@ const TableResign = () => {
   };
 
   const apiUrlResign = `${ip}/api/resign/get`;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        dispatch(loadingAction.startLoading(true)); // Start loading
         const response = await axios.post(apiUrlResign, requestBody, config);
         console.log("Response Data:", response.data);
         setRows(response.data);
         setOriginalRows(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        dispatch(loadingAction.startLoading(false)); // Stop loading
       }
     };
 
     fetchData(); // Call the function when the component mounts
-  }, []);
+  }, [dispatch]);
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -171,63 +180,69 @@ const TableResign = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
-              <TableContainer
-                component={Paper}
-                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-              >
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Dvisi</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Jabatan</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">
-                          Tanggal Pengajuan
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">
-                          Tanggal Resign
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Alasan</p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                      : rows
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{row.nama}</TableCell>
-                        <TableCell align="center">{row.divisi}</TableCell>
-                        <TableCell align="center">{row.jabatan}</TableCell>
-                        <TableCell align="center">
-                          {row.tanggalmengajukan}
+            {loading ? (
+              <div className="flex justify-center items-center h-40">
+                <CircularProgress />
+              </div>
+            ) : (
+              <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+                <TableContainer
+                  component={Paper}
+                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+                >
+                  <Table aria-label="simple table" size="small">
+                    <TableHead style={{ backgroundColor: "#204684" }}>
+                      <TableRow>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Nama</p>
                         </TableCell>
-                        <TableCell align="center">
-                          {row.tanggalkeluar}
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Divisi</p>
                         </TableCell>
-                        <TableCell align="center">{row.alasan}</TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Jabatan</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">
+                            Tanggal Pengajuan
+                          </p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">
+                            Tanggal Resign
+                          </p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[30%]">
+                          <p className="text-white font-semibold">Alasan</p>
+                        </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+                    </TableHead>
+                    <TableBody className="bg-gray-100">
+                      {(rowsPerPage > 0
+                        ? rows.slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                        : rows
+                      ).map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">{row.nama}</TableCell>
+                          <TableCell align="center">{row.divisi}</TableCell>
+                          <TableCell align="center">{row.jabatan}</TableCell>
+                          <TableCell align="center">
+                            {row.tanggalmengajukan}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.tanggalkeluar}
+                          </TableCell>
+                          <TableCell align="center">{row.alasan}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

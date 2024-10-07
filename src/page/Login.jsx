@@ -10,6 +10,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ip from "../ip";
 import ForgetPassword from "../feature/ForgetPassword";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import loadingSlice from "../store/loadingSlice";
+import Loading from "./Loading";
+import { loadingAction } from "../store/store";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,6 +22,9 @@ function Login() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const navigate = useNavigate();
   const [showForgetPassword, setShowForgetPassword] = useState(false);
+
+  const loading = useSelector((state => state.loading.isLoading))
+  const dispatch = useDispatch();
 
   const toggleForgetPassword = () => {
     setShowForgetPassword(!showForgetPassword);
@@ -36,35 +43,48 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
+    dispatch(loadingAction.startLoading(true));
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${ip}/api/auth/login`, {
-        email,
-        password,
-      });
+        const response = await axios.post(`${ip}/api/auth/login`, {
+            email,
+            password,
+        });
 
-      const { accessToken, result, role, jabatan, operation, status } =
-        response.data;
+        console.log("Response Data:", response.data);
 
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("role", role);
-      localStorage.setItem("result", result);
-      localStorage.setItem("jabatan", jabatan);
-      localStorage.setItem("operation", operation);
-      localStorage.setItem("status", status);
+        const { accessToken, result, role, jabatan, operation, status } = response.data;
 
-      navigate("/dashboard");
+        if (accessToken) { // Ensure accessToken is valid
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("role", role);
+            localStorage.setItem("result", result);
+            localStorage.setItem("jabatan", jabatan);
+            localStorage.setItem("operation", operation);
+            localStorage.setItem("status", status);
+            
+            // Stop loading on success
+            dispatch(loadingAction.startLoading(false));
+            navigate("/dashboard");
+        } else {
+            throw new Error("No access token received");
+        }
     } catch (error) {
-      console.error("Login failed", error);
-      // Show sweet alert on login failure
-      Swal.fire({
-        icon: "error",
-        title: "Login Failed",
-        text: "Invalid username or password. Please try again.",
-      });
+        console.error("Login failed", error);
+        
+        // Show sweet alert on login failure
+        Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: "Invalid username or password. Please try again.",
+        });
+        
+        // Stop loading on error
+        dispatch(loadingSlice.startLoading(false));
     }
-  };
+};
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,11 +98,15 @@ function Login() {
     };
   }, []);
 
+  if (loading) {
+    return <Loading />
+  }
+
   return (
     <div className="lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md m-auto">
       <div className="absolute left-18 top-24 lg:left-5 lg:top-5">
         <img
-         src="/logo-login.png"
+          src="/logo-login.png"
           className="rounded-md h-14"
         ></img>
       </div>

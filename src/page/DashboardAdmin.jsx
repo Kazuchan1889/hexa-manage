@@ -15,27 +15,25 @@ import Announcment from "../minicomponent/Announcment";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ip from "../ip";
-import UserIcon from '@mui/icons-material/AccountCircle'; // Menggunakan ikon pengguna dari Material UI
+import UserIcon from '@mui/icons-material/AccountCircle';
+import { useDispatch, useSelector } from "react-redux";
+import { loadingAction } from "../store/store";
+import Loading from "../page/Loading";
 
 const getIdFromToken = () => {
   const token = localStorage.getItem('accessToken');
   if (!token) return null;
 
-  // Split token untuk mendapatkan payload (bagian kedua dari JWT)
-  const base64Url = token.split('.')[1]; 
+  const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   
-  // Dekode payload
   const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 
   const payload = JSON.parse(jsonPayload);
-
-  // Ambil id dari payload
   return payload.id; 
 };
-
 
 function DashboardAdmin() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -45,7 +43,13 @@ function DashboardAdmin() {
   const [absensiItems, setAbsensiItems] = useState([]);
   const [selectedChart, setSelectedChart] = useState("kehadiranUser");
   const checkOperation = localStorage.getItem("operation");
-  const karyawanId = localStorage.getItem('karyawan_id');
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.isLoading);
+
+  // State untuk loading individual
+  const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [loadingAbsensi, setLoadingAbsensi] = useState(false);
+  const [loadingAnnouncement, setLoadingAnnouncement] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -55,8 +59,9 @@ function DashboardAdmin() {
 
   useEffect(() => {
     const fetchScheduleItems = async () => {
+      setLoadingSchedule(true); // Mulai loading untuk jadwal
       try {
-        const id = getIdFromToken("accessToken"); // Ambil id dari accessToken
+        const id = getIdFromToken("accessToken");
         if (!id) {
           console.error('ID not found in token');
           return;
@@ -68,17 +73,20 @@ function DashboardAdmin() {
         setScheduleItems(response.data);
       } catch (error) {
         console.error("Error fetching schedule items:", error);
+      } finally {
+        setLoadingSchedule(false); // Akhiri loading untuk jadwal
       }
     };
     
 
     const fetchAbsensiItems = async () => {
+      setLoadingAbsensi(true); // Mulai loading untuk absensi
       try {
         const response = await axios.post(
           `${ip}/api/absensi/get/data/dated`,
           {
-            date: new Date().toISOString().split("T")[0], // Send the current date
-            search: "", // Optional: can add search functionality later
+            date: new Date().toISOString().split("T")[0],
+            search: "",
           },
           {
             headers: { Authorization: localStorage.getItem("accessToken") },
@@ -87,12 +95,14 @@ function DashboardAdmin() {
         setAbsensiItems(response.data);
       } catch (error) {
         console.error("Error fetching absensi items:", error);
+      } finally {
+        setLoadingAbsensi(false); // Akhiri loading untuk absensi
       }
     };
 
     fetchScheduleItems();
     fetchAbsensiItems();
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = () => {
     Swal.fire({
@@ -104,6 +114,7 @@ function DashboardAdmin() {
       window.location.reload();
     });
   };
+
   const formatDate = (dateString) => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
@@ -115,7 +126,6 @@ function DashboardAdmin() {
 
   const renderCharts = () => {
     if (isMobile) {
-      // Jika mobile, tampilkan dropdown di dalam kotak chart
       return (
         <div className="w-full">
           <div className="flex justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
@@ -148,7 +158,6 @@ function DashboardAdmin() {
       );
     }
 
-    // Jika bukan mobile, tampilkan semua chart dalam grid
     return (
       <div className="grid grid-cols-4 gap-4 w-full">
         <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
@@ -194,33 +203,41 @@ function DashboardAdmin() {
                 <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[22%]">
                   <div className="text-xl font-bold mb-4 bg-white p-2">Today's Absences</div>
                   <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
-                    <ul className="space-y-4 ">
-                    {absensiItems.map((item, index) => (
-                        <li key={index} className="flex items-center border p-2 rounded-lg">
-                          {item.photo ? (
-                            <img
-                              src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
-                              className="w-12 h-12 rounded-full object-cover"
-                              alt="Absensi Photo"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-300">
-                              <UserIcon style={{ fontSize: 30, color: 'black' }} />
-                            </div>
-                          )}
+                    {loadingAbsensi ? (
+                      <Loading /> // Tampilkan loading saat absensi sedang di-fetch
+                    ) : (
+                      <ul className="space-y-4 ">
+                        {absensiItems.map((item, index) => (
+                          <li key={index} className="flex items-center border p-2 rounded-lg">
+                            {item.photo ? (
+                              <img
+                                src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
+                                className="w-12 h-12 rounded-full object-cover"
+                                alt="Absensi Photo"
+                              />
+                            ) : (
+                              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-300">
+                                <UserIcon style={{ fontSize: 30, color: 'black' }} />
+                              </div>
+                            )}
 
-                          <div className="ml-4 flex flex-col">
-                            <p className="font-semibold">{item.nama}</p>
-                            <p className="text-sm text-gray-600">{item.status}</p>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
+                            <div className="ml-4 flex flex-col">
+                              <p className="font-semibold">{item.nama}</p>
+                              <p className="text-sm text-gray-600">{item.status}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
                 <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[53%]">
                   <div className="h-[80%] mb-2 overflow-y-auto">
-                    <AnnouncementList />
+                    {loadingAnnouncement ? (
+                      <Loading /> // Tampilkan loading untuk pengumuman
+                    ) : (
+                      <AnnouncementList />
+                    )}
                   </div>
                   <div className="h-[20%] flex justify-center items-center">
                     <Button
@@ -238,16 +255,19 @@ function DashboardAdmin() {
                     <div className="text-xl font-bold">Upcoming Schedule</div>
                   </div>
                   <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
-                    <ul className="space-y-4 mt-4">
-                      {scheduleItems
-                      .map((item, index) => (
-                       <li key={index} className="border p-4 rounded-lg shadow-sm">
-                       <div className="text-lg font-semibold">{item.judul}</div>
-                       <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
-                       <div className="text-sm text-gray-600">{item.mulai}</div>
-                     </li>
-                      ))}
-                    </ul>
+                    {loadingSchedule ? (
+                      <Loading /> // Tampilkan loading saat fetching jadwal
+                    ) : (
+                      <ul className="space-y-4 mt-4">
+                        {scheduleItems.map((item, index) => (
+                          <li key={index} className="border p-4 rounded-lg shadow-sm">
+                            <div className="text-lg font-semibold">{item.judul}</div>
+                            <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
+                            <div className="text-sm text-gray-600">{item.mulai}</div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               </div>
@@ -278,4 +298,4 @@ function DashboardAdmin() {
   );
 }
 
-export default DashboardAdmin
+export default DashboardAdmin;

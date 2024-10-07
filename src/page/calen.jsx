@@ -5,20 +5,21 @@ import Modal from "react-modal";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
 import NavbarUser from "../feature/NavbarUser";
+import { CircularProgress } from "@mui/material"; // Import CircularProgress untuk indikator loading
 import ip from "../ip";
 
 Modal.setAppElement("#root");
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    padding: '0',
-    borderRadius: '12px',
-    border: 'none',
-    width: '500px',
-    height: '700px',
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    padding: "0",
+    borderRadius: "12px",
+    border: "none",
+    width: "500px",
+    height: "700px",
   },
 };
 
@@ -40,11 +41,18 @@ const CalendarComponent = () => {
   const [employees, setEmployees] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false); // State untuk cek apakah user admin
+  const [loading, setLoading] = useState(false); // State untuk loading
 
   useEffect(() => {
     fetchEventsByKaryawanId();
     fetchEmployees();
     checkUserRole(); // Cek role user saat page dibuka
+    deleteExpiredSchedules(); // Check for expired schedules
+
+    // Optionally, you can set an interval to check for expired schedules every day
+    const intervalId = setInterval(deleteExpiredSchedules, 24 * 60 * 60 * 1000); // Check every 24 hours
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
 
   const checkUserRole = async () => {
@@ -56,11 +64,9 @@ const CalendarComponent = () => {
         return;
       }
 
-      // Ambil informasi dari token (asumsi menggunakan JWT)
-      const userData = JSON.parse(atob(accessToken.split('.')[1])); // Decode payload token
+      const userData = JSON.parse(atob(accessToken.split(".")[1])); // Decode payload token
       const role = userData?.role; // Ambil role dari payload token
 
-      // Jika role admin (bisa ganti sesuai nilai yang ada di token)
       if (role === "admin") {
         setIsAdmin(true); // Set state jika user admin
       }
@@ -70,36 +76,45 @@ const CalendarComponent = () => {
   };
 
   const fetchEventsByKaryawanId = async () => {
+    setLoading(true); // Mulai loading
     try {
       const accessToken = localStorage.getItem("accessToken");
 
       if (!accessToken) {
         console.error("Access token not found.");
+        setLoading(false); // Selesai loading
         return;
       }
 
-      const userData = JSON.parse(atob(accessToken.split('.')[1]));
+      const userData = JSON.parse(atob(accessToken.split(".")[1]));
       const userId = userData?.id;
 
       if (!userId) {
         console.error("User ID not found in token.");
+        setLoading(false); // Selesai loading
         return;
       }
 
-      const response = await axios.get(`${apiURL}/scheduler/assigned/karyawan/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: accessToken,
-        },
-      });
-      
+      const response = await axios.get(
+        `${apiURL}/scheduler/assigned/karyawan/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: accessToken,
+          },
+        }
+      );
+
       setEvents(response.data);
     } catch (error) {
       console.error("Error fetching events by karyawan ID:", error);
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
   const fetchEmployees = async () => {
+    setLoading(true); // Mulai loading
     try {
       const response = await axios.get(`${ip}/api/karyawan/nama&id`, {
         headers: {
@@ -109,6 +124,8 @@ const CalendarComponent = () => {
       setEmployees(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
@@ -116,18 +133,21 @@ const CalendarComponent = () => {
     if (selectAll) {
       setSelectedKaryawan([]);
     } else {
-      setSelectedKaryawan(employees.map((employee) => ({ value: employee.id, label: employee.nama })));
+      setSelectedKaryawan(
+        employees.map((employee) => ({ value: employee.id, label: employee.nama }))
+      );
     }
     setSelectAll(!selectAll);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Mulai loading saat submit
     try {
       const payload = {
         ...formData,
-        tgl_mulai: selectedDate.toLocaleDateString('en-CA'),
-        tgl_selesai: selectedDate.toLocaleDateString('en-CA'),
+        tgl_mulai: selectedDate.toLocaleDateString("en-CA"),
+        tgl_selesai: selectedDate.toLocaleDateString("en-CA"),
         karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.post(`${apiURL}/scheduler/post`, payload, {
@@ -150,10 +170,13 @@ const CalendarComponent = () => {
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
   const handleDelete = async (id) => {
+    setLoading(true); // Mulai loading saat delete
     try {
       await axios.delete(`${apiURL}/scheduler/delete/${id}`, {
         headers: {
@@ -161,14 +184,18 @@ const CalendarComponent = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       });
-      fetchEventsByKaryawanId();  // Refresh the list after deletion
+      fetchEventsByKaryawanId(); // Refresh the list after deletion
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
   const handleEdit = (schedule) => {
-    const selectedKaryawanOptions = schedule.karyawan ? schedule.karyawan.map((k) => ({ value: k.id, label: k.nama })) : [];
+    const selectedKaryawanOptions = schedule.karyawan
+      ? schedule.karyawan.map((k) => ({ value: k.id, label: k.nama }))
+      : [];
     setFormData({
       id: schedule.schedule_id,
       judul: schedule.judul,
@@ -185,11 +212,12 @@ const CalendarComponent = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true); // Mulai loading saat update
     try {
       const payload = {
         ...formData,
-        tanggal_mulai: selectedDate.toLocaleDateString('en-CA'),
-        tanggal_selesai: selectedDate.toLocaleDateString('en-CA'),
+        tanggal_mulai: selectedDate.toLocaleDateString("en-CA"),
+        tanggal_selesai: selectedDate.toLocaleDateString("en-CA"),
         karyawan: selectedKaryawan.map((k) => k.value),
       };
       await axios.patch(`${apiURL}/scheduler/patch/${formData.id}`, payload, {
@@ -212,11 +240,25 @@ const CalendarComponent = () => {
       setModalIsOpen(false);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);  
+    setSelectedDate(date);
+  };
+
+  const deleteExpiredSchedules = async () => {
+    const today = new Date(); // Get today's date
+    const expiredSchedules = events.filter(event => new Date(event.tanggal_mulai) < today);
+
+    for (const schedule of expiredSchedules) {
+      await handleDelete(schedule.schedule_id); // Call delete function for each expired schedule
+    }
+
+    // After deletion, fetch the updated events
+    fetchEventsByKaryawanId();
   };
 
   const selectedDateSchedules = events.filter(
@@ -224,7 +266,9 @@ const CalendarComponent = () => {
   );
 
   const isDateHasEvents = (date) => {
-    return events.some((event) => new Date(event.tanggal_mulai).toDateString() === date.toDateString());
+    return events.some(
+      (event) => new Date(event.tanggal_mulai).toDateString() === date.toDateString()
+    );
   };
 
   return (
@@ -258,34 +302,45 @@ const CalendarComponent = () => {
               </button>
             )}
           </div>
-          <div className="space-y-4 overflow-y-auto h-96">
-            {selectedDateSchedules.map((schedule, index) => (
-              <div key={index} className="border-l-4 border-blue-500 pl-4 pr-4 py-3 bg-gray-50 rounded-lg shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-800">{schedule.judul}</h3>
-                    <p className="text-gray-600">{schedule.deskripsi}</p>
-                  </div>
-                  {isAdmin && (
-                    <div className="flex space-x-2">
-                      <button
-                        className="bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded"
-                        onClick={() => handleEdit(schedule)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
-                        onClick={() => handleDelete(schedule.schedule_id)}
-                      >
-                        Delete
-                      </button>
+
+          {/* Menampilkan loading jika data belum ada */}
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <CircularProgress />
+            </div>
+          ) : (
+            <div className="space-y-4 overflow-y-auto h-96">
+              {selectedDateSchedules.map((schedule, index) => (
+                <div
+                  key={index}
+                  className="border-l-4 border-blue-500 pl-4 pr-4 py-3 bg-gray-50 rounded-lg shadow-sm"
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800">{schedule.judul}</h3>
+                      <p className="text-gray-600">{schedule.deskripsi}</p>
                     </div>
-                  )}
+                    {isAdmin && (
+                      <div className="flex space-x-2">
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded"
+                          onClick={() => handleEdit(schedule)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
+                          onClick={() => handleDelete(schedule.schedule_id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className="w-1/3 p-4 bg-gray-50 border-l border-gray-200">
           <DatePicker
@@ -293,7 +348,9 @@ const CalendarComponent = () => {
             onChange={handleDateChange}
             inline
             highlightDates={events.map((event) => new Date(event.tanggal_mulai))}
-            dayClassName={(date) => (isDateHasEvents(date) ? "bg-blue-200" : undefined)}
+            dayClassName={(date) =>
+              isDateHasEvents(date) ? "bg-blue-200" : undefined
+            }
           />
         </div>
       </div>
@@ -304,11 +361,15 @@ const CalendarComponent = () => {
         onRequestClose={() => setModalIsOpen(false)}
         style={customStyles}
       >
-         <div className="bg-white p-6 rounded-lg shadow-lg h-full">
-          <h2 className="text-xl font-bold mb-4">{formData.id ? "Edit Schedule" : "Add Schedule"}</h2>
+        <div className="bg-white p-6 rounded-lg shadow-lg h-full">
+          <h2 className="text-xl font-bold mb-4">
+            {formData.id ? "Edit Schedule" : "Add Schedule"}
+          </h2>
           <form onSubmit={formData.id ? handleUpdate : handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Title
+              </label>
               <input
                 type="text"
                 value={formData.judul}
@@ -318,7 +379,9 @@ const CalendarComponent = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Description
+              </label>
               <textarea
                 value={formData.deskripsi}
                 onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
@@ -328,7 +391,9 @@ const CalendarComponent = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Start Time</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Start Time
+                </label>
                 <input
                   type="time"
                   value={formData.mulai}
@@ -338,7 +403,9 @@ const CalendarComponent = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">End Time</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  End Time
+                </label>
                 <input
                   type="time"
                   value={formData.selesai}
@@ -349,10 +416,15 @@ const CalendarComponent = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Employees</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Employees
+              </label>
               <Select
                 isMulti
-                options={employees.map((employee) => ({ value: employee.id, label: employee.nama }))}
+                options={employees.map((employee) => ({
+                  value: employee.id,
+                  label: employee.nama,
+                }))}
                 value={selectedKaryawan}
                 onChange={setSelectedKaryawan}
                 className="w-full"
@@ -364,7 +436,9 @@ const CalendarComponent = () => {
                   onChange={handleSelectAll}
                   className="mr-2"
                 />
-                <label className="text-sm font-semibold text-gray-700">Select All Employees</label>
+                <label className="text-sm font-semibold text-gray-700">
+                  Select All Employees
+                </label>
               </div>
             </div>
             <div className="flex justify-end">

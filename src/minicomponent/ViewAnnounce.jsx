@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ip from "../ip";
 import AnnouncementEdit from './AnnouncementEdit';
+import { useDispatch, useSelector } from "react-redux"; // import dispatch and useSelector
+import { loadingAction } from "../store/store"; // import loading action
+import Loading from "../page/Loading"; // import Loading component
 
 const AnnouncementList = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -9,11 +12,16 @@ const AnnouncementList = () => {
   const apiUrl = `${ip}/api/announcment`;
   const isUserAdmin = localStorage.getItem("role");
 
+  // Dispatch and loading state
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading.isLoading); // Get loading state from redux
+
   useEffect(() => {
     fetchAnnouncements();
   }, []);
 
   const fetchAnnouncements = async () => {
+    dispatch(loadingAction.startLoading(true)); // Start loading
     try {
       const accessToken = localStorage.getItem('accessToken');
       const response = await axios.get(`${apiUrl}/get`, {
@@ -25,6 +33,8 @@ const AnnouncementList = () => {
       setAnnouncements(response.data);
     } catch (error) {
       console.error('Error fetching announcements:', error);
+    } finally {
+      dispatch(loadingAction.startLoading(false)); // Stop loading
     }
   };
 
@@ -83,6 +93,11 @@ const AnnouncementList = () => {
     }
     return null;
   };
+
+  // Render loading component when loading is true
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="container mx-auto p-4 rounded-lg">

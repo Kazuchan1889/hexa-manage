@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
 import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
@@ -9,7 +11,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress } from "@mui/material"; // Add CircularProgress
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Dialog from "@mui/material/Dialog";
@@ -43,6 +45,9 @@ const TableApprovalCuti = () => {
   const [reportType, setReportType] = useState("approval");
   const [data, setData] = useState(null);
 
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
+
   const jabatan = localStorage.getItem("jabatan");
 
   const fetchData = (string) => {
@@ -61,16 +66,18 @@ const TableApprovalCuti = () => {
       },
     };
 
-    console.log(search);
+    dispatch(loadingAction.startLoading(true)); // Start loading
     axios
       .post(apiURLCuti, requestBody, config)
       .then((response) => {
-        console.log("Response Data:", response.data);
         setRows(response.data);
         setOriginalRows(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        dispatch(loadingAction.startLoading(false)); // Stop loading
       });
   };
 
@@ -86,7 +93,6 @@ const TableApprovalCuti = () => {
     setSelectedDate(date);
     setPage(0);
     setIsDateFilterOpen(false);
-    // console.log(date.toISOString(),selectedDate);
   };
 
   useEffect(() => {
@@ -106,19 +112,15 @@ const TableApprovalCuti = () => {
 
       axios
         .patch(apiApprovalURL, {}, config)
-        .then((response) => {
-          console.log(response.data);
+        .then(() => {
           fetchData(""); // Refresh data after approval
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Approval Success",
             text: "The request has been approved successfully.",
           });
         })
-        .catch((error) => {
-          console.error("Error approving data:", error);
-          // Show error alert
+        .catch(() => {
           Swal.fire({
             icon: "error",
             title: "Approval Error",
@@ -141,19 +143,15 @@ const TableApprovalCuti = () => {
 
       axios
         .patch(apiReject, {}, config)
-        .then((response) => {
-          console.log(response.data);
+        .then(() => {
           fetchData(""); // Refresh data after rejection
-          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Rejection Success",
             text: "The request has been rejected successfully.",
           });
         })
-        .catch((error) => {
-          console.error("Error rejecting data:", error);
-          // Show error alert
+        .catch(() => {
           Swal.fire({
             icon: "error",
             title: "Rejection Error",
@@ -164,11 +162,9 @@ const TableApprovalCuti = () => {
   };
 
   const searchInRows = (query) => {
-    const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
-      return row.nama.toLowerCase().includes(query.toLowerCase());
-    });
-
+    const filteredRows = originalRows.filter((row) =>
+      row.nama.toLowerCase().includes(query.toLowerCase())
+    );
     setRows(filteredRows);
     setPage(0);
   };
@@ -184,7 +180,6 @@ const TableApprovalCuti = () => {
     setPage(0);
 
     if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
   };
@@ -201,7 +196,7 @@ const TableApprovalCuti = () => {
     handleMenuClose();
   };
 
-  const handleMenuOpen = (event, index) => {
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -240,7 +235,6 @@ const TableApprovalCuti = () => {
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -284,6 +278,15 @@ const TableApprovalCuti = () => {
   const handleSettingsClose = () => {
     setIsSettingsOpen(null);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <CircularProgress />
+      </div>
+    );
+  }
+
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -327,8 +330,7 @@ const TableApprovalCuti = () => {
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
-                    {/* Judul "Pilih Tanggal" */}
+                    <DialogTitle>Pilih Tanggal</DialogTitle>
                     <DialogContent>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker

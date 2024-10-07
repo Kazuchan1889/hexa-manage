@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import loadingReducer from './loadingSlice.js';
+import loadingSlice from './loadingSlice.js';
 
 const store = configureStore({
   reducer: {
-    loading: loadingReducer,
+    loading: loadingSlice.reducer,
   },
 });
+
+export const loadingAction = loadingSlice.actions;
 
 export default store;

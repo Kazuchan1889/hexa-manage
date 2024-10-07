@@ -470,7 +470,7 @@ function LaporanKegiatan() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {tableData
+                        {tableData  
                           .slice(
                             page * rowsPerPage,
                             page * rowsPerPage + rowsPerPage

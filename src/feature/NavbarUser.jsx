@@ -177,7 +177,7 @@ const NavbarUser = () => {
   // Untuk nge set redirectnya
   const handleMenuItemClick = (item) => {
     if (item.label === "Time off") {
-      navigate("/Cuti");
+      navigate("/Form");
     } else if (item.label === "Reimburse") {
       navigate("/reimburst");
     } else if (item.label === "Resign") {
@@ -463,17 +463,17 @@ const NavbarUser = () => {
               </ListItemIcon>
               <ListItemText primary="Laporan Kegiatan" />
             </ListItem>
-            <ListItem button component={Link} to="/cuti">
+            <ListItem button component={Link} to="/OverUser">
               <ListItemIcon>
                 <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary="time off" />
+              <ListItemText primary="Overtime" />
             </ListItem>
-            <ListItem button component={Link} to="/cuti">
+            <ListItem button component={Link} to="/Form">
               <ListItemIcon>
                 <VacationIcon />
               </ListItemIcon>
-              <ListItemText primary="Cuti" />
+              <ListItemText primary="Time Off" />
             </ListItem>
             <ListItem button component={Link} to="/reimburst">
               <ListItemIcon>
@@ -504,12 +504,6 @@ const NavbarUser = () => {
                 <ExitToAppIcon />
               </ListItemIcon>
               <ListItemText primary="Logout" />
-            </ListItem>
-            <ListItem button component={Link} to="/Timeoff">
-              <ListItemIcon>
-                <VacationIcon />
-              </ListItemIcon>
-              <ListItemText primary="Timeoff" />
             </ListItem>
           </List>
         </Drawer>
