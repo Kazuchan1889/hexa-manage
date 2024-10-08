@@ -45,6 +45,7 @@ import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
 import Form from "./page/formizinn";
+import FormLapor from "./page/Formlaporan";
 
 // Import komponen loading
 import Loading from "./page/Loading"; 
@@ -119,6 +120,7 @@ function App() {
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
           <Route path="/Form" element={<Form />} />
+          <Route path="/Formlaporan" element={<FormLapor />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
