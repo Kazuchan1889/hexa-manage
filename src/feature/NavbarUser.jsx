@@ -423,7 +423,7 @@ const NavbarUser = () => {
                     variant="button"
                     style={{ whiteSpace: "nowrap" }}
                   >
-                    Schedjule
+                    Schedule
                   </Typography>
                 </Button>
                 <Menu
