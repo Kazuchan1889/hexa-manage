@@ -5,24 +5,29 @@ import ip from "../ip";
 import axios from "axios";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
+import { useNavigate } from "react-router-dom"; // Untuk redirect ke halaman Home
 
 function LiveAttendance() {
     const [masuk, setMasuk] = useState("");
     const [keluar, setKeluar] = useState("");
     const [serverTime, setServerTime] = useState("");
     const [checkInStatus, setCheckInStatus] = useState(
-        localStorage.getItem("result")
+        localStorage.getItem("result") || null
     );
     const [location, setLocation] = useState(null);
     const videoRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false); // prevent multiple submissions
+    const navigate = useNavigate(); // Untuk redirect ke halaman Home
 
-    const isUserCheckin = localStorage.getItem("result") === "udahMasuk";
-    const isUserCheckout = localStorage.getItem("result") === "udahKeluar";
-    const userStatusIzin = localStorage.getItem("status") === "izin";
-    const userStatusCuti = localStorage.getItem("status") === "cuti";
-    const userStatusSakit = localStorage.getItem("status") === "sakit";
+    const isUserCheckin = checkInStatus === "udahMasuk";
+    const isUserCheckout = checkInStatus === "udahKeluar";
 
     useEffect(() => {
+        if (checkInStatus) {
+            // Jika user sudah check-in atau check-out, tidak perlu fetch lagi
+            return;
+        }
+
         const apiCheckIn = `${ip}/api/absensi/get/today/self`;
         const headers = {
             Authorization: localStorage.getItem("accessToken"),
@@ -32,12 +37,13 @@ function LiveAttendance() {
             .then((response) => {
                 setMasuk(response.data.masuk);
                 setKeluar(response.data.keluar);
+                setCheckInStatus(localStorage.getItem("result"));
                 console.log(response.data);
             })
             .catch((error) => {
                 console.error("Error", error);
             });
-    }, []);
+    }, [checkInStatus]);
 
     useEffect(() => {
         const fetchServerTime = () => {
@@ -58,33 +64,37 @@ function LiveAttendance() {
         };
 
         fetchServerTime();
-        const intervalId = setInterval(fetchServerTime, 1000); 
+        const intervalId = setInterval(fetchServerTime, 1000);
         return () => clearInterval(intervalId);
     }, []);
 
-    const handleCheckIn = () => {
-        const capturePhoto = () => {
-            const video = videoRef.current;
-            const canvas = document.createElement("canvas");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL("image/jpeg");  // Return the Base64 encoded string
-        };
+    const capturePhoto = () => {
+        const video = videoRef.current;
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL("image/jpeg");  // Return the Base64 encoded string
+    };
 
-        const getLocation = () => {
-            return new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        resolve({
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude,
-                        });
-                    },
-                    (error) => reject(error)
-                );
-            });
-        };
+    const getLocation = () => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    });
+                },
+                (error) => reject(error)
+            );
+        });
+    };
+
+    const isWithinArea = (latitude, longitude) => {
+        const targetLat = -6.1677998;
+        const targetLng = 106.7861411;
+        const radius = 80000; // 80 meters radius
 
         const calculateDistance = (lat1, lon1, lat2, lon2) => {
             const toRad = (value) => (value * Math.PI) / 180;
@@ -103,86 +113,124 @@ function LiveAttendance() {
             return R * c; // in meters
         };
 
-        Promise.all([capturePhoto(), getLocation()])
-            .then(([photo, location]) => {
-                setLocation(location);
+        const distance = calculateDistance(latitude, longitude, targetLat, targetLng);
 
-                const isWithinArea = (latitude, longitude) => {
-                    const targetLat = 
-                    -6.1677998; 
-                    const targetLng = 106.7861411; 
-                    const radius = 8000; // 80 meters radius
+        console.log("Current Location:", { latitude, longitude });
+        console.log("Distance from target:", distance, "meters");
 
-                    const distance = calculateDistance(latitude, longitude, targetLat, targetLng);
+        return distance <= radius;
+    };
 
-                    console.log("Current Location:", location); // Log koordinat ke console
-                    console.log("Distance from target:", distance, "meters"); // Log jarak ke console
-                    return distance <= radius;
-                };
+    const handleCheckIn = async () => {
+        if (isLoading || isUserCheckin) {
+            // Jika user sudah check-in, tampilkan notifikasi dan arahkan ke Home
+            Swal.fire({
+                icon: "error",
+                title: "Check In Gagal!",
+                text: "Anda sudah melakukan Check In atau Check Out.",
+            }).then(() => {
+                navigate("/home"); // Arahkan user ke halaman Home
+            });
+            return;
+        }
+        setIsLoading(true);
 
-                if (!isWithinArea(location.latitude, location.longitude)) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Check In Failed!",
-                        text: "You are not within the required location.",
-                    });
-                    return;
-                }
+        try {
+            const fotomasuk = capturePhoto(); // Get Base64 photo
+            const location = await getLocation(); // Get user's location
 
-                const checkInSuccessful = true;
-                if (checkInSuccessful) {
-                    localStorage.setItem("result", "udahMasuk");
-                    setCheckInStatus("udahMasuk");
-
-                    const apiSubmit = `${ip}/api/absensi/patch/masuk`;
-                    const headers = {
-                        Authorization: localStorage.getItem("accessToken"),
-                        "Content-Type": "application/json",
-                    };
-                    const payload = {
-                        photo, 
-                        location,
-                        
-                    };  
-
-                    axios
-                    .patch(apiSubmit, payload, { headers })
-                        .then((response) => {
-                            const apiCheckIn = `${ip}/api/absensi/get/today/self`;
-                            axios
-                                .get(apiCheckIn, { headers })
-                                .then((response) => {
-                                    setMasuk(response.data.masuk);
-                                    setKeluar(response.data.keluar);
-                                })
-                                .catch((error) => {
-                                    console.error("Error", error);
-                                });
-                            console.log(response);
-                            Swal.fire({
-                                icon: "success",
-                                title: "Check In Sukses!",
-                                text: response.data,
-                            });
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                            Swal.fire({
-                                icon: "error",
-                                title: "Check In Gagal!",
-                                text: "An error occurred while processing your request.",
-                            });
-                        });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
+            if (!isWithinArea(location.latitude, location.longitude)) {
                 Swal.fire({
                     icon: "error",
                     title: "Check In Failed!",
-                    text: "Could not get location or capture photo.",
+                    text: "You are not within the required location.",
                 });
+                setIsLoading(false);
+                return;
+            }
+
+            const apiSubmit = `${ip}/api/absensi/patch/masuk`;
+            const headers = {
+                Authorization: localStorage.getItem("accessToken"),
+                "Content-Type": "application/json",
+            };
+            const payload = {
+                fotomasuk, // send Base64 photo
+                location,
+            };
+
+            const response = await axios.patch(apiSubmit, payload, { headers });
+
+            if (response.status === 200) {
+                localStorage.setItem("result", "udahMasuk");
+                setCheckInStatus("udahMasuk");
+                setMasuk(response.data.masuk);
+                Swal.fire({
+                    icon: "success",
+                    title: "Check In Sukses!",
+                    text: response.data,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire({
+                icon: "error",
+                title: "Check In Gagal!",
+                text: "An error occurred while processing your request.",
             });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCheckOut = async () => {
+        if (isLoading || isUserCheckout) {
+            // Jika user sudah check-out, tampilkan notifikasi dan arahkan ke Home
+            Swal.fire({
+                icon: "error",
+                title: "Check Out Gagal!",
+                text: "Anda sudah melakukan Check Out atau Check In.",
+            }).then(() => {
+                navigate("/home"); // Arahkan user ke halaman Home
+            });
+            return;
+        }
+        setIsLoading(true);
+
+        try {
+            const fotokeluar = capturePhoto(); // Get Base64 photo
+
+            const apiSubmit = `${ip}/api/absensi/patch/keluar`;
+            const headers = {
+                Authorization: localStorage.getItem("accessToken"),
+                "Content-Type": "application/json",
+            };
+            const payload = {
+                fotokeluar, // send Base64 photo
+            };
+
+            const response = await axios.patch(apiSubmit, payload, { headers });
+
+            if (response.status === 200) {
+                localStorage.setItem("result", "udahKeluar");
+                setCheckInStatus("udahKeluar");
+                setKeluar(response.data.keluar);
+                Swal.fire({
+                    icon: "success",
+                    title: "Check Out Sukses!",
+                    text: response.data,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire({
+                icon: "error",
+                title: "Check Out Gagal!",
+                text: "An error occurred while processing your request.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -195,53 +243,6 @@ function LiveAttendance() {
                 console.error("Error accessing webcam", error);
             });
     }, []);
-
-    const handleCheckOut = () => {
-        const capturePhoto = () => {
-            const video = videoRef.current;
-            const canvas = document.createElement("canvas");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL("image/jpeg");
-        };
-    
-        const photo = capturePhoto();
-    
-        const apiSubmit = `${ip}/api/absensi/patch/keluar`;
-        const headers = {
-            Authorization: localStorage.getItem("accessToken"),
-            "Content-Type": "application/json",
-        };
-        const payload = {
-            photo
-        };
-        axios
-            .patch(apiSubmit, payload, { headers })
-            .then((response) => {
-                if (!response.data.includes("dapat dilakukan")) setKeluar(true);
-                console.log(response);
-                Swal.fire({
-                    icon: response.data.includes("dapat dilakukan") ? "error" : "success",
-                    title: response.data.includes("dapat dilakukan")
-                        ? "Check Out Gagal!"
-                        : "Check Out Sukses!",
-                    text: response.data,
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Check Out Gagal!",
-                    text: "An error occurred while processing your request.",
-                });
-            });
-        if (keluar) {
-            localStorage.setItem("result", "udahKeluar");
-            setCheckInStatus("udahKeluar");
-        }
-    };
 
     const day = new Date().toLocaleDateString("en-US", { weekday: "short" });
     const date = new Date().toLocaleDateString("id-ID", {
@@ -297,6 +298,7 @@ function LiveAttendance() {
                             size="large"
                             onClick={handleCheckIn}
                             style={{ width: "80%" }}
+                            disabled={isUserCheckin || isLoading} // Disable button if already checked in
                         >
                             Check In
                         </Button>
@@ -307,6 +309,7 @@ function LiveAttendance() {
                             size="large"
                             onClick={handleCheckOut}
                             style={{ width: "80%" }}
+                            disabled={isUserCheckout || isLoading} // Disable button if already checked out
                         >
                             Check Out
                         </Button>

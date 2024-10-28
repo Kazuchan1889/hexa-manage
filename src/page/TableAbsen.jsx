@@ -102,6 +102,13 @@ const TableAbsen = () => {
     return <Loading />; // Show loading state if data is being fetched
   }
 
+  function Base64Image({ base64String }) {
+    // Buat URL untuk base64 data
+    const imageUrl = `data:image/jpeg;base64,${base64String}`;
+
+    return <img src={imageUrl} alt="Gambar" style={{ maxWidth: '100px', maxHeight: '100px' }} />;
+}
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -189,6 +196,9 @@ const TableAbsen = () => {
                         <p className="text-white font-semibold">Tanggal</p>
                       </TableCell>
                       <TableCell align="center">
+                        <p className="text-white font-semibold">Photo</p>
+                      </TableCell>
+                      <TableCell align="center">
                         <p className="text-white font-semibold">Status</p>
                       </TableCell>
                     </TableRow>
@@ -224,6 +234,13 @@ const TableAbsen = () => {
                               {row.keluar}
                             </TableCell>
                             <TableCell align="center">{row.date}</TableCell>
+                            <TableCell align="center">
+                                  <img 
+                                    src={row.fotomasuk} 
+                                    alt="Foto Masuk" 
+                                    style={{ width: "50px", height: "50px", objectFit: "cover" }} 
+                                  />
+                                </TableCell>
                             <TableCell align="center" className="flex items-center">
                               <PatchStatus string={row.status} id={row.id} />
                             </TableCell>
