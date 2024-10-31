@@ -35,7 +35,7 @@ const TableLaporanKegiatan = () => {
   const [jenisFilter, setJenisFilter] = useState("Didalam Kantor");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([]); // Inisialisasi dengan array kosong
   const [originalRows, setOriginalRows] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -60,20 +60,20 @@ const TableLaporanKegiatan = () => {
     setLoading(true); // Set loading to true before fetching data
 
     try {
-      const response = await axios.post(
-        apiURLLaporanKegiatan,
-        requestBody,
-        config
-      );
-      if (response.data[0].nama) {
+      const response = await axios.post(apiURLLaporanKegiatan, requestBody, config);
+      
+      // Pastikan data yang diterima adalah array, jika tidak maka set sebagai array kosong
+      if (Array.isArray(response.data)) {
         setRows(response.data);
         setOriginalRows(response.data);
       } else {
-        setRows([]);
+        setRows([]); // Set sebagai array kosong jika bukan array
       }
+      
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setRows([]); // Set sebagai array kosong jika ada error
     } finally {
       setLoading(false); // Set loading to false regardless of success or error
     }
@@ -127,10 +127,9 @@ const TableLaporanKegiatan = () => {
     setSelectedDate(date);
     setPage(0);
     setIsDateFilterOpen(false);
-    // console.log(date.toISOString(),selectedDate);
   };
 
-  const handleMenuOpen = (event, index) => {
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -157,7 +156,7 @@ const TableLaporanKegiatan = () => {
     handleMenuClose();
   };
 
-  const handleJenisOpen = (event, index) => {
+  const handleJenisOpen = (event) => {
     setAnchorJenis(event.currentTarget);
   };
 
@@ -170,14 +169,6 @@ const TableLaporanKegiatan = () => {
   const handleJenisClose = () => {
     setAnchorJenis(null);
   };
-
-  const filteredRows = rows.filter((row) => {
-    const matchJenis = !jenisFilter || row.jenis === jenisFilter;
-    const matchReportType = !reportType || row.reportType === reportType;
-    const matchDate = !selectedDate || row.tanggal === selectedDate;
-
-    return matchJenis && matchReportType && matchDate;
-  });
 
   const handleExcel = () => {
     const api = `${ip}/api/export/data/3`;
@@ -256,8 +247,7 @@ const TableLaporanKegiatan = () => {
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
-                    {/* Judul "Pilih Tanggal" */}
+                    <DialogTitle>Pilih Tanggal</DialogTitle>
                     <DialogContent>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -282,7 +272,7 @@ const TableLaporanKegiatan = () => {
                   <Button
                     size="small"
                     variant="outlined"
-                    onClick={(event) => handleJenisOpen(event)}
+                    onClick={handleJenisOpen}
                   >
                     {jenisFilter === "Didalam Kantor" ? (
                       <Typography
@@ -319,7 +309,7 @@ const TableLaporanKegiatan = () => {
                   <Button
                     size="small"
                     variant="outlined"
-                    onClick={(event) => handleMenuOpen(event)}
+                    onClick={handleMenuOpen}
                   >
                     {reportType === "harian" ? (
                       <Typography variant="button">Harian</Typography>
@@ -396,7 +386,7 @@ const TableLaporanKegiatan = () => {
                         </TableCell>
                       </TableRow>
                     </TableHead>
-                    {rows && (
+                    {rows && Array.isArray(rows) && ( // Tambahkan pengecekan apakah rows adalah array
                       <TableBody className="bg-gray-100">
                         {(rowsPerPage > 0
                           ? rows.slice(
@@ -530,11 +520,11 @@ const TableLaporanKegiatan = () => {
       </Dialog>
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
-          {rows && (
+          {rows && Array.isArray(rows) && ( // Tambahkan pengecekan apakah rows adalah array
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={filteredRows.length}
+              count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
