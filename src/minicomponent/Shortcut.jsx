@@ -25,7 +25,7 @@ function Shortcut() {
                     <Link className="text-sm" to="/reimburst">Request Reimbursement</Link>
                 </div>
                 <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <Link className="text-sm" to="/cuti">Request Time Off</Link>
+                    <Link className="text-sm" to="/Form">Request Time Off</Link>
                 </div>
                 <div
                     className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black cursor-pointer"

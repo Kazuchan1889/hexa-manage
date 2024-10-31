@@ -14,11 +14,6 @@ const AddCompanyProfile = () => {
     industry: '',
     company_size: '',
     
-    taxperson_npwp: '',
-    hq_initial: '',
-    hq_code: '',
-    
-    bpjs_ketenagakerjaan: '',
     jumlah_karyawan: '' // Added field for number of employees
   });
 
@@ -46,9 +41,6 @@ const AddCompanyProfile = () => {
             city: data.city || '',
             industry: data.industry || '',
             company_size: data.company_size || '',
-            hq_initial: data.hq_initial || '',
-            hq_code: data.hq_code || '',
-            bpjs_ketenagakerjaan: data.bpjs_ketenagakerjaan || ''
           }));
         }
 
