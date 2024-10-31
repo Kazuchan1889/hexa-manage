@@ -3,34 +3,34 @@ import NavbarUser from "../feature/NavbarUser";
 
 // Function to calculate countdown from start date to end date
 const calculateCountdown = (startDate, endDate) => {
-  const startTime = new Date(startDate).getTime();
-  const endTime = new Date(endDate).getTime();
-  const currentTime = new Date().getTime();
+    const startTime = new Date(startDate).getTime();
+    const endTime = new Date(endDate).getTime();
+    const currentTime = new Date().getTime();
 
-  const timeDifference = endTime - currentTime;
+    const timeDifference = endTime - currentTime;
 
-  // If the end time is already passed, return "Waktu habis"
-  if (timeDifference <= 0) {
-    return "Waktu habis";
-  }
+    // If the end time is already passed, return "Waktu habis"
+    if (timeDifference <= 0) {
+        return "Waktu habis";
+    }
 
-  // Convert time difference to days, hours, and minutes
-  const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    // Convert time difference to days, hours, and minutes
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
 
-  let countdown = "";
-  if (days > 0) {
-    countdown += days + " hari ";
-  }
-  if (hours > 0) {
-    countdown += hours + " jam ";
-  }
-  if (minutes > 0) {
-    countdown += minutes + " menit ";
-  }
+    let countdown = "";
+    if (days > 0) {
+        countdown += days + " hari ";
+    }
+    if (hours > 0) {
+        countdown += hours + " jam ";
+    }
+    if (minutes > 0) {
+        countdown += minutes + " menit ";
+    }
 
-  return countdown;
+    return countdown;
 };
 
 function Taskform() {
@@ -65,23 +65,23 @@ function Taskform() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label htmlFor="activity" className="block text-sm font-medium leading-6 text-gray-900">Kegiatan:</label>
-                        <input type="text" id="activity" value={activity} onChange={(e) => setActivity(e.target.value)} 
-                        className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500"/>
+                        <input type="text" id="activity" value={activity} onChange={(e) => setActivity(e.target.value)}
+                            className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500" />
                     </div>
                     <div>
                         <label htmlFor="location" className="block text-sm font-medium leading-6 text-gray-900">Keterangan</label>
                         <input type="text" id="location" value={location} onChange={(e) => setLocation(e.target.value)}
-                        className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500"/>
+                            className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500" />
                     </div>
                     <div>
                         <label htmlFor="startDate" className="block text-sm font-medium leading-6 text-gray-900">Tanggal Mulai:</label>
                         <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500"/>
+                            className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500" />
                     </div>
                     <div>
                         <label htmlFor="endDate" className="block text-sm font-medium leading-6 text-gray-900">Tanggal Selesai:</label>
                         <input type="date" id="endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500"/>
+                            className="w-full rounded-md border-2 border-gray-300 py-2 pl-3 focus:outline-none focus:border-indigo-500" />
                     </div>
                     <button type="submit" className="w-full rounded-md bg-indigo-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Submit

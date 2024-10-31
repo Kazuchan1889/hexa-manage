@@ -171,7 +171,7 @@ const NavbarUser = () => {
     { label: "Reimburse", active: false },
     { label: "Resign", active: false },
     { label: "Overtime", active: false },
-    { label: "Laporan", active: false }
+    { label: "Report", active: false }
   ];
   
   // Untuk nge set redirectnya
@@ -186,7 +186,7 @@ const NavbarUser = () => {
     else if (item.label === "Overtime") {
       navigate("/OverUser");
     }
-    else if (item.label === "Laporan") {
+    else if (item.label === "Report") {
       navigate("/laporan");
     }
   };
@@ -322,7 +322,7 @@ const NavbarUser = () => {
                     />
                   }
                 >
-                  Formulir
+                  Form
                 </Button>
                 <Menu
                   anchorEl={anchorEl}
@@ -423,7 +423,7 @@ const NavbarUser = () => {
                     variant="button"
                     style={{ whiteSpace: "nowrap" }}
                   >
-                    Schedjule
+                    schedule 
                   </Typography>
                 </Button>
                 <Menu

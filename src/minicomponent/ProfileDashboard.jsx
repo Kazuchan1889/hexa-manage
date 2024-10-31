@@ -90,7 +90,7 @@ function ProfileDashboard() {
             <div className="flex items-center mt-2">
               <ReportProblemIcon className="text-yellow-400 mr-2" />
               <Typography variant="body2" className="text-yellow-400">
-                Jangan Lupa Check in Hari ini!
+                Time to check in, don’t forget!
               </Typography>
             </div>
           )}

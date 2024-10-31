@@ -275,7 +275,7 @@ const CalendarComponent = () => {
     <section>
       <NavbarUser />
       <div className="mx-20 text-left my-2">
-        <h1 className="text-3xl font-bold">Schedjule</h1>
+        <h1 className="text-3xl font-bold">Schedule</h1>
       </div>
       <div className="max-w-6xl mx-auto flex mt-6 border border-gray-200 rounded-lg shadow-lg">
         <div className="w-2/3 p-4 bg-white">
