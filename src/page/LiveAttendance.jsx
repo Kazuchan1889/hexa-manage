@@ -252,7 +252,6 @@ function LiveAttendance() {
     }).replace(",", "");
 
     const formattedDate = `${day}, ${date}`;
-    const scheduleDate = `Schedule, ${date}`;
 
     function formatServerTime(serverTime) {
         const [hours, minutes] = serverTime
@@ -265,16 +264,13 @@ function LiveAttendance() {
         <div className="w-full h-full" style={{ backgroundColor: "#F0F0F0" }}>
             <NavbarUser />
             <div className="m-10 p-6 border rounded-lg drop-shadow-lg bg-white">
-                <h1 className="text-left font-semibold text-2xl text-primary">
+                <h1 className="text-left font-bold text-2xl text-primary">
                     Live Attendance
                 </h1>
                 <div className="flex flex-row justify-between pt-2">
                     <div>
                         <Typography variant="subtitle2" fontWeight={600}>
                             {formattedDate}
-                        </Typography>
-                        <Typography variant="subtitle2">
-                            {scheduleDate}
                         </Typography>
                     </div>
                     <div className="flex flex-col items-center gap-2">
@@ -287,7 +283,7 @@ function LiveAttendance() {
                     </div>
                 </div>
                 <div className="border-b-2 w-full border-gray-400 my-4"></div>
-                <div className="w-full flex justify-center mb-6">
+                <div className="w-full flex justify-center mb-4">
                     <video ref={videoRef} className="w-full max-w-sm rounded-md" />
                 </div>
                 <div className="flex flex-col items-center">

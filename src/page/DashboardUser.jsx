@@ -106,12 +106,12 @@ function DashboardUser() {
         {/* Bagian tengah dengan ChartDataKehadiranUser dan AnnouncementList */}
         <div className="flex flex-col lg:flex-row w-full space-y-5 lg:space-y-0 lg:space-x-5">
           {!isMobile && (
-            <div className="w-full lg:w-[30%] drop-shadow-lg bg-white p-10 rounded-xl border h-[23rem]">
+            <div className="w-full lg:w-[30%] drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
               <ChartDataKehadiranUser />
             </div>  
           )}
-          <div className="w-full lg:w-[45%] drop-shadow-lg bg-white p-6 rounded-xl border ml-5">
-            <div className="h-[85%] mb-2">
+          <div className="w-full lg:w-[45%] drop-shadow-lg bg-white p-4 rounded-xl border ">
+            <div className="h-[85%]">
               <AnnouncementList />
             </div>
           </div>
