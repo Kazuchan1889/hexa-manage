@@ -42,7 +42,9 @@ const OvertimeUser = () => {
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const [loading, setLoading] = useState(false); // State loading
-
+  const [randomNumber, setRandomNumber] = useState(0);
+  const [daysOff, setDaysOff] = useState(0);
+  const [afterConvert, setafterConvert] = useState(0);
   const apiURLover = `${ip}/api/overtime/list`;
 
   const config = {
@@ -52,6 +54,20 @@ const OvertimeUser = () => {
     },
   };
 
+  useEffect(() => {
+    const newNumber = Math.floor(Math.random() * 10) + 1; // angka acak antara 1 dan 100
+    setRandomNumber(newNumber);
+
+    // Tambah daysOff jika randomNumber lebih besar dari 8
+    if (newNumber => 8) {
+      const increment = Math.floor(newNumber / 8); // hitung kelipatan dari 8
+      setDaysOff(increment); // Atur daysOff sesuai kelipatan
+      const hours = increment * 8;
+      setafterConvert(hours);
+    } else {
+      return
+    }
+  }, []);
   const fetchData = async () => {
     setLoading(true); // Mulai loading
     try {
@@ -259,6 +275,15 @@ const OvertimeUser = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
+            <div className="flex gap-4 align-right justify-end mx-2">
+              <h3 className="font-semibold">Overtime Hours : {randomNumber - afterConvert} Hours</h3>
+              <h3 className="font-semibold">Days Off : {daysOff} Days</h3>
+            </div>
+            <div className="flex justify-end mx-2 mb-2">
+              <h5 className="text-xs text-red-700">
+                For every 8 hours of overtime, days off increase by 1
+              </h5>
+            </div>
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
               {loading ? ( // Tampilkan komponen Loading ketika loading true
                 <Loading />
@@ -271,22 +296,22 @@ const OvertimeUser = () => {
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Catatan</p>
+                          <p className="text-white font-semibold">Detail</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Mulai</p>
+                          <p className="text-white font-semibold">Start</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Selesai</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[20%]">
-                          <p className="text-white font-semibold">Tanggal</p>
+                          <p className="text-white font-semibold">Finish</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold text-center">Tipe Overtime</p>
+                          <p className="text-white font-semibold">Date</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold text-center">Break</p>
+                          <p className="text-white font-semibold text-center">Overtime Type</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold text-center">Overtime Hours</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Action</p>
@@ -303,7 +328,7 @@ const OvertimeUser = () => {
                             <TableCell align="center">{row.selesai}</TableCell>
                             <TableCell align="center">{formatDate(row.tanggal_overtime)}</TableCell>
                             <TableCell align="center">{row.tipe}</TableCell>
-                            <TableCell align="center">{row.break}</TableCell>
+                            <TableCell align="center">{ }</TableCell>
                             <TableCell
                               align="center"
                               style={{
@@ -311,8 +336,8 @@ const OvertimeUser = () => {
                                   row.status === "waiting for approval"
                                     ? "black"
                                     : row.status
-                                    ? "green"
-                                    : "red",
+                                      ? "green"
+                                      : "red",
                               }}
                             >
                               {row.status === "waiting for approval" ? (
@@ -332,6 +357,17 @@ const OvertimeUser = () => {
                 </TableContainer>
               )}
             </div>
+            {/* <div className="flex flex-col justify-center font-semibold mt-2">
+              <h3>
+                Overtime You Have : {randomNumber}
+              </h3>
+              <h3>
+                Days Off Accumulation : {daysOff}
+              </h3>
+              <h3>
+                Overtime Accumulation after Convert : {randomNumber - afterConvert}
+              </h3>
+            </div> */}
           </CardContent>
         </Card>
       </div>
