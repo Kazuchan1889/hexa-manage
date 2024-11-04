@@ -18,27 +18,30 @@ import {
   TablePagination,
   Dialog,
   DialogContent,
+  DialogActions,
+  DialogTitle,
   Alert,
 } from "@mui/material";
-import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
+import { CheckCircle as CheckCircleIcon, CloudDownload, Edit as EditIcon } from "@mui/icons-material";
 import Swal from "sweetalert2";
-import { CloudDownload } from "@mui/icons-material";
 
 import ip from "../ip";
 import NavbarUser from "../feature/NavbarUser";
 
 function LaporanKegiatan() {
-  const [uploadedFiles, setUploadedFiles] = useState([]); // Store multiple files
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadedFileBase64s, setUploadedFileBase64s] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [showUploadFile, setShowUploadFile] = useState(false);
   const [loading, setLoading] = useState(true);
   const [uploadAlert, setUploadAlert] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [detailDescription, setDetailDescription] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const [formData, setFormData] = useState({
     lokasi: "",
@@ -60,10 +63,11 @@ function LaporanKegiatan() {
       .get(apiUrl, { headers })
       .then((response) => {
         const data = response.data;
-        setTableData(data);
+        setTableData(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((error) => {
+        setTableData([]);
         setLoading(false);
         console.error(error);
       });
@@ -99,7 +103,6 @@ function LaporanKegiatan() {
     e.preventDefault();
 
     if (formData.jenis === "Keluar kantor" && uploadedFiles.length === 0) {
-      // Show an alert if jenis is "Keluar kantor" and no files uploaded
       return setUploadAlert(true);
     }
 
@@ -112,38 +115,32 @@ function LaporanKegiatan() {
       dokumen: uploadedFileBase64s.map((reader) => reader.result),
     };
 
-    const apiSubmit = `${ip}/api/laporan/post`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-      "Content-Type": "application/json",
-    };
-
+    // Mengirim data ke backend
     axios
-      .post(apiSubmit, requestBody, { headers })
+      .post(`${ip}/api/laporan/post`, requestBody, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
-        console.log(response);
-        setUploadedFiles([]);
-        setUploadedFileBase64s([]);
         Swal.fire({
           icon: "success",
           title: "Submit Sukses",
-          text: response.data,
-          customClass: {
-            container: "z-30", // or any value that ensures it's in front of everything
-          },
+          text: "Data berhasil disimpan ke backend.",
         }).then(() => {
+          // Refresh halaman setelah submit berhasil
           window.location.reload();
         });
+        setUploadedFiles([]);
+        setUploadedFileBase64s([]);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error submitting data:", error);
         Swal.fire({
           icon: "error",
           title: "Submit Gagal",
-          text: "error",
-          customClass: {
-            container: "z-30", // or any value that ensures it's in front of everything
-          },
+          text: "Terjadi kesalahan saat mengirim data ke backend.",
         });
       });
   };
@@ -162,21 +159,45 @@ function LaporanKegiatan() {
     }
   };
 
-  const fetchTableData = () => {
-    const apiUrl = `${ip}/api/laporan/get/data/self`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-    };
+  const handleOpenDetailModal = () => {
+    setIsDetailModalOpen(true);
+  };
 
-    axios
-      .get(apiUrl, { headers })
-      .then((response) => {
-        const data = response.data;
-        setTableData(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+  };
+
+  const handleDetailDescriptionChange = (e) => {
+    setDetailDescription(e.target.value);
+  };
+
+  const handleOpenEditModal = (row) => {
+    setEditData(row);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditData(null);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditData({
+      ...editData,
+      [name]: value,
+    });
+  };
+
+  const handleEditSave = () => {
+    // Simulasi penyimpanan perubahan tanpa mengirim ke backend
+    console.log("Data yang akan diedit (tidak dikirim ke backend):", editData);
+    Swal.fire({
+      icon: "success",
+      title: "Edit Sukses",
+      text: "Data berhasil diubah (simulasi tanpa backend).",
+    });
+    handleCloseEditModal();
   };
 
   const handleChangePage = (event, newPage) => {
@@ -195,7 +216,7 @@ function LaporanKegiatan() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     window.addEventListener("resize", handleResize);
@@ -206,354 +227,298 @@ function LaporanKegiatan() {
   }, []);
 
   return (
-    <div className="w-full h-screen bg-white overflow-y-hidden">
+    <div className=" bg-white overflow-y-auto">
       <NavbarUser />
-      <div className="flex h-fit">
-        {/* {!isMobile && <Sidebar />} */}
-        <div className="h-full w-4/5 mx-auto">
-          <div className="flex flex-col justify-between items-center my-2 rounded-xl">
-            {loading ? (
-              <div
-                className="w-1/5 h-full flex justify-center items-center"
-                style={{ position: "absolute", height: "100vh" }}
-              >
-                <CircularProgress />
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="w-10/12 h-8/12 flex flex-col justify-center"
-              >
-                <div className="w-full mb-4 flex justify-between items-center">
-                  <Typography variant="h5">Laporan Kegiatan</Typography>
-                </div>
-                {/* Alert untuk user yang kerja diluar namun tidak mengirim file bukti */}
-                {uploadAlert && (
-                  <Alert
-                    severity="error"
-                    variant="filled"
-                    onClose={() => setUploadAlert(false)}
-                    style={{ marginBottom: "10px" }}
-                  >
-                    You must upload a file when choosing "Keluar kantor."
-                  </Alert>
-                )}
-                <Grid container spacing={2}>
-                  {/* Keterangan */}
-                  <Grid item xs={12} sm={6}>
-                    <div className="mb-2">
-                      <TextField
-                        label="Keterangan"
-                        name="keterangan"
-                        id="keterangan"
-                        type="text"
-                        size="small"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.keterangan}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </Grid>
-
-                  {/* Lokasi */}
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      label="Lokasi"
-                      name="lokasi"
-                      id="Lokasi"
-                      size="small"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      value={formData.lokasi}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  {/* Waktu */}
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      name="time"
-                      label="Time"
-                      id="time"
-                      type="time"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      size="small"
-                      value={formData.time}
-                      onChange={handleInputChange}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        placeholder: "",
-                      }}
-                    />
-                  </Grid>
-
-                  {/* Tanggal Laporan */}
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      name="tanggal"
-                      label="Tanggal"
-                      id="tanggal"
-                      type="date"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      size="small"
-                      value={formData.tanggal}
-                      onChange={handleInputChange}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        placeholder: "",
-                      }}
-                    />
-                  </Grid>
-
-                  {/* Jenis */}
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      label="Jenis"
-                      name="jenis"
-                      id="Jenis"
-                      select
-                      size="small"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      value={formData.jenis}
-                      onChange={handleInputChange}
-                    >
-                      <MenuItem value="Didalam kantor">
-                        <div className="text-left">Didalam kantor</div>
-                      </MenuItem>
-                      <MenuItem value="Keluar kantor">
-                        <div className="text-left">Keluar kantor</div>
-                      </MenuItem>
-                    </TextField>
-                  </Grid>
-
-                  {/* Image */}
-                  {showUploadFile && (
-                    <Grid item xs={12}>
-                      <p className="text-left">Upload Files</p>
-                      <div {...getRootProps()} className="mb-2">
-                        <input {...getInputProps()} id="fileInput" />
-
-                        {uploading ? (
-                          <div className="flex items-center">
-                            <CircularProgress color="primary" size={24} />
-                            <p className="ml-2">Uploading...</p>
-                          </div>
-                        ) : uploadedFiles.length > 0 ? (
-                          <div>
-                            <Typography variant="body2">
-                              {uploadedFiles.length} Files Uploaded
-                            </Typography>
-                            <ul>
-                              {uploadedFiles.map((file, index) => (
-                                <li key={index}>
-                                  <CheckCircleIcon color="primary" />
-                                  <span className="ml-2">{file.name}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : (
-                          <Button size="small" variant="outlined">
-                            Drop files here
-                          </Button>
-                        )}
-                      </div>
-                    </Grid>
-                  )}
-                </Grid>
-                <div className="mt-5">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
+      <div className="flex h-fit w-screen h-screen flex-col items-center gap-6 p-4">
+        
+        {/* Form Section */}
+        <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md ">
+          <Typography variant="h5" align="center" gutterBottom>
+            Laporan Kegiatan
+          </Typography>
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <CircularProgress />
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              {uploadAlert && (
+                <Alert
+                  severity="error"
+                  variant="filled"
+                  onClose={() => setUploadAlert(false)}
+                  style={{ marginBottom: "10px" }}
+                >
+                  You must upload a file when choosing "Keluar kantor."
+                </Alert>
+              )}
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Keterangan"
+                    name="keterangan"
+                    size="small"
+                    variant="outlined"
                     fullWidth
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            )}
-
-            {!isMobile && (
-              <div className="w-full flex flex-col mt-3 justify-center items-center mx-auto">
-                <div className="w-10/12 rounded-lg text-center align-center">
-                  <div className="flex justify-between">
-                    <Typography variant="h6" id="history-modal-title">
-                      History Table
-                    </Typography>
-                    <div className="mt-1">
-                      <Typography
-                        variant="h7"
-                        id="history-modal-title"
-                      ></Typography>
-                    </div>
-                  </div>
-                  <TableContainer
-                    className="rounded-md overflow-y-auto"
-                    component={Paper}
-                  >
-                    <Table size="small">
-                      <TableHead className="bg-blue-600">
-                        <TableRow>
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Keterangan
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Lokasi
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Waktu
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Tanggal Laporan
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Tanggal Kirim
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Jenis
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              className="font-semibold text-white flex justify-center"
-                            >
-                              Bukti
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {tableData  
-                          .slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                          .map((row, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">
-                                  {row.keterangan}
-                                </div>
-                              </TableCell>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">{row.lokasi}</div>
-                              </TableCell>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">{row.time}</div>
-                              </TableCell>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">{row.target}</div>
-                              </TableCell>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">{row.tanggal}</div>
-                              </TableCell>
-                              <TableCell className="text-center w-1/8">
-                                <div className="text-center">{row.jenis}</div>
-                              </TableCell>
-                              <TableCell className="align-center w-1/8">
-                                <div className="flex justify-center gap-[20%]">
-                                  {row.dokumen[0] && (
-                                    <a
-                                      href={row.dokumen[0]}
-                                      target="_blank "
-                                      download
-                                      className="cursor-pointer"
-                                    >
-                                      <CloudDownload />
-                                    </a>
-                                  )}
-                                  {row.dokumen[1] && (
-                                    <a
-                                      href={row.dokumen[1]}
-                                      target="_blank "
-                                      download
-                                      className="cursor-pointer"
-                                    >
-                                      <CloudDownload />
-                                    </a>
-                                  )}
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={tableData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    value={formData.keterangan}
+                    onChange={handleInputChange}
                   />
-                </div>
-              </div>
-            )}
-            <Dialog
-              open={Boolean(selectedImage)}
-              onClose={() => setSelectedImage(null)}
-              maxWidth="lg"
-            >
-              <DialogContent>
-                <img
-                  src={selectedImage}
-                  alt="Selected"
-                  style={{ maxWidth: "100%", maxHeight: "80vh" }}
-                />
-              </DialogContent>
-            </Dialog>
-          </div>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    label="Lokasi"
+                    name="lokasi"
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    value={formData.lokasi}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    name="time"
+                    label="Time"
+                    type="time"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={formData.time}
+                    onChange={handleInputChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    name="tanggal"
+                    label="Tanggal"
+                    type="date"
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                    value={formData.tanggal}
+                    onChange={handleInputChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    label="Jenis"
+                    name="jenis"
+                    select
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    value={formData.jenis}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="Didalam kantor">Didalam kantor</MenuItem>
+                    <MenuItem value="Keluar kantor">Keluar kantor</MenuItem>
+                  </TextField>
+                </Grid>
+                {showUploadFile && (
+                  <Grid item xs={12}>
+                    <p>Upload Files</p>
+                    <div {...getRootProps()} className="mb-2">
+                      <input {...getInputProps()} />
+                      {uploading ? (
+                        <CircularProgress color="primary" size={24} />
+                      ) : uploadedFiles.length > 0 ? (
+                        <ul>
+                          {uploadedFiles.map((file, index) => (
+                            <li key={index}>
+                              <CheckCircleIcon color="primary" />
+                              <span className="ml-2">{file.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <Button size="small" variant="outlined">
+                          Drop files here
+                        </Button>
+                      )}
+                    </div>
+                  </Grid>
+                )}
+              </Grid>
+
+              {/* Button untuk Add Detail */}
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={handleOpenDetailModal}
+                style={{ marginTop: '20px' }}
+              >
+                Add Detail
+              </Button>
+
+              {/* Button Submit */}
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{ marginTop: '10px' }}
+              >
+                Submit
+              </Button>
+            </form>
+          )}
+        </div>
+
+        {/* Table Section */}
+        <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md h-96 overflow-y-auto">
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
+                <TableRow style={{ backgroundColor: '#204684' }}>
+                  {['Keterangan', 'Lokasi', 'Waktu', 'Tanggal Laporan', 'Tanggal Kirim', 'Jenis', 'Bukti', 'Edit'].map((header) => (
+                    <TableCell key={header} align="center" style={{ color: 'white', fontWeight: 'bold' }}>
+                      {header}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(Array.isArray(tableData) ? tableData : [])
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.keterangan}</TableCell>
+                      <TableCell align="center">{row.lokasi}</TableCell>
+                      <TableCell align="center">{row.time}</TableCell>
+                      <TableCell align="center">{row.tanggal}</TableCell>
+                      <TableCell align="center">{row.target}</TableCell>
+                      <TableCell align="center">{row.jenis}</TableCell>
+                      <TableCell align="center">
+                        <div className="flex justify-center gap-4">
+                          {row.dokumen && row.dokumen[0] && (
+                            <a href={row.dokumen[0]} target="_blank" download>
+                              <CloudDownload />
+                            </a>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() => handleOpenEditModal(row)}
+                        >
+                          <EditIcon />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData.length || 0}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
       </div>
+
+      {/* Modal untuk Detail Description */}
+      <Dialog open={isDetailModalOpen} onClose={handleCloseDetailModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Detail Description</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Describe your activity"
+            multiline
+            rows={4}
+            variant="outlined"
+            fullWidth
+            value={detailDescription}
+            onChange={handleDetailDescriptionChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDetailModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modal untuk Edit Data */}
+      <Dialog open={isEditModalOpen} onClose={handleCloseEditModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Laporan</DialogTitle>
+        <DialogContent>
+          {editData && (
+            <>
+              <TextField
+                label="Keterangan"
+                name="keterangan"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={editData.keterangan}
+                onChange={handleEditInputChange}
+              />
+              <TextField
+                label="Lokasi"
+                name="lokasi"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={editData.lokasi}
+                onChange={handleEditInputChange}
+              />
+              <TextField
+                label="Waktu"
+                name="time"
+                type="time"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={editData.time}
+                onChange={handleEditInputChange}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Tanggal"
+                name="tanggal"
+                type="date"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={editData.tanggal}
+                onChange={handleEditInputChange}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Jenis"
+                name="jenis"
+                select
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={editData.jenis}
+                onChange={handleEditInputChange}
+              >
+                <MenuItem value="Didalam kantor">Didalam kantor</MenuItem>
+                <MenuItem value="Keluar kantor">Keluar kantor</MenuItem>
+              </TextField>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditSave} color="primary" variant="contained">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

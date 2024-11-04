@@ -72,7 +72,7 @@ function Login() {
         }
     } catch (error) {
         console.error("Login failed", error);
-        
+        dispatch(loadingAction.startLoading(false));
         // Show sweet alert on login failure
         Swal.fire({
             icon: "error",
