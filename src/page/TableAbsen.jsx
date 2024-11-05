@@ -727,6 +727,9 @@ const TableAbsen = () => {
                         <p className="text-white font-semibold">Tanggal</p>
                       </TableCell>
                       <TableCell align="center">
+                        <p className="text-white font-semibold">Overtime</p>
+                      </TableCell>
+                      <TableCell align="center">
                         <p className="text-white font-semibold">Status</p>
                       </TableCell>
                     </TableRow>
@@ -746,6 +749,7 @@ const TableAbsen = () => {
                           <TableCell align="center">{row.masuk}</TableCell>
                           <TableCell align="center">{row.keluar}</TableCell>
                           <TableCell align="center">{row.date}</TableCell>
+                          <TableCell align="center">no</TableCell>
                           <TableCell
                             align="center"
                             className="flex items-center"

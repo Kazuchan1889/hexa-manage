@@ -22,7 +22,7 @@ import {
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import SettingsIcon from "@mui/icons-material/Settings";  
+import SettingsIcon from "@mui/icons-material/Settings";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import VacationIcon from "@mui/icons-material/FlightTakeoff";
@@ -136,6 +136,7 @@ const SettingsDropdown = ({ handleLogout }) => {
 const NavbarUser = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [formulirOpen, setFormulirOpen] = useState(false);
+  const [userManagementOpen, setUserManagementOpen] = useState(false);
   const [masterOpen, setMasterOpen] = useState(false);
   const [timeManagementOpen, setTimeManagementOpen] = useState(false); // New state for Time Management dropdown
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -173,7 +174,7 @@ const NavbarUser = () => {
     { label: "Overtime", active: false },
     { label: "Report", active: false }
   ];
-  
+
   // Untuk nge set redirectnya
   const handleMenuItemClick = (item) => {
     if (item.label === "Time off") {
@@ -201,6 +202,30 @@ const NavbarUser = () => {
   function checkOp(string) {
     return operation.includes(string);
   }
+
+  const handleMenuUserManagementClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setUserManagementOpen(!userManagementOpen);
+  }
+
+  const UserManagementItems = [
+    { label: "User Data", active: false },
+    { label: "Role Management", active: false },
+  ];
+
+  const handleUserManagementClick = (item) => {
+    if (item.label === "User Data") {
+      navigate("/UserDataManagement");
+    } else if (item.label === "Role Management") {
+      navigate("RoleManagement");
+    }
+  };
+
+  const handleUserManagementClose = () => {
+    setAnchorEl(null);
+    setUserManagementOpen(false);
+  };
+
   // Untuk show master apa saja yang ada dengan menggunakan operation
   const masterSubItems = [
     checkOp("READ_ABSENSI")
@@ -227,16 +252,16 @@ const NavbarUser = () => {
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,
-      // checkOp("READ_KARYAWAN")
-      // ? { label: "Asset", active: false, to: "/Asset" }
-      // : null,
-      // checkOp("READ_KARYAWAN")
-      // ? { label: "Company File", active: false, to: "/companyfile" }
-      // : null,
-      checkOp("READ_KARYAWAN")
+    // checkOp("READ_KARYAWAN")
+    // ? { label: "Asset", active: false, to: "/Asset" }
+    // : null,
+    // checkOp("READ_KARYAWAN")
+    // ? { label: "Company File", active: false, to: "/companyfile" }
+    // : null,
+    checkOp("READ_KARYAWAN")
       ? { label: "Overtime", active: false, to: "/Over" }
       : null,
-    
+
   ].filter((item) => item !== null);
 
   // Untuk membuka master data
@@ -314,9 +339,8 @@ const NavbarUser = () => {
                   endIcon={
                     <ExpandMoreIcon
                       style={{
-                        transform: `rotate(${
-                          formulirOpen ? "180deg" : "360deg"
-                        })`,
+                        transform: `rotate(${formulirOpen ? "180deg" : "360deg"
+                          })`,
                         transition: "transform 0.3s",
                       }}
                     />
@@ -360,9 +384,8 @@ const NavbarUser = () => {
                     endIcon={
                       <ExpandMoreIcon
                         style={{
-                          transform: `rotate(${
-                            masterOpen ? "180deg" : "360deg"
-                          })`,
+                          transform: `rotate(${masterOpen ? "180deg" : "360deg"
+                            })`,
                           transition: "transform 0.3s",
                         }}
                       />
@@ -417,13 +440,13 @@ const NavbarUser = () => {
                   component={Link}
                   to="/Cal"
                   style={{ width: "10rem" }}
-                  
+
                 >
                   <Typography
                     variant="button"
                     style={{ whiteSpace: "nowrap" }}
                   >
-                    schedule 
+                    schedule
                   </Typography>
                 </Button>
                 <Menu
@@ -434,12 +457,59 @@ const NavbarUser = () => {
                 >
                 </Menu>
               </div>
+              {isUserAdmin === "admin" ? (
+
+                <div className="text-black flex items-center justify-center">
+                  <Button
+                    variant="button"
+                    onClick={handleMenuUserManagementClick}
+                    endIcon={
+                      <ExpandMoreIcon
+                        style={{
+                          transform: `rotate(${userManagementOpen ? "180deg" : "360deg"
+                            })`,
+                          transition: "transform 0.3s",
+                        }}
+                      />
+                    }
+                  >
+                    User Management
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={userManagementOpen}
+                    onClose={handleUserManagementClose}
+                    style={{ marginTop: "0.7rem" }}
+                  >
+                    <List>
+                      {UserManagementItems.map((item, index) => (
+                        <MenuItem
+                          key={index}
+                          onClick={() => {
+                            handleUserManagementClick(item);
+                            handleUserManagementClose();
+                          }}
+                          style={{ width: "12rem" }}
+                          className="flex justify-center items-center text-center"
+                        >
+                          <Typography
+                            variant="button"
+                            style={{ color: item.active ? "white" : "black" }}
+                          >
+                            {item.label}
+                          </Typography>
+                        </MenuItem>
+                      ))}
+                    </List>
+                  </Menu>
+                </div>
+              ) : null}
               {/* End of Time Management Dropdown */}
-              <div className="text-black flex items-center justify-center">
+              {/* <div className="text-black flex items-center justify-center">
                 <ListItem button component={Link} to="/payroll">
                   <Typography variant="button">Payroll</Typography>
                 </ListItem>
-              </div>
+              </div> */}
               <div className="text-black">
                 <SettingsDropdown handleLogout={handleLogout} />
               </div>
