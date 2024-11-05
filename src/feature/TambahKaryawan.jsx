@@ -417,14 +417,14 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   variant="contained"
                   size="small"
                   style={{ backgroundColor: "#204684" }}
-                  onClick={() => setActiveStep(2)}
+                  onClick={(handleStep3)}
                 >
                   Next
                 </Button>
               </div>
             </div>
           )}
-          {activeStep === 2 && (
+          {/* {activeStep === 2 && (
             // <div>
             //   <div className="flex justify-center mt-1">
             //     <div
@@ -567,14 +567,36 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
             //     </Button>
             //   </div>
             // </div>
-            <OperationSelection
-              allOperation={operation}
-              chosenOperation={chosenArray}
-              btnFunction={handleStep3}
-              setSubmitValue={setChosenArray}
-              isSubmit={false}
-            />
-          )}
+            // <OperationSelection
+            //   allOperation={operation}
+            //   chosenOperation={chosenArray}
+            //   btnFunction={handleStep3}
+            //   setSubmitValue={setChosenArray}
+            //   isSubmit={false}
+            // />
+            // <Button
+            //   variant="contained"
+            //   size="small"
+            //   style={{ backgroundColor: "#204684" }}
+            //   onClick={() => {
+            //     handleStep3();
+            //   }}
+            // >
+            //   {isSubmit ? "Submit" : "Next"}
+            // </Button>
+            // <div>
+            //   <div className="sticky bottom-0 flex justify-end bg-white mt-4">
+            //     <Button
+            //       variant="contained"
+            //       size="small"
+            //       style={{ backgroundColor: "#204684" }}
+            //       onClick={(handleStep3)}
+            //     >
+            //       Next
+            //     </Button>
+            //   </div>
+            // </div>
+          )} */}
           {activeStep === 3 && step3Data && (
             <div>
               <div className="max-h-96 text-left">
