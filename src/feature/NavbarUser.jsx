@@ -217,7 +217,7 @@ const NavbarUser = () => {
     if (item.label === "User Data") {
       navigate("/UserDataManagement");
     } else if (item.label === "Role Management") {
-      navigate("RoleManagement");
+      navigate("/addrole");
     }
   };
 
