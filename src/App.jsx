@@ -46,6 +46,7 @@ import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
 import Form from "./page/formizinn";
 import FormLapor from "./page/Formlaporan";
+import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
 
 // Import komponen loading
@@ -123,6 +124,7 @@ function App() {
           <Route path="/Form" element={<Form />} />
           <Route path="/Formlaporan" element={<FormLapor />} />
           <Route path="/Addrole" element={<Addrole />} />
+          <Route path="/AttendanceLog" element={<AttendanceLog />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
