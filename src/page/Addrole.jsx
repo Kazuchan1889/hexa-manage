@@ -31,10 +31,10 @@ import NavbarUser from "../feature/NavbarUser";
 // Define API URL
 const API_URL = `${ip}/api/role`;
 
-const Rolemanage = () => {
+const RoleManage = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [rows, setRows] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [search, setSearch] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
     const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
@@ -42,53 +42,57 @@ const Rolemanage = () => {
     const [availableOperations, setAvailableOperations] = useState([]);
     const [assignedOperations, setAssignedOperations] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentRoleId, setCurrentRoleId] = useState(null); // Track the ID of the role being edited
+    const [currentRoleId, setCurrentRoleId] = useState(null);
 
-    // Fetch roles and extract unique operations on component mount
+    // Fetch roles on component mount
     useEffect(() => {
         fetchRoles();
     }, []);
 
-    // Function to include authorization header in all requests
+    // Helper function to include authorization header
     const getHeaders = () => ({
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
+        Authorization: localStorage.getItem("accessToken") || "",
     });
 
-    // Fetch roles with operations from the back-end
+    // Convert operations to PostgreSQL-compatible array format
+    const formatOperationsForPostgres = (operations) => {
+        return `{${operations.map(op => `"${op}"`).join(",")}}`;
+    };
+
+    // Fetch roles and operations
     const fetchRoles = async () => {
         try {
             const response = await axios.get(`${API_URL}/list`, {
                 headers: getHeaders(),
             });
             const rolesData = response.data || [];
-            setRows(rolesData);
+            setRoles(rolesData);
 
-            // Extract unique available operations from roles
             const operationsSet = new Set();
             rolesData.forEach(role => {
                 if (Array.isArray(role.operation)) {
                     role.operation.forEach(op => operationsSet.add(op));
                 }
             });
-            setAvailableOperations([...operationsSet]); // Convert Set to array
+            setAvailableOperations([...operationsSet]);
         } catch (error) {
             console.error("Error fetching roles:", error);
         }
     };
 
-    // Add a new role in the back-end
+    // Add a new role
     const handleAddRole = async () => {
         const newRole = {
             role: newRoleName,
-            operation: assignedOperations,
+            operation: formatOperationsForPostgres(assignedOperations), // Format operations
         };
 
         try {
             await axios.post(`${API_URL}/create`, newRole, {
                 headers: getHeaders(),
             });
-            fetchRoles(); // Refresh roles
+            fetchRoles();
             handleCloseAddRole();
         } catch (error) {
             console.error("Error adding role:", error);
@@ -99,16 +103,17 @@ const Rolemanage = () => {
     const handleUpdateRole = async () => {
         if (!currentRoleId) return; // Ensure a role ID is selected
 
-        const updatedRole = { role: newRoleName };
-
         try {
-            // Update the role name
-            await axios.patch(`${API_URL}/update/id/${currentRoleId}`, updatedRole, {
+            // Step 1: Update the role name
+            const updatedRole = { role: newRoleName };
+            await axios.patch(`${API_URL}/update/role/${currentRoleId}`, updatedRole, {
                 headers: getHeaders(),
             });
 
-            // Update role's operations by adding any new operations
-            const currentOperations = rows.find(row => row.id === currentRoleId)?.operation || [];
+            // Step 2: Update role's operations by adding any new operations
+            const currentOperations = roles.find(role => role.id === currentRoleId)?.operation || [];
+            
+            // Find operations to add
             const operationsToAdd = assignedOperations.filter(op => !currentOperations.includes(op));
             for (const operation of operationsToAdd) {
                 await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, { operation }, {
@@ -116,20 +121,29 @@ const Rolemanage = () => {
                 });
             }
 
-            fetchRoles(); // Refresh roles
+            // Step 3: Remove any operations that were unassigned
+            const operationsToRemove = currentOperations.filter(op => !assignedOperations.includes(op));
+            for (const operation of operationsToRemove) {
+                await axios.patch(`${API_URL}/update/delete/${currentRoleId}`, { operation }, {
+                    headers: getHeaders(),
+                });
+            }
+
+            // Refresh roles list after updating
+            fetchRoles();
             handleCloseAddRole();
         } catch (error) {
             console.error("Error updating role:", error);
         }
     };
 
-    // Delete a role in the back-end
+    // Delete a role
     const handleDeleteRole = async (roleId) => {
         try {
             await axios.delete(`${API_URL}/delete/${roleId}`, {
                 headers: getHeaders(),
             });
-            fetchRoles(); // Refresh roles after deletion
+            fetchRoles();
         } catch (error) {
             console.error("Error deleting role:", error);
         }
@@ -140,7 +154,7 @@ const Rolemanage = () => {
         setIsEditing(false);
         setNewRoleName("");
         setAssignedOperations([]);
-        setCurrentRoleId(null); // Clear currentRoleId for new role
+        setCurrentRoleId(null);
     };
 
     const handleCloseAddRole = () => {
@@ -156,11 +170,13 @@ const Rolemanage = () => {
         setAssignedOperations(role.operation || []);
         setIsEditing(true);
         setIsAddRoleOpen(true);
-        setCurrentRoleId(role.id); // Set currentRoleId to the selected role's ID
+        setCurrentRoleId(role.id);
     };
 
     const assignOperation = (operation) => {
-        setAssignedOperations((prev) => [...prev, operation]);
+        if (!assignedOperations.includes(operation)) {
+            setAssignedOperations((prev) => [...prev, operation]);
+        }
     };
 
     const unassignOperation = (operation) => {
@@ -222,13 +238,13 @@ const Rolemanage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody className="bg-gray-100">
-                                    {rows
+                                    {roles
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row, index) => (
-                                            <TableRow key={row.id}>
-                                                <TableCell align="center">{row.role}</TableCell>
+                                        .map((role, index) => (
+                                            <TableRow key={role.id}>
+                                                <TableCell align="center">{role.role}</TableCell>
                                                 <TableCell align="center">
-                                                    {(Array.isArray(row.operation) ? row.operation : []).join(", ")}
+                                                    {(Array.isArray(role.operation) ? role.operation : []).join(", ")}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
@@ -239,8 +255,8 @@ const Rolemanage = () => {
                                                         open={Boolean(anchorEl)}
                                                         onClose={() => setAnchorEl(null)}
                                                     >
-                                                        <MenuItem onClick={() => handleEditRole(row)}>Edit</MenuItem>
-                                                        <MenuItem onClick={() => handleDeleteRole(row.id)}>Delete</MenuItem>
+                                                        <MenuItem onClick={() => handleEditRole(role)}>Edit</MenuItem>
+                                                        <MenuItem onClick={() => handleDeleteRole(role.id)}>Delete</MenuItem>
                                                     </Menu>
                                                 </TableCell>
                                             </TableRow>
@@ -255,7 +271,7 @@ const Rolemanage = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={roles.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={(event, newPage) => setPage(newPage)}
@@ -332,4 +348,4 @@ const Rolemanage = () => {
     );
 };
 
-export default Rolemanage;
+export default RoleManage;
