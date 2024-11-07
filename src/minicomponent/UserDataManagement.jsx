@@ -34,7 +34,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
 import Loading from "../page/Loading"; // Importing Loading component
 
-const TableDataKaryawan = () => {
+const UserDataManagement = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -212,7 +212,7 @@ const TableDataKaryawan = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Karyawan
+            User Data Management
           </Typography>
         </div>
       </div>
@@ -468,4 +468,4 @@ const TableDataKaryawan = () => {
   );
 };
 
-export default TableDataKaryawan;
+export default UserDataManagement;

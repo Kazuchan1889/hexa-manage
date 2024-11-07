@@ -118,7 +118,7 @@ const EditDataKaryawan = ({
     <div style={overlayStyle} onClick={onClose}>
       <div style={popupStyle} onClick={(e) => e.stopPropagation()}>
         <div className="justify-center items-center">
-          <h3 className="text-xl mb-4">Edit Profile</h3>
+          <h3 className="text-xl">Edit Profile</h3>
           {/* Konten dan tombol untuk menyimpan perubahan */}
           {/* ... */}
           <img
