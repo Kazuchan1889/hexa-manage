@@ -4,19 +4,24 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 
-const TableDataKaryawan = ({ onClose }) => { // Perbaiki penggunaan { onClose }
+const TableDataKaryawan = ({ onClose }) => {
   const [isAddRoleOpen, setAddRoleOpen] = useState(false);
   const [roleName, setRoleName] = useState("");
   const [operations, setOperations] = useState({
     ADD_KARYAWAN: false,
     READ_KARYAWAN: false,
-    UPDATE_KARYAWAN: false,
-    DELETE_KARYAWAN: false,
+    UPDATE_KARYAWAN: true,
+    DELETE_KARYAWAN: true,
   });
   const [roles, setRoles] = useState([
-    { name: "Admin", operations: { ADD_KARYAWAN: true, READ_KARYAWAN: true, UPDATE_KARYAWAN: true, DELETE_KARYAWAN: true } },
-    { name: "User", operations: { ADD_KARYAWAN: false, READ_KARYAWAN: true, UPDATE_KARYAWAN: false, DELETE_KARYAWAN: false } },
+    { name: "Admin", operations: ["ADD_KARYAWAN", "READ_KARYAWAN", "UPDATE_KARYAWAN", "DELETE_KARYAWAN"] },
+    { name: "User", operations: ["READ_KARYAWAN"] },
   ]);
+
+  // Function to sanitize input
+  const sanitizeInput = (input) => {
+    return input.replace(/\\\"/g, '"').replace(/\\/g, '');
+  };
 
   const handleOpenAddRole = () => setAddRoleOpen(true);
   const handleCloseAddRole = () => {
@@ -44,10 +49,24 @@ const TableDataKaryawan = ({ onClose }) => { // Perbaiki penggunaan { onClose }
   };
 
   const handleAddRole = () => {
-    const newRole = { name: roleName, operations: { ...operations } };
+    // Sanitize roleName before adding
+    const sanitizedRoleName = sanitizeInput(roleName);
+
+    // Only include active operations
+    const activeOperations = Object.keys(operations).filter(key => operations[key]);
+
+    const newRole = { name: sanitizedRoleName, operations: activeOperations };
     setRoles([...roles, newRole]);
     resetRoleForm();
     setAddRoleOpen(false);
+
+    // Example function to simulate sending data to backend
+    sendDataToBackend(newRole);
+  };
+
+  const sendDataToBackend = (data) => {
+    // Simulate sending data to backend
+    console.log("Data sent to backend:", data);
   };
 
   const handleDeleteRole = (index) => {
@@ -58,7 +77,14 @@ const TableDataKaryawan = ({ onClose }) => { // Perbaiki penggunaan { onClose }
   const handleEditRole = (index) => {
     const roleToEdit = roles[index];
     setRoleName(roleToEdit.name);
-    setOperations(roleToEdit.operations);
+
+    // Convert active operations array back to object with boolean values
+    const updatedOperations = Object.keys(operations).reduce((acc, operation) => {
+      acc[operation] = roleToEdit.operations.includes(operation);
+      return acc;
+    }, {});
+
+    setOperations(updatedOperations);
     handleOpenAddRole();
   };
 
@@ -67,9 +93,9 @@ const TableDataKaryawan = ({ onClose }) => { // Perbaiki penggunaan { onClose }
       <div className="relative w-full my-4 flex flex-col items-center">
         {/* Close Button positioned at the top right corner */}
         <IconButton
-          onClick={onClose} // Gunakan onClose dari props dengan benar
+          onClick={onClose}
           className="absolute top-2 right-2"
-          style={{ color: "white" }} // Set icon color to white
+          style={{ color: "white" }}
         >
           <CloseIcon />
         </IconButton>
@@ -108,7 +134,7 @@ const TableDataKaryawan = ({ onClose }) => { // Perbaiki penggunaan { onClose }
               <IconButton
                 onClick={handleCloseAddRole}
                 className="absolute top-2 right-2"
-                style={{ color: "black" }} // Set icon color to black in the modal
+                style={{ color: "black" }}
               >
                 <CloseIcon />
               </IconButton>

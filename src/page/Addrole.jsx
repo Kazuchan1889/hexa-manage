@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ip from "../ip";
 import {
     Typography,
     InputBase,
@@ -22,6 +21,7 @@ import {
     Menu,
     MenuItem,
 } from "@mui/material";
+import ip from "../ip";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
@@ -30,12 +30,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NavbarUser from "../feature/NavbarUser";
 
-const API_URL = `${ip}/api/role`;
-
-// Helper function to format an array for PostgreSQL
-const formatArrayForPostgres = (array) => {
-    return `{${array.map(item => `"${item}"`).join(",")}}`;
-};
+const API_URL = `${ip}/api/role`;   
 
 const RoleManage = () => {
     const [page, setPage] = useState(0);
@@ -83,7 +78,7 @@ const RoleManage = () => {
     const handleAddRole = async () => {
         const newRole = {
             role: newRoleName,
-            operation: formatArrayForPostgres(assignedOperations), // Format for PostgreSQL
+            operation: assignedOperations, // Mengirim sebagai array biasa
         };
 
         try {
@@ -107,13 +102,13 @@ const RoleManage = () => {
             });
 
             const currentOperations = roles.find(role => role.id === currentRoleId)?.operation || [];
-
+            
             const operationsToAdd = assignedOperations.filter(op => !currentOperations.includes(op));
             const operationsToRemove = currentOperations.filter(op => !assignedOperations.includes(op));
 
             for (const operation of operationsToAdd) {
                 await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, {
-                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                    operation: [operation] // Mengirim sebagai array biasa
                 }, {
                     headers: getHeaders(),
                 });
@@ -121,7 +116,7 @@ const RoleManage = () => {
 
             for (const operation of operationsToRemove) {
                 await axios.patch(`${API_URL}/update/delete/${currentRoleId}`, {
-                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                    operation: [operation] // Mengirim sebagai array biasa
                 }, {
                     headers: getHeaders(),
                 });
