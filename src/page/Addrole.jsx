@@ -26,110 +26,120 @@ import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import NavbarUser from "../feature/NavbarUser";
 
-// Define API URL
 const API_URL = `${ip}/api/role`;
 
-const Rolemanage = () => {
+// Helper function to format an array for PostgreSQL
+const formatArrayForPostgres = (array) => {
+    return `{${array.map(item => `"${item}"`).join(",")}}`;
+};
+
+const RoleManage = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [rows, setRows] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [search, setSearch] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedRoleIndex, setSelectedRoleIndex] = useState(null);
     const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
     const [newRoleName, setNewRoleName] = useState("");
     const [availableOperations, setAvailableOperations] = useState([]);
     const [assignedOperations, setAssignedOperations] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
-    const [currentRoleId, setCurrentRoleId] = useState(null); // Track the ID of the role being edited
+    const [currentRoleId, setCurrentRoleId] = useState(null);
 
-    // Fetch roles and extract unique operations on component mount
     useEffect(() => {
         fetchRoles();
     }, []);
 
-    // Function to include authorization header in all requests
     const getHeaders = () => ({
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
+        Authorization: localStorage.getItem("accessToken") || "",
     });
 
-    // Fetch roles with operations from the back-end
     const fetchRoles = async () => {
         try {
             const response = await axios.get(`${API_URL}/list`, {
                 headers: getHeaders(),
             });
             const rolesData = response.data || [];
-            setRows(rolesData);
+            setRoles(rolesData);
 
-            // Extract unique available operations from roles
             const operationsSet = new Set();
             rolesData.forEach(role => {
                 if (Array.isArray(role.operation)) {
                     role.operation.forEach(op => operationsSet.add(op));
                 }
             });
-            setAvailableOperations([...operationsSet]); // Convert Set to array
+            setAvailableOperations([...operationsSet]);
         } catch (error) {
             console.error("Error fetching roles:", error);
         }
     };
 
-    // Add a new role in the back-end
     const handleAddRole = async () => {
         const newRole = {
             role: newRoleName,
-            operation: assignedOperations,
+            operation: formatArrayForPostgres(assignedOperations), // Format for PostgreSQL
         };
 
         try {
             await axios.post(`${API_URL}/create`, newRole, {
                 headers: getHeaders(),
             });
-            fetchRoles(); // Refresh roles
+            fetchRoles();
             handleCloseAddRole();
         } catch (error) {
             console.error("Error adding role:", error);
         }
     };
 
-    // Update an existing role in the back-end
     const handleUpdateRole = async () => {
-        if (!currentRoleId) return; // Ensure a role ID is selected
-
-        const updatedRole = { role: newRoleName };
+        if (!currentRoleId) return;
 
         try {
-            // Update the role name
-            await axios.patch(`${API_URL}/update/id/${currentRoleId}`, updatedRole, {
+            const updatedRole = { role: newRoleName };
+            await axios.patch(`${API_URL}/update/role/${currentRoleId}`, updatedRole, {
                 headers: getHeaders(),
             });
 
-            // Update role's operations by adding any new operations
-            const currentOperations = rows.find(row => row.id === currentRoleId)?.operation || [];
+            const currentOperations = roles.find(role => role.id === currentRoleId)?.operation || [];
+
             const operationsToAdd = assignedOperations.filter(op => !currentOperations.includes(op));
+            const operationsToRemove = currentOperations.filter(op => !assignedOperations.includes(op));
+
             for (const operation of operationsToAdd) {
-                await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, { operation }, {
+                await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, {
+                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                }, {
                     headers: getHeaders(),
                 });
             }
 
-            fetchRoles(); // Refresh roles
+            for (const operation of operationsToRemove) {
+                await axios.patch(`${API_URL}/update/delete/${currentRoleId}`, {
+                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                }, {
+                    headers: getHeaders(),
+                });
+            }
+
+            fetchRoles();
             handleCloseAddRole();
         } catch (error) {
             console.error("Error updating role:", error);
         }
     };
 
-    // Delete a role in the back-end
     const handleDeleteRole = async (roleId) => {
         try {
             await axios.delete(`${API_URL}/delete/${roleId}`, {
                 headers: getHeaders(),
             });
-            fetchRoles(); // Refresh roles after deletion
+            fetchRoles();
         } catch (error) {
             console.error("Error deleting role:", error);
         }
@@ -140,7 +150,7 @@ const Rolemanage = () => {
         setIsEditing(false);
         setNewRoleName("");
         setAssignedOperations([]);
-        setCurrentRoleId(null); // Clear currentRoleId for new role
+        setCurrentRoleId(null);
     };
 
     const handleCloseAddRole = () => {
@@ -156,15 +166,27 @@ const Rolemanage = () => {
         setAssignedOperations(role.operation || []);
         setIsEditing(true);
         setIsAddRoleOpen(true);
-        setCurrentRoleId(role.id); // Set currentRoleId to the selected role's ID
+        setCurrentRoleId(role.id);
     };
 
     const assignOperation = (operation) => {
-        setAssignedOperations((prev) => [...prev, operation]);
+        if (!assignedOperations.includes(operation)) {
+            setAssignedOperations((prev) => [...prev, operation]);
+        }
     };
 
     const unassignOperation = (operation) => {
         setAssignedOperations((prev) => prev.filter((op) => op !== operation));
+    };
+
+    const handleMenuOpen = (event, index) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedRoleIndex(index);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedRoleIndex(null);
     };
 
     return (
@@ -210,37 +232,43 @@ const Rolemanage = () => {
                             <Table aria-label="simple table" size="small">
                                 <TableHead style={{ backgroundColor: "#204684" }}>
                                     <TableRow>
-                                        <TableCell align="center" className="w-[10%]">
+                                        <TableCell align="center">
                                             <p className="text-white font-semibold">Role</p>
                                         </TableCell>
-                                        <TableCell align="center" className="w-[10%]">
+                                        <TableCell align="center">
                                             <p className="text-white font-semibold">Operation</p>
                                         </TableCell>
-                                        <TableCell align="center" className="w-[10%]">
-                                            <p className="text-white font-semibold"></p>
+                                        <TableCell align="center">
+                                            <p className="text-white font-semibold">Actions</p>
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody className="bg-gray-100">
-                                    {rows
+                                    {roles
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row, index) => (
-                                            <TableRow key={row.id}>
-                                                <TableCell align="center">{row.role}</TableCell>
+                                        .map((role, index) => (
+                                            <TableRow key={role.id}>
+                                                <TableCell align="center">{role.role}</TableCell>
                                                 <TableCell align="center">
-                                                    {(Array.isArray(row.operation) ? row.operation : []).join(", ")}
+                                                    {(Array.isArray(role.operation) ? role.operation : []).join(", ")}
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+                                                    <IconButton onClick={(event) => handleMenuOpen(event, index)}>
                                                         <MoreVertIcon />
                                                     </IconButton>
                                                     <Menu
                                                         anchorEl={anchorEl}
-                                                        open={Boolean(anchorEl)}
-                                                        onClose={() => setAnchorEl(null)}
+                                                        open={Boolean(anchorEl) && selectedRoleIndex === index}
+                                                        onClose={handleMenuClose}
                                                     >
-                                                        <MenuItem onClick={() => handleEditRole(row)}>Edit</MenuItem>
-                                                        <MenuItem onClick={() => handleDeleteRole(row.id)}>Delete</MenuItem>
+                                                        <MenuItem onClick={() => handleEditRole(role)}>
+                                                            <EditIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                                                            Edit Role
+                                                        </MenuItem>
+                                                        <MenuItem onClick={() => handleDeleteRole(role.id)}>
+                                                            <DeleteIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                                                            Delete Role
+                                                        </MenuItem>
                                                     </Menu>
                                                 </TableCell>
                                             </TableRow>
@@ -255,7 +283,7 @@ const Rolemanage = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={roles.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={(event, newPage) => setPage(newPage)}
@@ -332,4 +360,4 @@ const Rolemanage = () => {
     );
 };
 
-export default Rolemanage;
+export default RoleManage;
