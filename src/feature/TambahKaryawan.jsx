@@ -223,14 +223,14 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
 
   return (
     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-3 rounded-lg w-full max-w-3xl flex flex-col max-h-96 overflow-y-auto">
+      <div className="bg-white p-3 rounded-lg w-full max-w-3xl flex flex-col max-h-96">
         <div className="flex justify-between mb-4">
           <h2 className="text-xl font-semibold">Tambah Karyawan</h2>
           <button onClick={onClose} className="focus:outline-none">
             <CloseIcon />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto">
           {activeStep === 1 && (
             <div>
               <div className="flex space-x-4 mb-5 max-h-72">

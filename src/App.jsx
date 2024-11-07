@@ -48,7 +48,7 @@ import Form from "./page/formizinn";
 import FormLapor from "./page/Formlaporan";
 import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
-
+import UserDataManagement from "./minicomponent/UserDataManagement";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 
@@ -125,6 +125,7 @@ function App() {
           <Route path="/Formlaporan" element={<FormLapor />} />
           <Route path="/Addrole" element={<Addrole />} />
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
+          <Route path="/UserDataManagement" element={<UserDataManagement />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

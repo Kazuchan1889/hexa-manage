@@ -230,7 +230,7 @@ function LaporanKegiatan() {
     <div className=" bg-white overflow-y-auto">
       <NavbarUser />
       <div className="flex h-fit w-screen h-screen flex-col items-center gap-6 p-4">
-        
+
         {/* Form Section */}
         <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md ">
           <Typography variant="h5" align="center" gutterBottom>
@@ -475,7 +475,7 @@ function LaporanKegiatan() {
               <TextField
                 label="Waktu"
                 name="time"
-                type="time"
+                type="time" // This ensures a 24-hour format by default
                 variant="outlined"
                 fullWidth
                 margin="normal"
