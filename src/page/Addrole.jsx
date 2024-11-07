@@ -26,10 +26,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import NavbarUser from "../feature/NavbarUser";
 
-// Define API URL
 const API_URL = `${ip}/api/role`;
+
+// Helper function to format an array for PostgreSQL
+const formatArrayForPostgres = (array) => {
+    return `{${array.map(item => `"${item}"`).join(",")}}`;
+};
 
 const RoleManage = () => {
     const [page, setPage] = useState(0);
@@ -37,6 +43,7 @@ const RoleManage = () => {
     const [roles, setRoles] = useState([]);
     const [search, setSearch] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedRoleIndex, setSelectedRoleIndex] = useState(null);
     const [isAddRoleOpen, setIsAddRoleOpen] = useState(false);
     const [newRoleName, setNewRoleName] = useState("");
     const [availableOperations, setAvailableOperations] = useState([]);
@@ -44,23 +51,15 @@ const RoleManage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentRoleId, setCurrentRoleId] = useState(null);
 
-    // Fetch roles on component mount
     useEffect(() => {
         fetchRoles();
     }, []);
 
-    // Helper function to include authorization header
     const getHeaders = () => ({
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken") || "",
     });
 
-    // Convert operations to PostgreSQL-compatible array format
-    const formatOperationsForPostgres = (operations) => {
-        return `{${operations.map(op => `"${op}"`).join(",")}}`;
-    };
-
-    // Fetch roles and operations
     const fetchRoles = async () => {
         try {
             const response = await axios.get(`${API_URL}/list`, {
@@ -81,11 +80,10 @@ const RoleManage = () => {
         }
     };
 
-    // Add a new role
     const handleAddRole = async () => {
         const newRole = {
             role: newRoleName,
-            operation: formatOperationsForPostgres(assignedOperations), // Format operations
+            operation: formatArrayForPostgres(assignedOperations), // Format for PostgreSQL
         };
 
         try {
@@ -99,37 +97,36 @@ const RoleManage = () => {
         }
     };
 
-    // Update an existing role in the back-end
     const handleUpdateRole = async () => {
-        if (!currentRoleId) return; // Ensure a role ID is selected
+        if (!currentRoleId) return;
 
         try {
-            // Step 1: Update the role name
             const updatedRole = { role: newRoleName };
             await axios.patch(`${API_URL}/update/role/${currentRoleId}`, updatedRole, {
                 headers: getHeaders(),
             });
 
-            // Step 2: Update role's operations by adding any new operations
             const currentOperations = roles.find(role => role.id === currentRoleId)?.operation || [];
-            
-            // Find operations to add
+
             const operationsToAdd = assignedOperations.filter(op => !currentOperations.includes(op));
-            for (const operation of operationsToAdd) {
-                await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, { operation }, {
-                    headers: getHeaders(),
-                });
-            }
-
-            // Step 3: Remove any operations that were unassigned
             const operationsToRemove = currentOperations.filter(op => !assignedOperations.includes(op));
-            for (const operation of operationsToRemove) {
-                await axios.patch(`${API_URL}/update/delete/${currentRoleId}`, { operation }, {
+
+            for (const operation of operationsToAdd) {
+                await axios.patch(`${API_URL}/update/operation/${currentRoleId}`, {
+                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                }, {
                     headers: getHeaders(),
                 });
             }
 
-            // Refresh roles list after updating
+            for (const operation of operationsToRemove) {
+                await axios.patch(`${API_URL}/update/delete/${currentRoleId}`, {
+                    operation: formatArrayForPostgres([operation]) // Format single operation for PostgreSQL
+                }, {
+                    headers: getHeaders(),
+                });
+            }
+
             fetchRoles();
             handleCloseAddRole();
         } catch (error) {
@@ -137,7 +134,6 @@ const RoleManage = () => {
         }
     };
 
-    // Delete a role
     const handleDeleteRole = async (roleId) => {
         try {
             await axios.delete(`${API_URL}/delete/${roleId}`, {
@@ -183,6 +179,16 @@ const RoleManage = () => {
         setAssignedOperations((prev) => prev.filter((op) => op !== operation));
     };
 
+    const handleMenuOpen = (event, index) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedRoleIndex(index);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedRoleIndex(null);
+    };
+
     return (
         <div className="w-screen h-screen bg-gray-100 overflow-y-auto">
             <NavbarUser />
@@ -226,14 +232,14 @@ const RoleManage = () => {
                             <Table aria-label="simple table" size="small">
                                 <TableHead style={{ backgroundColor: "#204684" }}>
                                     <TableRow>
-                                        <TableCell align="center" className="w-[10%]">
+                                        <TableCell align="center">
                                             <p className="text-white font-semibold">Role</p>
                                         </TableCell>
-                                        <TableCell align="center" className="w-[10%]">
+                                        <TableCell align="center">
                                             <p className="text-white font-semibold">Operation</p>
                                         </TableCell>
-                                        <TableCell align="center" className="w-[10%]">
-                                            <p className="text-white font-semibold"></p>
+                                        <TableCell align="center">
+                                            <p className="text-white font-semibold">Actions</p>
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -247,16 +253,22 @@ const RoleManage = () => {
                                                     {(Array.isArray(role.operation) ? role.operation : []).join(", ")}
                                                 </TableCell>
                                                 <TableCell align="center">
-                                                    <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+                                                    <IconButton onClick={(event) => handleMenuOpen(event, index)}>
                                                         <MoreVertIcon />
                                                     </IconButton>
                                                     <Menu
                                                         anchorEl={anchorEl}
-                                                        open={Boolean(anchorEl)}
-                                                        onClose={() => setAnchorEl(null)}
+                                                        open={Boolean(anchorEl) && selectedRoleIndex === index}
+                                                        onClose={handleMenuClose}
                                                     >
-                                                        <MenuItem onClick={() => handleEditRole(role)}>Edit</MenuItem>
-                                                        <MenuItem onClick={() => handleDeleteRole(role.id)}>Delete</MenuItem>
+                                                        <MenuItem onClick={() => handleEditRole(role)}>
+                                                            <EditIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                                                            Edit Role
+                                                        </MenuItem>
+                                                        <MenuItem onClick={() => handleDeleteRole(role.id)}>
+                                                            <DeleteIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                                                            Delete Role
+                                                        </MenuItem>
                                                     </Menu>
                                                 </TableCell>
                                             </TableRow>
