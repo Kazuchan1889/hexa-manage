@@ -49,6 +49,7 @@ import FormLapor from "./page/Formlaporan";
 import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
 import UserDataManagement from "./minicomponent/UserDataManagement";
+import Tetris from "./page/Tetris";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 
@@ -126,6 +127,7 @@ function App() {
           <Route path="/Addrole" element={<Addrole />} />
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
+          <Route path="/Tetris" element={<Tetris />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
