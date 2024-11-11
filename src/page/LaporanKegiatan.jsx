@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import Swal from "sweetalert2"; // Impor Swal
 import {
   TextField,
   Button,
@@ -22,11 +23,9 @@ import {
   DialogTitle,
   Alert,
 } from "@mui/material";
-import { CheckCircle as CheckCircleIcon, CloudDownload, Edit as EditIcon } from "@mui/icons-material";
-import Swal from "sweetalert2";
-
-import ip from "../ip";
+import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
 import NavbarUser from "../feature/NavbarUser";
+import ip from "../ip";
 
 function LaporanKegiatan() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -39,9 +38,8 @@ function LaporanKegiatan() {
   const [loading, setLoading] = useState(true);
   const [uploadAlert, setUploadAlert] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [detailDescription, setDetailDescription] = useState("");
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
+  const [detailData, setDetailData] = useState(null);
+  const [isAddDescriptionModalOpen, setIsAddDescriptionModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     lokasi: "",
@@ -49,8 +47,11 @@ function LaporanKegiatan() {
     time: "",
     tanggal: "",
     jenis: "",
+    deskripsi: "",
+    id: "",
   });
 
+  // Menarik data dari backend
   useEffect(() => {
     const apiUrl = `${ip}/api/laporan/get/data/self`;
     const headers = {
@@ -69,7 +70,7 @@ function LaporanKegiatan() {
       .catch((error) => {
         setTableData([]);
         setLoading(false);
-        console.error(error);
+        console.error("Error fetching data:", error);
       });
   }, []);
 
@@ -112,6 +113,7 @@ function LaporanKegiatan() {
       jenis: formData.jenis,
       time: formData.time,
       tanggal: formData.tanggal,
+      deskripsi: formData.deskripsi, // Send description as is
       dokumen: uploadedFileBase64s.map((reader) => reader.result),
     };
 
@@ -124,23 +126,33 @@ function LaporanKegiatan() {
         },
       })
       .then((response) => {
+        // Tampilkan notifikasi sukses
         Swal.fire({
           icon: "success",
           title: "Submit Sukses",
-          text: "Data berhasil disimpan ke backend.",
-        }).then(() => {
-          // Refresh halaman setelah submit berhasil
-          window.location.reload();
+          text: "Laporan berhasil disubmit.",
         });
+
+        // Tambahkan data ke tableData setelah submit sukses
+        setTableData((prevTableData) => [...prevTableData, requestBody]);
         setUploadedFiles([]);
         setUploadedFileBase64s([]);
+        setFormData({
+          lokasi: "",
+          keterangan: "",
+          time: "",
+          tanggal: "",
+          jenis: "",
+          deskripsi: "",
+        });
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
+        // Tampilkan notifikasi error
         Swal.fire({
           icon: "error",
           title: "Submit Gagal",
-          text: "Terjadi kesalahan saat mengirim data ke backend.",
+          text: "Terjadi kesalahan saat mengirim laporan.",
         });
       });
   };
@@ -159,45 +171,30 @@ function LaporanKegiatan() {
     }
   };
 
-  const handleOpenDetailModal = () => {
+  const handleOpenAddDescriptionModal = () => {
+    setIsAddDescriptionModalOpen(true);
+  };
+
+  const handleCloseAddDescriptionModal = () => {
+    setIsAddDescriptionModalOpen(false);
+  };
+
+  const handleDescriptionChange = (e) => {
+    const { value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      deskripsi: value,
+    }));
+  };
+
+  const handleOpenDetailModal = (row) => {
+    setDetailData(row);
     setIsDetailModalOpen(true);
   };
 
   const handleCloseDetailModal = () => {
     setIsDetailModalOpen(false);
-  };
-
-  const handleDetailDescriptionChange = (e) => {
-    setDetailDescription(e.target.value);
-  };
-
-  const handleOpenEditModal = (row) => {
-    setEditData(row);
-    setIsEditModalOpen(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setIsEditModalOpen(false);
-    setEditData(null);
-  };
-
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditData({
-      ...editData,
-      [name]: value,
-    });
-  };
-
-  const handleEditSave = () => {
-    // Simulasi penyimpanan perubahan tanpa mengirim ke backend
-    console.log("Data yang akan diedit (tidak dikirim ke backend):", editData);
-    Swal.fire({
-      icon: "success",
-      title: "Edit Sukses",
-      text: "Data berhasil diubah (simulasi tanpa backend).",
-    });
-    handleCloseEditModal();
+    setDetailData(null);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -210,27 +207,10 @@ function LaporanKegiatan() {
     setPage(0);
   };
 
-  const handleImageClick = (imageSrc) => {
-    setSelectedImage(imageSrc);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
-    <div className=" bg-white overflow-y-auto">
+    <div className="bg-white overflow-y-auto">
       <NavbarUser />
       <div className="flex h-fit w-screen h-screen flex-col items-center gap-6 p-4">
-
         {/* Form Section */}
         <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md ">
           <Typography variant="h5" align="center" gutterBottom>
@@ -341,25 +321,21 @@ function LaporanKegiatan() {
                   </Grid>
                 )}
               </Grid>
-
-              {/* Button untuk Add Detail */}
               <Button
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={handleOpenDetailModal}
-                style={{ marginTop: '20px' }}
+                onClick={handleOpenAddDescriptionModal}
+                style={{ marginTop: "20px" }}
               >
                 Add Detail
               </Button>
-
-              {/* Button Submit */}
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 fullWidth
-                style={{ marginTop: '10px' }}
+                style={{ marginTop: "10px" }}
               >
                 Submit
               </Button>
@@ -372,16 +348,28 @@ function LaporanKegiatan() {
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
-                <TableRow style={{ backgroundColor: '#204684' }}>
-                  {['Keterangan', 'Lokasi', 'Waktu', 'Tanggal Laporan', 'Tanggal Kirim', 'Jenis', 'Bukti', 'Edit'].map((header) => (
-                    <TableCell key={header} align="center" style={{ color: 'white', fontWeight: 'bold' }}>
+                <TableRow style={{ backgroundColor: "#204684" }}>
+                  {[
+                    "Keterangan",
+                    "Lokasi",
+                    "Waktu",
+                    "Tanggal Laporan",
+                    "Jenis",
+                    "Bukti",
+                    "Read Detail",
+                  ].map((header) => (
+                    <TableCell
+                      key={header}
+                      align="center"
+                      style={{ color: "white", fontWeight: "bold" }}
+                    >
                       {header}
                     </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(Array.isArray(tableData) ? tableData : [])
+                {tableData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <TableRow key={index}>
@@ -389,25 +377,26 @@ function LaporanKegiatan() {
                       <TableCell align="center">{row.lokasi}</TableCell>
                       <TableCell align="center">{row.time}</TableCell>
                       <TableCell align="center">{row.tanggal}</TableCell>
-                      <TableCell align="center">{row.target}</TableCell>
                       <TableCell align="center">{row.jenis}</TableCell>
                       <TableCell align="center">
                         <div className="flex justify-center gap-4">
-                          {row.dokumen && row.dokumen[0] && (
+                          {row.dokumen && row.dokumen[0] ? (
                             <a href={row.dokumen[0]} target="_blank" download>
-                              <CloudDownload />
+                              <span className="text-blue-500 underline">Download</span>
                             </a>
+                          ) : (
+                            <span>NO FILE</span>
                           )}
                         </div>
                       </TableCell>
                       <TableCell align="center">
                         <Button
                           variant="contained"
-                          color="primary"
+                          color="secondary"
                           size="small"
-                          onClick={() => handleOpenEditModal(row)}
+                          onClick={() => handleOpenDetailModal(row)}
                         >
-                          <EditIcon />
+                          Read Detail
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -427,9 +416,9 @@ function LaporanKegiatan() {
         </div>
       </div>
 
-      {/* Modal untuk Detail Description */}
-      <Dialog open={isDetailModalOpen} onClose={handleCloseDetailModal} maxWidth="sm" fullWidth>
-        <DialogTitle>Detail Description</DialogTitle>
+      {/* Modal untuk Add Description */}
+      <Dialog open={isAddDescriptionModalOpen} onClose={handleCloseAddDescriptionModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Add Detail Description</DialogTitle>
         <DialogContent>
           <TextField
             label="Describe your activity"
@@ -437,85 +426,52 @@ function LaporanKegiatan() {
             rows={4}
             variant="outlined"
             fullWidth
-            value={detailDescription}
-            onChange={handleDetailDescriptionChange}
+            value={formData.deskripsi}
+            onChange={handleDescriptionChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDetailModal} color="primary">
+          <Button onClick={handleCloseAddDescriptionModal} color="primary">
             Close
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Modal untuk Edit Data */}
-      <Dialog open={isEditModalOpen} onClose={handleCloseEditModal} maxWidth="sm" fullWidth>
-        <DialogTitle>Edit Laporan</DialogTitle>
+      {/* Modal untuk Detail Report */}
+      <Dialog open={isDetailModalOpen} onClose={handleCloseDetailModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Detail Report</DialogTitle>
         <DialogContent>
-          {editData && (
+          {detailData && (
             <>
-              <TextField
-                label="Keterangan"
-                name="keterangan"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={editData.keterangan}
-                onChange={handleEditInputChange}
+              <Typography variant="body1" gutterBottom>
+                <strong>Keterangan:</strong> {detailData.keterangan}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Lokasi:</strong> {detailData.lokasi}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Waktu:</strong> {detailData.time}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Tanggal:</strong> {detailData.tanggal}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Jenis:</strong> {detailData.jenis}
+              </Typography>
+              <strong>Deskripsi:</strong>
+              <Typography
+                variant="body1"
+                gutterBottom
+                dangerouslySetInnerHTML={{
+                  __html: detailData.deskripsi ? detailData.deskripsi.replace(/\n/g, "<br />") : "",
+                }}
               />
-              <TextField
-                label="Lokasi"
-                name="lokasi"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={editData.lokasi}
-                onChange={handleEditInputChange}
-              />
-              <TextField
-                label="Waktu"
-                name="time"
-                type="time" // This ensures a 24-hour format by default
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={editData.time}
-                onChange={handleEditInputChange}
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="Tanggal"
-                name="tanggal"
-                type="date"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={editData.tanggal}
-                onChange={handleEditInputChange}
-                InputLabelProps={{ shrink: true }}
-              />
-              <TextField
-                label="Jenis"
-                name="jenis"
-                select
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={editData.jenis}
-                onChange={handleEditInputChange}
-              >
-                <MenuItem value="Didalam kantor">Didalam kantor</MenuItem>
-                <MenuItem value="Keluar kantor">Keluar kantor</MenuItem>
-              </TextField>
             </>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleEditSave} color="primary" variant="contained">
-            Save
+          <Button onClick={handleCloseDetailModal} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

@@ -26,6 +26,7 @@ function LaporanKegiatanForm({ onClose }) {
     time: "",
     tanggal: "",
     jenis: "",
+    deskripsi: "",
   });
 
   const handleFileUpload = (acceptedFiles) => {
