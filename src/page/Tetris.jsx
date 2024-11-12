@@ -18,7 +18,7 @@ const TETROMINOS = [
 const TetrisGame = () => {
   const [grid, setGrid] = useState(Array.from({ length: ROWS }, () => Array(COLS).fill(null)));
   const [currentPosition, setCurrentPosition] = useState(INITIAL_POSITION);
-  const [currentTetromino, setCurrentTetromino] = useState(TETROMINOS[0]); // Initial tetromino to avoid null
+  const [currentTetromino, setCurrentTetromino] = useState(TETROMINOS[0]);
   const [score, setScore] = useState(0);
 
   const randomTetromino = useCallback(() => {
@@ -42,14 +42,13 @@ const TetrisGame = () => {
     setCurrentPosition(prev => {
       const newPosition = { row: prev.row + 1, col: prev.col };
       if (checkCollision(currentTetromino, newPosition)) {
-        // Update grid with the current tetromino at the current position
         setGrid(prevGrid => {
           const updatedGrid = updateGrid(currentTetromino, prev);
-          clearFullRows(updatedGrid); // Check for full rows
+          clearFullRows(updatedGrid);
           return updatedGrid;
         });
         setCurrentTetromino(randomTetromino());
-        return INITIAL_POSITION; // Reset position for the next tetromino
+        return INITIAL_POSITION;
       }
       return newPosition;
     });
@@ -78,7 +77,8 @@ const TetrisGame = () => {
   const rotateTetromino = () => {
     const rotatedShape = currentTetromino.shape[0].map((_, index) =>
       currentTetromino.shape.map(row => row[index])
-    );
+    ).reverse(); // To rotate the matrix 90 degrees counterclockwise
+
     const rotatedTetromino = { shape: rotatedShape, color: currentTetromino.color };
     if (!checkCollision(rotatedTetromino, currentPosition)) {
       setCurrentTetromino(rotatedTetromino);
@@ -105,9 +105,9 @@ const TetrisGame = () => {
   const clearFullRows = (grid) => {
     const newGrid = grid.filter(row => row.includes(null));
     const filledRows = ROWS - newGrid.length;
-    setScore(prev => prev + filledRows * 100); // Add score for cleared rows
+    setScore(prev => prev + filledRows * 100);
     while (newGrid.length < ROWS) {
-      newGrid.unshift(Array(COLS).fill(null)); // Add empty rows at the top
+      newGrid.unshift(Array(COLS).fill(null));
     }
     setGrid(newGrid);
   };
@@ -133,7 +133,7 @@ const TetrisGame = () => {
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
-    setCurrentTetromino(randomTetromino()); // Ensure initial tetromino is set
+    setCurrentTetromino(randomTetromino());
 
     const interval = setInterval(() => {
       moveDown();
@@ -157,16 +157,14 @@ const TetrisGame = () => {
           row.map((_, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`w-6 h-6 ${
-                currentTetromino &&
+              className={`w-6 h-6 ${currentTetromino &&
                 rowIndex >= currentPosition.row &&
                 colIndex >= currentPosition.col &&
                 rowIndex < currentPosition.row + currentTetromino.shape.length &&
                 colIndex < currentPosition.col + currentTetromino.shape[0].length &&
                 currentTetromino.shape[rowIndex - currentPosition.row]?.[colIndex - currentPosition.col]
-                  ? currentTetromino.color
-                  : "bg-gray-900"
-              }`}
+                ? currentTetromino.color
+                : "bg-gray-900"}`}
             />
           ))
         )}
@@ -176,3 +174,4 @@ const TetrisGame = () => {
 };
 
 export default TetrisGame;
+ 

@@ -61,7 +61,7 @@ const TableLaporanKegiatan = () => {
 
     try {
       const response = await axios.post(apiURLLaporanKegiatan, requestBody, config);
-      
+
       // Pastikan data yang diterima adalah array, jika tidak maka set sebagai array kosong
       if (Array.isArray(response.data)) {
         setRows(response.data);
@@ -69,7 +69,7 @@ const TableLaporanKegiatan = () => {
       } else {
         setRows([]); // Set sebagai array kosong jika bukan array
       }
-      
+
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -378,8 +378,11 @@ const TableLaporanKegiatan = () => {
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Jenis</p>
                         </TableCell>
-                        <TableCell align="center" className="w-[30%]">
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Keterangan</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Deskripsi</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Dokumen</p>
@@ -390,9 +393,9 @@ const TableLaporanKegiatan = () => {
                       <TableBody className="bg-gray-100">
                         {(rowsPerPage > 0
                           ? rows.slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
                           : rows
                         ).map((row, index) => (
                           <TableRow key={index}>
@@ -462,6 +465,22 @@ const TableLaporanKegiatan = () => {
                               }}
                             >
                               {row.keterangan}
+                            </TableCell>
+                            <TableCell
+                              align="align-left"
+                              style={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                maxHeight: "100px",
+                                maxWidth: "150px",
+                              }}
+                            >
+                              {row.deskripsi && row.deskripsi.split('\n').map((text, index) => (
+                                <React.Fragment key={index}>
+                                  {text}
+                                  <br />
+                                </React.Fragment>
+                              ))}
                             </TableCell>
                             <TableCell align="center">
                               {row.dokumen && row.dokumen.length > 0 && (
