@@ -27,7 +27,8 @@ import TableLaporanKegiatan from "./page/TableLaporanKegiatan";
 import TablePayroll from "./page/TablePayroll";
 import TableResign from "./page/TableResign";
 import Overtime from "./page/Overtime";
-import LiveAttendance from "./page/LiveAttendance";
+import LiveAttendance from "./page/Attandance";
+import LiveAttendancel from "./page/LiveAttendanceL";
 import AccountSettingUser from "./page/AccountSettingUser";
 import Timeoff from "./page/Timeoff";
 import Povertime from "./page/Formovertime";
@@ -104,6 +105,7 @@ function App() {
           <Route path="/masterpayroll" element={<TablePayroll />} />
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/liveattendance" element={<LiveAttendance />} />
+          <Route path="/liveattendancel" element={<LiveAttendancel />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
           <Route path="/Timeoff" element={<Timeoff />} />
           <Route path="/Over" element={<Overtime />} />
