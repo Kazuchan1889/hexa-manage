@@ -51,6 +51,7 @@ import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
 import UserDataManagement from "./minicomponent/UserDataManagement";
 import Tetris from "./page/Tetris";
+import UserSummary from "./page/UserSummary";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 
@@ -105,7 +106,6 @@ function App() {
           <Route path="/masterpayroll" element={<TablePayroll />} />
           <Route path="/masterresign" element={<TableResign />} />
           <Route path="/liveattendance" element={<LiveAttendance />} />
-          <Route path="/liveattendancel" element={<LiveAttendancel />} />
           <Route path="/AccountSetting" element={<AccountSettingUser />} />
           <Route path="/Timeoff" element={<Timeoff />} />
           <Route path="/Over" element={<Overtime />} />
@@ -130,6 +130,7 @@ function App() {
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
           <Route path="/Tetris" element={<Tetris />} />
+          <Route path="/UserSummary" element={<UserSummary />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
