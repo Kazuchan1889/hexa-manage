@@ -10,6 +10,7 @@ import ip from "../ip";
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import Bub from "../minicomponent/Bubble";
+import UserSummary from './UserSummary';
 
 function AccountSettingUser() {
   const [nama, setNama] = useState("");
@@ -104,6 +105,13 @@ function AccountSettingUser() {
             {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
+      case 'Summary':
+        return (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Sumarry</h2>
+            <UserSummary />
+          </div>
+        );
       default:
         return null;
     }
@@ -163,6 +171,14 @@ function AccountSettingUser() {
               onClick={() => handleTabClick('security')}
             >
               Security
+            </li>
+            <li
+              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
+                activeTab === 'Summary' ? 'bg-blue-500 text-white' : ''
+              }`}
+              onClick={() => handleTabClick('Summary')}
+            >
+              Summary
             </li>
           </ul>
         </div>
