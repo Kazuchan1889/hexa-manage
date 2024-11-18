@@ -39,6 +39,9 @@ const TableLaporanKegiatan = () => {
   const [originalRows, setOriginalRows] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+const [endDate, setEndDate] = useState(null);
+
 
   const apiURLLaporanKegiatan = `${ip}/api/laporan/get`;
 
@@ -46,8 +49,10 @@ const TableLaporanKegiatan = () => {
     search: "",
     tipe: reportType,
     jenis: jenisFilter,
-    date: selectedDate,
+    date: selectedDate?.start || null,
+    endDate: selectedDate?.end || null, // Tambahkan endDate untuk rentang
   };
+  
 
   const config = {
     headers: {
@@ -123,11 +128,13 @@ const TableLaporanKegiatan = () => {
     setIsDateFilterOpen(false);
   };
 
-  const handleDateFilterChange = (date) => {
-    setSelectedDate(date);
-    setPage(0);
-    setIsDateFilterOpen(false);
-  };
+  const handleDateFilterChange = (start, end) => {
+  setSelectedDate({ start, end }); // Menyimpan kedua tanggal
+  setPage(0);
+  setIsDateFilterOpen(false);
+};
+
+  
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -202,7 +209,7 @@ const TableLaporanKegiatan = () => {
         console.error("Error downloading Excel file:", error);
       });
   };
-
+  
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -244,27 +251,57 @@ const TableLaporanKegiatan = () => {
                     Search
                   </Button>
                   <Dialog
-                    open={isDateFilterOpen}
-                    onClose={handleCloseDateFilter}
-                  >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>
-                    <DialogContent>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          value={selectedDate}
-                          onChange={handleDateFilterChange}
-                          renderInput={(params) => (
-                            <div className="w-64 mt-2">
-                              <input
-                                {...params.inputProps}
-                                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                              />
-                            </div>
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </DialogContent>
-                  </Dialog>
+  open={isDateFilterOpen}
+  onClose={handleCloseDateFilter}
+>
+  <DialogTitle>Pilih Rentang Tanggal</DialogTitle>
+  <DialogContent>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div className="flex flex-col space-y-4">
+        <div>
+          <Typography>Mulai Tanggal</Typography>
+          <DatePicker
+            value={startDate}
+            onChange={(date) => setStartDate(date)}
+            renderInput={(params) => (
+              <div className="w-64 mt-2">
+                <input
+                  {...params.inputProps}
+                  className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+            )}
+          />
+        </div>
+        <div>
+          <Typography>Sampai Tanggal</Typography>
+          <DatePicker
+            value={endDate}
+            onChange={(date) => setEndDate(date)}
+            renderInput={(params) => (
+              <div className="w-64 mt-2">
+                <input
+                  {...params.inputProps}
+                  className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                />
+              </div>
+            )}
+          />
+        </div>
+      </div>
+    </LocalizationProvider>
+  </DialogContent>
+  <div className="flex justify-end p-4">
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleDateFilterChange(startDate, endDate)}
+    >
+      Terapkan
+    </Button>
+  </div>
+</Dialog>
+
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">

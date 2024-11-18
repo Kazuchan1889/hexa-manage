@@ -309,6 +309,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import ip from "../ip";
 import PatchStatus from "../feature/PatchStatus";
+import ActionButton from "../feature/ActionButton";
 
 const TableAbsen = () => {
   const [rows, setRows] = useState([]);
@@ -531,6 +532,83 @@ const TableAbsen = () => {
       });
   };
 
+  const handleApproval = (data) => {
+    // console.log(data);
+    // if (data) {
+    //   const config = {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: localStorage.getItem("accessToken"),
+    //     },
+    //   };
+  
+    //   const status = 1;
+    //   const id = data.id
+    //   // const overtime_id = data.id
+    //   const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
+  
+    //   axios
+    //     .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       fetchData(""); // Refresh data after approval
+    //       // Show success alert
+    //       Swal.fire({
+    //         icon: "success",
+    //         title: "Approval Success",
+    //         text: "The request has been approved successfully.",
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error approving data:", error);
+    //       // Show error alert
+    //       Swal.fire({
+    //         icon: "error",
+    //         title: "Approval Error",
+    //         text: "An error occurred while approving the request. Please try again.",
+    //       });
+    //     });
+    // }
+  };
+  
+  const handleReject = (data) => {
+    // if (data) {
+    //   const config = {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: localStorage.getItem("accessToken"),
+    //     },
+    //   };
+  
+    //   const status = false;
+    //   console.log(data)
+    //   const id = data.id
+    //   const apiReject = `${ip}/api/overtime/status/${id}`;
+  
+    //   axios
+    //     .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       fetchData(""); // Refresh data after rejection
+    //       // Show success alert
+    //       Swal.fire({
+    //         icon: "success",
+    //         title: "Rejection Success",
+    //         text: "The request has been rejected successfully.",
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error rejecting data:", error);
+    //       // Show error alert
+    //       Swal.fire({
+    //         icon: "error",
+    //         title: "Rejection Error",
+    //         text: "An error occurred while rejecting the request. Please try again.",
+    //       });
+    //     });
+    // }
+  };
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -732,6 +810,9 @@ const TableAbsen = () => {
                       <TableCell align="center">
                         <p className="text-white font-semibold">Status</p>
                       </TableCell>
+                      <TableCell align="center">
+                        <p className="text-white font-semibold">Action</p>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
@@ -755,6 +836,17 @@ const TableAbsen = () => {
                             className="flex items-center"
                           >
                             <PatchStatus string={row.status} id={row.id} />
+                          </TableCell>
+                          <TableCell align="center" className="flex items-center">
+                           <ActionButton
+                                onAccept={handleApproval}
+                                onReject={handleReject}
+                          
+                                data={row}
+                                tipe={"nonIzin"}
+                                string={"Absen"}
+                              ></ActionButton>
+                            
                           </TableCell>
                         </TableRow>
                       ))}

@@ -39,6 +39,8 @@ function LaporanKegiatan() {
   const [uploadAlert, setUploadAlert] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [detailData, setDetailData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState({ keterangan: "", deskripsi: "" });
   const [isAddDescriptionModalOpen, setIsAddDescriptionModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -48,7 +50,6 @@ function LaporanKegiatan() {
     tanggal: "",
     jenis: "",
     deskripsi: "",
-    id: "",
   });
 
   // Menarik data dari backend
@@ -113,11 +114,10 @@ function LaporanKegiatan() {
       jenis: formData.jenis,
       time: formData.time,
       tanggal: formData.tanggal,
-      deskripsi: formData.deskripsi, // Send description as is
+      deskripsi: formData.deskripsi,
       dokumen: uploadedFileBase64s.map((reader) => reader.result),
     };
 
-    // Mengirim data ke backend
     axios
       .post(`${ip}/api/laporan/post`, requestBody, {
         headers: {
@@ -126,14 +126,12 @@ function LaporanKegiatan() {
         },
       })
       .then((response) => {
-        // Tampilkan notifikasi sukses
         Swal.fire({
           icon: "success",
           title: "Submit Sukses",
           text: "Laporan berhasil disubmit.",
         });
 
-        // Tambahkan data ke tableData setelah submit sukses
         setTableData((prevTableData) => [...prevTableData, requestBody]);
         setUploadedFiles([]);
         setUploadedFileBase64s([]);
@@ -148,7 +146,6 @@ function LaporanKegiatan() {
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
-        // Tampilkan notifikasi error
         Swal.fire({
           icon: "error",
           title: "Submit Gagal",
@@ -189,12 +186,63 @@ function LaporanKegiatan() {
 
   const handleOpenDetailModal = (row) => {
     setDetailData(row);
+    setEditFormData({ keterangan: row.keterangan, deskripsi: row.deskripsi });
     setIsDetailModalOpen(true);
+    setIsEditing(false); // Reset editing mode
   };
 
   const handleCloseDetailModal = () => {
     setIsDetailModalOpen(false);
     setDetailData(null);
+    setIsEditing(false);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value,
+    });
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!detailData) return;
+
+    const laporanId = detailData.id; // Assumes `id` is the unique identifier
+    axios
+      .patch(`${ip}/api/laporan/patch/${laporanId}`, editFormData, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        Swal.fire({
+          icon: "success",
+          title: "Edit Sukses",
+          text: "Laporan berhasil diupdate.",
+        });
+
+        setTableData((prevTableData) =>
+          prevTableData.map((item) =>
+            item.id === laporanId ? { ...item, ...editFormData } : item
+          )
+        );
+        setIsEditing(false);
+        setIsDetailModalOpen(false);
+      })
+      .catch((error) => {
+        console.error("Error updating data:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Edit Gagal",
+          text: "Terjadi kesalahan saat mengupdate laporan.",
+        });
+      });
   };
 
   const handleChangePage = (event, newPage) => {
@@ -444,7 +492,18 @@ function LaporanKegiatan() {
           {detailData && (
             <>
               <Typography variant="body1" gutterBottom>
-                <strong>Keterangan:</strong> {detailData.keterangan}
+                <strong>Keterangan:</strong>{" "}
+                {isEditing ? (
+                  <TextField
+                    name="keterangan"
+                    value={editFormData.keterangan}
+                    onChange={handleEditInputChange}
+                    fullWidth
+                    variant="outlined"
+                  />
+                ) : (
+                  detailData.keterangan
+                )}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 <strong>Lokasi:</strong> {detailData.lokasi}
@@ -458,19 +517,40 @@ function LaporanKegiatan() {
               <Typography variant="body1" gutterBottom>
                 <strong>Jenis:</strong> {detailData.jenis}
               </Typography>
-              <strong>Deskripsi:</strong>
-              <Typography
-                variant="body1"
-                gutterBottom
-                dangerouslySetInnerHTML={{
-                  __html: detailData.deskripsi ? detailData.deskripsi.replace(/\n/g, "<br />") : "",
-                }}
-              />
+              <Typography variant="body1" gutterBottom>
+                <strong>Deskripsi:</strong>{" "}
+                {isEditing ? (
+                  <TextField
+                    name="deskripsi"
+                    value={editFormData.deskripsi}
+                    onChange={handleEditInputChange}
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    rows={4}
+                  />
+                ) : (
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: detailData.deskripsi ? detailData.deskripsi.replace(/\n/g, "<br />") : "",
+                    }}
+                  />
+                )}
+              </Typography>
             </>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDetailModal} color="primary">
+          {isEditing ? (
+            <Button onClick={handleSaveEdit} color="primary" variant="contained">
+              Save
+            </Button>
+          ) : (
+            <Button onClick={handleEdit} color="primary" variant="outlined">
+              Edit
+            </Button>
+          )}
+          <Button onClick={handleCloseDetailModal} color="secondary">
             Close
           </Button>
         </DialogActions>

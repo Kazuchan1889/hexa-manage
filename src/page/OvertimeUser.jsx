@@ -9,8 +9,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField"; // Pastikan ini diimpor
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -26,7 +25,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Swal from "sweetalert2";
 import ip from "../ip";
-import ActionButton from "../feature/ActionButton";
 import Formovertime from "../page/Formovertime";
 import dayjs from 'dayjs';
 import Loading from "../page/Loading"; // Import komponen Loading
@@ -41,10 +39,20 @@ const OvertimeUser = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false); // Tambahkan ini
   const [loading, setLoading] = useState(false); // State loading
   const [randomNumber, setRandomNumber] = useState(0);
   const [daysOff, setDaysOff] = useState(0);
   const [afterConvert, setafterConvert] = useState(0);
+  const [currentOvertimeId, setCurrentOvertimeId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    note: "",
+    mulai: "",
+    selesai: "",
+    tipe: "",
+    tanggal_overtime: "",
+    istirahat: "",
+  });
   const apiURLover = `${ip}/api/overtime/list`;
 
   const config = {
@@ -59,15 +67,16 @@ const OvertimeUser = () => {
     setRandomNumber(newNumber);
 
     // Tambah daysOff jika randomNumber lebih besar dari 8
-    if (newNumber => 8) {
+    if (newNumber >= 8) {
       const increment = Math.floor(newNumber / 8); // hitung kelipatan dari 8
       setDaysOff(increment); // Atur daysOff sesuai kelipatan
       const hours = increment * 8;
       setafterConvert(hours);
     } else {
-      return
+      return;
     }
   }, []);
+
   const fetchData = async () => {
     setLoading(true); // Mulai loading
     try {
@@ -193,7 +202,55 @@ const OvertimeUser = () => {
 
   // Format tanggal menjadi dd/mm/yyyy
   const formatDate = (dateString) => {
-    return dayjs(dateString).format('DD/MM/YYYY');
+    return dayjs(dateString).format("DD/MM/YYYY");
+  };
+
+  const handleEditOpen = (id, data) => {
+    setCurrentOvertimeId(id);
+    setEditFormData({
+      ...data,
+      tanggal_overtime: dayjs(data.tanggal_overtime).format("YYYY-MM-DD"), // Format tanggal untuk input date
+    });
+    setEditModalOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditModalOpen(false);
+    setEditFormData({
+      note: "",
+      mulai: "",
+      selesai: "",
+      tipe: "",
+      tanggal_overtime: "",
+      istirahat: "",
+    });
+  };
+
+  const handleEditChange = (e) => {
+    setEditFormData({
+      ...editFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleEditSubmit = async () => {
+    const apiEditURL = `${ip}/api/overtime/update/self/${currentOvertimeId}`;
+    try {
+      await axios.patch(apiEditURL, editFormData, config);
+      fetchData(); // Refresh data
+      Swal.fire({
+        icon: "success",
+        title: "Update Success",
+        text: "Overtime data has been updated successfully.",
+      });
+      handleEditClose();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Error",
+        text: "An error occurred while updating the overtime data.",
+      });
+    }
   };
 
   return (
@@ -285,7 +342,7 @@ const OvertimeUser = () => {
               </h5>
             </div>
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
-              {loading ? ( // Tampilkan komponen Loading ketika loading true
+              {loading ? (
                 <Loading />
               ) : (
                 <TableContainer
@@ -314,6 +371,9 @@ const OvertimeUser = () => {
                           <p className="text-white font-semibold text-center">Overtime Hours</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
+                          <p className="text-white font-semibold">Status</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Action</p>
                         </TableCell>
                       </TableRow>
@@ -328,7 +388,7 @@ const OvertimeUser = () => {
                             <TableCell align="center">{row.selesai}</TableCell>
                             <TableCell align="center">{formatDate(row.tanggal_overtime)}</TableCell>
                             <TableCell align="center">{row.tipe}</TableCell>
-                            <TableCell align="center">{ }</TableCell>
+                            <TableCell align="center">{}</TableCell>
                             <TableCell
                               align="center"
                               style={{
@@ -336,19 +396,35 @@ const OvertimeUser = () => {
                                   row.status === "waiting for approval"
                                     ? "black"
                                     : row.status
-                                      ? "green"
-                                      : "red",
+                                    ? "green"
+                                    : "red",
                               }}
                             >
                               {row.status === "waiting for approval" ? (
-                                <div>
-                                  waiting for approval
-                                </div>
+                                <div>waiting for approval</div>
                               ) : row.status ? (
                                 "Approved"
                               ) : (
                                 "Rejected"
                               )}
+                            </TableCell>
+                            <TableCell align="center">
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() =>
+                                  handleEditOpen(row.id, {
+                                    note: row.note,
+                                    mulai: row.mulai,
+                                    selesai: row.selesai,
+                                    tipe: row.tipe,
+                                    tanggal_overtime: row.tanggal_overtime,
+                                    istirahat: row.istirahat,
+                                  })
+                                }
+                              >
+                                Edit
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -357,17 +433,6 @@ const OvertimeUser = () => {
                 </TableContainer>
               )}
             </div>
-            {/* <div className="flex flex-col justify-center font-semibold mt-2">
-              <h3>
-                Overtime You Have : {randomNumber}
-              </h3>
-              <h3>
-                Days Off Accumulation : {daysOff}
-              </h3>
-              <h3>
-                Overtime Accumulation after Convert : {randomNumber - afterConvert}
-              </h3>
-            </div> */}
           </CardContent>
         </Card>
       </div>
@@ -384,12 +449,61 @@ const OvertimeUser = () => {
             labelRowsPerPage="Jumlah Data"
           />
         </div>
+        {/* Modal Edit */}
+        <Dialog open={isEditModalOpen} onClose={handleEditClose}>
+          <DialogTitle>Edit Overtime</DialogTitle>
+          <DialogContent>
+            <div>
+              <TextField
+                label="Note"
+                name="note"
+                value={editFormData.note}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Start"
+                name="mulai"
+                type="time"
+                value={editFormData.mulai}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Finish"
+                name="selesai"
+                type="time"
+                value={editFormData.selesai}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Type"
+                name="tipe"
+                value={editFormData.tipe}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Date"
+                name="tanggal_overtime"
+                type="date"
+                value={editFormData.tanggal_overtime}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <Button variant="contained" color="primary" onClick={handleEditSubmit}>
+                Save
+              </Button>
+              <Button variant="outlined" color="secondary" onClick={handleEditClose}>
+                Cancel
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       {isTambahFormOpen && (
-        <Formovertime
-          onClose={() => setTambahFormOpen(false)}
-          fetchData={fetchData}
-        />
+        <Formovertime onClose={() => setTambahFormOpen(false)} fetchData={fetchData} />
       )}
     </div>
   );
