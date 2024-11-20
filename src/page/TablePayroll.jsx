@@ -243,7 +243,7 @@ const TablePayroll = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Payroll
+            Payroll Data
           </Typography>
         </div>
       </div>
@@ -263,7 +263,7 @@ const TablePayroll = () => {
                 </div>
                 <TextField
                   select
-                  label="Bulan"
+                  label="Month"
                   value={selectedMonth}
                   size="small"
                   onChange={handleMonthChange}
@@ -278,7 +278,7 @@ const TablePayroll = () => {
                 </TextField>
                 <TextField
                   type="number"
-                  label="Tahun"
+                  label="Year"
                   size="small"
                   className="w-1/6"
                   value={selectedYear}
@@ -317,7 +317,7 @@ const TablePayroll = () => {
                           className="text-gray-500"
                           style={{ marginRight: "8px" }}
                         />
-                        Buat Payroll
+                        Create Payroll
                       </MenuItem>
                     )}
                     <MenuItem
@@ -328,7 +328,7 @@ const TablePayroll = () => {
                         className="text-gray-500"
                         style={{ marginRight: "8px" }}
                       />
-                      Setting Rumus Payroll
+                      Payroll Formula Settings
                     </MenuItem>
                   </Menu>
                   <Button
@@ -357,31 +357,31 @@ const TablePayroll = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
+                        <p className="text-white font-semibold">Name</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Jabatan</p>
+                        <p className="text-white font-semibold">Position</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Bulan</p>
+                        <p className="text-white font-semibold">Month</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">No.Rekening</p>
+                        <p className="text-white font-semibold">Bank Account Number</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nominal Gaji</p>
+                        <p className="text-white font-semibold">Nominal Salary</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Slip Gaji</p>
+                        <p className="text-white font-semibold">Salary slip</p>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : rows
                     ).map((rows, index) => (
                       <TableRow key={index}>

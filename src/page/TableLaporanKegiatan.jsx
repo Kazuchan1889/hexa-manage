@@ -143,7 +143,7 @@ const TableLaporanKegiatan = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Laporan Kegiatan
+            Activity Report
           </Typography>
         </div>
       </div>
@@ -180,7 +180,7 @@ const TableLaporanKegiatan = () => {
                 onClick={handleExcelExport}
                 className="ml-auto"
               >
-                <DescriptionIcon className="text-white" /> Export Excel
+                <DescriptionIcon className="text-white" /> Export
               </Button>
             </div>
           </CardContent>
@@ -188,11 +188,11 @@ const TableLaporanKegiatan = () => {
       </div>
       {/* Modal for Date Filter */}
       <Dialog open={isDateFilterOpen} onClose={handleCloseDateFilter}>
-        <DialogTitle>Pilih Rentang Tanggal</DialogTitle>
+        <DialogTitle>Select Date Range</DialogTitle>
         <DialogContent>
           <div className="flex flex-col space-y-4">
             <div>
-              <Typography>Mulai Tanggal</Typography>
+              <Typography>Start Date</Typography>
               <input
                 type="date"
                 value={startDate}
@@ -201,7 +201,7 @@ const TableLaporanKegiatan = () => {
               />
             </div>
             <div>
-              <Typography>Sampai Tanggal</Typography>
+              <Typography>Until Date</Typography>
               <input
                 type="date"
                 value={endDate}
@@ -217,7 +217,7 @@ const TableLaporanKegiatan = () => {
             color="primary"
             onClick={handleDateFilterChange}
           >
-            Terapkan
+            Apply
           </Button>
         </div>
       </Dialog>
@@ -230,14 +230,14 @@ const TableLaporanKegiatan = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Nama</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Tanggal Laporan</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Jam Submit</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Lokasi</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Jenis</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Keterangan</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Deskripsi</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Dokumen</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Name</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Report Date</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Submission Hours</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Location</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Type</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Detail</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Description</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Document</p></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">

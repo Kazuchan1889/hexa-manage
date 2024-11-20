@@ -304,7 +304,7 @@ function FormIzin() {
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
               <div className="w-[90%] mb-4 flex justify-between	items-center">
-                <Typography variant="h5">Form Izin</Typography>
+                <Typography variant="h5">Permission Form</Typography>
               </div>
               {uploadAlert && (
                 <Alert
@@ -326,7 +326,7 @@ function FormIzin() {
                     <TextField
                       name="alasan"
                       id="alasan"
-                      label="Alasan"
+                      label="Reason"
                       variant="outlined"
                       fullWidth
                       multiline
@@ -344,7 +344,7 @@ function FormIzin() {
                       <div className="mb-2">
                         <TextField
                           name="mulai"
-                          label="Tanggal Mulai"
+                          label="Start Date"
                           id="mulai"
                           type="date"
                           variant="outlined"
@@ -366,7 +366,7 @@ function FormIzin() {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         name="selesai"
-                        label="Tanggal Berakhir"
+                        label="End Date"
                         id="selesai"
                         type="date"
                         variant="outlined"
@@ -387,7 +387,7 @@ function FormIzin() {
                     {/* Jenis */}
                     <Grid item xs={12} sm={6}>
                       <TextField
-                        label="Jenis"
+                        label="Type"
                         name="jenis"
                         select
                         variant="outlined"
@@ -397,8 +397,8 @@ function FormIzin() {
                         value={formData.jenis}
                         onChange={handleInputChange}
                       >
-                        <MenuItem value="setengah hari">Setengah Hari</MenuItem>
-                        <MenuItem value="sehari penuh">Sehari Penuh</MenuItem>
+                        <MenuItem value="setengah hari">Half-Day</MenuItem>
+                        <MenuItem value="sehari penuh">Full-Day</MenuItem>
                       </TextField>
                     </Grid>
 
@@ -455,7 +455,7 @@ function FormIzin() {
                   <div className="w-full">
                     <div className="flex justify-between">
                       <Typography variant="h6" id="history-modal-title">
-                        History Table
+                        Permission Request History
                       </Typography>
                       <div className="mt-1">
                         <Typography
@@ -477,7 +477,7 @@ function FormIzin() {
                                 className="text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Alasan
+                                Reason
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-[10%]">
@@ -486,7 +486,7 @@ function FormIzin() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Tanggal Mulai
+                                Start Date
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-[10%]">
@@ -495,7 +495,7 @@ function FormIzin() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Tanggal Selesai
+                                End Date
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-[10%]">
@@ -504,7 +504,7 @@ function FormIzin() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Jenis
+                                Type
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-[5%]">
@@ -513,7 +513,7 @@ function FormIzin() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Bukti
+                                Evidence
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-[10%]">
@@ -590,15 +590,15 @@ function FormIzin() {
                                         row.status === null
                                           ? "grey"
                                           : row.status === true
-                                          ? "green"
-                                          : "red",
+                                            ? "green"
+                                            : "red",
                                     }}
                                   >
                                     {row.status === null
                                       ? "Waiting"
                                       : row.status === true
-                                      ? "Accepted"
-                                      : "Rejected"}
+                                        ? "Accepted"
+                                        : "Rejected"}
                                   </Typography>
                                 </TableCell>
                               </TableRow>

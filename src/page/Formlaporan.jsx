@@ -123,7 +123,7 @@ function LaporanKegiatanForm({ onClose }) {
 
   return (
     <div className="p-4 bg-indigo-500 rounded rounded-xl w-80 h-80 justify-self-auto">
-      <Typography variant="h5">Laporan Kegiatan</Typography>
+      <Typography variant="h5">Activity Report</Typography>
       {uploadAlert && (
         <Alert
           severity="error"

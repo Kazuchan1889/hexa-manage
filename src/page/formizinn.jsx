@@ -16,13 +16,13 @@ function App() {
           className={`px-4 py-2 w-full text-center  ${selectedForm === 'cuti' ? 'bg-[#F3F4F6] text-gray-700' : 'bg-white text-black'}`}
           onClick={() => setSelectedForm('cuti')}
         >
-          Form Cuti
+          Leave Form
         </button>
         <button
           className={`px-4 py-2 w-full text-center  ${selectedForm === 'izin' ? 'bg-[#F3F4F6] text-gray-700' : 'bg-white text-black'}`}
           onClick={() => setSelectedForm('izin')}
         >
-          Form Izin
+          Permission Form
         </button>
       </div>
 

@@ -275,17 +275,17 @@ const UserDataManagement = () => {
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Nama
+                          Name
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[15%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Jabatan
+                          Position
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Divisi
+                          Divition
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[5%]">

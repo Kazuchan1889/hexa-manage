@@ -220,7 +220,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-3 rounded-lg w-full max-w-3xl flex flex-col max-h-96">
         <div className="flex justify-between mb-4">
-          <h2 className="text-xl font-semibold">Tambah Karyawan</h2>
+          <h2 className="text-xl font-semibold">Add Employee</h2>
           <button onClick={onClose} className="focus:outline-none">
             <CloseIcon />
           </button>
@@ -230,7 +230,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
             <div>
               <div className="flex space-x-4 mb-5 max-h-72">
                 <TextField
-                  label="Nama"
+                  label="Name"
                   variant="outlined"
                   fullWidth
                   name="nama"
@@ -334,7 +334,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
               </div>
               <div className="flex space-x-4 mt-5">
                 <TextField
-                  label="Divisi"
+                  label="Divition"
                   variant="outlined"
                   fullWidth
                   name="divisi"
@@ -532,7 +532,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
           {activeStep === 3 && step3Data && (
             <div>
               <div className="max-h-96 text-left">
-                <h2 className="text-xl font-semibold mb-4">Data yang Diisi</h2>
+                <h2 className="text-xl font-semibold mb-4">Filled Data</h2>
                 <div className="space-y-2">
                   {Object.entries(step3Data).map(([key, value]) =>
                     key !== "Authority" ? ( // Exclude Authority from display here

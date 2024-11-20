@@ -79,31 +79,31 @@ const DetailKaryawan = ({ karyawan, onClose, fetchData, rows, setRows }) => {
             </div>
             <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
               <ViewItem label="Nomor Induk Karyawan" value={karyawan?.nikid} />
-              <ViewItem label="Nama" value={karyawan?.nama} />
+              <ViewItem label="Name" value={karyawan?.nama} />
               <ViewItem label="Email" value={karyawan?.email} />
-              <ViewItem label="No. Telp" value={karyawan?.notelp} />
-              <ViewItem label="Tanggal Masuk" value={karyawan?.tglmasuk} />
-              <ViewItem label="Tanggal Keluar" value={karyawan?.tglkeluar} />
-              <ViewItem label="Tanggal Lahir" value={karyawan?.dob} />
-              <ViewItem label="Jenis Kelamin" value={karyawan?.gender} />
-              <ViewItem label="Status Pernikahan" value={karyawan?.maritalstatus} />
-              <ViewItem label="Agama" value={karyawan?.religion} />
+              <ViewItem label="Phone Number" value={karyawan?.notelp} />
+              <ViewItem label="Date of Entry" value={karyawan?.tglmasuk} />
+              <ViewItem label="Exit Date" value={karyawan?.tglkeluar} />
+              <ViewItem label="Date of Birth" value={karyawan?.dob} />
+              <ViewItem label="Gender" value={karyawan?.gender} />
+              <ViewItem label="Marital status" value={karyawan?.maritalstatus} />
+              <ViewItem label="Religion" value={karyawan?.religion} />
               <ViewItem label="Level" value={karyawan?.level} />
               <ViewItem label="Bank Account" value={karyawan?.bankacc} />
               <ViewItem label="Bank Account Name" value={karyawan?.bankaccname} />
-              <ViewItem label="Lokasi Kerja" value={karyawan?.lokasikerja} />
-              <ViewItem label="Alamat" value={karyawan?.alamat} />
-              <ViewItem label="Jabatan" value={karyawan?.jabatan} />
-              <ViewItem label="Divisi" value={karyawan?.divisi} />
+              <ViewItem label="Work Location" value={karyawan?.lokasikerja} />
+              <ViewItem label="Adress" value={karyawan?.alamat} />
+              <ViewItem label="Position" value={karyawan?.jabatan} />
+              <ViewItem label="Divition" value={karyawan?.divisi} />
               <ViewItem label="Status" value={karyawan?.status} />
               <ViewItem label="NIK (KTP)" value={karyawan?.nik} />
               <ViewItem label="NPWP" value={karyawan?.npwp} />
               <ViewItem
-                label="Jatah Cuti (Mandiri)"
+                label="Leave Allowance (independent)"
                 value={karyawan?.cutimandiri}
               />
               <ViewItem
-                label="Jatah Cuti (Bersama)"
+                label="Leave Allowance (together)"
                 value={karyawan?.cutibersama}
               />
               <ViewItem label="Role" value={karyawan?.role} />

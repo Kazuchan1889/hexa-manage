@@ -212,7 +212,7 @@ const TableDataKaryawan = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Karyawan
+            Employee Data
           </Typography>
         </div>
       </div>
@@ -275,17 +275,17 @@ const TableDataKaryawan = () => {
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Nama
+                          Name
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[15%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Jabatan
+                          Position
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Divisi
+                          Division
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[5%]">

@@ -55,17 +55,17 @@ const TableOverTime = () => {
       date: selectedDate,
     };
 
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
-        },
-      };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    };
 
     console.log(search);
     axios
-     //search belom jalan kurang api baru 
-      .get(apiURLover,config)
+      //search belom jalan kurang api baru 
+      .get(apiURLover, config)
       .then((response) => {
         console.log("Response Data:", response.data);
         setRows(response.data);
@@ -104,14 +104,14 @@ const TableOverTime = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-  
+
       const status = 1;
       const id = data.id
       // const overtime_id = data.id
       const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
-  
+
       axios
-        .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
+        .patch(apiApprovalURL, { status }, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after approval
@@ -133,7 +133,7 @@ const TableOverTime = () => {
         });
     }
   };
-  
+
   const handleReject = (data) => {
     if (data) {
       const config = {
@@ -142,14 +142,14 @@ const TableOverTime = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-  
+
       const status = false;
       console.log(data)
       const id = data.id
       const apiReject = `${ip}/api/overtime/status/${id}`;
-  
+
       axios
-        .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
+        .patch(apiReject, { status }, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after rejection
@@ -171,7 +171,7 @@ const TableOverTime = () => {
         });
     }
   };
-  
+
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -222,7 +222,7 @@ const TableOverTime = () => {
   //   setReportType(newReportType);
   //   handleMenuClose();
   // };
-  
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isPaidLeaveOpen, setIsPaidLeaveOpen] = useState(false);
   const [isDatePaidLeaveOpen, setIsDatePaidLeaveOpen] = useState(false);
@@ -266,7 +266,7 @@ const TableOverTime = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  
+
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
@@ -303,14 +303,14 @@ const TableOverTime = () => {
                     size="small"
                     style={{ backgroundColor: "#204684" }}
                     onClick={handleSearch}
-                  > 
+                  >
                     Search
                   </Button>
                   <Dialog
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
+                    <DialogTitle>Select Date</DialogTitle>{" "}
                     {/* Judul "Pilih Tanggal" */}
                     <DialogContent>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -333,7 +333,7 @@ const TableOverTime = () => {
               </div>
               <div className="flex items-center justify-between mx-auto">
                 <div className="flex space-x-4">
-                  <Button 
+                  <Button
                     size="small"
                     variant="outlined"
                     onClick={(event) => handleMenuOpen(event)}
@@ -361,7 +361,7 @@ const TableOverTime = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between mx-auto">
-                
+
               </div>
             </div>
           </CardContent>
@@ -379,29 +379,29 @@ const TableOverTime = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Catatan</p>
+                        <p className="text-white font-semibold">Notes</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
-                          Mulai
+                          Start
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold">
-                          Selesai
+                          Finished
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Tanggal</p>
+                        <p className="text-white font-semibold">Date</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
-                          Tipe Overtime
+                          Overtime Type
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
-                          
+
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
@@ -412,9 +412,9 @@ const TableOverTime = () => {
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredRows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>
@@ -425,30 +425,30 @@ const TableOverTime = () => {
                         <TableCell align="center">{row.tipe}</TableCell>
                         <TableCell align="center">{row.breaktime}</TableCell>
                         <TableCell
-                            align="center"
-                            style={{ color: row.status ? "black" : "red" }}
-                          >
-                            {row.status === null ? (
-                              // <DropdownButton
-                              //   onApproveSakit={handleApproveSakit}
-                              //   onApproval={handleApproval}
-                              //   data={row}
-                              //   onReject={handleReject}
-                              // />
-                              <ActionButton
-                                onAccept={handleApproval}
-                                onReject={handleReject}
-                          
-                                data={row}
-                                tipe={"nonIzin"}
-                                string={"Overtime"}
-                              ></ActionButton>
-                            ) : row.status ? (
-                              "accepted"
-                            ) : (
-                              "rejected"
-                            )}
-                          </TableCell>
+                          align="center"
+                          style={{ color: row.status ? "black" : "red" }}
+                        >
+                          {row.status === null ? (
+                            // <DropdownButton
+                            //   onApproveSakit={handleApproveSakit}
+                            //   onApproval={handleApproval}
+                            //   data={row}
+                            //   onReject={handleReject}
+                            // />
+                            <ActionButton
+                              onAccept={handleApproval}
+                              onReject={handleReject}
+
+                              data={row}
+                              tipe={"nonIzin"}
+                              string={"Overtime"}
+                            ></ActionButton>
+                          ) : row.status ? (
+                            "accepted"
+                          ) : (
+                            "rejected"
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -473,9 +473,9 @@ const TableOverTime = () => {
         </div>
       </div>
       {isTambahFormOpen && (
-        <Formovertime 
-        onClose={() => setTambahFormOpen(false)}
-        fetchData={fetchData}
+        <Formovertime
+          onClose={() => setTambahFormOpen(false)}
+          fetchData={fetchData}
         />
       )}
     </div>

@@ -130,7 +130,7 @@ const EditDataKaryawan = ({
         <div className="max-h-80 min-w-full overflow-y-auto">
           <div className="flex items-center  m-5">
             <TextField
-              label="Nama"
+              label="Name"
               variant="outlined"
               fullWidth
               name="nama"
@@ -140,7 +140,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex items-center m-5">
             <TextField
-              label="Jabatan"
+              label="Position"
               variant="outlined"
               fullWidth
               name="jabatan"
@@ -159,15 +159,15 @@ const EditDataKaryawan = ({
               value={formData.status}
               onChange={handleInputChange}
             >
-              <MenuItem value="tetap">Tetap</MenuItem>
-              <MenuItem value="kontrak">Kontrak</MenuItem>
-              <MenuItem value="probation">Probation</MenuItem>
-              <MenuItem value="magang">Magang</MenuItem>
+              <MenuItem value="tetap">Permanent</MenuItem>
+              <MenuItem value="kontrak">Contract</MenuItem>
+              <MenuItem value="probation">Probationary</MenuItem>
+              <MenuItem value="magang">Intern</MenuItem>
             </TextField>
           </div>
           <div className="flex items-center m-5">
             <TextField
-              label="Lokasi Kerja"
+              label="Work Location"
               variant="outlined"
               fullWidth
               name="lokasikerja"
@@ -177,7 +177,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex items-center m-5">
             <TextField
-              label="Nomor Telpon"
+              label="Phone Number"
               variant="outlined"
               fullWidth
               name="notelp"
@@ -187,7 +187,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex items-center m-5">
             <TextField
-              label="Alamat"
+              label="Address"
               variant="outlined"
               fullWidth
               name="alamat"
@@ -197,7 +197,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex item-center m-5">
             <TextField
-              label="Tanggal Masuk"
+              label="Date of Entry"
               variant="outlined"
               fullWidth
               type="date"
@@ -214,7 +214,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex item-center m-5">
             <TextField
-              label="Tanggal Keluar"
+              label="Exit Date"
               variant="outlined"
               fullWidth
               type="date"
@@ -278,7 +278,7 @@ const EditDataKaryawan = ({
           </div>
           <div className="flex items-center m-5">
             <TextField
-              label="Divisi"
+              label="Divition"
               variant="outlined"
               fullWidth
               name="divisi"
@@ -311,7 +311,7 @@ const EditDataKaryawan = ({
           onClick={handleSubmit}
           className="bg-green-500 hover:bg-green-700 px-4 py-2 rounded-lg"
         >
-          <p className="text-white font-semibold">Simpan</p>
+          <p className="text-white font-semibold">Save</p>
         </button>
       </div>
     </div>

@@ -285,7 +285,7 @@ function FormReimburst() {
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
               <div className="w-[90%] mb-4 flex justify-between items-center">
-                <Typography variant="h5">Form Reimburse</Typography>
+                <Typography variant="h5">Reimbursement Form</Typography>
               </div>
               <form
                 onSubmit={handleSubmit}
@@ -295,7 +295,7 @@ function FormReimburst() {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       name="keterangan"
-                      label="Keterangan"
+                      label="Details"
                       size="small"
                       variant="outlined"
                       fullWidth
@@ -308,7 +308,7 @@ function FormReimburst() {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       name="biaya"
-                      label="Biaya"
+                      label="Cost"
                       size="small"
                       variant="outlined"
                       fullWidth
@@ -322,7 +322,7 @@ function FormReimburst() {
                     <div className="mb-2">
                       <TextField
                         name="tanggal"
-                        label="Tanggal"
+                        label="Date"
                         type="date"
                         size="small"
                         variant="outlined"
@@ -391,7 +391,7 @@ function FormReimburst() {
                     <div className="w-full">
                       <div className="flex justify-between">
                         <Typography variant="h6" id="history-modal-title">
-                          History Table
+                          Reimbursement Request History
                         </Typography>
                         <div className="mt-1">
                           <Typography
@@ -413,7 +413,7 @@ function FormReimburst() {
                                   style={{ fontWeight: "bold" }}
                                   variant="body2"
                                 >
-                                  Keterangan
+                                  Details
                                 </Typography>
                               </TableCell>
                               <TableCell className="w-[10%]">
@@ -422,7 +422,7 @@ function FormReimburst() {
                                   style={{ fontWeight: "bold" }}
                                   variant="body2"
                                 >
-                                  Biaya
+                                  Cost
                                 </Typography>
                               </TableCell>
                               <TableCell className="w-[10%]">
@@ -431,7 +431,7 @@ function FormReimburst() {
                                   style={{ fontWeight: "bold" }}
                                   variant="body2"
                                 >
-                                  Tanggal
+                                  Date
                                 </Typography>
                               </TableCell>
                               <TableCell className="w-[10%]">
@@ -440,7 +440,7 @@ function FormReimburst() {
                                   style={{ fontWeight: "bold" }}
                                   variant="body2"
                                 >
-                                  Bukti
+                                  Evidence
                                 </Typography>
                               </TableCell>
                               <TableCell className="w-[10%]">
@@ -507,8 +507,8 @@ function FormReimburst() {
                                           row.progress === "sudah ditransfer"
                                             ? "#22c55e"
                                             : row.progress === "rejected"
-                                            ? "#ef4444"
-                                            : "grey",
+                                              ? "#ef4444"
+                                              : "grey",
                                       }}
                                     >
                                       {row.progress.charAt(0).toUpperCase() +

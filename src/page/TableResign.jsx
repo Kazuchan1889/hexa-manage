@@ -194,35 +194,35 @@ const TableResign = () => {
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Nama</p>
+                          <p className="text-white font-semibold">Name</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Divisi</p>
+                          <p className="text-white font-semibold">Divition</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Jabatan</p>
+                          <p className="text-white font-semibold">Position</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">
-                            Tanggal Pengajuan
+                            Filled Date
                           </p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">
-                            Tanggal Resign
+                            Resign Date
                           </p>
                         </TableCell>
                         <TableCell align="center" className="w-[30%]">
-                          <p className="text-white font-semibold">Alasan</p>
+                          <p className="text-white font-semibold">Reason</p>
                         </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody className="bg-gray-100">
                       {(rowsPerPage > 0
                         ? rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
                         : rows
                       ).map((row, index) => (
                         <TableRow key={index}>

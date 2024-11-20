@@ -129,9 +129,9 @@ function FormCuti() {
     console.log(isAnyFieldEmpty, isMulaiGreaterThanSelesai);
     setIsFormValid(
       !isAnyFieldEmpty &&
-        !isMulaiGreaterThanSelesai &&
-        selectedPengganti &&
-        isDateValid
+      !isMulaiGreaterThanSelesai &&
+      selectedPengganti &&
+      isDateValid
     );
   }, [formData, setSelectedPengganti]);
 
@@ -262,7 +262,7 @@ function FormCuti() {
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
               <div className="w-[90%] mb-4 flex justify-between items-center ">
-                <Typography variant="h5">Form Cuti</Typography>
+                <Typography variant="h5">Leave Form</Typography>
               </div>
               <form
                 onSubmit={handleSubmit}
@@ -273,7 +273,7 @@ function FormCuti() {
                     <TextField
                       name="alasan"
                       id="alasan"
-                      label="Alasan"
+                      label="Reason"
                       size="small"
                       variant="outlined"
                       fullWidth
@@ -293,7 +293,7 @@ function FormCuti() {
                       className="mb-2"
                       size="small"
                       select
-                      label="Pelaksana Tugas Sementara"
+                      label="Temporary Replacement"
                       onChange={(e) => setSelectedPengganti(e.target.value)}
                     >
                       {pengganti &&
@@ -311,7 +311,7 @@ function FormCuti() {
                         <TextField
                           name="mulai"
                           id="mulai"
-                          label="Tanggal Mulai"
+                          label="Start Date"
                           type="date"
                           size="small"
                           variant="outlined"
@@ -332,7 +332,7 @@ function FormCuti() {
                       <TextField
                         name="selesai"
                         id="selesai"
-                        label="Tanggal Selesai"
+                        label="End Date"
                         type="date"
                         size="small"
                         variant="outlined"
@@ -371,11 +371,11 @@ function FormCuti() {
                   <div className="w-full">
                     <div className="flex justify-between">
                       <Typography variant="h6" id="history-modal-title">
-                        History Table
+                        Leave Request History
                       </Typography>
                       <div className="mt-1">
                         <Typography variant="h7" className="font-semibold">
-                          Sisa Cuti : {sisaCuti}
+                          Remaining Days Off: {sisaCuti}
                         </Typography>
                       </div>
                     </div>
@@ -392,7 +392,7 @@ function FormCuti() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Alasan
+                                Reason
                               </Typography>
                             </TableCell>
                             <TableCell className="w-[20%]">
@@ -401,7 +401,7 @@ function FormCuti() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Pelaksana Tugas Sementara
+                                Temporary Replacement
                               </Typography>
                             </TableCell>
                             <TableCell className="w-[10%]">
@@ -410,7 +410,7 @@ function FormCuti() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Tanggal Mulai
+                                Start Date
                               </Typography>
                             </TableCell>
                             <TableCell className="w-[10%]">
@@ -419,7 +419,7 @@ function FormCuti() {
                                 className="font-semibold text-white text-center"
                                 style={{ fontWeight: "bold" }}
                               >
-                                Tanggal Berakhir
+                                End Date
                               </Typography>
                             </TableCell>
                             <TableCell className="w-[10%]">
@@ -482,23 +482,23 @@ function FormCuti() {
                                         row.progress === "rejected"
                                           ? "red"
                                           : row.progress === "accepted"
-                                          ? "green"
-                                          : row.progress ===
+                                            ? "green"
+                                            : row.progress ===
                                               "acc by direktur" ||
-                                            row.progress === "acc by admin"
-                                          ? "#facc15"
-                                          : "grey",
+                                              row.progress === "acc by admin"
+                                              ? "#facc15"
+                                              : "grey",
                                     }}
                                   >
                                     {row.progress === "rejected"
                                       ? "Rejected"
                                       : row.progress === "acc by direktur"
-                                      ? "Accepted by Direktur"
-                                      : row.progress === "acc by admin"
-                                      ? "Accepted by Admin"
-                                      : row.progress === "accepted"
-                                      ? "Accepted"
-                                      : "Waiting"}
+                                        ? "Accepted by Direktur"
+                                        : row.progress === "acc by admin"
+                                          ? "Accepted by Admin"
+                                          : row.progress === "accepted"
+                                            ? "Accepted"
+                                            : "Waiting"}
                                   </Typography>
                                 </TableCell>
                               </TableRow>
@@ -532,4 +532,3 @@ function FormCuti() {
 }
 
 export default FormCuti;
-  

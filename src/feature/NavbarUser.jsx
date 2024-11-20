@@ -235,7 +235,7 @@ const NavbarUser = () => {
       ? { label: "Employe Data ", active: false, to: "/masterkaryawan" }
       : null,
     checkOp("READ_IZIN")
-      ? { label: "Izin", active: false, to: "/masterizin" }
+      ? { label: "Permit", active: false, to: "/masterizin" }
       : null,
     checkOp("READ_CUTI")
       ? { label: "Time Off", active: false, to: "/mastercuti" }
@@ -247,7 +247,7 @@ const NavbarUser = () => {
       ? { label: "Resign", active: false, to: "/masterresign" }
       : null,
     checkOp("READ_LAPORAN")
-      ? { label: "Laporan", active: false, to: "/masterlaporan" }
+      ? { label: "Report", active: false, to: "/masterlaporan" }
       : null,
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }

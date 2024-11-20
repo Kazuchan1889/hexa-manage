@@ -616,7 +616,7 @@ const TableAbsen = () => {
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
             {" "}
-            Data Absensi{" "}
+            Attendance Data{" "}
           </Typography>
         </div>
       </div>
@@ -696,7 +696,7 @@ const TableAbsen = () => {
                         className="text-gray-500"
                         style={{ marginRight: "8px" }}
                       />
-                      Setting Jam Absen
+                      Setting Attendance Hours
                     </MenuItem>
                     <MenuItem
                       onClick={openHolidaySetting}
@@ -706,17 +706,17 @@ const TableAbsen = () => {
                         className="text-gray-500"
                         style={{ marginRight: "8px" }}
                       />
-                      Setting Tanggal Libur
+                      Setting Holiday Dates
                     </MenuItem>
                   </Menu>
                   <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
-                    <DialogTitle>Atur Jam Absen</DialogTitle>
+                    <DialogTitle>Setting Attendance Hours</DialogTitle>
                     <DialogContent>
                       <div className="flex space-x-1">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <div className="flex my-2">
                             <TimePicker
-                              label="Jam Masuk"
+                              label="Clock In"
                               value={timeMasuk}
                               onChange={(val) => {
                                 handleTimeChange(val, true);
@@ -727,7 +727,7 @@ const TableAbsen = () => {
                         </LocalizationProvider>
                         <div className="flex my-2">
                           <TextField
-                            label="Toleransi (menit)"
+                            label="Tolerance (Minute)"
                             type="number"
                             value={selectedToleransi}
                             onChange={(event) =>
@@ -740,7 +740,7 @@ const TableAbsen = () => {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <div className="flex my-2">
                             <TimePicker
-                              label="Jam Keluar"
+                              label="Clock Out"
                               value={timeKeluar}
                               onChange={(val) => {
                                 handleTimeChange(val, false);
@@ -758,7 +758,7 @@ const TableAbsen = () => {
                         style={{ backgroundColor: "#204684" }}
                         variant="contained"
                       >
-                        <p>Simpan</p>
+                        <p>Save</p>
                       </Button>
                       <Button
                         onClick={closeTimeSetting}
@@ -766,7 +766,7 @@ const TableAbsen = () => {
                         size="small"
                         variant="outlined"
                       >
-                        <p className="bg-gray-100">Tutup</p>
+                        <p className="bg-gray-100">Close</p>
                       </Button>
                     </DialogActions>
                   </Dialog>
@@ -793,16 +793,16 @@ const TableAbsen = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Nama</p>
+                        <p className="text-white font-semibold">Name</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Jam Masuk</p>
+                        <p className="text-white font-semibold">Clock In</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Jam Pulang</p>
+                        <p className="text-white font-semibold">Clock Out</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Tanggal</p>
+                        <p className="text-white font-semibold">Date</p>
                       </TableCell>
                       <TableCell align="center">
                         <p className="text-white font-semibold">Overtime</p>

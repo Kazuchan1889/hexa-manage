@@ -262,7 +262,7 @@ function LaporanKegiatan() {
         {/* Form Section */}
         <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md ">
           <Typography variant="h5" align="center" gutterBottom>
-            Laporan Kegiatan
+            Activity Report
           </Typography>
           {loading ? (
             <div className="flex justify-center py-10">
@@ -283,7 +283,7 @@ function LaporanKegiatan() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    label="Keterangan"
+                    label="Details"
                     name="keterangan"
                     size="small"
                     variant="outlined"
@@ -294,7 +294,7 @@ function LaporanKegiatan() {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    label="Lokasi"
+                    label="Location"
                     name="lokasi"
                     size="small"
                     variant="outlined"
@@ -321,7 +321,7 @@ function LaporanKegiatan() {
                 <Grid item xs={12} sm={4}>
                   <TextField
                     name="tanggal"
-                    label="Tanggal"
+                    label="Date"
                     type="date"
                     variant="outlined"
                     fullWidth
@@ -335,7 +335,7 @@ function LaporanKegiatan() {
 
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    label="Jenis"
+                    label="Type"
                     name="jenis"
                     select
                     size="small"
@@ -402,12 +402,12 @@ function LaporanKegiatan() {
               <TableHead>
                 <TableRow style={{ backgroundColor: "#204684" }}>
                   {[
-                    "Keterangan",
-                    "Lokasi",
-                    "Waktu",
-                    "Tanggal Laporan",
-                    "Jenis",
-                    "Bukti",
+                    "Details",
+                    "Location",
+                    "Time",
+                    "Report Date",
+                    "Type",
+                    "Evidence",
                     "Read Detail",
                   ].map((header) => (
                     <TableCell

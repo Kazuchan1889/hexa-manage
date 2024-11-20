@@ -243,8 +243,8 @@ const TableApprovalReimburst = () => {
     reportType === "approval"
       ? row.progres === "waiting"
       : reportType === "history"
-      ? row.progres === "rejected" || row.progres === "sudah ditransfer"
-      : row.progres === "accepted"
+        ? row.progres === "rejected" || row.progres === "sudah ditransfer"
+        : row.progres === "accepted"
   );
 
   const handleChangeRowsPerPage = (event) => {
@@ -333,7 +333,7 @@ const TableApprovalReimburst = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Approval Reimburse
+            Reimbursement Approval Data
           </Typography>
         </div>
       </div>
@@ -352,7 +352,7 @@ const TableApprovalReimburst = () => {
                 </div>
                 <TextField
                   select
-                  label="Bulan"
+                  label="Month"
                   value={selectedMonth}
                   size="small"
                   onChange={handleMonthChange}
@@ -367,7 +367,7 @@ const TableApprovalReimburst = () => {
                 </TextField>
                 <TextField
                   type="number"
-                  label="Tahun"
+                  label="Year"
                   size="small"
                   className="w-1/6"
                   value={selectedYear}
@@ -442,32 +442,32 @@ const TableApprovalReimburst = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
+                        <p className="text-white font-semibold">Name</p>
                       </TableCell>
                       {(reportType === "approval" ||
                         reportType === "history") && (
-                        <>
-                          <TableCell align="center" className="w-[5%]">
-                            <p className="text-white font-semibold">Jabatan</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[35%]">
-                            <p className="text-white font-semibold">
-                              Keterangan
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Biaya</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-white font-semibold">
-                              Tanggal Pengajuan
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[5%]">
-                            <p className="text-white font-semibold">Dokumen</p>
-                          </TableCell>
-                        </>
-                      )}
+                          <>
+                            <TableCell align="center" className="w-[5%]">
+                              <p className="text-white font-semibold">Position</p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[35%]">
+                              <p className="text-white font-semibold">
+                                Detail
+                              </p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[10%]">
+                              <p className="text-white font-semibold">Cost</p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[15%]">
+                              <p className="text-white font-semibold">
+                                Filing Date
+                              </p>
+                            </TableCell>
+                            <TableCell align="center" className="w-[5%]">
+                              <p className="text-white font-semibold">Document</p>
+                            </TableCell>
+                          </>
+                        )}
                       {reportType === "history" && (
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-white font-semibold">Status</p>
@@ -488,17 +488,17 @@ const TableApprovalReimburst = () => {
                             </p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Bulan</p>
+                            <p className="text-white font-semibold">Month</p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Jumlah</p>
+                            <p className="text-white font-semibold">Amount</p>
                           </TableCell>
                           <TableCell align="center" className="w-[15%]">
                             <p className="text-white font-semibold">Bank Name</p>
                           </TableCell>
                           <TableCell align="center" className="w-[15%]">
                             <p className="text-white font-semibold">
-                              No. Rekening
+                              Bank account number
                             </p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
@@ -516,9 +516,9 @@ const TableApprovalReimburst = () => {
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredRows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>
@@ -535,57 +535,7 @@ const TableApprovalReimburst = () => {
                         </TableCell>
                         {(reportType === "approval" ||
                           reportType === "history") && (
-                          <>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.jabatan}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.keterangan}
-                            </TableCell>
-                            <TableCell align="center">{row.biaya}</TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "120px",
-                              }}
-                            >
-                              {row.date}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.dokumen && (
-                                <div className="flex justify-center">
-                                  <Button
-                                    size="small"
-                                    href={row.dokumen}
-                                    target="_blank "
-                                    download
-                                    className="cursor-pointer"
-                                  >
-                                    <DownloadIcon className="text-gray-400" />
-                                  </Button>
-                                </div>
-                              )}
-                            </TableCell>
-                            {reportType === "history" ? (
+                            <>
                               <TableCell
                                 align="center"
                                 style={{
@@ -595,31 +545,81 @@ const TableApprovalReimburst = () => {
                                   maxWidth: "100px",
                                 }}
                               >
-                                {row.progres}
+                                {row.jabatan}
                               </TableCell>
-                            ) : null}
-                            {row.status === null ? (
-                              <>
+                              <TableCell
+                                align="center"
+                                style={{
+                                  whiteSpace: "normal",
+                                  wordWrap: "break-word",
+                                  maxHeight: "100px",
+                                  maxWidth: "100px",
+                                }}
+                              >
+                                {row.keterangan}
+                              </TableCell>
+                              <TableCell align="center">{row.biaya}</TableCell>
+                              <TableCell
+                                align="center"
+                                style={{
+                                  whiteSpace: "normal",
+                                  wordWrap: "break-word",
+                                  maxHeight: "100px",
+                                  maxWidth: "120px",
+                                }}
+                              >
+                                {row.date}
+                              </TableCell>
+                              <TableCell align="center">
+                                {row.dokumen && (
+                                  <div className="flex justify-center">
+                                    <Button
+                                      size="small"
+                                      href={row.dokumen}
+                                      target="_blank "
+                                      download
+                                      className="cursor-pointer"
+                                    >
+                                      <DownloadIcon className="text-gray-400" />
+                                    </Button>
+                                  </div>
+                                )}
+                              </TableCell>
+                              {reportType === "history" ? (
                                 <TableCell
                                   align="center"
                                   style={{
-                                    color: row.status ? "black" : "red",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    maxHeight: "100px",
+                                    maxWidth: "100px",
                                   }}
                                 >
-                                  {row.status === null ? (
-                                    <ActionButton
-                                      data={row}
-                                      onAccept={handleApprove}
-                                      onReject={handleReject}
-                                      tipe={"nonIzin"}
-                                      string={"Reimburse"}
-                                    ></ActionButton>
-                                  ) : null}
+                                  {row.progres}
                                 </TableCell>
-                              </>
-                            ) : null}
-                          </>
-                        )}
+                              ) : null}
+                              {row.status === null ? (
+                                <>
+                                  <TableCell
+                                    align="center"
+                                    style={{
+                                      color: row.status ? "black" : "red",
+                                    }}
+                                  >
+                                    {row.status === null ? (
+                                      <ActionButton
+                                        data={row}
+                                        onAccept={handleApprove}
+                                        onReject={handleReject}
+                                        tipe={"nonIzin"}
+                                        string={"Reimburse"}
+                                      ></ActionButton>
+                                    ) : null}
+                                  </TableCell>
+                                </>
+                              ) : null}
+                            </>
+                          )}
                         {reportType === "accepted" && (
                           <>
                             <TableCell
@@ -642,9 +642,8 @@ const TableApprovalReimburst = () => {
                                 maxWidth: "100px",
                               }}
                             >
-                              {`${monthNames(row.bulan, row.tahun)} ${
-                                row.tahun
-                              }`}
+                              {`${monthNames(row.bulan, row.tahun)} ${row.tahun
+                                }`}
                             </TableCell>
                             <TableCell
                               align="center"

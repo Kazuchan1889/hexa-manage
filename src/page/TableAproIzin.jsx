@@ -285,7 +285,7 @@ const TableAproIzin = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Approval Izin
+            Permit Approval Data
           </Typography>
         </div>
       </div>
@@ -323,7 +323,7 @@ const TableAproIzin = () => {
                     open={isDateFilterOpen}
                     onClose={handleCloseDateFilter}
                   >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>
+                    <DialogTitle>Select Date</DialogTitle>
                     <DialogContent>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
@@ -396,23 +396,23 @@ const TableAproIzin = () => {
                   <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nama</p>
+                        <p className="text-white font-semibold">Name</p>
                       </TableCell>
                       <TableCell align="center" className="w-[14%]">
                         <p className="text-white font-semibold">
-                          Tanggal Mulai
+                          Start Date
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[14%]">
                         <p className="text-white font-semibold">
-                          Tanggal Selesai
+                          End Date
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Keterangan</p>
+                        <p className="text-white font-semibold">Detail</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Dokumen</p>
+                        <p className="text-white font-semibold">Document</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
                         <p className="text-white font-semibold text-center">
@@ -424,9 +424,9 @@ const TableAproIzin = () => {
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredRows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>

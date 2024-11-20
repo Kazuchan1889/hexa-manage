@@ -62,7 +62,7 @@ const SettingHoliday = ({ onClose }) => {
         <CardContent className="flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <Typography variant="h6" component="div">
-              Setting Tanggal Libur
+              Setting Holiday Dates
             </Typography>
             <Button size="small" onClick={onClose}>
               <CloseIcon className="text-black" />
@@ -81,7 +81,7 @@ const SettingHoliday = ({ onClose }) => {
               type="text"
               fullWidth
               size="small"
-              label="Deskripsi"
+              label="Description"
               onChange={(e) => {
                 setDeskripsi(e.target.value);
               }}
