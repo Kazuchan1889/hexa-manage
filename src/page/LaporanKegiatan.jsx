@@ -112,8 +112,8 @@ function LaporanKegiatan() {
       lokasi: formData.lokasi,
       keterangan: formData.keterangan,
       jenis: formData.jenis,
-      time: formData.time,
-      tanggal: formData.tanggal,
+      time: new Date().toTimeString().slice(0, 5),
+      tanggal: new Date().toISOString().split('T')[0],
       deskripsi: formData.deskripsi,
       dokumen: uploadedFileBase64s.map((reader) => reader.result),
     };
@@ -138,9 +138,9 @@ function LaporanKegiatan() {
         setFormData({
           lokasi: "",
           keterangan: "",
-          time: "",
-          tanggal: "",
           jenis: "",
+          time: new Date().toTimeString().slice(0, 5), // Waktu default dalam format HH:MM
+          tanggal: new Date().toISOString().split('T')[0], // Tanggal default dalam format YYYY-MM-DD
           deskripsi: "",
         });
       })
@@ -311,11 +311,13 @@ function LaporanKegiatan() {
                     variant="outlined"
                     fullWidth
                     size="small"
-                    value={formData.time}
-                    onChange={handleInputChange}
+                    value={formData.time || new Date().toTimeString().slice(0, 5)} // Nilai default adalah waktu saat ini
+                    onChange={handleInputChange} // Mengirim perubahan jika ada
                     InputLabelProps={{ shrink: true }}
+                    disabled // Menonaktifkan input agar tidak bisa diubah
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     name="tanggal"
@@ -324,11 +326,13 @@ function LaporanKegiatan() {
                     variant="outlined"
                     fullWidth
                     size="small"
-                    value={formData.tanggal}
-                    onChange={handleInputChange}
+                    value={formData.tanggal || new Date().toISOString().split('T')[0]} // Nilai default adalah tanggal hari ini
+                    onChange={handleInputChange} // Mengirim perubahan jika ada
                     InputLabelProps={{ shrink: true }}
+                    disabled // Menonaktifkan input agar tidak bisa diubah
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     label="Jenis"

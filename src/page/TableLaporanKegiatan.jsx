@@ -1,123 +1,88 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
-import Typography from "@mui/material/Typography";
-import TableContainer from "@mui/material/TableContainer";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { Button, Card, CardContent, CircularProgress } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  InputBase,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TableContainer,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  CircularProgress,
+  Paper,
+  TablePagination,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import InputBase from "@mui/material/InputBase";
-import DescriptionIcon from "@mui/icons-material/Description";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import TablePagination from "@mui/material/TablePagination";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Paper from "@mui/material/Paper";
-import ip from "../ip";
+import DescriptionIcon from "@mui/icons-material/Description";
+import axios from "axios";
+import ip from "../ip"; // Sesuaikan path ini sesuai dengan struktur proyek Anda
+import NavbarUser from "../feature/NavbarUser";
 
 const TableLaporanKegiatan = () => {
+  const [dataLaporan, setDataLaporan] = useState([]);
+  const [filteredLaporan, setFilteredLaporan] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [anchorEl, setAnchorEl] = useState();
-  const [anchorJenis, setAnchorJenis] = useState();
-  const [search, setSearch] = useState("");
-  const [reportType, setReportType] = useState("harian");
-  const [jenisFilter, setJenisFilter] = useState("Didalam Kantor");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
-  const [rows, setRows] = useState([]); // Inisialisasi dengan array kosong
-  const [originalRows, setOriginalRows] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-const [endDate, setEndDate] = useState(null);
-
-
-  const apiURLLaporanKegiatan = `${ip}/api/laporan/get`;
-
-  const requestBody = {
-    search: "",
-    tipe: reportType,
-    jenis: jenisFilter,
-    date: selectedDate?.start || null,
-    endDate: selectedDate?.end || null, // Tambahkan endDate untuk rentang
-  };
-  
-
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: localStorage.getItem("accessToken"),
-    },
-  };
-
-  const fetchData = async () => {
-    setLoading(true); // Set loading to true before fetching data
-
-    try {
-      const response = await axios.post(apiURLLaporanKegiatan, requestBody, config);
-
-      // Pastikan data yang diterima adalah array, jika tidak maka set sebagai array kosong
-      if (Array.isArray(response.data)) {
-        setRows(response.data);
-        setOriginalRows(response.data);
-      } else {
-        setRows([]); // Set sebagai array kosong jika bukan array
-      }
-
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setRows([]); // Set sebagai array kosong jika ada error
-    } finally {
-      setLoading(false); // Set loading to false regardless of success or error
-    }
-  };
 
   useEffect(() => {
-    fetchData();
-  }, [selectedDate, reportType, jenisFilter]);
+    const fetchData = async () => {
+      try {
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
+        const response = await axios.get(`${ip}/api/laporan/get/all`, { headers });
+        setDataLaporan(response.data);
+        setFilteredLaporan(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
 
-  const handleSearch = () => {
-    searchInRows(search);
-    setPage(0);
+    fetchData();
+  }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    const search = e.target.value.toLowerCase();
+    const filtered = dataLaporan.filter((laporan) =>
+      Object.values(laporan).some(
+        (value) =>
+          value && value.toString().toLowerCase().includes(search)
+      )
+    );
+    setFilteredLaporan(filtered);
   };
 
-  const searchInRows = (query) => {
-    const filteredRows = originalRows.filter((row) => {
-      // Sesuaikan dengan kriteria pencarian Anda
-      return row.nama.toLowerCase().includes(query.toLowerCase());
+  const handleDateFilterChange = () => {
+    if (!startDate || !endDate) {
+      alert('Silakan pilih tanggal mulai dan tanggal selesai.');
+      return;
+    }
+
+    const filteredData = dataLaporan.filter((laporan) => {
+      const laporanDate = new Date(laporan.tanggal.split('/').reverse().join('-'));
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      return laporanDate >= start && laporanDate <= end;
     });
 
-    setRows(filteredRows);
-    setPage(0);
-  };
-
-  const handleSearchChange = (event) => {
-    const query = event.target.value;
-    setSearch(query);
-    setPage(0);
-
-    if (query === "" || query === null) {
-      // Jika kotak pencarian kosong, kembalikan ke data asli
-      setRows(originalRows);
-    }
-  };
-
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
+    setFilteredLaporan(filteredData);
+    setIsDateFilterOpen(false);
   };
 
   const handleOpenDateFilter = () => {
@@ -126,26 +91,6 @@ const [endDate, setEndDate] = useState(null);
 
   const handleCloseDateFilter = () => {
     setIsDateFilterOpen(false);
-  };
-
-  const handleDateFilterChange = (start, end) => {
-  setSelectedDate({ start, end }); // Menyimpan kedua tanggal
-  setPage(0);
-  setIsDateFilterOpen(false);
-};
-
-  
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleImageClick = (images) => {
-    setSelectedImage(images);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -157,62 +102,44 @@ const [endDate, setEndDate] = useState(null);
     setPage(0);
   };
 
-  const handleReportTypeChange = (newReportType) => {
-    setPage(0);
-    setReportType(newReportType);
-    handleMenuClose();
-  };
-
-  const handleJenisOpen = (event) => {
-    setAnchorJenis(event.currentTarget);
-  };
-
-  const handleJenisTypeChange = (newJenisType) => {
-    setPage(0);
-    setJenisFilter(newJenisType);
-    handleJenisClose();
-  };
-
-  const handleJenisClose = () => {
-    setAnchorJenis(null);
-  };
-
-  const handleExcel = () => {
-    const api = `${ip}/api/export/data/3`;
-
-    const requestBody = {
-      date: selectedDate,
-    };
+  const handleExcelExport = () => {
+    const api = `${ip}/api/export/data/8`;
 
     axios({
       url: api,
       method: "POST",
-      responseType: "blob", // Respons diharapkan dalam bentuk blob (file)
-      data: requestBody,
+      responseType: "blob",
+      data: {
+        startDate,
+        endDate,
+      },
       headers: {
-        "Content-Type": "application/json", // Sesuaikan dengan tipe konten yang diterima oleh API
+        "Content-Type": "application/json",
         Authorization: localStorage.getItem("accessToken"),
       },
     })
       .then((response) => {
-        console.log(response);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "Laporan Kegiatan.xlsx"); // Nama file yang ingin Anda unduh
+        link.setAttribute("download", "Laporan_Kegiatan.xlsx");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       })
       .catch((error) => {
-        if (error.message.includes("400")) alert("Tidak Ada Data");
         console.error("Error downloading Excel file:", error);
+        alert("Terjadi kesalahan saat mengunduh file. Silakan coba lagi.");
       });
   };
-  
+
+  if (loading) return <div className="flex justify-center items-center h-40"><CircularProgress /></div>;
+  if (error) return <p>Error loading data: {error.message}</p>;
+
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
+      {/* Header */}
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
@@ -220,374 +147,148 @@ const [endDate, setEndDate] = useState(null);
           </Typography>
         </div>
       </div>
+      {/* Search and Filter Bar */}
       <div className="flex justify-center items-center w-screen my-2">
         <Card className="w-[90%]">
           <CardContent>
             <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
+              {/* Search and Filter Section */}
+              <div className="flex items-center w-full space-x-1">
+                {/* Search Bar */}
                 <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
                   <SearchIcon style={{ fontSize: 25 }} />
                   <InputBase
                     placeholder="Search..."
-                    onKeyPress={handleKeyPress}
                     onChange={handleSearchChange}
                     className="w-full"
                   />
                 </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                  <Dialog
-  open={isDateFilterOpen}
-  onClose={handleCloseDateFilter}
->
-  <DialogTitle>Pilih Rentang Tanggal</DialogTitle>
-  <DialogContent>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className="flex flex-col space-y-4">
-        <div>
-          <Typography>Mulai Tanggal</Typography>
-          <DatePicker
-            value={startDate}
-            onChange={(date) => setStartDate(date)}
-            renderInput={(params) => (
-              <div className="w-64 mt-2">
-                <input
-                  {...params.inputProps}
-                  className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                />
+                {/* Filter Button */}
+                <Button
+                  size="small"
+                  variant="text"
+                  onClick={handleOpenDateFilter}
+                >
+                  <CalendarMonthIcon className="text-black" />
+                </Button>
               </div>
-            )}
-          />
-        </div>
-        <div>
-          <Typography>Sampai Tanggal</Typography>
-          <DatePicker
-            value={endDate}
-            onChange={(date) => setEndDate(date)}
-            renderInput={(params) => (
-              <div className="w-64 mt-2">
-                <input
-                  {...params.inputProps}
-                  className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                />
-              </div>
-            )}
-          />
-        </div>
-      </div>
-    </LocalizationProvider>
-  </DialogContent>
-  <div className="flex justify-end p-4">
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={() => handleDateFilterChange(startDate, endDate)}
-    >
-      Terapkan
-    </Button>
-  </div>
-</Dialog>
-
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={handleJenisOpen}
-                  >
-                    {jenisFilter === "Didalam Kantor" ? (
-                      <Typography
-                        variant="caption"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        Didalam Kantor
-                      </Typography>
-                    ) : (
-                      <Typography
-                        variant="caption"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        Keluar Kantor
-                      </Typography>
-                    )}
-                  </Button>
-                  <Menu
-                    anchorEl={anchorJenis}
-                    open={Boolean(anchorJenis)}
-                    onClose={handleJenisClose}
-                  >
-                    <MenuItem
-                      onClick={() => handleJenisTypeChange("Didalam Kantor")}
-                    >
-                      <p className="text-gray-500">Didalam Kantor</p>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleJenisTypeChange("Keluar Kantor")}
-                    >
-                      <p className="text-gray-500">Keluar Kantor</p>
-                    </MenuItem>
-                  </Menu>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={handleMenuOpen}
-                  >
-                    {reportType === "harian" ? (
-                      <Typography variant="button">Harian</Typography>
-                    ) : (
-                      <Typography variant="button">Mingguan</Typography>
-                    )}
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem onClick={() => handleReportTypeChange("harian")}>
-                      <p className="text-gray-500">Harian</p>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleReportTypeChange("mingguan")}
-                    >
-                      <p className="text-gray-500">Mingguan</p>
-                    </MenuItem>
-                  </Menu>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={handleExcel}
-                  >
-                    <DescriptionIcon className="text-white" />
-                  </Button>
-                </div>
-              </div>
+              {/* Export Button Section */}
+              <Button
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={handleExcelExport}
+                className="ml-auto"
+              >
+                <DescriptionIcon className="text-white" /> Export Excel
+              </Button>
             </div>
           </CardContent>
         </Card>
       </div>
+      {/* Modal for Date Filter */}
+      <Dialog open={isDateFilterOpen} onClose={handleCloseDateFilter}>
+        <DialogTitle>Pilih Rentang Tanggal</DialogTitle>
+        <DialogContent>
+          <div className="flex flex-col space-y-4">
+            <div>
+              <Typography>Mulai Tanggal</Typography>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+              />
+            </div>
+            <div>
+              <Typography>Sampai Tanggal</Typography>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+              />
+            </div>
+          </div>
+        </DialogContent>
+        <div className="flex justify-end p-4">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleDateFilterChange}
+          >
+            Terapkan
+          </Button>
+        </div>
+      </Dialog>
+      {/* Table Display */}
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <CircularProgress />
-              </div>
-            ) : (
-              <div className="max-h-72 rounded-lg drop-shadow-lg overflow-y-auto">
-                <TableContainer
-                  component={Paper}
-                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead style={{ backgroundColor: "#204684" }}>
-                      <TableRow>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Nama</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">
-                            Tanggal Laporan
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Jam Submit</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Lokasi</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Jenis</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Keterangan</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Deskripsi</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Dokumen</p>
+            <div className="max-h-72 rounded-lg drop-shadow-lg overflow-y-auto">
+              <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
+                <Table aria-label="simple table" size="small">
+                  <TableHead style={{ backgroundColor: "#204684" }}>
+                    <TableRow>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Nama</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Tanggal Laporan</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Jam Submit</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Lokasi</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Jenis</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Keterangan</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Deskripsi</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Dokumen</p></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className="bg-gray-100">
+                    {(rowsPerPage > 0
+                      ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      : filteredLaporan
+                    ).map((laporan, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{laporan.nama}</TableCell>
+                        <TableCell align="center">{laporan.tanggal}</TableCell>
+                        <TableCell align="center">{laporan.jam}</TableCell>
+                        <TableCell align="center">{laporan.lokasi}</TableCell>
+                        <TableCell align="center">{laporan.jenis}</TableCell>
+                        <TableCell align="center">{laporan.keterangan}</TableCell>
+                        <TableCell align="align-left">{laporan.deskripsi}</TableCell>
+                        <TableCell align="center">
+                          {laporan.dokumen && laporan.dokumen.length > 0 && (
+                            <div className="flex justify-center gap-[20%]">
+                              {laporan.dokumen.map((doc, docIndex) => (
+                                <img
+                                  key={docIndex}
+                                  src={doc}
+                                  alt=""
+                                  className="h-7 cursor-pointer m-auto"
+                                />
+                              ))}
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    {rows && Array.isArray(rows) && ( // Tambahkan pengecekan apakah rows adalah array
-                      <TableBody className="bg-gray-100">
-                        {(rowsPerPage > 0
-                          ? rows.slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                          )
-                          : rows
-                        ).map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.nama}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                color: row.ontime ? "black" : "red",
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.target}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.jam}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.lokasi}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.jenis}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.keterangan}
-                            </TableCell>
-                            <TableCell
-                              align="align-left"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "150px",
-                              }}
-                            >
-                              {row.deskripsi && row.deskripsi.split('\n').map((text, index) => (
-                                <React.Fragment key={index}>
-                                  {text}
-                                  <br />
-                                </React.Fragment>
-                              ))}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.dokumen && row.dokumen.length > 0 && (
-                                <div className="flex justify-center gap-[20%]">
-                                  {row.dokumen[0] && (
-                                    <img
-                                      src={row.dokumen[0]}
-                                      alt=""
-                                      className="h-7 cursor-pointer m-auto"
-                                      onClick={() =>
-                                        handleImageClick(row.dokumen)
-                                      }
-                                    />
-                                  )}
-                                  {row.dokumen[1] && (
-                                    <img
-                                      src={row.dokumen[1]}
-                                      alt=""
-                                      className="h-7 cursor-pointer m-auto"
-                                      onClick={() =>
-                                        handleImageClick(row.dokumen)
-                                      }
-                                    />
-                                  )}
-                                </div>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </div>
-            )}
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
-      <Dialog
-        open={Boolean(selectedImage)}
-        onClose={() => setSelectedImage(null)}
-        maxWidth="lg"
-      >
-        <DialogContent>
-          {selectedImage &&
-            selectedImage.length > 0 &&
-            selectedImage.map((image, index) => (
-              <img
-                key={index}
-                alt=""
-                src={image}
-                style={{ maxWidth: "100%", maxHeight: "80vh" }}
-              />
-            ))}
-        </DialogContent>
-      </Dialog>
+      {/* Pagination */}
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
-          {rows && Array.isArray(rows) && ( // Tambahkan pengecekan apakah rows adalah array
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage="Jumlah Data"
-            />
-          )}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredLaporan.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="Jumlah Data"
+          />
         </div>
       </div>
     </div>

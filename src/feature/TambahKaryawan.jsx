@@ -33,17 +33,12 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
 
   const [formData, setFormData] = useState({
     nama: "",
-    jabatan: "",
     email: "",
     password: "",
     nik: "",
     npwp: "",
-    dob: null,
-    gender: "",
     level: "",
-    lokasi: "",
     role: "",
-    notelp: "",
     status: "",
     salary: 0,
     divisi: "",
@@ -242,14 +237,6 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   value={formData.nama}
                   onChange={handleInputChange}
                 />
-                <TextField
-                  label="Jabatan"
-                  variant="outlined"
-                  fullWidth
-                  name="jabatan"
-                  value={formData.jabatan}
-                  onChange={handleInputChange}
-                />
               </div>
               <div className="flex space-x-4 mb-5">
                 <TextField
@@ -300,35 +287,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="flex text-left space-x-4 mb-5">
-                <TextField
-                  label="Tanggal Lahir"
-                  variant="outlined"
-                  fullWidth
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleInputChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    placeholder: "",
-                  }}
-                />
-                <TextField
-                  label="Jenis Kelamin"
-                  variant="outlined"
-                  fullWidth
-                  select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="Laki-laki">Laki-laki</MenuItem>
-                  <MenuItem value="Perempuan">Perempuan</MenuItem>
-                </TextField>
-              </div>
+              
               <div className="flex text-left space-x-4 mb-5">
                 <TextField
                   label="Level"
@@ -344,15 +303,6 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   <MenuItem value="Senior">Senior</MenuItem>
                   <MenuItem value="Staff">Staff</MenuItem>
                 </TextField>
-                <TextField
-                  label="Lokasi Kerja"
-                  variant="outlined"
-                  fullWidth
-                  type="text"
-                  name="lokasikerja"
-                  value={formData.lokasikerja}
-                  onChange={handleInputChange}
-                />
               </div>
               <div className="flex text-left space-x-4">
                 <TextField
@@ -392,26 +342,8 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   onChange={handleInputChange}
                 />
 
-                <TextField
-                  label="No Telepon"
-                  variant="outlined"
-                  fullWidth
-                  name="notelp"
-                  value={formData.notelp}
-                  type="integer"
-                  onChange={handleInputChange}
-                />
               </div>
-              <div className="flex mt-5">
-                <TextField
-                  label="Salary"
-                  variant="outlined"
-                  fullWidth
-                  name="salary"
-                  value={formatSalary(formData.salary)} // Format the displayed value
-                  onChange={handleInputChange}
-                />
-              </div>
+              
               <div className="sticky bottom-0 flex justify-end bg-white mt-4">
                 <Button
                   variant="contained"

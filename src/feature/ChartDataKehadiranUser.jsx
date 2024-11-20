@@ -77,7 +77,7 @@ function ChartDataKehadiranUser() {
   }
 
   return (
-    <div className="h-fit w-[16rem] mx-auto flex flex-col items-center mt-14">
+    <div className="h-fit w-[16rem] mx-auto">
       <div className="">
         <Typography variant="h6">Your Monthly Attendance</Typography>
       </div>
