@@ -21,7 +21,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import ip from "../ip";
 import OperationSelection from "./OperationSelection";
-
+const API_URL = `${ip}/api/role`;  
 const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
   // const [searchValue, setSearchValue] = useState("");
@@ -30,7 +30,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [activeStep, setActiveStep] = useState(1);
   // const [choiceArray, setChoiceArray] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [roles, setRoles] = useState([]);
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
@@ -156,7 +156,9 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
       handleStep3();
       console.log("Data printed:", formData);
       onClose();
-
+      const selectedRole = roles.find((r) => r.role === formData.role);
+      const operations = selectedRole ? selectedRole.operation : [];
+      const roleId = selectedRole ? selectedRole.id : null;
       const dataToSend = {
         nama: formData.nama,
         jabatan: formData.jabatan,
@@ -169,7 +171,8 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
         level: formData.level,
         role: formData.role,
         status: formData.status,
-        operation: chosenArray.map((item) => item.operation),
+        operation: operations,
+        roleid: roleId,
         lokasikerja: formData.lokasikerja,
         divisi: formData.divisi,
         notelp: formData.notelp,
@@ -216,11 +219,33 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     }
   };
 
+ 
+    
+
+    useEffect(() => {
+        fetchRoles();
+    }, []);
+
+    const fetchRoles = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/list`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: localStorage.getItem("accessToken") || "",
+                },
+            });
+            setRoles(response.data || []);
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    }
+    
+
   return (
     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-3 rounded-lg w-full max-w-3xl flex flex-col max-h-96">
         <div className="flex justify-between mb-4">
-          <h2 className="text-xl font-semibold">Add Employee</h2>
+          <h2 className="text-xl font-semibold">Tambah Karyawan</h2>
           <button onClick={onClose} className="focus:outline-none">
             <CloseIcon />
           </button>
@@ -230,7 +255,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
             <div>
               <div className="flex space-x-4 mb-5 max-h-72">
                 <TextField
-                  label="Name"
+                  label="Nama"
                   variant="outlined"
                   fullWidth
                   name="nama"
@@ -304,19 +329,22 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   <MenuItem value="Staff">Staff</MenuItem>
                 </TextField>
               </div>
-              <div className="flex text-left space-x-4">
-                <TextField
-                  label="Role"
-                  variant="outlined"
-                  select
-                  fullWidth
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="user">User</MenuItem>
-                </TextField>
+              <div className="flex text-left ">
+              <TextField
+            label="Role"
+            variant="outlined"
+            select
+            fullWidth
+            name="role"
+            value={formData.role}
+            onChange={handleInputChange}
+        >
+            {roles.map((role) => (
+                <MenuItem key={role.id} value={role.role}>
+                    {role.role}
+                </MenuItem>
+            ))}
+        </TextField>
                 <TextField
                   label="Status"
                   variant="outlined"
@@ -334,7 +362,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
               </div>
               <div className="flex space-x-4 mt-5">
                 <TextField
-                  label="Divition"
+                  label="Divisi"
                   variant="outlined"
                   fullWidth
                   name="divisi"
@@ -532,7 +560,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
           {activeStep === 3 && step3Data && (
             <div>
               <div className="max-h-96 text-left">
-                <h2 className="text-xl font-semibold mb-4">Filled Data</h2>
+                <h2 className="text-xl font-semibold mb-4">Data yang Diisi</h2>
                 <div className="space-y-2">
                   {Object.entries(step3Data).map(([key, value]) =>
                     key !== "Authority" ? ( // Exclude Authority from display here
