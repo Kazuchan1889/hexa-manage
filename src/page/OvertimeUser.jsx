@@ -63,17 +63,7 @@ const OvertimeUser = () => {
     },
   };
 
-  useEffect(() => {
-    const newNumber = Math.floor(Math.random() * 10) + 1;
-    setRandomNumber(newNumber);
 
-    if (newNumber >= 8) {
-      const increment = Math.floor(newNumber / 8);
-      setDaysOff(increment);
-      const hours = increment * 8;
-      setafterConvert(hours);
-    }
-  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -265,6 +255,70 @@ const OvertimeUser = () => {
       });
     }
   };
+  const [overtimeHours, setOvertimeHours] = useState(0);
+  const [calculatedDaysOff, setCalculatedDaysOff] = useState(0);
+
+  function getIdFromAccessToken() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return null; // Token tidak ditemukan
+    
+    try {
+        // Token biasanya berupa format JWT (header.payload.signature)
+        const payloadBase64 = token.split('.')[1]; // Bagian payload
+        const decodedPayload = atob(payloadBase64); // Decode dari Base64
+        const payload = JSON.parse(decodedPayload); // Parsing JSON
+        
+        return payload.id || null; // Mengambil ID jika ada
+    } catch (error) {
+        console.error("Invalid token format:", error);
+        return null;
+    }
+}
+
+const userId = getIdFromAccessToken();
+console.log("User ID:", userId);
+
+
+const fetchOvertimeData = async () => {
+  try {
+    const userId = getIdFromAccessToken(); // Ambil ID dari AccessToken
+    
+    // Konfigurasi Header
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    };
+
+    // Request data ke API dengan config
+    const response = await axios.get(
+      `${ip}/api/kehadiran/list/karyawan/${userId}`,
+      config
+    );
+
+    if (response.data && response.data.length > 0) {
+      const overtimeData = response.data[0]; // Ambil data pertama
+
+      // Total jatah overtime
+      const totalDays = overtimeData["total jatah overtime (hari)"];
+      const totalHours = overtimeData["total jatah overtime (jam)"];
+
+      // Update state atau lakukan perhitungan lainnya
+      setOvertimeHours(totalHours);
+      setCalculatedDaysOff(totalDays);
+    }
+  } catch (error) {
+    console.error("Failed to fetch overtime data:", error);
+  }
+};
+
+useEffect(() => {
+fetchOvertimeData();
+}, []);
+
+
+
 
   return (
     <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
@@ -348,14 +402,15 @@ const OvertimeUser = () => {
         <Card className="w-[90%]">
           <CardContent>
             <div className="flex gap-4 align-right justify-end mx-2">
-              <h3 className="font-semibold">Overtime Hours : {randomNumber - afterConvert} Hours</h3>
-              <h3 className="font-semibold">Days Off : {daysOff} Days</h3>
+              <h3 className="font-semibold">Overtime Hours : {overtimeHours % 8} Hours</h3>
+              <h3 className="font-semibold">Days Off : {calculatedDaysOff} Days</h3>
             </div>
             <div className="flex justify-end mx-2 mb-2">
               <h5 className="text-xs text-red-700">
                 For every 8 hours of overtime, days off increase by 1
               </h5>
             </div>
+
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
               {loading ? (
                 <Loading />
