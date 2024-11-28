@@ -5,40 +5,68 @@ import Slider from "react-slick";
 import ip from "../ip";
 
 function StatusApproval() {
-  // const [slideIndex, setSlideIndex] = useState(0);
+  const [summaryData, setSummaryData] = useState({
+    overtime: 0,
+    cuti: 0,
+    absensi: 0,
+  });
   const [waitingCuti, setWaitingCuti] = useState("");
   const [acceptedCuti, setAcceptedCuti] = useState("");
   const [declinedCuti, setDeclinedCuti] = useState("");
   const [waitingIzin, setWaitingIzin] = useState("");
-  const [acceptedIzin, setaAcceptedIzin] = useState("");
+  const [acceptedIzin, setAcceptedIzin] = useState("");
   const [declinedIzin, setDeclinedIzin] = useState("");
   const [waitingReimburse, setWaitingReimburse] = useState("");
   const [acceptedReimburse, setAcceptedReimburse] = useState("");
   const [declinedReimburse, setDeclinedReimburse] = useState("");
 
   useEffect(() => {
-    const apiCheckIn = `${ip}/api/pengajuan/status/get/self`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
+    // Fetch data for Summary
+    const fetchSummary = async () => {
+      try {
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
+        const response = await axios.get(`${ip}/api/kehadiran/list`, { headers });
+        const data = response.data[0]; // Assuming the first data corresponds to the current user
+        setSummaryData({
+          overtime: data["jatah overtime"] || 0,
+          cuti: data["total hari cuti"] || 0,
+          absensi: data["total absensi"] || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching summary data:", error);
+      }
     };
-    axios
-      .get(apiCheckIn, { headers })
-      .then((response) => {
-        setWaitingCuti(response.data.data.cuti.menunggu);
-        setAcceptedCuti(response.data.data.cuti.diterima);
-        setDeclinedCuti(response.data.data.cuti.ditolak);
-        setWaitingIzin(response.data.data.izin.menunggu);
-        setaAcceptedIzin(response.data.data.izin.diterima);
-        setDeclinedIzin(response.data.data.izin.ditolak);
-        setWaitingReimburse(response.data.data.reimburst.menunggu);
-        setAcceptedReimburse(response.data.data.reimburst.diterima);
-        setDeclinedReimburse(response.data.data.reimburst.ditolak);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error", error);
-      });
-  }, []); // Add an empty dependency array to useEffect to run once
+
+    // Fetch data for Cuti, Izin, Reimburse
+    const fetchApprovalData = async () => {
+      try {
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
+        const response = await axios.get(`${ip}/api/pengajuan/status/get/self`, {
+          headers,
+        });
+        const { cuti, izin, reimburst } = response.data.data;
+
+        setWaitingCuti(cuti.menunggu || 0);
+        setAcceptedCuti(cuti.diterima || 0);
+        setDeclinedCuti(cuti.ditolak || 0);
+        setWaitingIzin(izin.menunggu || 0);
+        setAcceptedIzin(izin.diterima || 0);
+        setDeclinedIzin(izin.ditolak || 0);
+        setWaitingReimburse(reimburst.menunggu || 0);
+        setAcceptedReimburse(reimburst.diterima || 0);
+        setDeclinedReimburse(reimburst.ditolak || 0);
+      } catch (error) {
+        console.error("Error fetching approval data:", error);
+      }
+    };
+
+    fetchSummary();
+    fetchApprovalData();
+  }, []);
 
   const settings = {
     dots: true,
@@ -46,103 +74,119 @@ function StatusApproval() {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    // beforeChange: (current, next) => setSlideIndex(next),
   };
 
   return (
     <div className="flex flex-col w-10/12 mx-auto">
       <Slider {...settings} className="w-full h-full mx-auto">
-        <div className="">
-          <Typography variant="h6" style={{ fontWeight: "400" }}>
+        {/* Summary Slide */}
+        <div>
+          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
+            Summary Kehadiran
+          </Typography>
+          <div className="flex flex-row justify-between items-center my-2">
+            {/* Overtime */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-blue-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Jatah Overtime (Hari)</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
+                {summaryData.overtime}
+              </Typography>
+            </div>
+            {/* Cuti */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-yellow-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Jumlah Hari Cuti</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
+                {summaryData.cuti}
+              </Typography>
+            </div>
+            {/* Absensi */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Total Hari Absensi</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
+                {summaryData.absensi}
+              </Typography>
+            </div>
+          </div>
+        </div>
+
+        {/* Cuti Slide */}
+        <div>
+          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
             Status Approval Cuti
           </Typography>
-
           <div className="flex flex-row justify-between items-center my-2">
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-gray-400 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            {/* Waiting */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Waiting</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {waitingCuti}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-green-500 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            {/* Accepted */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Accepted</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {acceptedCuti}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-red-600 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2" className="text-neutral-200">
-                Declined
-              </Typography>
-              <Typography
-                variant="body1"
-                className="text-neutral-200"
-                style={{ fontWeight: "bold" }}
-              >
+            {/* Declined */}
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Declined</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {declinedCuti}
               </Typography>
             </div>
           </div>
         </div>
-        <div className="">
-          <Typography variant="h6" style={{ fontWeight: "400" }}>
+
+        {/* Izin Slide */}
+        <div>
+          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
             Status Approval Izin
           </Typography>
-
           <div className="flex flex-row justify-between items-center my-2">
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-gray-400 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Waiting</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {waitingIzin}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-green-500 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Accepted</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {acceptedIzin}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-red-600 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2" className="text-neutral-200">
-                Declined
-              </Typography>
-              <Typography
-                variant="body1"
-                className="text-neutral-200"
-                style={{ fontWeight: "bold" }}
-              >
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Declined</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {declinedIzin}
               </Typography>
             </div>
           </div>
         </div>
-        <div className="">
-          <Typography variant="h6" style={{ fontWeight: "400" }}>
+
+        {/* Reimburse Slide */}
+        <div>
+          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
             Status Approval Reimburse
           </Typography>
-
           <div className="flex flex-row justify-between items-center my-2">
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-gray-400 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Waiting</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {waitingReimburse}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-green-500 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
               <Typography variant="body2">Accepted</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {acceptedReimburse}
               </Typography>
             </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 mt-3 lg:mt-0 bg-red-600 w-1/4 h-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2" className="text-neutral-200">
-                Declined
-              </Typography>
-              <Typography
-                variant="body1"
-                className="text-neutral-200"
-                style={{ fontWeight: "bold" }}
-              >
+            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Declined</Typography>
+              <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {declinedReimburse}
               </Typography>
             </div>
