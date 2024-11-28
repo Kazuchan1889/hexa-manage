@@ -328,6 +328,10 @@ const TableAbsen = () => {
   const operation = localStorage.getItem("operation");
   const apiURLAbsenKaryawan = `${ip}/api/absensi/get/data/dated`;
   const apiURLSettingJam = `${ip}/api/absensi/update/seting`;
+  const currentDay = new Date().getDay(); // 0 untuk Minggu, 1 untuk Senin, dst.
+
+  // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
+  const isWeekend = currentDay === 6 || currentDay === 0;
 
   const requestBody1 = {
     date: selectedDate,
@@ -810,9 +814,11 @@ const TableAbsen = () => {
                       <TableCell align="center">
                         <p className="text-white font-semibold">Status</p>
                       </TableCell>
+                      {isWeekend && (
                       <TableCell align="center">
                         <p className="text-white font-semibold">Action</p>
                       </TableCell>
+                      )}
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
@@ -837,6 +843,7 @@ const TableAbsen = () => {
                           >
                             <PatchStatus string={row.status} id={row.id} />
                           </TableCell>
+                          {isWeekend && (
                           <TableCell align="center" className="flex items-center">
                            <ActionButton
                                 onAccept={handleApproval}
@@ -848,6 +855,7 @@ const TableAbsen = () => {
                               ></ActionButton>
                             
                           </TableCell>
+                          )}
                         </TableRow>
                       ))}
                   </TableBody>
