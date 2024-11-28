@@ -3,35 +3,36 @@ import NavbarUser from "../feature/NavbarUser";
 import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
 import axios from "axios";
 import ip from "../ip";
+import LaporanKegiatanDashboard from "../minicomponent/LaporanKegiatanDashboard";
+import CheckinDashboard from "../minicomponent/CheckinDashboard";
+import { Button, IconButton } from "@mui/material";
+import StatusApproval from "./StatusApproval";
+import ProfileUser from "../minicomponent/Profileuser";
 import AnnouncementList from "../minicomponent/ViewAnnounce";
-import ProfileDashboard from "../minicomponent/ProfileDashboard";
-import View from "../minicomponent/viewdata";
-
-const getIdFromToken = () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) return null;
-
-  // Split token untuk mendapatkan payload (bagian kedua dari JWT)
-  const base64Url = token.split('.')[1]; 
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  
-  // Dekode payload
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
-  const payload = JSON.parse(jsonPayload);
-
-  // Ambil id dari payload
-  return payload.id; 
-};
+import Announcment from "../minicomponent/Announcment";
 
 function DashboardUser() {
   const [nama, setNama] = useState("");
   const [dokumen, setDokumen] = useState(null);
+  const [masuk, setMasuk] = useState("");
+  const [keluar, setKeluar] = useState("");
   const [loading, setLoading] = useState(true);
-  const [scheduleItems, setScheduleItems] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [uploading, setUploading] = useState(false);
+  const [loadingAnnouncement, setLoadingAnnouncement] = useState(false);
+
+  const [checkInStatus, setCheckInStatus] = useState(
+    localStorage.getItem("result")
+  );
+  const [chekOut, setCheckOut] = useState(null);
+
+  const [tableData, setTableData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  let cutimandiri = "";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,9 +44,15 @@ function DashboardUser() {
 
         const response = await axios.get(apiUrl, { headers });
         setNama(response.data[0].nama);
-        localStorage.setItem("cutimandiri", response.data[0].cutimandiri);
+        cutimandiri = response.data[0].cutimandiri;
+        localStorage.setItem("cutimandiri", cutimandiri);
         setDokumen(response.data[0].dokumen);
         setLoading(false);
+
+        const localStorageStatus = localStorage.getItem("result");
+        if (localStorageStatus) {
+          setCheckInStatus(localStorageStatus);
+        }
       } catch (error) {
         console.error("Error", error);
         setLoading(false);
@@ -57,7 +64,7 @@ function DashboardUser() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
+      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
     };
 
     window.addEventListener("resize", handleResize);
@@ -66,73 +73,52 @@ function DashboardUser() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  useEffect(() => {
-    const fetchScheduleItems = async () => {
-      try {
-        const id = getIdFromToken("accessToken"); // Ambil id dari accessToken
-        if (!id) {
-          console.error('ID not found in token');
-          return;
-        }
-
-        const response = await axios.get(`${ip}/api/schedjul/scheduler/assigned/karyawan/${id}`, {
-          headers: { Authorization: localStorage.getItem("accessToken") },
-        });
-        setScheduleItems(response.data);
-      } catch (error) {
-        console.error("Error fetching schedule items:", error);
-      }
-    };
-
-    fetchScheduleItems();
-  }, []);
-
-  const formatDate = (dateString) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
-  };
-  
- 
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 overflow-y-auto">
+    <div className="bg-gray-50">
       <NavbarUser />
-      <div className="flex flex-col items-center w-[90%] mx-auto py-5 space-y-5">
-        {/* Bagian atas dengan ProfileDashboard */}
-        <div className="w-full drop-shadow-lg bg-home px-5 lg:px-10 py-10 rounded-md">
-          <ProfileDashboard />
-        </div>
-
-        {/* Bagian tengah dengan ChartDataKehadiranUser dan AnnouncementList */}
-        <div className="flex flex-col lg:flex-row w-full space-y-5 lg:space-y-0 lg:space-x-5">
-          {!isMobile && (
-            <div className="w-full lg:w-[30%] drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-              <ChartDataKehadiranUser />
-            </div>  
-          )}
-          <div className="w-full lg:w-[45%] drop-shadow-lg bg-white p-4 rounded-xl border ">
-            <div className="h-[85%]">
-              <AnnouncementList />
+      <div className="flex h-fit">
+        <div className="h-full w-[90%] flex flex-col justify-center items-center mx-auto">
+          <div className="h-[40rem]lg:h-[17rem] w-full flex flex-col lg:flex-row justify-between items center">
+            <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[50%] h-[17rem] lg:w-[31%]">
+              <ProfileUser />
+            </div>
+            <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md w-[100%] lg:w-[37%] h-[17rem]">
+              <StatusApproval />
+            </div>
+            <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-md w-[100%] lg:w-[30%] h-[17rem]">
+              <CheckinDashboard />
             </div>
           </div>
-          
-          <div className="w-full lg:w-[22%] h-[23rem] lg:mb-4 drop-shadow-lg bg-white p-10 rounded-xl border">
-          <div className="sticky top-0 bg-white p-2 z-10">
-                    <div className="text-xl font-bold">Upcoming Schedule</div>
-                  </div>
-          <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
-                    <ul className="space-y-4 mt-4">
-                      {scheduleItems
-                      .map((item, index) => (
-                       <li key={index} className="border p-4 rounded-lg shadow-sm">
-                       <div className="text-lg font-semibold">{item.judul}</div>
-                       <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
-                       <div className="text-sm text-gray-600">{item.mulai}</div>
-                     </li>
-                      ))}
-                    </ul>
-                  </div>
-           </div>
+          <div className="flex flex-col lg:flex-row justify-between items-center w-full h-fit lg:h-1/2">
+            {!isMobile && (
+              <div className="w-[31%] h-[23rem] lg:m-0 drop-shadow-lg bg-white p-10 rounded-xl border">
+                <div className="flex items-center justify-center mt-5 transform scale-110">
+                  <ChartDataKehadiranUser />
+                </div>
+              </div>
+            )}
+            <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[68%]">
+              <div className="h-[80%] mb-2 overflow-y-auto">
+                {loadingAnnouncement ? (
+                  <Loading /> // Tampilkan loading untuk pengumuman
+                ) : (
+                  <AnnouncementList />
+                )}
+              </div>
+              <div className="h-[20%] flex justify-center items-center">
+                <Button
+                  size="large"
+                  variant="contained"
+                  style={{ backgroundColor: "#1E6D42" }}
+                  onClick={() => setTambahFormOpen(true)}
+                >
+                  Add Announcement
+                </Button>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>
