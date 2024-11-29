@@ -86,22 +86,22 @@ function StatusApproval() {
           </Typography>
           <div className="flex flex-row justify-between items-center my-2">
             {/* Overtime */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-blue-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Jatah Overtime (Hari)</Typography>
+            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-blue-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Overtime Quota</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {summaryData.overtime}
               </Typography>
             </div>
             {/* Cuti */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-yellow-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Jumlah Hari Cuti</Typography>
+            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-yellow-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Available Leave</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {summaryData.cuti}
               </Typography>
             </div>
             {/* Absensi */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Total Hari Absensi</Typography>
+            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
+              <Typography variant="body2">Total Absence</Typography>
               <Typography variant="body1" style={{ fontWeight: "bold" }}>
                 {summaryData.absensi}
               </Typography>
