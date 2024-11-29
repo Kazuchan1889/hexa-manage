@@ -35,7 +35,7 @@ const TableLaporanKegiatan = () => {
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +98,7 @@ const TableLaporanKegiatan = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -225,7 +225,7 @@ const TableLaporanKegiatan = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-72 rounded-lg drop-shadow-lg overflow-y-auto">
+            <div className="rounded-lg drop-shadow-lg overflow-y-auto">
               <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
@@ -280,7 +280,7 @@ const TableLaporanKegiatan = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={filteredLaporan.length}
             rowsPerPage={rowsPerPage}

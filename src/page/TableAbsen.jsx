@@ -315,7 +315,7 @@ const TableAbsen = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
@@ -491,7 +491,7 @@ const TableAbsen = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -541,12 +541,12 @@ const TableAbsen = () => {
     //       Authorization: localStorage.getItem("accessToken"),
     //     },
     //   };
-  
+
     //   const status = 1;
     //   const id = data.id
     //   // const overtime_id = data.id
     //   const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
-  
+
     //   axios
     //     .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
     //     .then((response) => {
@@ -570,7 +570,7 @@ const TableAbsen = () => {
     //     });
     // }
   };
-  
+
   const handleReject = (data) => {
     // if (data) {
     //   const config = {
@@ -579,12 +579,12 @@ const TableAbsen = () => {
     //       Authorization: localStorage.getItem("accessToken"),
     //     },
     //   };
-  
+
     //   const status = false;
     //   console.log(data)
     //   const id = data.id
     //   const apiReject = `${ip}/api/overtime/status/${id}`;
-  
+
     //   axios
     //     .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
     //     .then((response) => {
@@ -610,7 +610,7 @@ const TableAbsen = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
+    <div className="w-full h-screen bg-gray-100 overflow-y-auto">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
@@ -787,7 +787,7 @@ const TableAbsen = () => {
       <div className="flex flex-col justify-between items-center my-2 rounded-xl mx-auto drop-shadow-xl">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+            <div className="max-w-full rounded-lg overflow-y-auto drop-shadow-lg">
               <TableContainer component={Paper} style={{ width: "100%" }}>
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
@@ -818,9 +818,9 @@ const TableAbsen = () => {
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       : rows
                     )
                       .sort((a, b) => a.nama.localeCompare(b.nama))
@@ -838,15 +838,15 @@ const TableAbsen = () => {
                             <PatchStatus string={row.status} id={row.id} />
                           </TableCell>
                           <TableCell align="center" className="flex items-center">
-                           <ActionButton
-                                onAccept={handleApproval}
-                                onReject={handleReject}
-                          
-                                data={row}
-                                tipe={"nonIzin"}
-                                string={"Absen"}
-                              ></ActionButton>
-                            
+                            <ActionButton
+                              onAccept={handleApproval}
+                              onReject={handleReject}
+
+                              data={row}
+                              tipe={"nonIzin"}
+                              string={"Absen"}
+                            ></ActionButton>
+
                           </TableCell>
                         </TableRow>
                       ))}
@@ -860,7 +860,7 @@ const TableAbsen = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}
