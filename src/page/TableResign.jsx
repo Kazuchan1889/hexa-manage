@@ -20,7 +20,7 @@ import { loadingAction } from "../store/store";
 
 const TableResign = () => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
@@ -94,7 +94,7 @@ const TableResign = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -185,7 +185,7 @@ const TableResign = () => {
                 <CircularProgress />
               </div>
             ) : (
-              <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+              <div className="rounded-lg overflow-y-auto drop-shadow-lg">
                 <TableContainer
                   component={Paper}
                   style={{ backgroundColor: "#FFFFFF", width: "100%" }}
@@ -249,7 +249,7 @@ const TableResign = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

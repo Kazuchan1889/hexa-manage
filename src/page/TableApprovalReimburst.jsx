@@ -34,7 +34,7 @@ import ip from "../ip";
 
 const TableApprovalReimburst = () => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
@@ -248,7 +248,7 @@ const TableApprovalReimburst = () => {
   );
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -433,7 +433,7 @@ const TableApprovalReimburst = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
+            <div className="rounded-lg overflow-y-auto drop-shadow-lg">
               <TableContainer
                 component={Paper}
                 style={{ backgroundColor: "#FFFFFF", width: "100%" }}
@@ -794,7 +794,7 @@ const TableApprovalReimburst = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={filteredRows.length}
             rowsPerPage={rowsPerPage}

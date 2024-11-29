@@ -42,7 +42,7 @@ const TablePayroll = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [search, setSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedYear, setSelectedYear] = useState(null);
@@ -158,7 +158,7 @@ const TablePayroll = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -238,7 +238,7 @@ const TablePayroll = () => {
   ];
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
+    <div className="w-full h-screen bg-gray-100 overflow-y-auto">
       <NavbarUser />
       <div className="flex w-full justify-center">
         <div className="flex w-[90%] items-start justify-start my-2">
@@ -348,7 +348,7 @@ const TablePayroll = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-h-96 max-w-full rounded-md overflow-y-auto drop-shadow-lg">
+            <div className="max-w-full rounded-md overflow-y-auto drop-shadow-lg">
               <TableContainer
                 component={Paper}
                 style={{ backgroundColor: "#FFFFFF", width: "100%" }}
@@ -432,7 +432,7 @@ const TablePayroll = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}
