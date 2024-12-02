@@ -94,7 +94,7 @@ export default function SummaryPage({ isAdmin }) {
 
   return (
     <div>
-   
+    <NavbarUser />
       <div className="w-full min-h-screen bg-gray-100 p-5">
         {/* User Profile Section */}
         <div className="bg-white rounded-lg p-6 mb-6 shadow-md flex flex-col md:flex-row justify-between items-center">

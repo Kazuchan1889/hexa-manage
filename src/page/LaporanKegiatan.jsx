@@ -373,15 +373,35 @@ function LaporanKegiatan() {
                   </Grid>
                 )}
               </Grid>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                onClick={handleOpenAddDescriptionModal}
-                style={{ marginTop: "20px" }}
-              >
-                Add Detail
-              </Button>
+              {formData.deskripsi ? (
+                <div
+                  style={{
+                    maxHeight: "150px", // Sesuai dengan 5 baris teks
+                    overflowY: "auto",
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    backgroundColor: "#f9f9f9",
+                    whiteSpace: "pre-wrap", // Menampilkan '\n' sebagai baris baru
+                    wordWrap: "break-word", // Memastikan kata panjang tidak keluar dari area
+                  }}
+                >
+                  {formData.deskripsi}
+                </div>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                  onClick={handleOpenAddDescriptionModal}
+                  style={{ marginTop: "20px" }}
+                >
+                  Add Detail
+                </Button>
+              )}
+
+
+
               <Button
                 type="submit"
                 variant="contained"
@@ -484,7 +504,7 @@ function LaporanKegiatan() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAddDescriptionModal} color="primary">
-            Close
+            Save
           </Button>
         </DialogActions>
       </Dialog>

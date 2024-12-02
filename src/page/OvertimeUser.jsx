@@ -29,6 +29,7 @@ import Formovertime from "../page/Formovertime";
 import dayjs from 'dayjs';
 import Loading from "../page/Loading";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
@@ -55,6 +56,7 @@ const OvertimeUser = () => {
     istirahat: "",
   });
   const apiURLover = `${ip}/api/overtime/list`;
+
 
   const config = {
     headers: {
@@ -261,61 +263,61 @@ const OvertimeUser = () => {
   function getIdFromAccessToken() {
     const token = localStorage.getItem("accessToken");
     if (!token) return null; // Token tidak ditemukan
-    
+
     try {
-        // Token biasanya berupa format JWT (header.payload.signature)
-        const payloadBase64 = token.split('.')[1]; // Bagian payload
-        const decodedPayload = atob(payloadBase64); // Decode dari Base64
-        const payload = JSON.parse(decodedPayload); // Parsing JSON
-        
-        return payload.id || null; // Mengambil ID jika ada
+      // Token biasanya berupa format JWT (header.payload.signature)
+      const payloadBase64 = token.split('.')[1]; // Bagian payload
+      const decodedPayload = atob(payloadBase64); // Decode dari Base64
+      const payload = JSON.parse(decodedPayload); // Parsing JSON
+
+      return payload.id || null; // Mengambil ID jika ada
     } catch (error) {
-        console.error("Invalid token format:", error);
-        return null;
+      console.error("Invalid token format:", error);
+      return null;
     }
-}
-
-const userId = getIdFromAccessToken();
-console.log("User ID:", userId);
-
-
-const fetchOvertimeData = async () => {
-  try {
-    const userId = getIdFromAccessToken(); // Ambil ID dari AccessToken
-    
-    // Konfigurasi Header
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    };
-
-    // Request data ke API dengan config
-    const response = await axios.get(
-      `${ip}/api/kehadiran/list/karyawan/${userId}`,
-      config
-    );
-
-    if (response.data && response.data.length > 0) {
-      const overtimeData = response.data[0]; // Ambil data pertama
-
-      // Total jatah overtime
-      const totalDays = overtimeData["total jatah overtime (hari)"];
-      const totalHours = overtimeData["total jatah overtime (jam)"];
-
-      // Update state atau lakukan perhitungan lainnya
-      setOvertimeHours(totalHours);
-      setCalculatedDaysOff(totalDays);
-    }
-  } catch (error) {
-    console.error("Failed to fetch overtime data:", error);
   }
-};
 
-useEffect(() => {
-fetchOvertimeData();
-}, []);
+  const userId = getIdFromAccessToken();
+  console.log("User ID:", userId);
+
+
+  const fetchOvertimeData = async () => {
+    try {
+      const userId = getIdFromAccessToken(); // Ambil ID dari AccessToken
+
+      // Konfigurasi Header
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      };
+
+      // Request data ke API dengan config
+      const response = await axios.get(
+        `${ip}/api/kehadiran/list/karyawan/${userId}`,
+        config
+      );
+
+      if (response.data && response.data.length > 0) {
+        const overtimeData = response.data[0]; // Ambil data pertama
+
+        // Total jatah overtime
+        const totalDays = overtimeData["total jatah overtime (hari)"];
+        const totalHours = overtimeData["total jatah overtime (jam)"];
+
+        // Update state atau lakukan perhitungan lainnya
+        setOvertimeHours(totalHours);
+        setCalculatedDaysOff(totalDays);
+      }
+    } catch (error) {
+      console.error("Failed to fetch overtime data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOvertimeData();
+  }, []);
 
 
 
@@ -413,7 +415,14 @@ fetchOvertimeData();
 
             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
               {loading ? (
-                <Loading />
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="100%"
+                >
+                  <CircularProgress /> {/* Komponen animasi loading */}
+                </Box>
               ) : (
                 <TableContainer
                   component={Paper}

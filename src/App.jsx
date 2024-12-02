@@ -52,6 +52,7 @@ import Addrole from "./page/Addrole";
 import UserDataManagement from "./minicomponent/UserDataManagement";
 import Tetris from "./page/Tetris";
 import UserSummary from "./page/UserSummary";
+import Testloc from "./page/Testloc";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 
@@ -131,6 +132,7 @@ function App() {
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
           <Route path="/Tetris" element={<Tetris />} />
           <Route path="/UserSummary" element={<UserSummary />} />
+          <Route path="/Geotech" element={<Testloc />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

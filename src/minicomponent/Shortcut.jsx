@@ -27,25 +27,12 @@ function Shortcut() {
                 <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
                     <Link className="text-sm" to="/Form">Request Time Off</Link>
                 </div>
-                <div
-                    className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black cursor-pointer"
-                    onClick={handleOpen}
-                >
-                    <span className="text-sm">Report</span>
+                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
+                    <Link className="text-sm" to="/UserSummary">Summary</Link>
                 </div>
             </div>
 
-            {/* Modal untuk LaporanKegiatanForm */}
-            <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <div className="modal-content">
-                    <LaporanKegiatanForm onClose={handleClose} />
-                </div>
-            </Modal>
+          
         </div>
     );
 }

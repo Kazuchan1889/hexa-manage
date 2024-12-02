@@ -92,7 +92,7 @@ const Formover = ({ onClick, onClose, fetchData }) => {
                         </div>
                         <div className="mb-2">
                             <label htmlFor="startTime" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Dari Jam:</label>
-                            <input type="time" id="mulai" name="mulai" value={formData.mulai} onChange={handleInputChange}
+                            <input type="time" id="mulai" name="mulai"disabled value={formData.time || new Date().toTimeString().slice(0, 5)} onChange={handleInputChange}
                                 className=" w-[36%] rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <span className='mx-2'> sampai </span>
                             <input type="time" id="selesai" name="selesai" value={formData.selesai} onChange={handleInputChange}
