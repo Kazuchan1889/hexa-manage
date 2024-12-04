@@ -33,7 +33,7 @@ import { CircularProgress, Box } from "@mui/material";
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
@@ -186,7 +186,7 @@ const OvertimeUser = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -518,7 +518,7 @@ const OvertimeUser = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={sortedRows.length}
             rowsPerPage={rowsPerPage}
