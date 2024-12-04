@@ -34,7 +34,7 @@ const API_URL = `${ip}/api/role`;
 
 const RoleManage = () => {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
     const [roles, setRoles] = useState([]);
     const [search, setSearch] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
@@ -276,7 +276,7 @@ const RoleManage = () => {
             </div>
             <div className="flex w-full justify-center">
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[15, 25]}
                     component="div"
                     count={roles.length}
                     rowsPerPage={rowsPerPage}
