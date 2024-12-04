@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import Swal from "sweetalert2";
 import "leaflet/dist/leaflet.css";
@@ -15,6 +15,26 @@ const markerIcon = new L.Icon({
 
 const LocationPickerPage = () => {
   const [coordinates, setCoordinates] = useState({ lat: -6.2088, lng: 106.8456 }); // Default: Jakarta
+  const [mapReady, setMapReady] = useState(false);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCoordinates({ lat: latitude, lng: longitude });
+          setMapReady(true);
+        },
+        () => {
+          Swal.fire("Error", "Tidak dapat mengambil lokasi Anda. Menggunakan lokasi default.", "error");
+          setMapReady(true);
+        }
+      );
+    } else {
+      Swal.fire("Error", "Geolokasi tidak didukung di perangkat Anda.", "error");
+      setMapReady(true);
+    }
+  }, []);
 
   const MapClickHandler = () => {
     useMapEvents({
@@ -52,49 +72,62 @@ const LocationPickerPage = () => {
 
   return (
     <div className="p-6">
-        <NavbarUser />
+      <NavbarUser />
       <h2 className="text-2xl font-bold mb-4">Geotech</h2>
-      <div className="mb-4 flex space-x-4">
-        <button
-          onClick={handleUseMyLocation}
-          className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600"
+      <div className="flex flex-wrap lg:flex-nowrap">
+        {/* Peta */}
+        <div
+          className="relative w-full lg:w-3/4"
+          style={{ aspectRatio: "1 / 1" }}
         >
-          Gunakan Lokasi Anda
-        </button>
-        <button
-          onClick={handleSetLocation}
-          className="px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600"
-        >
-          Set Location
-        </button>
-      </div>
-      <div className="flex space-x-4 mb-6">
-        <div className="flex-1 border border-gray-300 p-4 text-center rounded">
-          <strong>Latitude:</strong> {coordinates.lat || "-"}
-        </div>
-        <div className="flex-1 border border-gray-300 p-4 text-center rounded">
-          <strong>Longitude:</strong> {coordinates.lng || "-"}
-        </div>
-      </div>
-      <div
-        className="relative w-full"
-        style={{ aspectRatio: "1 / 1" }} // Membuat peta dengan rasio 1:1
-      >
-        <MapContainer
-          center={[coordinates.lat, coordinates.lng]}
-          zoom={13}
-          style={{ height: "50%", width: "50%" }}
-          className="rounded border border-gray-300"
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-          />
-          <MapClickHandler />
-          {coordinates.lat && coordinates.lng && (
-            <Marker position={[coordinates.lat, coordinates.lng]} icon={markerIcon}></Marker>
+          {mapReady && (
+            <MapContainer
+              center={[coordinates.lat, coordinates.lng]}
+              zoom={13}
+              style={{ height: "50%", width: "100%" }}
+              className="rounded border border-gray-300"
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; OpenStreetMap contributors"
+              />
+              <MapClickHandler />
+              {coordinates.lat && coordinates.lng && (
+                <Marker
+                  position={[coordinates.lat, coordinates.lng]}
+                  icon={markerIcon}
+                ></Marker>
+              )}
+            </MapContainer>
           )}
-        </MapContainer>
+        </div>
+
+        {/* Panel sebelah kanan */}
+        <div className="w-full lg:w-1/4 flex flex-col items-center lg:items-start space-y-4 mt-4 lg:mt-0 lg:ml-4">
+          {/* Tombol */}
+          <div className="space-y-2 w-full">
+            <button
+              onClick={handleUseMyLocation}
+              className="w-full px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600"
+            >
+              Gunakan Lokasi Anda
+            </button>
+            <button
+              onClick={handleSetLocation}
+              className="w-full px-4 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600"
+            >
+              Set Location
+            </button>
+          </div>
+
+          {/* Latitude dan Longitude */}
+          <div className="w-full border border-gray-300 p-4 rounded text-center">
+            <strong>Latitude:</strong> {coordinates.lat || "-"}
+          </div>
+          <div className="w-full border border-gray-300 p-4 rounded text-center">
+            <strong>Longitude:</strong> {coordinates.lng || "-"}
+          </div>
+        </div>
       </div>
     </div>
   );
