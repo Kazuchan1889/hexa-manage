@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OvertimeIcon from "@mui/icons-material/Schedule";
 import TimeOffIcon from "@mui/icons-material/FreeBreakfast";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const SettingsDropdown = ({ handleLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -513,6 +514,11 @@ const NavbarUser = () => {
               <div className="text-black">
                 <SettingsDropdown handleLogout={handleLogout} />
               </div>
+              {isUserAdmin === "admin" ? (
+                <div className="text-black flex items-center justify-center">
+                  <NotificationsIcon />
+                </div>
+              ) : null}
               <div className="text-black flex items-center justify-center"></div>
             </div>
           )}

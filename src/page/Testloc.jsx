@@ -108,18 +108,18 @@ const LocationPickerPage = () => {
   return (
     <div className="p-6 ">
       <NavbarUser />
-      <h2 className="text-2xl font-bold mb-4">Geotech</h2>
-      <div className="flex flex-wrap lg:flex-nowrap">
+      <h2 className="text-2xl font-bold mx-2 mb-4">Geotech</h2>
+      <div className="flex overflow-hidden">
         {/* Peta */}
         <div
-          className="relative w-full lg:w-3/4"
-          style={{ aspectRatio: "1 / 1" }}
+          className="relative w-full h-1/2 lg:w-3/4 h-1/2"
+          style={{ aspectRatio: "1 / 0.5" }}
         >
           {mapReady && (
             <MapContainer
               center={[coordinates.lat, coordinates.lng]}
               zoom={13}
-              style={{ height: "50%", width: "100%" }}
+              style={{ height: "100%", width: "100%" }}
               className="rounded border border-gray-300"
             >
               <TileLayer
