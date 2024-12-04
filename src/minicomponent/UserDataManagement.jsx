@@ -38,7 +38,7 @@ const UserDataManagement = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [selectedData, setSelectedData] = useState(null);
   const [selectedRowIndex] = useState(null);
   const [isEditOpen, setEditOpen] = useState(false);
