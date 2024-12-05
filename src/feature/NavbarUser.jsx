@@ -304,33 +304,37 @@ const NavbarUser = () => {
   };
 
   useEffect(() => {
-    const fetchAbsensiList = async () => {
-      try {
-        const headers = {
-          Authorization: localStorage.getItem("accessToken"),
-        };
+      const fetchAbsensiList = async () => {
+        try {
+          const headers = {
+            Authorization: localStorage.getItem("accessToken"),
+          };
+  
+          console.log("Fetching absensi list with headers:", headers);
+  
+          const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+          console.log("Response from absensi list:", response.data);
+  
+          setAbsensiList(response.data); // Menyimpan data absensi ke state
+  
+          // Memfilter data dengan status selain "approve"
+          const filteredData = response.data.filter(item => item.status !== true);
 
-        console.log("Fetching absensi list with headers:", headers);
-
-        const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
-        console.log("Response from absensi list:", response.data);
-
-        setAbsensiList(response.data); // Menyimpan data absensi ke state
-
-        // Menghitung jumlah nama unik
-        const uniqueNames = new Set(response.data.map((item) => item.nama));
-        console.log("Unique nama count:", uniqueNames.size);
-
-        setUniqueIdkCount(uniqueNames.size); // Simpan jumlah nama unik ke state
-      } catch (error) {
-        console.error("Error fetching absensi:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAbsensiList();
-  }, [ip]);
+          // Menghitung jumlah nama unik dari data yang sudah difilter
+          const uniqueNames = new Set(filteredData.map((item) => item.nama));
+          console.log("Unique nama count (excluding approve):", uniqueNames.size);
+  
+          setUniqueIdkCount(uniqueNames.size); // Simpan jumlah nama unik ke state
+        } catch (error) {
+          console.error("Error fetching absensi:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchAbsensiList();
+    }, [ip]);
+  
 
   // Navigasi ke halaman /aptes ketika tombol diklik
   const handleClick = () => {
