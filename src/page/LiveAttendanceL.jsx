@@ -9,10 +9,21 @@ import ip from "../ip";  // Assuming this file contains your API endpoint
 function LiveAttendance() {
     const [serverTime, setServerTime] = useState("");
     const [date, setDate] = useState("");  // state to store formatted date
+    const [responseMessage, setResponseMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [absensiList, setAbsensiList] = useState([]);
+    const [isRequested, setIsRequested] = useState(false); // Track if the user has already requested
     const videoRef = useRef(null);
-    const navigate = useNavigate(); // Untuk redirect ke halaman Home
-  const [responseMessage, setResponseMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const extractUserIdFromToken = (token) => {
+        if (!token) return null;
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decoded = JSON.parse(atob(base64));
+        console.log("Extracted user ID from token:", decoded.id); // Console log the extracted ID
+        return decoded.id; // Assuming the user ID is stored in the 'id' field of the token
+    };
 
     // Fetch current time every second
     useEffect(() => {
@@ -59,7 +70,7 @@ function LiveAttendance() {
 
     const handleRequestAbsen = async () => {
         // Retrieve user data from localStorage or context
-        
+
         // Set headers with Authorization token from localStorage
         const headers = {
             Authorization: localStorage.getItem("accessToken"),
@@ -67,7 +78,7 @@ function LiveAttendance() {
 
         try {
             const response = await axios.post(
-                `${ip}/api/weekendabsensi/post/self`, 
+                `${ip}/api/weekendabsensi/post/self`,
                 { date: date },  // Send the date state
                 { headers }  // Include headers in the request
             );
@@ -94,39 +105,64 @@ function LiveAttendance() {
         const today = new Date();
         const formattedDate = today.toISOString().split("T")[0]; // Format menjadi yyyy-mm-dd
         setDate(formattedDate);
-      }, []);
-    
-      const handleRequest = async () => {
+    }, []);
+
+    const handleRequest = async () => {
         const headers = {
-          Authorization: localStorage.getItem("accessToken"), // Menambahkan header otorisasi
+            Authorization: localStorage.getItem("accessToken"), // Menambahkan header otorisasi
         };
-    
+
         try {
-          setLoading(true);
-          const response = await axios.post(
-            `${ip}/api/weekendabsensi/post/self`,
-            { date: date },
-            { headers: headers } // Mengirimkan headers bersama permintaan
-          );
-    
-          if (response.status === 200) {
+            setLoading(true);
+            const response = await axios.post(
+                `${ip}/api/weekendabsensi/post/self`,
+                { date: date },
+                { headers: headers } // Mengirimkan headers bersama permintaan
+            );
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Request Has Successfully Sent!",
+                    text: "You will be redirected to the Home page.",
+                }).then(() => {
+                    navigate("/Dashboard"); // Arahkan user ke halaman Home
+                });
+            }
+        } catch (error) {
+            console.error("Error sending request", error);
             Swal.fire({
-                icon: "success",
-                title: "Request Has Successfully Sent!",
-                text: "You will be redirected to the Home page.",
-            }).then(() => {
-                navigate("/Dashboard"); // Arahkan user ke halaman Home
+                icon: "error",
+                title: "Oops...",
+                text: "There was an error with the request.",
             });
         }
-    } catch (error) {
-        console.error("Error sending request", error);
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "There was an error with the request.",
-        });
-    }
-      };
+    };
+
+    const fetchAbsensiList = async () => {
+        try {
+            const headers = {
+                Authorization: localStorage.getItem("accessToken"),
+            };
+            const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+            setAbsensiList(response.data);
+
+            // Extract user ID from the accessToken
+            const accessToken = localStorage.getItem("accessToken");
+            const userId = extractUserIdFromToken(accessToken); // Get user ID from the token
+            console.log("User ID from accessToken:", userId); // Log the user ID to the console
+
+            // Check if the user has already requested attendance
+            const userRequest = response.data.find((item) => item.idk === userId);
+            setIsRequested(userRequest ? true : false); // If the user exists in the list, set to true
+        } catch (error) {
+            console.error("Error fetching absensi:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchAbsensiList();
+
 
     return (
         <div className="w-full h-full" style={{ backgroundColor: "#F0F0F0" }}>
@@ -157,9 +193,10 @@ function LiveAttendance() {
                 <div className="flex flex-col items-center">
                     <Button
                         variant="contained"
-                        color="primary"
+                        color={isRequested ? "grey" : "primary"} // Change color based on request status
                         size="large"
-                        onClick={handleRequest}
+                        onClick={handleRequestAbsen}
+                        disabled={isRequested} // Disable the button if already requested
                         style={{ width: "80%" }}
                     >
                         Request Absen

@@ -35,12 +35,17 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OvertimeIcon from "@mui/icons-material/Schedule";
 import TimeOffIcon from "@mui/icons-material/FreeBreakfast";
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import ip from "../ip";
+
+import axios from 'axios';
+
 
 const SettingsDropdown = ({ handleLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const anchorRef = useRef(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
 
   // Untuk membuka dropdown setting
   const handleToggle = () => {
@@ -144,9 +149,14 @@ const NavbarUser = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const isUserAdmin = localStorage.getItem("role");
   const navigate = useNavigate();
+  const [uniqueIdkCount, setUniqueIdkCount] = useState(0);
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
+
+  const [absensiList, setAbsensiList] = useState([]); // Menyimpan data absensi
+  const [loading, setLoading] = useState(true); // Status loading
+  
 
   // Untuk membuat responsive
   useEffect(() => {
@@ -292,6 +302,42 @@ const NavbarUser = () => {
     localStorage.removeItem("accessToken");
     navigate("/");
   };
+
+  useEffect(() => {
+    const fetchAbsensiList = async () => {
+      try {
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
+
+        console.log("Fetching absensi list with headers:", headers);
+
+        const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+        console.log("Response from absensi list:", response.data);
+
+        setAbsensiList(response.data); // Menyimpan data absensi ke state
+
+        // Menghitung jumlah nama unik
+        const uniqueNames = new Set(response.data.map((item) => item.nama));
+        console.log("Unique nama count:", uniqueNames.size);
+
+        setUniqueIdkCount(uniqueNames.size); // Simpan jumlah nama unik ke state
+      } catch (error) {
+        console.error("Error fetching absensi:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAbsensiList();
+  }, [ip]);
+
+  // Navigasi ke halaman /aptes ketika tombol diklik
+  const handleClick = () => {
+    navigate("/aptes");
+  };
+
+  console.log("Total unique nama count:", uniqueIdkCount); 
 
   return (
     <div className="flex justify-between items-center w-full bg-accent">
@@ -515,9 +561,15 @@ const NavbarUser = () => {
                 <SettingsDropdown handleLogout={handleLogout} />
               </div>
               {isUserAdmin === "admin" ? (
-                <div className="text-black flex items-center justify-center">
-                  <NotificationsIcon />
-                </div>
+                 <button className="text-black flex items-center justify-center" onClick={handleClick}>
+                 <NotificationsIcon />
+                 {/* Indikator merah */}
+                 {uniqueIdkCount > 0 && (
+                   <span className="absolute top-3 right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                     {uniqueIdkCount}
+                   </span>
+                 )}
+               </button>
               ) : null}
               <div className="text-black flex items-center justify-center"></div>
             </div>

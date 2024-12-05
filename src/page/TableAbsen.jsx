@@ -529,7 +529,7 @@ const TableAbsen = () => {
         // else {
 
         // }
-      })
+      })  
       .catch((error) => {
         if (error.message.includes("400")) alert("Tidak Ada Data");
         console.error("Error downloading Excel file:", error);

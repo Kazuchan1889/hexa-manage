@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ip from "../ip";
+import NavbarUser from "../feature/NavbarUser";
 
 const AbsensiPage = () => {
   const [absensiList, setAbsensiList] = useState([]);
@@ -50,6 +51,7 @@ const AbsensiPage = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <NavbarUser />
       <h1 className="text-2xl font-bold mb-4">Absensi Weekend</h1>
 
       {loading ? (
