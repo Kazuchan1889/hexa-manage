@@ -8,12 +8,10 @@ const AbsensiPage = () => {
   const [loading, setLoading] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Menambahkan headers dengan Authorization dari localStorage
   const headers = {
     Authorization: localStorage.getItem("accessToken"),
   };
 
-  // Fetch list of weekend absensi
   useEffect(() => {
     const fetchAbsensiList = async () => {
       try {
@@ -28,7 +26,6 @@ const AbsensiPage = () => {
     fetchAbsensiList();
   }, []);
 
-  // Handle approve or reject action
   const handleApproval = async (id, status) => {
     try {
       await axios.patch(`${ip}/api/weekendabsensi/patch/list/${id}`, { status }, { headers });
@@ -48,6 +45,19 @@ const AbsensiPage = () => {
       setAbsensiList((prevList) => prevList.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error deleting absensi:", error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Bulan dimulai dari 0
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateString;
     }
   };
 
@@ -74,7 +84,6 @@ const AbsensiPage = () => {
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">Nama</th>
-              <th className="px-4 py-2 border">Username</th>
               <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Tanggal</th>
             </tr>
@@ -83,9 +92,8 @@ const AbsensiPage = () => {
             {approvedAbsensi.map((item) => (
               <tr key={item.id} className="border-b">
                 <td className="px-4 py-2">{item.nama}</td>
-                <td className="px-4 py-2">{item.username}</td>
                 <td className="px-4 py-2">{item.email}</td>
-                <td className="px-4 py-2">{item.date}</td>
+                <td className="px-4 py-2">{formatDate(item.date)}</td>
               </tr>
             ))}
           </tbody>
@@ -95,7 +103,6 @@ const AbsensiPage = () => {
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">Nama</th>
-              <th className="px-4 py-2 border">Username</th>
               <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Tanggal</th>
               <th className="px-4 py-2 border">Status</th>
@@ -106,9 +113,8 @@ const AbsensiPage = () => {
             {pendingAbsensi.map((item) => (
               <tr key={item.id} className="border-b">
                 <td className="px-4 py-2">{item.nama}</td>
-                <td className="px-4 py-2">{item.username}</td>
                 <td className="px-4 py-2">{item.email}</td>
-                <td className="px-4 py-2">{item.date}</td>
+                <td className="px-4 py-2">{formatDate(item.date)}</td>
                 <td className="px-4 py-2">{item.status ? "Approved" : "Pending"}</td>
                 <td className="px-4 py-2 flex space-x-2">
                   <button

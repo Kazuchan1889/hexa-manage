@@ -263,6 +263,9 @@ const NavbarUser = () => {
     checkOp("READ_PAYROLL")
       ? { label: "Payroll", active: false, to: "/masterpayroll" }
       : null,
+      checkOp("READ_PAYROLL")
+      ? { label: "Geotech", active: false, to: "/geotech" }
+      : null,
     // checkOp("READ_KARYAWAN")
     // ? { label: "Asset", active: false, to: "/Asset" }
     // : null,
