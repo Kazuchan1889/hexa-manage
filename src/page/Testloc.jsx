@@ -27,22 +27,25 @@ const LocationPickerPage = () => {
 
   useEffect(() => {
     // Fetch locations from backend on component mount
-    axios
-      .get(`${ip}/api/geolocation/get/kantor/all`, {
+    fetchAllLocations();
+  }, []);
+
+  // Fetch all locations from backend
+  const fetchAllLocations = async () => {
+    try {
+      const response = await axios.get(`${ip}/api/geolocation/get/kantor/all`, {
         headers: {
           Authorization: localStorage.getItem("accessToken"),  // Assuming the token is in localStorage
         },
-      })
-      .then((response) => {
-        setLocations(response.data);
-        setMapReady(true);
-      })
-      .catch((error) => {
-        console.error("Error fetching locations", error);
-        Swal.fire("Error", "Failed to fetch locations from backend.", "error");
-        setMapReady(true);
       });
-  }, []);
+      setLocations(response.data);
+      setMapReady(true);
+    } catch (error) {
+      console.error("Error fetching locations", error);
+      Swal.fire("Error", "Failed to fetch locations from backend.", "error");
+      setMapReady(true);
+    }
+  };
 
   const MapClickHandler = () => {
     useMapEvents({
@@ -105,6 +108,31 @@ const LocationPickerPage = () => {
         });
     } else {
       Swal.fire("Error", "Silakan lengkapi data lokasi dan pilih lokasi di peta.", "error");
+    }
+  };
+
+  const deleteLocation = async (id) => {
+    try {
+      const response = await fetch(`${ip}/api/geolocation/delete/kantor/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),  // Use token for authentication
+        },
+      });
+
+      if (response.ok) {
+        Swal.fire("Berhasil", "Lokasi berhasil dihapus.", "success");
+        // Refresh the locations list after deletion
+        fetchAllLocations();
+      } else {
+        // Log status code for debugging
+        const errorMessage = await response.text(); // Get the error message from the response
+        console.error(`Failed to delete location. Status: ${response.status}, Message: ${errorMessage}`);
+        Swal.fire("Error", "Gagal menghapus lokasi.", "error");
+      }
+    } catch (error) {
+      console.error("Error deleting location:", error);
+      Swal.fire("Error", "Terjadi kesalahan saat menghapus lokasi.", "error");
     }
   };
 
@@ -195,6 +223,12 @@ const LocationPickerPage = () => {
                     <td className="px-4 py-2 border">{location.lokasi}</td>
                     <td className="px-4 py-2 border">{location.latitude}</td>
                     <td className="px-4 py-2 border">{location.longitude}</td>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded"
+                      onClick={() => deleteLocation(location.id)}
+                    >
+                      Hapus
+                    </button>
                   </tr>
                 ))}
               </tbody>
@@ -207,3 +241,4 @@ const LocationPickerPage = () => {
 };
 
 export default LocationPickerPage;
+  
