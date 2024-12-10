@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import NavbarUser from "../feature/NavbarUser";
+import axios from "axios";
+import ip from "../ip";  // Import the IP configuration
 
 // Ikon untuk marker
 const markerIcon = new L.Icon({
@@ -13,22 +15,10 @@ const markerIcon = new L.Icon({
   popupAnchor: [1, -34],
 });
 
-// Data dummy untuk lokasi
-const initialLocations = [
-  { id: 1, name: "Lokasi 1", lat: -6.2088, lng: 106.8456 },
-  { id: 2, name: "Lokasi 2", lat: -6.2200, lng: 106.8500 },
-  { id: 3, name: "Lokasi 3", lat: -6.2100, lng: 106.8600 },
-  { id: 4, name: "Lokasi 4", lat: -6.2150, lng: 106.8550 },
-  { id: 5, name: "Lokasi 5", lat: -6.2050, lng: 106.8450 },
-  { id: 6, name: "Lokasi 6", lat: -6.2300, lng: 106.8400 },
-  { id: 7, name: "Lokasi 7", lat: -6.2400, lng: 106.8300 },
-  { id: 8, name: "Lokasi 8", lat: -6.2500, lng: 106.8200 },
-];
-
 const LocationPickerPage = () => {
   const [coordinates, setCoordinates] = useState({ lat: -6.2088, lng: 106.8456 }); // Default: Jakarta
   const [mapReady, setMapReady] = useState(false);
-  const [locations, setLocations] = useState(initialLocations);
+  const [locations, setLocations] = useState([]);
   const [newLocation, setNewLocation] = useState({
     name: "",
     lat: "",
@@ -36,22 +26,22 @@ const LocationPickerPage = () => {
   });
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCoordinates({ lat: latitude, lng: longitude });
-          setMapReady(true);
+    // Fetch locations from backend on component mount
+    axios
+      .get(`${ip}/api/geolocation/get/kantor/all`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),  // Assuming the token is in localStorage
         },
-        () => {
-          Swal.fire("Error", "Tidak dapat mengambil lokasi Anda. Menggunakan lokasi default.", "error");
-          setMapReady(true);
-        }
-      );
-    } else {
-      Swal.fire("Error", "Geolokasi tidak didukung di perangkat Anda.", "error");
-      setMapReady(true);
-    }
+      })
+      .then((response) => {
+        setLocations(response.data);
+        setMapReady(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching locations", error);
+        Swal.fire("Error", "Failed to fetch locations from backend.", "error");
+        setMapReady(true);
+      });
   }, []);
 
   const MapClickHandler = () => {
@@ -90,31 +80,41 @@ const LocationPickerPage = () => {
 
   const handleAddLocation = () => {
     if (newLocation.name && coordinates.lat && coordinates.lng) {
-      const newId = locations.length ? locations[locations.length - 1].id + 1 : 1;
-      const newLocationData = {
-        id: newId,
-        name: newLocation.name,
-        lat: coordinates.lat, // Menggunakan koordinat dari peta atau lokasi pengguna
-        lng: coordinates.lng, // Menggunakan koordinat dari peta atau lokasi pengguna
-      };
-      setLocations([...locations, newLocationData]);
-      setNewLocation({ name: "", lat: "", lng: "" }); // Reset form setelah penambahan
-      Swal.fire("Berhasil", "Lokasi berhasil ditambahkan.", "success");
+      // Add the new location to the backend
+      axios
+        .post(
+          `${ip}/api/geolocation/post/kantor`,
+          {
+            longitude: coordinates.lng,
+            latitude: coordinates.lat,
+            lokasi: newLocation.name,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("accessToken"),  // Use token for authentication
+            },
+          }
+        )
+        .then((response) => {
+          setLocations([...locations, response.data[0]]);
+          setNewLocation({ name: "", lat: "", lng: "" }); // Reset form after adding
+          Swal.fire("Berhasil", "Lokasi berhasil ditambahkan.", "success");
+        })
+        .catch((error) => {
+          Swal.fire("Error", "Gagal menambahkan lokasi.", "error");
+        });
     } else {
       Swal.fire("Error", "Silakan lengkapi data lokasi dan pilih lokasi di peta.", "error");
     }
   };
 
   return (
-    <div className="p-6 ">
+    <div className="p-6">
       <NavbarUser />
       <h2 className="text-2xl font-bold mx-2 mb-4">Geotech</h2>
       <div className="flex overflow-hidden">
         {/* Peta */}
-        <div
-          className="relative w-full h-1/2 lg:w-3/4 h-1/2"
-          style={{ aspectRatio: "1 / 0.5" }}
-        >
+        <div className="relative w-full h-1/2 lg:w-3/4 h-1/2" style={{ aspectRatio: "1 / 0.5" }}>
           {mapReady && (
             <MapContainer
               center={[coordinates.lat, coordinates.lng]}
@@ -128,10 +128,7 @@ const LocationPickerPage = () => {
               />
               <MapClickHandler />
               {coordinates.lat && coordinates.lng && (
-                <Marker
-                  position={[coordinates.lat, coordinates.lng]}
-                  icon={markerIcon}
-                ></Marker>
+                <Marker position={[coordinates.lat, coordinates.lng]} icon={markerIcon}></Marker>
               )}
             </MapContainer>
           )}
@@ -195,9 +192,9 @@ const LocationPickerPage = () => {
               <tbody>
                 {locations.map((location) => (
                   <tr key={location.id}>
-                    <td className="px-4 py-2 border">{location.name}</td>
-                    <td className="px-4 py-2 border">{location.lat.toFixed(3)}</td>
-                    <td className="px-4 py-2 border">{location.lng.toFixed(3)}</td>
+                    <td className="px-4 py-2 border">{location.lokasi}</td>
+                    <td className="px-4 py-2 border">{location.latitude}</td>
+                    <td className="px-4 py-2 border">{location.longitude}</td>
                   </tr>
                 ))}
               </tbody>
