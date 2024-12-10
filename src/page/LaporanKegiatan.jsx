@@ -260,7 +260,7 @@ function LaporanKegiatan() {
       <NavbarUser />
       <div className="flex h-fit w-screen h-screen flex-col items-center gap-6 p-4">
         {/* Form Section */}
-        <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md ">
+        <div className="w-[90%] bg-gray-100 p-6 rounded-lg shadow-md ">
           <Typography variant="h5" align="center" gutterBottom>
             Activity Report
           </Typography>
@@ -416,7 +416,7 @@ function LaporanKegiatan() {
         </div>
 
         {/* Table Section */}
-        <div className="w-full md:w-3/4 bg-gray-100 p-6 rounded-lg shadow-md h-96 overflow-y-auto">
+        <div className="w-[90%] bg-gray-100 p-6 rounded-lg shadow-md h-96 overflow-y-auto">
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>

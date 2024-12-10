@@ -82,7 +82,7 @@ function StatusApproval() {
         {/* Summary Slide */}
         <div>
           <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Summary Kehadiran
+            Attendance Summary
           </Typography>
           <div className="flex flex-row justify-between items-center my-2">
             {/* Overtime */}
@@ -112,7 +112,7 @@ function StatusApproval() {
         {/* Cuti Slide */}
         <div>
           <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Status Approval Cuti
+            Leave Approval Status
           </Typography>
           <div className="flex flex-row justify-between items-center my-2">
             {/* Waiting */}
@@ -142,7 +142,7 @@ function StatusApproval() {
         {/* Izin Slide */}
         <div>
           <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Status Approval Izin
+            Permit Approval Status
           </Typography>
           <div className="flex flex-row justify-between items-center my-2">
             <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
@@ -169,7 +169,7 @@ function StatusApproval() {
         {/* Reimburse Slide */}
         <div>
           <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Status Approval Reimburse
+            Reimbursement Approval Status
           </Typography>
           <div className="flex flex-row justify-between items-center my-2">
             <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">

@@ -23,7 +23,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
       title: title,
       description: description,
       tanggal_upload: formatDate,
-      attachment: ''  
+      attachment: ''
     };
 
     if (attachment) {
@@ -59,7 +59,7 @@ const Announcement = ({ onClick, onClose, fetchData }) => {
       setTitle('');
       setDescription('');
       setAttachment(null);
-      
+
       Swal.fire({
         icon: "success",
         title: "Success",
