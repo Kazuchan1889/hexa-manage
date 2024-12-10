@@ -20,7 +20,7 @@ function DashboardUser() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [uploading, setUploading] = useState(false);
   const [loadingAnnouncement, setLoadingAnnouncement] = useState(false);
-
+  const isUserAdmin = localStorage.getItem("role");
   const [checkInStatus, setCheckInStatus] = useState(
     localStorage.getItem("result")
   );
@@ -106,16 +106,20 @@ function DashboardUser() {
                   <AnnouncementList />
                 )}
               </div>
-              <div className="h-[20%] flex justify-center items-center">
-                <Button
-                  size="large"
-                  variant="contained"
-                  style={{ backgroundColor: "#1E6D42" }}
-                  onClick={() => setTambahFormOpen(true)}
-                >
-                  Add Announcement
-                </Button>
-              </div>
+              {isUserAdmin === "admin" && (
+                <>
+                  <div className="h-[20%] flex justify-center items-center">
+                    <Button
+                      size="large"
+                      variant="contained"
+                      style={{ backgroundColor: "#1E6D42" }}
+                      onClick={() => setTambahFormOpen(true)}
+                    >
+                      Add Announcement
+                    </Button>
+                  </div>
+                </>
+              )}
 
             </div>
           </div>
