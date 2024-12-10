@@ -287,18 +287,7 @@ function LiveAttendance() {
                     <video ref={videoRef} className="w-full max-w-sm rounded-md" />
                 </div>
                 <div className="flex flex-col items-center">
-                    {checkInStatus !== "udahMasuk" ? (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            onClick={handleCheckIn}
-                            style={{ width: "80%" }}
-                            disabled={isUserCheckin || isLoading} // Disable button if already checked in
-                        >
-                            Check In
-                        </Button>
-                    ) : checkInStatus === "udahMasuk" && checkInStatus !== "udahKeluar" ? (
+                    {checkInStatus === "udahMasuk" && !isUserCheckout ? (
                         <Button
                             variant="contained"
                             color="secondary"
@@ -309,13 +298,24 @@ function LiveAttendance() {
                         >
                             Check Out
                         </Button>
+                    ) : checkInStatus === "udahKeluar" || (isUserCheckin && isUserCheckout) ? (
+                        <span style={{ color: "red", fontSize: "1.2rem" }}>
+                            Kamu sudah absen hari ini!
+                        </span>
                     ) : (
-                        <CheckCircleRoundedIcon
-                            color="success"
-                            style={{ fontSize: "4rem" }}
-                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            onClick={handleCheckIn}
+                            style={{ width: "80%" }}
+                            disabled={isUserCheckin || isLoading} // Disable button if already checked in
+                        >
+                            Check In
+                        </Button>
                     )}
                 </div>
+
             </div>
         </div>
     );
