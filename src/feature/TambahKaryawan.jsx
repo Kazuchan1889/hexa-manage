@@ -21,7 +21,9 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import ip from "../ip";
 import OperationSelection from "./OperationSelection";
-const API_URL = `${ip}/api/role`;  
+import Autocomplete from '@mui/material/Autocomplete';
+
+const API_URL = `${ip}/api/role`;
 const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   const [chosenArray, setChosenArray] = useState([]);
   // const [searchValue, setSearchValue] = useState("");
@@ -31,6 +33,8 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   // const [choiceArray, setChoiceArray] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
@@ -42,6 +46,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     status: "",
     salary: 0,
     divisi: "",
+    lokasi: "",
   });
 
   const formatSalary = (salary) => {
@@ -219,27 +224,58 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     }
   };
 
- 
-    
 
-    useEffect(() => {
-        fetchRoles();
-    }, []);
 
-    const fetchRoles = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/list`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: localStorage.getItem("accessToken") || "",
-                },
-            });
-            setRoles(response.data || []);
-        } catch (error) {
-            console.error("Error fetching roles:", error);
-        }
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/list`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken") || "",
+        },
+      });
+      setRoles(response.data || []);
+    } catch (error) {
+      console.error("Error fetching roles:", error);
     }
     
+  }
+  const fetchLocations = async () => {
+    try {
+      const response = await axios.get(`${ip}/api/geolocation/get/kantor/all`, {
+        headers: {
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      });
+
+      // Assume response.data contains the locations array
+      const lokasiList = response.data.map((location) => location.lokasi); // Extract 'lokasi' field
+      setLocations(lokasiList);
+    } catch (error) {
+      console.error("Failed to fetch locations:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchLocations();
+  
+
+  const handleChange = (event, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      lokasikerja: value, // Update selected value
+    }));
+  };
+
+  
+
+
 
   return (
     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -312,7 +348,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   onChange={handleInputChange}
                 />
               </div>
-              
+
               <div className="flex text-left space-x-4 mb-5">
                 <TextField
                   label="Level"
@@ -328,23 +364,38 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                   <MenuItem value="Senior">Senior</MenuItem>
                   <MenuItem value="Staff">Staff</MenuItem>
                 </TextField>
+                <Autocomplete
+                  options={locations}
+                  loading={loading}
+                  value={formData.lokasikerja}
+                  fullWidth
+                  onChange={handleChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Lokasi Kerja"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
+                />
               </div>
               <div className="flex text-left ">
-              <TextField
-            label="Role"
-            variant="outlined"
-            select
-            fullWidth
-            name="role"
-            value={formData.role}
-            onChange={handleInputChange}
-        >
-            {roles.map((role) => (
-                <MenuItem key={role.id} value={role.role}>
-                    {role.role}
-                </MenuItem>
-            ))}
-        </TextField>
+                <TextField
+                  label="Role"
+                  variant="outlined"
+                  select
+                  fullWidth
+                  name="role"
+                  value={formData.role}
+                  onChange={handleInputChange}
+                >
+                  {roles.map((role) => (
+                    <MenuItem key={role.id} value={role.role}>
+                      {role.role}
+                    </MenuItem>
+                  ))}
+                </TextField>
                 <TextField
                   label="Status"
                   variant="outlined"
@@ -371,7 +422,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
                 />
 
               </div>
-              
+
               <div className="sticky bottom-0 flex justify-end bg-white mt-4">
                 <Button
                   variant="contained"

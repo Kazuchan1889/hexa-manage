@@ -278,14 +278,19 @@ const TableDataKaryawan = () => {
                           Name
                         </p>
                       </TableCell>
-                      <TableCell align="center" className="w-[15%]">
+                      {/* <TableCell align="center" className="w-[15%]">
                         <p className="text-white font-semibold sticky top-0">
                           Position
+                        </p>
+                      </TableCell> */}
+                      <TableCell align="center" className="w-[20%]">
+                        <p className="text-white font-semibold sticky top-0">
+                          Division
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
-                          Division
+                          lokasi
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[5%]">
@@ -324,11 +329,14 @@ const TableDataKaryawan = () => {
                             <TableCell align="center" style={{ width: "20%" }}>
                               {row.nama}
                             </TableCell>
-                            <TableCell align="center" style={{ width: "10%" }}>
+                            {/* <TableCell align="center" style={{ width: "10%" }}>
                               {row.jabatan}
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="center" style={{ width: "10%" }}>
                               {row.divisi}
+                            </TableCell>
+                            <TableCell align="center" style={{ width: "10%" }}>
+                              {row.lokasikerja}
                             </TableCell>
                             <TableCell align="center" style={{ width: "10%" }}>
                               {row.level}
