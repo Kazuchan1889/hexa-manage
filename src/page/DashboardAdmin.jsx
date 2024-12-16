@@ -259,14 +259,21 @@ function DashboardAdmin() {
                       <Loading /> // Tampilkan loading saat fetching jadwal
                     ) : (
                       <ul className="space-y-4 mt-4">
-                        {scheduleItems.map((item, index) => (
+                      {scheduleItems
+                        .filter(item => {
+                          const scheduleDate = new Date(item.tanggal_mulai);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0); // Mengatur waktu ke awal hari
+                          return scheduleDate >= today; // Tampilkan jika jadwal >= hari ini
+                        })
+                        .map((item, index) => (
                           <li key={index} className="border p-4 rounded-lg shadow-sm">
                             <div className="text-lg font-semibold">{item.judul}</div>
                             <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
                             <div className="text-sm text-gray-600">{item.mulai}</div>
                           </li>
                         ))}
-                      </ul>
+                    </ul>
                     )}
                   </div>
                 </div>
