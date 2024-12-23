@@ -105,36 +105,43 @@ const AnnouncementList = () => {
         <h1 className="text-xl font-bold mb-4">Assignment</h1>
       </div>
       <div id="announcement-list" className="h-[12rem] mb-2 overflow-scroll">
-        {announcements.map((announcement, index) => (
-          <div key={index} className="flex items-start bg-white p-4 rounded-xl border border-gray-400 mb-4 shadow">
-            <div className="flex-1 pr-4">
-              <h2 className="text-2xl font-semibold">{announcement.title}</h2>
-              <p className="text-left">{announcement.description}</p>
-            </div>
-            <div className="flex flex-col items-end justify-between ml-auto">
-              <p>{formatDate(announcement.tanggal_upload)}</p>
-              <div className="flex space-x-2">
-                {renderDownloadButton(announcement.attachment)}
-                {isUserAdmin === "admin" && (
-                  <>
-                    <button
-                      className="bg-blue-500 text-white px-4 py-2 mt-2 rounded"
-                      onClick={() => setEditAnnouncement(announcement)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-red-500 text-white px-4 py-2 mt-2 rounded"
-                      onClick={() => handleDelete(announcement.id)}
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
+        {announcements.length > 0 ? (
+          announcements.map((announcement, index) => (
+            <div
+              key={index}
+              className="flex items-start bg-white p-4 rounded-xl border border-gray-400 mb-4 shadow"
+            >
+              <div className="flex-1 pr-4">
+                <h2 className="text-2xl font-semibold">{announcement.title}</h2>
+                <p className="text-left">{announcement.description}</p>
+              </div>
+              <div className="flex flex-col items-end justify-between ml-auto">
+                <p>{formatDate(announcement.tanggal_upload)}</p>
+                <div className="flex space-x-2">
+                  {renderDownloadButton(announcement.attachment)}
+                  {isUserAdmin === "admin" && (
+                    <>
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 mt-2 rounded"
+                        onClick={() => setEditAnnouncement(announcement)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 mt-2 rounded"
+                        onClick={() => handleDelete(announcement.id)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-center text-gray-500 mt-4">No assignments today</div>
+        )}
       </div>
       {editAnnouncement && (
         <AnnouncementEdit
@@ -145,6 +152,5 @@ const AnnouncementList = () => {
       )}
     </div>
   );
-};
-
+}  
 export default AnnouncementList;

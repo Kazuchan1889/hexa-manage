@@ -399,64 +399,8 @@ const OvertimeUser = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-100 rounded-md">
-      {/* Text Field 1 */}
-      <div className="flex items-center gap-2">
-        <Person className="text-gray-500" />
-        <TextField
-          label="Name"
-          variant="outlined"
-          fullWidth
-          className="w-full"
-        />
-      </div>
-      {/* Text Field 2 */}
-      <div className="flex items-center gap-2">
-        <Email className="text-gray-500" />
-        <TextField
-          label="Email"
-          variant="outlined"
-          fullWidth
-          className="w-full"
-        />
-      </div>
-      {/* Text Field 3 */}
-      <div className="flex items-center gap-2">
-        <Lock className="text-gray-500" />
-        <TextField
-          label="Password"
-          variant="outlined"
-          type="password"
-          fullWidth
-          className="w-full"
-        />
-      </div>
-      {/* Text Field 4 */}
-      <div className="flex items-center gap-2">
-        <Phone className="text-gray-500" />
-        <TextField
-          label="Phone"
-          variant="outlined"
-          fullWidth
-          className="w-full"
-        />
-      </div>
-      {/* Text Field 5 */}
-      <div className="flex items-center gap-2">
-        <LocationOn className="text-gray-500" />
-        <TextField
-          label="Address"
-          variant="outlined"
-          fullWidth
-          className="w-full"
-        />
-      </div>
-    </div>
-
+       
+      
           <CardContent>
             <div className="flex gap-4 align-right justify-end mx-2">
               <h3 className="font-semibold">Overtime Hours : {overtimeHours % 8} Hours</h3>
