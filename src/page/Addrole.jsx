@@ -30,7 +30,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NavbarUser from "../feature/NavbarUser";
 
-const API_URL = `${ip}/api/role`;   
+const API_URL = `${ip}/api/role`;
 
 const RoleManage = () => {
     const [page, setPage] = useState(0);
@@ -45,6 +45,7 @@ const RoleManage = () => {
     const [assignedOperations, setAssignedOperations] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [currentRoleId, setCurrentRoleId] = useState(null);
+    const [expandedRows, setExpandedRows] = useState([]);
 
     useEffect(() => {
         fetchRoles();
@@ -74,7 +75,13 @@ const RoleManage = () => {
             console.error("Error fetching roles:", error);
         }
     };
-
+    const toggleRowExpand = (rowId) => {
+        if (expandedRows.includes(rowId)) {
+            setExpandedRows(expandedRows.filter((id) => id !== rowId));
+        } else {
+            setExpandedRows([...expandedRows, rowId]);
+        }
+    };
     const handleAddRole = async () => {
         const newRole = {
             role: newRoleName,
@@ -102,7 +109,7 @@ const RoleManage = () => {
             });
 
             const currentOperations = roles.find(role => role.id === currentRoleId)?.operation || [];
-            
+
             const operationsToAdd = assignedOperations.filter(op => !currentOperations.includes(op));
             const operationsToRemove = currentOperations.filter(op => !assignedOperations.includes(op));
 
@@ -245,7 +252,27 @@ const RoleManage = () => {
                                             <TableRow key={role.id}>
                                                 <TableCell align="center">{role.role}</TableCell>
                                                 <TableCell align="center">
-                                                    {(Array.isArray(role.operation) ? role.operation : []).join(", ")}
+                                                    {(() => {
+                                                        const operations = Array.isArray(role.operation) ? role.operation : [];
+                                                        const isExpanded = expandedRows.includes(role.id);
+
+                                                        return (
+                                                            <>
+                                                                {isExpanded
+                                                                    ? operations.join(", ") // Tampilkan semua operasi jika diperluas
+                                                                    : operations.slice(0, 5).join(", ")}{" "}
+                                                                {operations.length > 5 && (
+                                                                    <Button
+                                                                        size="small"
+                                                                        style={{ textTransform: "none", color: "#204684" }}
+                                                                        onClick={() => toggleRowExpand(role.id)}
+                                                                    >
+                                                                        {isExpanded ? "Show Less" : "Read More"}
+                                                                    </Button>
+                                                                )}
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <IconButton onClick={(event) => handleMenuOpen(event, index)}>

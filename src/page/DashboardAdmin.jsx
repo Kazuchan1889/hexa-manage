@@ -26,13 +26,13 @@ const getIdFromToken = () => {
 
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 
   const payload = JSON.parse(jsonPayload);
-  return payload.id; 
+  return payload.id;
 };
 
 function DashboardAdmin() {
@@ -77,7 +77,7 @@ function DashboardAdmin() {
         setLoadingSchedule(false); // Akhiri loading untuk jadwal
       }
     };
-    
+
 
     const fetchAbsensiItems = async () => {
       setLoadingAbsensi(true); // Mulai loading untuk absensi
@@ -254,36 +254,47 @@ function DashboardAdmin() {
                   <div className="sticky top-0 bg-white p-2 z-10">
                     <div className="text-xl font-bold">Upcoming Schedule</div>
                   </div>
-                  <div className="h-[calc(100%-2.5rem)] overflow-y-auto">
+                  <div className="h-[calc(100%-2.5rem)] overflow-y-auto flex flex-col justify-center items-center">
                     {loadingSchedule ? (
                       <Loading /> // Tampilkan loading saat fetching jadwal
                     ) : (
-                      <ul className="space-y-4 mt-4">
-                      {scheduleItems
-                        .filter(item => {
-                          const scheduleDate = new Date(item.tanggal_mulai);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0); // Mengatur waktu ke awal hari
-                          return scheduleDate >= today; // Tampilkan jika jadwal >= hari ini
-                        })
-                        .map((item, index) => (
-                          <li key={index} className="border p-4 rounded-lg shadow-sm">
-                            <div className="text-lg font-semibold">{item.judul}</div>
-                            <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
-                            <div className="text-sm text-gray-600">{item.mulai}</div>
-                          </li>
-                        ))}
-                    </ul>
+                      <ul className="space-y-4 mt-4 w-full">
+                        {(() => {
+                          const filteredSchedules = scheduleItems.filter((item) => {
+                            const scheduleDate = new Date(item.tanggal_mulai);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0); // Mengatur waktu ke awal hari
+                            return scheduleDate >= today; // Tampilkan jika jadwal >= hari ini
+                          });
+
+                          if (filteredSchedules.length === 0) {
+                            return (
+                              <li className="text-gray-500 text-center w-full flex justify-center items-center h-full">
+                                There is no schedule
+                              </li>
+                            );
+                          }
+
+                          return filteredSchedules.map((item, index) => (
+                            <li key={index} className="border p-4 rounded-lg shadow-sm">
+                              <div className="text-lg font-semibold">{item.judul}</div>
+                              <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
+                              <div className="text-sm text-gray-600">{item.mulai}</div>
+                            </li>
+                          ));
+                        })()}
+                      </ul>
                     )}
                   </div>
                 </div>
+                    
               </div>
             </div>
           ) : null}
         </div>
       </div>
       {isTambahFormOpen && <Announcment onClose={() => setTambahFormOpen(false)} onSubmit={handleSubmit} />}
-      <div className={`fixed bottom-5 right-10 p-3 z-50 duration-0 ${isBubbleOpen ? "bg-blue-500 rounded-lg w-40 min-h-24" : "bg-blue-500 flex rounded-full items-center justify-center"}`}>
+      {/* <div className={`fixed bottom-5 right-10 p-3 z-50 duration-0 ${isBubbleOpen ? "bg-blue-500 rounded-lg w-40 min-h-24" : "bg-blue-500 flex rounded-full items-center justify-center"}`}>
         <IconButton onClick={() => setIsBubbleOpen(!isBubbleOpen)}>
           {isBubbleOpen ? <CloseIcon style={{ color: "white" }} /> : <MenuIcon style={{ color: "white" }} />}
         </IconButton>
@@ -300,7 +311,7 @@ function DashboardAdmin() {
             </Button>
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

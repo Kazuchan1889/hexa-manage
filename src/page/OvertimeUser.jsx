@@ -30,11 +30,10 @@ import dayjs from 'dayjs';
 import Loading from "../page/Loading";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CircularProgress, Box } from "@mui/material";
-import { Email, Person, Lock, Phone, LocationOn } from "@mui/icons-material";
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
@@ -187,7 +186,7 @@ const OvertimeUser = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
 
@@ -304,8 +303,8 @@ const OvertimeUser = () => {
         const overtimeData = response.data[0]; // Ambil data pertama
 
         // Total jatah overtime
-        const totalDays = overtimeData["total jatah overtime (hari)"];
-        const totalHours = overtimeData["total jatah overtime (jam)"];
+        const totalDays = overtimeData["total_jam_overtime (hari)"];
+        const totalHours = overtimeData["total_jam_overtime (jam)"];
 
         // Update state atau lakukan perhitungan lainnya
         setOvertimeHours(totalHours);
@@ -399,8 +398,10 @@ const OvertimeUser = () => {
               </div>
             </div>
           </CardContent>
-       
-      
+        </Card>
+      </div>
+      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
+        <Card className="w-[90%]">
           <CardContent>
             <div className="flex gap-4 align-right justify-end mx-2">
               <h3 className="font-semibold">Overtime Hours : {overtimeHours % 8} Hours</h3>
@@ -517,7 +518,7 @@ const OvertimeUser = () => {
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[15, 25]}
             component="div"
             count={sortedRows.length}
             rowsPerPage={rowsPerPage}
