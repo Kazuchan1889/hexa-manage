@@ -19,6 +19,9 @@ import UserIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
 import Loading from "../page/Loading";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const getIdFromToken = () => {
   const token = localStorage.getItem('accessToken');
@@ -208,7 +211,8 @@ function DashboardAdmin() {
                     ) : (
                       <ul className="space-y-4 ">
                         {absensiItems.map((item, index) => (
-                          <li key={index} className="flex items-center border p-2 rounded-lg">
+                          <li key={index} className="flex items-center border p-2 rounded-lg justify-between">
+                          <div className="flex items-center">
                             {item.photo ? (
                               <img
                                 src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
@@ -220,12 +224,28 @@ function DashboardAdmin() {
                                 <UserIcon style={{ fontSize: 30, color: 'black' }} />
                               </div>
                             )}
-
+                        
                             <div className="ml-4 flex flex-col">
                               <p className="font-semibold">{item.nama}</p>
                               <p className="text-sm text-gray-600">{item.status}</p>
                             </div>
-                          </li>
+                          </div>
+                        
+                          {/* Icon di sebelah kanan */}
+                          <div>
+                            {item.status === 'tanpa alasan' && (
+                              <ErrorIcon style={{ fontSize: 20, color: 'red' }} />
+                            )}
+                            {item.status === 'terlambat' && (
+                              <WarningIcon style={{ fontSize: 20, color: 'yellow' }} />
+                            )}
+                            {item.status === 'masuk' && (
+                              <CheckCircleIcon style={{ fontSize: 20, color: 'green' }} />
+                            )}
+                          </div>
+                        </li>
+                        
+                        
                         ))}
                       </ul>
                     )}

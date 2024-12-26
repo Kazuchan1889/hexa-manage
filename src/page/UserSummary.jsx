@@ -97,16 +97,16 @@ export default function SummaryPage({ isAdmin }) {
     <NavbarUser />
       <div className="w-full min-h-screen bg-gray-100 p-5">
         {/* User Profile Section */}
-        <div className="bg-white rounded-lg p-6 mb-6 shadow-md flex flex-col md:flex-row justify-between items-center">
+        <div className="bg-sky-800 rounded-lg p-6 mb-6 shadow-md flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col text-left">
             <Typography
-              className="text-gray-800"
+              className="border-gray-950 text-white" 
               style={{ fontFamily: "Helvetica, Arial, sans-serif", fontWeight: "bold", fontSize: "30px" }}
             >
               {userData.nama}
             </Typography>
             <Typography
-              className="text-gray-600"
+              className="border-gray-950 text-white"
               style={{ fontFamily: "Helvetica, Arial, sans-serif", fontWeight: "normal", fontSize: "24px" }}
             >
               {userData.jabatan}
@@ -171,7 +171,7 @@ export default function SummaryPage({ isAdmin }) {
                 <Button
                   variant="contained"
                   sx={{
-                    backgroundColor: "#00bcd4",
+                    backgroundColor: "#075985",
                     color: "#fff",
                     "&:hover": { backgroundColor: "#008ba3" },
                   }}
