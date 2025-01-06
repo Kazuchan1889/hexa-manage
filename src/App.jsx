@@ -56,6 +56,7 @@ import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
 // Import komponen loading
 import Loading from "./page/Loading"; 
+import Face from "./page/Face";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -134,7 +135,9 @@ function App() {
           <Route path="/Tetris" element={<Tetris />} />
           <Route path="/UserSummary" element={<UserSummary />} />
           <Route path="/Geotech" element={<Testloc />} />
-          <Route path="/aptes" element={<Aptes />} />
+          <Route path="/Face" element={<Face />} />
+          <Route path="/Aptes" element={<Aptes />} />
+          
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

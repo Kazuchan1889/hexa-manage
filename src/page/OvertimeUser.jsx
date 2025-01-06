@@ -299,12 +299,19 @@ const OvertimeUser = () => {
         config
       );
 
+      // Logging data yang di-fetch
+      console.log("Response data from API:", response.data);
+
       if (response.data && response.data.length > 0) {
         const overtimeData = response.data[0]; // Ambil data pertama
 
         // Total jatah overtime
-        const totalDays = overtimeData["total_jam_overtime (hari)"];
-        const totalHours = overtimeData["total_jam_overtime (jam)"];
+        const totalDays = overtimeData["total jatah overtime (hari)"];
+        const totalHours = overtimeData["total jatah overtime (jam)"];
+
+        // Logging hasil perhitungan
+        console.log("Total Days:", totalDays);
+        console.log("Total Hours:", totalHours);
 
         // Update state atau lakukan perhitungan lainnya
         setOvertimeHours(totalHours);
@@ -315,9 +322,10 @@ const OvertimeUser = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOvertimeData();
-  }, []);
+useEffect(() => {
+  fetchOvertimeData();
+}, []);
+
 
 
 
@@ -404,7 +412,7 @@ const OvertimeUser = () => {
         <Card className="w-[90%]">
           <CardContent>
             <div className="flex gap-4 align-right justify-end mx-2">
-              <h3 className="font-semibold">Overtime Hours : {overtimeHours % 8} Hours</h3>
+              <h3 className="font-semibold">Overtime Hours : {overtimeHours} Hours</h3>
               <h3 className="font-semibold">Days Off : {calculatedDaysOff} Days</h3>
             </div>
             <div className="flex justify-end mx-2 mb-2">

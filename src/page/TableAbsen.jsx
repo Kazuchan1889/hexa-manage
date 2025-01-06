@@ -310,6 +310,8 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import ip from "../ip";
 import PatchStatus from "../feature/PatchStatus";
 import ActionButton from "../feature/ActionButton";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+
 
 const TableAbsen = () => {
   const [rows, setRows] = useState([]);
@@ -529,7 +531,7 @@ const TableAbsen = () => {
         // else {
 
         // }
-      })  
+      })
       .catch((error) => {
         if (error.message.includes("400")) alert("Tidak Ada Data");
         console.error("Error downloading Excel file:", error);
@@ -612,6 +614,12 @@ const TableAbsen = () => {
     //     });
     // }
   };
+  function Base64Image({ base64String }) {
+    // Buat URL untuk base64 data
+    const imageUrl = `data:image/jpeg;base64,${base64String}`;
+
+    return <img src={imageUrl} alt="Gambar" style={{ maxWidth: '100px', maxHeight: '100px' }} />;
+  }
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-auto">
@@ -812,52 +820,115 @@ const TableAbsen = () => {
                         <p className="text-white font-semibold">Overtime</p>
                       </TableCell>
                       <TableCell align="center">
+                        <p className="text-white font-semibold">Photo</p>
+                      </TableCell>
+                      <TableCell align="center">
                         <p className="text-white font-semibold">Status</p>
                       </TableCell>
                       {isWeekend && (
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Action</p>
-                      </TableCell>
+                        <TableCell align="center">
+                          <p className="text-white font-semibold">Action</p>
+                        </TableCell>
                       )}
+                      <TableCell align="center">
+                        <p className="text-white font-semibold">export</p>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
-                      ? rows.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                      ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       : rows
                     )
                       .sort((a, b) => a.nama.localeCompare(b.nama))
-                      .map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">{row.nama}</TableCell>
-                          <TableCell align="center">{row.masuk}</TableCell>
-                          <TableCell align="center">{row.keluar}</TableCell>
-                          <TableCell align="center">{row.date}</TableCell>
-                          <TableCell align="center">no</TableCell>
-                          <TableCell
-                            align="center"
-                            className="flex items-center"
-                          >
-                            <PatchStatus string={row.status} id={row.id} />
-                          </TableCell>
-                          {isWeekend && (
-                          <TableCell align="center" className="flex items-center">
-                            <ActionButton
-                              onAccept={handleApproval}
-                              onReject={handleReject}
+                      .map((row, index) => {
+                        const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                        const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                        const isLateMasuk = jamMasukRow > timeMasuk;
+                        const isLateKeluar = jamKeluarRow > timeKeluar;
 
-                              data={row}
-                              tipe={"nonIzin"}
-                              string={"Absen"}
-                            ></ActionButton>
+                        return (
+                          <TableRow key={index}>
+                            <TableCell align="center">{row.nama}</TableCell>
+                            <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
+                              {row.masuk}
+                            </TableCell>
+                            <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
+                              {row.keluar}
+                            </TableCell>
+                            <TableCell align="center">{row.date}</TableCell>
+                            <TableCell align="center">no</TableCell>
+                            <TableCell align="center">
+                              {row.fotomasuk ? (
+                                <div className="flex justify-center items-center h-full">
+                                  <img
+                                    src={row.fotomasuk}
+                                    alt="Foto Masuk"
+                                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                  />
+                                </div>
+                              ) : (
+                                <p>No Photo</p>
+                              )}
+                            </TableCell>
+                            <TableCell align="center" className="flex items-center">
+                              <PatchStatus string={row.status} id={row.id} />
+                            </TableCell>
+                            {isWeekend && (
+                              <TableCell align="center" className="flex items-center">
+                                <ActionButton
+                                  onAccept={handleApproval}
+                                  onReject={handleReject}
+                                  data={row}
+                                  tipe={"nonIzin"}
+                                  string={"Absen"}
+                                />
+                              </TableCell>
+                            )}
+                            <TableCell align="center">
+                              <Button
+                                variant="contained"
+                                color="success"
+                                startIcon={<FileDownloadOutlined />}
+                                onClick={() => {
+                                  console.log("Mengirim userId ke backend:", row.idk); // Log untuk memastikan userId
 
-                          </TableCell>
-                          )}
-                        </TableRow>
-                      ))}
+                                  axios
+                                    .post(
+                                      `${ip}/api/export/data/8`,
+                                      { userId: row.idk }, // Mengirim row.idk sebagai userId
+                                      {
+                                        headers: {
+                                          "Content-Type": "application/json", // Menentukan tipe konten sebagai JSON
+                                          Authorization: localStorage.getItem("accessToken"), // Mengambil access token dari localStorage
+                                        },
+                                        responseType: "blob", // Mengharapkan respons dalam bentuk Blob (binary data)
+                                      }
+                                    )
+                                    .then((response) => {
+                                      // Membuat objek URL untuk file blob yang diterima
+                                      const url = window.URL.createObjectURL(new Blob([response.data]));
+                                      // Membuat elemen link untuk mengunduh file
+                                      const link = document.createElement("a");
+                                      link.href = url;
+                                      link.setAttribute("download", "data_export.xlsx"); // Menentukan nama file unduhan
+                                      document.body.appendChild(link);
+                                      link.click(); // Menyimulasikan klik untuk mengunduh file
+                                      document.body.removeChild(link); // Menghapus elemen link setelah digunakan
+                                      alert("Data exported successfully!");
+                                    })
+                                    .catch((error) => {
+                                      console.error("Error exporting data:", error);
+                                      alert("Failed to export data.");
+                                    });
+                                }}
+                              >
+                                Export
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                   </TableBody>
                 </Table>
               </TableContainer>

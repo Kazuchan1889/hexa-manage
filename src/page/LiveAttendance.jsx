@@ -5,7 +5,7 @@ import ip from "../ip";
 import axios from "axios";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
-import { useNavigate } from "react-router-dom"; // Untuk redirect ke halaman Home
+import { useNavigate } from "react-router-dom"; 
 
 function LiveAttendance() {
     const [masuk, setMasuk] = useState("");
@@ -16,15 +16,14 @@ function LiveAttendance() {
     );
     const [location, setLocation] = useState(null);
     const videoRef = useRef(null);
-    const [isLoading, setIsLoading] = useState(false); // prevent multiple submissions
-    const navigate = useNavigate(); // Untuk redirect ke halaman Home
+    const [isLoading, setIsLoading] = useState(false); 
+    const navigate = useNavigate(); 
 
     const isUserCheckin = checkInStatus === "udahMasuk";
     const isUserCheckout = checkInStatus === "udahKeluar";
 
     useEffect(() => {
         if (checkInStatus) {
-            // Jika user sudah check-in atau check-out, tidak perlu fetch lagi
             return;
         }
 
@@ -74,7 +73,7 @@ function LiveAttendance() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-        return canvas.toDataURL("image/jpeg");  // Return the Base64 encoded string
+        return canvas.toDataURL("image/jpeg");  
     };
 
     const getLocation = () => {

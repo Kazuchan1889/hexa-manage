@@ -242,9 +242,9 @@ const NavbarUser = () => {
     checkOp("READ_ABSENSI")
       ? { label: "Attendance", active: false, to: "/masterabsen" }
       : null,
-    checkOp("READ_KARYAWAN")
-      ? { label: "Employe Data ", active: false, to: "/masterkaryawan" }
-      : null,
+    // checkOp("READ_KARYAWAN")
+    //   ? { label: "Employe Data ", active: false, to: "/masterkaryawan" }
+    //   : null,
     checkOp("READ_IZIN")
       ? { label: "Permit", active: false, to: "/masterizin" }
       : null,
@@ -260,9 +260,9 @@ const NavbarUser = () => {
     checkOp("READ_LAPORAN")
       ? { label: "Report", active: false, to: "/masterlaporan" }
       : null,
-    checkOp("READ_PAYROLL")
-      ? { label: "Payroll", active: false, to: "/masterpayroll" }
-      : null,
+    // checkOp("READ_PAYROLL")
+    //   ? { label: "Payroll", active: false, to: "/masterpayroll" }
+    //   : null,
       checkOp("READ_PAYROLL")
       ? { label: "Geotech", active: false, to: "/geotech" }
       : null,

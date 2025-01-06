@@ -24,6 +24,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import axios from "axios";
 import ip from "../ip"; // Sesuaikan path ini sesuai dengan struktur proyek Anda
 import NavbarUser from "../feature/NavbarUser";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 
 const TableLaporanKegiatan = () => {
   const [dataLaporan, setDataLaporan] = useState([]);
@@ -238,8 +239,10 @@ const TableLaporanKegiatan = () => {
                       <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Detail</p></TableCell>
                       <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Description</p></TableCell>
                       <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Document</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Export</p></TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -254,18 +257,62 @@ const TableLaporanKegiatan = () => {
                         <TableCell align="center">{laporan.keterangan}</TableCell>
                         <TableCell align="align-left">{laporan.deskripsi}</TableCell>
                         <TableCell align="center">
-                          {laporan.dokumen && laporan.dokumen.length > 0 && (
+                          {laporan.dokumen && laporan.dokumen.length > 0 ? (
                             <div className="flex justify-center gap-[20%]">
                               {laporan.dokumen.map((doc, docIndex) => (
                                 <img
                                   key={docIndex}
                                   src={doc}
-                                  alt=""
+                                  alt="Document"
                                   className="h-7 cursor-pointer m-auto"
                                 />
                               ))}
                             </div>
+                          ) : (
+                            <p className="text-gray-500 italic">NO FILE</p>
                           )}
+                        </TableCell>
+                        {/* Button Export */}
+                        <TableCell align="center">
+                          <Button
+                            variant="contained"
+                            color="success"
+                            startIcon={<FileDownloadOutlined />}
+                            onClick={() => {
+                              console.log("Mengirim userId ke backend:", laporan.idk); 
+
+                              axios
+                                .post(
+                                  `${ip}/api/export/data/3`,
+                                  { userId: laporan.idk }, 
+                                  {
+                                    headers: {
+                                      "Content-Type": "application/json", 
+                                      Authorization: localStorage.getItem("accessToken"), 
+                                    },
+                                    responseType: "blob", 
+                                  }
+                                )
+                                .then((response) => {
+                                 
+                                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                                 
+                                  const link = document.createElement("a");
+                                  link.href = url;
+                                  link.setAttribute("download", "data_export.xlsx"); // Menentukan nama file unduhan
+                                  document.body.appendChild(link);
+                                  link.click(); // Menyimulasikan klik untuk mengunduh file
+                                  document.body.removeChild(link); // Menghapus elemen link setelah digunakan
+                                  alert("Data exported successfully!");
+                                })
+                                .catch((error) => {
+                                  console.error("Error exporting data:", error);
+                                  alert("Failed to export data.");
+                                });
+                            }}
+                          >
+                            Export
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
