@@ -66,6 +66,11 @@ const LocationPickerPage = () => {
         },
         () => {
           Swal.fire("Error", "Tidak dapat mengambil lokasi Anda.", "error");
+        },
+        {
+          enableHighAccuracy: true, // Meminta akurasi tinggi
+          timeout: 50000, // Batas waktu 10 detik untuk mendapatkan lokasi
+          maximumAge: 0, // Tidak menggunakan lokasi yang sudah ada
         }
       );
     } else {
