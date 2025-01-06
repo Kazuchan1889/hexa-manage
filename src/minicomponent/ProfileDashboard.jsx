@@ -5,8 +5,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import Shortcut from "./Shortcut";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick-theme.css";
 
 function ProfileDashboard() {
   const [userData, setUserData] = useState({
@@ -15,7 +15,7 @@ function ProfileDashboard() {
     jabatan: "",
     cutimandiri: ""
   });
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const isUserBelumCheckin = localStorage.getItem("result") === "belumMasuk";
   const isUserSudahCheckin = localStorage.getItem("result") === "udahMasuk";
@@ -51,7 +51,7 @@ function ProfileDashboard() {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -77,33 +77,57 @@ function ProfileDashboard() {
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center w-full p-4">
-      <div className="flex flex-col text-left mb-4 md:mb-0">
-        <div className="font-semibold text-lg md:text-2xl lg:text-3xl">
-          <Typography variant="h5" className="text-neutral-200">
-            <div className="w-full font-semibold">
-              {hour >= 12 ? (hour >= 17 ? <h1>Good Evening, {userData.nama}! </h1> : <h1>Good Afternoon, {userData.nama}! </h1>) : <h1>Good Morning, {userData.nama}! </h1>}
-            </div>
-            <h2 className="text-sm md:text-base">It's {date}</h2>
-            <Shortcut />
-          </Typography>
-          {isUserBelumCheckin && (
-            <div className="flex items-center mt-2">
-              <ReportProblemIcon className="text-yellow-400 mr-2" />
-              <Typography variant="body2" className="text-yellow-400">
-                Time to check in, don’t forget!
-              </Typography>
-            </div>
-          )}
-        </div>
+      <div className="flex flex-col text-left mb-4 md:mb-0 w-full md:w-2/3">
+        <Typography variant="h5" className="text-neutral-200 font-semibold">
+          <div className="w-full font-semibold">
+            {hour >= 12 ? (
+              hour >= 17 ? (
+                <h1>Good Evening, {userData.nama}!</h1>
+              ) : (
+                <h1>Good Afternoon, {userData.nama}!</h1>
+              )
+            ) : (
+              <h1>Good Morning, {userData.nama}!</h1>
+            )}
+          </div>
+          <h2 className="text-sm md:text-base">It's {date}</h2>
+        </Typography>
+        {isUserBelumCheckin && (
+          <div className="flex items-center mt-2">
+            <ReportProblemIcon className="text-yellow-400 mr-2" />
+            <Typography variant="body2" className="text-yellow-400">
+              Time to check in, don’t forget!
+            </Typography>
+          </div>
+        )}
+        {/* Render Shortcut hanya jika tidak dalam mode mobile */}
+        {!isMobile && <Shortcut />}
       </div>
-      {userData.dokumen && (
-        <Avatar
-          alt="User Avatar"
-          src={userData.dokumen}
-          sx={{ width: isMobile ? 70 : 110, height: isMobile ? 70 : 110 }}
-        />
-      )}
+      <div className="w-full md:w-1/3 flex justify-end">
+        {userData.dokumen ? (
+          <Avatar
+            alt="User Avatar"
+            src={userData.dokumen}
+            sx={{
+              width: isMobile ? 70 : 110,
+              height: isMobile ? 70 : 110,
+            }}
+          />
+        ) : (
+          <Avatar
+            alt="Default Avatar"
+            sx={{
+              bgcolor: "#ccc",
+              width: isMobile ? 70 : 110,
+              height: isMobile ? 70 : 110,
+            }}
+          >
+            {userData.nama[0] || "U"}
+          </Avatar>
+        )}
+      </div>
     </div>
+
   );
 }
 

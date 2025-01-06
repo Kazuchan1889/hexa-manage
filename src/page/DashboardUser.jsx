@@ -80,7 +80,7 @@ function DashboardUser() {
       <div className="flex h-fit">
         <div className="h-full w-[90%] flex flex-col justify-center items-center mx-auto">
           <div className="h-[40rem]lg:h-[17rem] w-full flex flex-col lg:flex-row justify-between items center">
-            <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[50%] h-[17rem] lg:w-[31%]">
+            <div className="flex justify-between items-center drop-shadow-lg bg-home px-5 lg:px-10 py-10 my-5 rounded-md w-[100%] h-[17rem] lg:w-[31%]">
               <ProfileUser />
             </div>
             <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-md w-[100%] lg:w-[37%] h-[17rem]">

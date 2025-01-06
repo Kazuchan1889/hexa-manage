@@ -89,48 +89,48 @@ function ProfileDashboard() {
   const [open, setOpen] = useState(false); // State untuk mengontrol modal
 
   const handleOpen = () => {
-      setOpen(true); // Buka modal
+    setOpen(true); // Buka modal
   };
 
   const handleClose = () => {
-      setOpen(false); // Tutup modal
+    setOpen(false); // Tutup modal
   };
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center w-full p-4">
-  <div className="flex flex-col text-left mb-4 md:mb-0">
-    <div className="font-semibold text-lg md:text-2xl lg:text-3xl">
-      <Typography 
-        variant="h5" 
-        className="text-neutral-200" 
-        style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 'bold', fontSize: '30px' }}
-      >
-        {nama}
-      </Typography>
-      <Typography 
-        variant="h5" 
-        className="text-neutral-200"
-        style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 'normal', fontSize: '24px' }}
-      >
-        {jabatan}
-      </Typography>
+      <div className="flex flex-col text-left mb-4 md:mb-0">
+        <div className="font-semibold text-lg md:text-2xl lg:text-3xl">
+          <Typography
+            variant="h5"
+            className="text-neutral-200"
+            style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 'bold', fontSize: '30px' }}
+          >
+            {nama}
+          </Typography>
+          <Typography
+            variant="h5"
+            className="text-neutral-200"
+            style={{ fontFamily: 'Helvetica, Arial, sans-serif', fontWeight: 'normal', fontSize: '24px' }}
+          >
+            {jabatan}
+          </Typography>
+        </div>
+      </div>
+      {dokumen && (
+        <Avatar
+          alt="User Avatar"
+          src={dokumen}
+          sx={{
+            width: 110 * 1.05, // Increase size by 5% for desktop
+            height: 110 * 1.05, // Increase size by 5% for desktop
+            '@media (max-width: 768px)': { // Reset to original size for mobile
+              width: 100,
+              height: 100,
+            },
+          }}
+        />
+      )}
     </div>
-  </div>
-  {dokumen && (
-    <Avatar
-      alt="User Avatar"
-      src={dokumen}
-      sx={{
-        width: 110 * 1.05, // Increase size by 5% for desktop
-        height: 110 * 1.05, // Increase size by 5% for desktop
-        '@media (max-width: 768px)': { // Reset to original size for mobile
-          width: 100,
-          height: 100,
-        },
-      }}
-    />
-  )}
-</div>
 
   );
 }
