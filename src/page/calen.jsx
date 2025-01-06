@@ -37,7 +37,7 @@ const CalendarComponent = () => {
     selesai: "",
     karyawan: [],
   });
-  const [selectedKaryawan, setSelectedKaryawan] = useState([]);z
+  const [selectedKaryawan, setSelectedKaryawan] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false); // State untuk cek apakah user admin
