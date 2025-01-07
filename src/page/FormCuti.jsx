@@ -241,7 +241,7 @@ function FormCuti() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
+      setIsMobile(window.innerWidth <= 667);
     };
 
     window.addEventListener("resize", handleResize);
@@ -366,7 +366,7 @@ function FormCuti() {
                 </div>
               </form>
 
-              {!isMobile && (
+              
                 <div className="w-[90%] flex flex-col justify-center items-center mt-3 mx-auto rounded-md bg-card p-5">
                   <div className="w-full">
                     <div className="flex justify-between">
@@ -508,8 +508,8 @@ function FormCuti() {
                     </TableContainer>
                   </div>
                 </div>
-              )}
-              {!isMobile && (
+              
+              
                 <div className="flex w-11/12 items-end justify-end">
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 15]}
@@ -522,7 +522,7 @@ function FormCuti() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
-              )}
+              
             </div>
           </div>
         </div>

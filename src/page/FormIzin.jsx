@@ -450,7 +450,7 @@ function FormIzin() {
                 </div>
               </form>
 
-              {!isMobile && (
+              
                 <div className="w-[90%] mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
                   <div className="w-full">
                     <div className="flex justify-between">
@@ -608,8 +608,8 @@ function FormIzin() {
                     </TableContainer>
                   </div>
                 </div>
-              )}
-              {!isMobile && (
+              
+              
                 <div className="flex w-11/12 items-end justify-end">
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 15]}
@@ -622,7 +622,7 @@ function FormIzin() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
-              )}
+              
               <Dialog
                 open={Boolean(selectedImage)}
                 onClose={() => setSelectedImage(null)}
