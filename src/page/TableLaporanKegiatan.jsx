@@ -356,14 +356,16 @@ const TableLaporanKegiatan = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 750,
+            width: window.innerWidth < 750 ? "90%" : 400, // Jika di mobile, lebar modal 90% dari layar
+            maxHeight: "80vh", // Maksimal tinggi modal
             bgcolor: "background.paper",
             borderRadius: "8px",
             boxShadow: 24,
             p: 4,
+            overflowY: "auto",
           }}
         >
-           <h2 style={{ fontWeight: "bold" }}>Full Description</h2>
+          <h2 style={{ fontWeight: "bold" }}>Full Description</h2>
           <p>{selectedDescription}</p>
           <Button onClick={handleCloseModal} variant="contained" color="primary">
             Close
