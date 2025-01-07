@@ -363,7 +363,7 @@ const TableLaporanKegiatan = () => {
             p: 4,
           }}
         >
-          <h2>Full Description</h2>
+           <h2 style={{ fontWeight: "bold" }}>Full Description</h2>
           <p>{selectedDescription}</p>
           <Button onClick={handleCloseModal} variant="contained" color="primary">
             Close
