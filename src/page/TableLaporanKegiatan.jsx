@@ -356,7 +356,7 @@ const TableLaporanKegiatan = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: window.innerWidth < 750 ? "90%" : 400, // Jika di mobile, lebar modal 90% dari layar
+            width: window.innerWidth < 600 ? "90%" : 700, // Jika di mobile, lebar modal 90% dari layar
             maxHeight: "80vh", // Maksimal tinggi modal
             bgcolor: "background.paper",
             borderRadius: "8px",
