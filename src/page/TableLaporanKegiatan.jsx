@@ -17,6 +17,8 @@ import {
   CircularProgress,
   Paper,
   TablePagination,
+  Modal,
+  Box
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -32,6 +34,8 @@ const TableLaporanKegiatan = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedDescription, setSelectedDescription] = useState("");
   const [endDate, setEndDate] = useState('');
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,12 +137,20 @@ const TableLaporanKegiatan = () => {
         alert("Terjadi kesalahan saat mengunduh file. Silakan coba lagi.");
       });
   };
+  const handleOpenModal = (description) => {
+    setSelectedDescription(description);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   if (loading) return <div className="flex justify-center items-center h-40"><CircularProgress /></div>;
   if (error) return <p>Error loading data: {error.message}</p>;
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
+    <div className="w-full h-screen bg-gray-100 overflow">
       <NavbarUser />
       {/* Header */}
       <div className="flex w-full justify-center">
@@ -255,7 +267,21 @@ const TableLaporanKegiatan = () => {
                         <TableCell align="center">{laporan.lokasi}</TableCell>
                         <TableCell align="center">{laporan.jenis}</TableCell>
                         <TableCell align="center">{laporan.keterangan}</TableCell>
-                        <TableCell align="align-left">{laporan.deskripsi}</TableCell>
+                        <TableCell align="left">
+                          {laporan.deskripsi.split(" ").length > 10 ? (
+                            <>
+                              {laporan.deskripsi.split(" ").slice(0, 10).join(" ")}...
+                              <span
+                                onClick={() => handleOpenModal(laporan.deskripsi)}
+                                style={{ color: "blue", cursor: "pointer" }}
+                              >
+                                read more
+                              </span>
+                            </>
+                          ) : (
+                            laporan.deskripsi
+                          )}
+                        </TableCell>
                         <TableCell align="center">
                           {laporan.dokumen && laporan.dokumen.length > 0 ? (
                             <div className="flex justify-center gap-[20%]">
@@ -279,24 +305,24 @@ const TableLaporanKegiatan = () => {
                             color="success"
                             startIcon={<FileDownloadOutlined />}
                             onClick={() => {
-                              console.log("Mengirim userId ke backend:", laporan.idk); 
+                              console.log("Mengirim userId ke backend:", laporan.idk);
 
                               axios
                                 .post(
                                   `${ip}/api/export/data/3`,
-                                  { userId: laporan.idk }, 
+                                  { userId: laporan.idk },
                                   {
                                     headers: {
-                                      "Content-Type": "application/json", 
-                                      Authorization: localStorage.getItem("accessToken"), 
+                                      "Content-Type": "application/json",
+                                      Authorization: localStorage.getItem("accessToken"),
                                     },
-                                    responseType: "blob", 
+                                    responseType: "blob",
                                   }
                                 )
                                 .then((response) => {
-                                 
+
                                   const url = window.URL.createObjectURL(new Blob([response.data]));
-                                 
+
                                   const link = document.createElement("a");
                                   link.href = url;
                                   link.setAttribute("download", "data_export.xlsx"); // Menentukan nama file unduhan
@@ -323,6 +349,27 @@ const TableLaporanKegiatan = () => {
           </CardContent>
         </Card>
       </div>
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 750,
+            bgcolor: "background.paper",
+            borderRadius: "8px",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <h2>Full Description</h2>
+          <p>{selectedDescription}</p>
+          <Button onClick={handleCloseModal} variant="contained" color="primary">
+            Close
+          </Button>
+        </Box>
+      </Modal>
       {/* Pagination */}
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">

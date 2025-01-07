@@ -322,11 +322,23 @@ const OvertimeUser = () => {
     }
   };
 
-useEffect(() => {
-  fetchOvertimeData();
-}, []);
-
-
+  useEffect(() => {
+    fetchOvertimeData();
+  }, []);
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    try {
+      const parts = accessToken.split(".");
+      if (parts.length === 3) {
+        const payload = atob(parts[1]);
+        const parsedPayload = JSON.parse(payload);
+        userId = parsedPayload.id; // Ambil User ID
+        console.log("User ID:", userId);
+      }
+    } catch (error) {
+      console.error("Failed to parse accessToken:", error);
+    }
+  }
 
 
 
@@ -467,6 +479,7 @@ useEffect(() => {
                     </TableHead>
                     <TableBody className="bg-gray-100">
                       {sortedRows
+                        .filter(row => row.karyawan_id === userId) // Filter data berdasarkan userId
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row, index) => (
                           <TableRow key={index}>
@@ -515,8 +528,8 @@ useEffect(() => {
                             </TableCell>
                           </TableRow>
                         ))}
-                    </TableBody>
-                  </Table>
+                    </TableBody>                 
+                    </Table>
                 </TableContainer>
               )}
             </div>
