@@ -385,7 +385,7 @@ function FormReimburst() {
                 </div>
               </form>
 
-              {!isMobile && (
+              
                 <div className="w-screen">
                   <div className="w-[90%] flex flex-col justify-center items-center mx-auto mt-3 rounded-md bg-card p-5">
                     <div className="w-full">
@@ -523,7 +523,7 @@ function FormReimburst() {
                     </div>
                   </div>
                 </div>
-              )}
+              
               {!isMobile && (
                 <div className="flex w-11/12 items-end justify-end">
                   <TablePagination
