@@ -256,7 +256,7 @@ function LaporanKegiatan() {
   };
 
   return (
-    <div className="bg-white overflow-y-auto">
+    <div className="bg-white ">
       <NavbarUser />
       <div className="flex h-fit w-screen h-screen flex-col items-center gap-6 p-4">
         {/* Form Section */}
@@ -386,7 +386,20 @@ function LaporanKegiatan() {
                     wordWrap: "break-word", // Memastikan kata panjang tidak keluar dari area
                   }}
                 >
-                  {formData.deskripsi}
+                  <TextField
+                    label="Describe your activity"
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    fullWidth
+                    value={formData.deskripsi}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    onClick={handleOpenAddDescriptionModal}
+                    style={{ cursor: 'pointer' }} // Opsional: Menambahkan efek pointer untuk menunjukkan bahwa field dapat diklik
+                  />
+
                 </div>
               ) : (
                 <Button
@@ -416,7 +429,7 @@ function LaporanKegiatan() {
         </div>
 
         {/* Table Section */}
-        <div className="w-[90%] bg-gray-100 p-6 rounded-lg shadow-md h-96 overflow-y-auto">
+        <div className="w-[90%] bg-gray-100 p-6 rounded-lg shadow-md h-96 overflow">
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -495,7 +508,7 @@ function LaporanKegiatan() {
           <TextField
             label="Describe your activity"
             multiline
-            rows={4}
+            rows={10}
             variant="outlined"
             fullWidth
             value={formData.deskripsi}

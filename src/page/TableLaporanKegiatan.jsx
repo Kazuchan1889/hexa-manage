@@ -41,6 +41,7 @@ const TableLaporanKegiatan = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -142,13 +143,26 @@ const TableLaporanKegiatan = () => {
     setOpenModal(true);
   };
 
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
 
   if (loading) return <div className="flex justify-center items-center h-40"><CircularProgress /></div>;
   if (error) return <p>Error loading data: {error.message}</p>;
+  const isImageFile = (fileName) => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    const extension = fileName.split('.').pop().toLowerCase();
+    return imageExtensions.includes(extension);
+  };
 
+  // Fungsi untuk mendownload file
+  const handleDownload = (fileUrl) => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileUrl.split('/').pop(); // Nama file dari URL
+    link.click();
+  };
   return (
     <div className="w-full h-screen bg-gray-100 overflow">
       <NavbarUser />
@@ -289,8 +303,9 @@ const TableLaporanKegiatan = () => {
                                 <img
                                   key={docIndex}
                                   src={doc}
-                                  alt="Document"
+                                  alt={`Document ${docIndex + 1}`}
                                   className="h-7 cursor-pointer m-auto"
+                                  onClick={() => setSelectedDoc(doc)}
                                 />
                               ))}
                             </div>
@@ -298,6 +313,8 @@ const TableLaporanKegiatan = () => {
                             <p className="text-gray-500 italic">NO FILE</p>
                           )}
                         </TableCell>
+
+
                         {/* Button Export */}
                         <TableCell align="center">
                           <Button
@@ -363,6 +380,8 @@ const TableLaporanKegiatan = () => {
             boxShadow: 24,
             p: 4,
             overflowY: "auto",
+            whiteSpace: "pre-line", // Menjaga jeda antar paragraf
+            wordBreak: "break-word", // Mencegah teks overflow
           }}
         >
           <h2 style={{ fontWeight: "bold" }}>Full Description</h2>
@@ -387,6 +406,19 @@ const TableLaporanKegiatan = () => {
           />
         </div>
       </div>
+      {selectedDoc && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className=" p-4 rounded shadow-lg w-[80%] max-w-lg relative">
+            <button
+              className="absolute top-2 right-1 text-gray-600 hover:text-gray-900"
+              onClick={() => setSelectedDoc(null)}
+            >
+              ✖
+            </button>
+            <img src={selectedDoc} alt="Selected Document" className="w-full h-auto" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

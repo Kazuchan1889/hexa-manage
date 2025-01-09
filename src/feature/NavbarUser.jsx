@@ -347,7 +347,7 @@ const NavbarUser = () => {
   console.log("Total unique nama count:", uniqueIdkCount); 
 
   return (
-    <div className="flex justify-between items-center w-full bg-accent">
+    <div className="flex justify-between items-center w-full bg-accent sticky top-0 z-50">
       <AppBar
         position="static"
         className="border-b bg-accent w-full flex items-center"

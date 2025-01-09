@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import { Avatar } from "@mui/material";
 import axios from "axios";
-import Bub from "../minicomponent/Bubble";
+
 import UserSummary from './UserSummary';
 
 function AccountSettingUser() {
@@ -120,7 +120,7 @@ function AccountSettingUser() {
   return (
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
-      <Bub />
+      
       <div className="flex m-4 rounded-xl bg-white drop-shadow-lg">
         {/* Sidebar for user info and navigation */}
         <div className="h-[folH] w-1/4 p-4 border border-gray">
