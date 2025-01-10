@@ -1,31 +1,52 @@
-dokumentasi web hris:
-node js versi v18.17.1
+Dokumentasi Web HRIS
 
-how to start (web):
-- buat file untuk project ini 
+Node.js Version
 
-- git clone https://github.com/Kazuchan1889/hexa-manage.git
+Versi yang digunakan: v18.17.1
 
-- npm i --force
+How to Start (Web)
 
--npm install axios
+Buat file untuk project ini.
 
-- npm i tailwindcss --forces
+Clone repository:
 
--npm run dev
+git clone https://github.com/Kazuchan1889/hexa-manage.git
 
-how to start (mobile):
--npx i --force
+Install dependencies:
 
--npm install axios
+npm i --force
+npm install axios
+npm i tailwindcss --force
 
--npm install -g expo-cli
+Jalankan project:
 
--npm i tailwindcss --force
+npm run dev
 
--npm start
+How to Start (Mobile)
 
-"dikarenakan project mobile menggunakan expo sehingga bisa di jalankan dengan menggunakan aplikasi expo di mobile android atau ios, tapi untuk di ios pasti akan terjadi beberapa bug sehingga di anjurkan menggunakan android untuk run nya. atau bisa juga menggunakan android studio untuk membuat viritual device"
+Install dependencies dengan perintah berikut:
 
-"pastikan back end sudah run terlebih dahulu dan terhubung dengan 1 jaringan yang sama
-lalu sama kan ip yang ada di ip.jsx dengan ip yang di gunakan untuk menyalakan back end. atau bisa juga dengan run nya secara local pada prangkat masing masing"
+npx i --force
+npm install axios
+npm install -g expo-cli
+npm i tailwindcss --force
+
+Jalankan project:
+
+npm start
+
+Catatan
+
+Dikarenakan project mobile menggunakan Expo, maka project dapat dijalankan menggunakan aplikasi Expo di perangkat Android atau iOS.
+
+Namun, pada perangkat iOS kemungkinan akan terjadi beberapa bug. Oleh karena itu, disarankan menggunakan perangkat Android untuk menjalankannya.
+
+Alternatif lain adalah menggunakan Android Studio untuk membuat virtual device.
+
+Pastikan Back-End Telah Berjalan
+
+Pastikan back-end telah dijalankan terlebih dahulu dan terhubung pada jaringan yang sama.
+
+Sesuaikan alamat IP yang ada di file ip.jsx dengan IP yang digunakan untuk menjalankan back-end.
+
+Alternatif lain adalah menjalankan proyek secara lokal pada perangkat masing-masing.
