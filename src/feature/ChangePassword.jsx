@@ -105,7 +105,7 @@ function PasswordResetDialog({ open, onClose }) {
       console.error("Error saving new password:", error);
     }
   };
-
+//AL.J V3
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle className="mb-4">Change Password</DialogTitle>

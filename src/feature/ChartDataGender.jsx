@@ -64,7 +64,7 @@ function ChartDataGender() {
   if (loading) {
     return <Loading />
   }
-
+//AL.J V3
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">

@@ -272,8 +272,8 @@ const CalendarComponent = () => {
   };
 
   return (
+    <div><NavbarUser />
     <section>
-  <NavbarUser />
   <div className="mx-20 text-left my-2">
     <h1 className="text-3xl font-bold">Schedule</h1>
   </div>
@@ -457,7 +457,7 @@ const CalendarComponent = () => {
     </div>
   </Modal>
 </section>
-
+</div>
   );
 };
 

@@ -1,3 +1,4 @@
+//AL.J V3
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ip from "../ip";
@@ -63,7 +64,7 @@ const AbsensiPage = () => {
 
   const pendingAbsensi = absensiList.filter((item) => !item.status);
   const approvedAbsensi = absensiList.filter((item) => item.status);
-
+//AL.J V3
   return (
     <div className="container mx-auto p-4">
       <NavbarUser />

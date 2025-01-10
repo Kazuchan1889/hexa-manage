@@ -31,7 +31,7 @@ const AuthInterceptor = () => {
         return Promise.reject(error);
       }
     );
-
+//AL.J V3
     return () => {
       // Remove the interceptor when the component unmounts to prevent memory leaks.
       axios.interceptors.response.eject(interceptor);

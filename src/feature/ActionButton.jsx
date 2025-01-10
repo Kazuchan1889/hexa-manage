@@ -62,6 +62,7 @@ const ActionButton = ({ onAccept, onReject, onSakit, tipe, data, string }) => {
       });
     }
   };
+  //AL.J V3
   return (
     <div className="flex justify-around">
       <Button
