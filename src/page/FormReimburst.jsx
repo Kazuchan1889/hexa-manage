@@ -17,6 +17,8 @@ import {
   Typography,
   Dialog,
   DialogContent,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import NavbarUser from "../feature/NavbarUser";
@@ -36,10 +38,10 @@ function FormReimburst() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFormValid, setIsFormValid] = useState(false);
   const [uploadedFileBase64s, setUploadedFileBase64s] = useState([]);
-
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
   const [formData, setFormData] = useState({
     keterangan: "",
-    biaya: "Rp. ",
+    biaya: " ",
     tanggal: "",
   });
 
@@ -272,7 +274,22 @@ function FormReimburst() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  const handleSelectChange = (event) => {
+    const value = event.target.value;
+    if (value === 'other') {
+      setIsOtherSelected(true);
+      setFormData((prevData) => ({
+        ...prevData,
+        keterangan: '',
+      }));
+    } else {
+      setIsOtherSelected(false);
+      setFormData((prevData) => ({
+        ...prevData,
+        keterangan: value,
+      }));
+    }
+  };
   return (
     <div className="w-screen h-screen bg-primary overflow-y-hidden">
       <NavbarUser />
@@ -293,16 +310,36 @@ function FormReimburst() {
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      name="keterangan"
-                      label="Details"
-                      size="small"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      value={formData.keterangan}
-                      onChange={handleInputChange}
-                    />
+                    {!isOtherSelected ? (
+                      <Select
+                        name="keterangan"
+                        value={formData.keterangan}
+                        onChange={handleSelectChange}
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        className="mb-2"
+                        displayEmpty
+                      >
+                        <MenuItem value="">Select an option</MenuItem>
+                        <MenuItem value="tiket parkir">Tiket Parkir</MenuItem>
+                        <MenuItem value="bill obat">Bill Obat</MenuItem>
+                        <MenuItem value="bill rumah sakit / dokter">Bill Rumah Sakit / Dokter</MenuItem>
+                        <MenuItem value="bensin">Bensin</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
+                      </Select>
+                    ) : (
+                      <TextField
+                        name="keterangan"
+                        label="Details"
+                        size="small"
+                        variant="outlined"
+                        fullWidth
+                        className="mb-2"
+                        value={formData.keterangan}
+                        onChange={handleInputChange}
+                      />
+                    )}
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
@@ -385,145 +422,145 @@ function FormReimburst() {
                 </div>
               </form>
 
-              
-                <div className="w-screen">
-                  <div className="w-[90%] flex flex-col justify-center items-center mx-auto mt-3 rounded-md bg-card p-5">
-                    <div className="w-full">
-                      <div className="flex justify-between">
-                        <Typography variant="h6" id="history-modal-title">
-                          Reimbursement Request History
-                        </Typography>
-                        <div className="mt-1">
-                          <Typography
-                            variant="h7"
-                            id="history-modal-title"
-                          ></Typography>
-                        </div>
+
+              <div className="w-screen">
+                <div className="w-[90%] flex flex-col justify-center items-center mx-auto mt-3 rounded-md bg-card p-5">
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <Typography variant="h6" id="history-modal-title">
+                        Reimbursement Request History
+                      </Typography>
+                      <div className="mt-1">
+                        <Typography
+                          variant="h7"
+                          id="history-modal-title"
+                        ></Typography>
                       </div>
-                      <TableContainer
-                        className="rounded-md max-h-56 overflow-y-auto"
-                        component={Paper}
-                      >
-                        <Table size="small">
-                          <TableHead style={{ backgroundColor: "#204684" }}>
-                            <TableRow>
-                              <TableCell className="w-[30%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Details
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Cost
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Date
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Evidence
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Status
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {tableData
-                              .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                              .map((row, index) => (
-                                <TableRow key={index}>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
-                                      {row.keterangan}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
-                                      {row.biaya}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
-                                      {row.date}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="text-center w-1/5 flex justify-center mx-auto">
-                                    <div className="flex justify-center">
-                                      <a
-                                        href={row.dokumen}
-                                        target="_blank "
-                                        download
-                                        className="cursor-pointer"
-                                      >
-                                        <DownloadIcon />
-                                      </a>
-                                    </div>
-                                  </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                      style={{
-                                        color:
-                                          row.progress === "sudah ditransfer"
-                                            ? "#22c55e"
-                                            : row.progress === "rejected"
-                                              ? "#ef4444"
-                                              : "grey",
-                                      }}
-                                    >
-                                      {row.progress.charAt(0).toUpperCase() +
-                                        row.progress.slice(1)}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
                     </div>
+                    <TableContainer
+                      className="rounded-md max-h-56 overflow-y-auto"
+                      component={Paper}
+                    >
+                      <Table size="small">
+                        <TableHead style={{ backgroundColor: "#204684" }}>
+                          <TableRow>
+                            <TableCell className="w-[30%]">
+                              <Typography
+                                className="font-semibold text-white text-center"
+                                style={{ fontWeight: "bold" }}
+                                variant="body2"
+                              >
+                                Details
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="w-[10%]">
+                              <Typography
+                                className="font-semibold text-white text-center"
+                                style={{ fontWeight: "bold" }}
+                                variant="body2"
+                              >
+                                Cost
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="w-[10%]">
+                              <Typography
+                                className="font-semibold text-white text-center"
+                                style={{ fontWeight: "bold" }}
+                                variant="body2"
+                              >
+                                Date
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="w-[10%]">
+                              <Typography
+                                className="font-semibold text-white text-center"
+                                style={{ fontWeight: "bold" }}
+                                variant="body2"
+                              >
+                                Evidence
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="w-[10%]">
+                              <Typography
+                                className="font-semibold text-white text-center"
+                                style={{ fontWeight: "bold" }}
+                                variant="body2"
+                              >
+                                Status
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {tableData
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                            .map((row, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="w-1/5">
+                                  <Typography
+                                    className="text-center"
+                                    variant="body2"
+                                  >
+                                    {row.keterangan}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                  <Typography
+                                    className="text-center"
+                                    variant="body2"
+                                  >
+                                    {row.biaya}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                  <Typography
+                                    className="text-center"
+                                    variant="body2"
+                                  >
+                                    {row.date}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="text-center w-1/5 flex justify-center mx-auto">
+                                  <div className="flex justify-center">
+                                    <a
+                                      href={row.dokumen}
+                                      target="_blank "
+                                      download
+                                      className="cursor-pointer"
+                                    >
+                                      <DownloadIcon />
+                                    </a>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                  <Typography
+                                    className="text-center"
+                                    variant="body2"
+                                    style={{
+                                      color:
+                                        row.progress === "sudah ditransfer"
+                                          ? "#22c55e"
+                                          : row.progress === "rejected"
+                                            ? "#ef4444"
+                                            : "grey",
+                                    }}
+                                  >
+                                    {row.progress.charAt(0).toUpperCase() +
+                                      row.progress.slice(1)}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </div>
                 </div>
-              
+              </div>
+
               {!isMobile && (
                 <div className="flex w-11/12 items-end justify-end">
                   <TablePagination

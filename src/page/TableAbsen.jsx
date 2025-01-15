@@ -311,7 +311,8 @@ import ip from "../ip";
 import PatchStatus from "../feature/PatchStatus";
 import ActionButton from "../feature/ActionButton";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
-
+import { Modal, Box, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const TableAbsen = () => {
   const [rows, setRows] = useState([]);
@@ -331,6 +332,8 @@ const TableAbsen = () => {
   const apiURLAbsenKaryawan = `${ip}/api/absensi/get/data/dated`;
   const apiURLSettingJam = `${ip}/api/absensi/update/seting`;
   const currentDay = new Date().getDay(); // 0 untuk Minggu, 1 untuk Senin, dst.
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState("");
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
   const isWeekend = currentDay === 6 || currentDay === 0;
@@ -864,7 +867,11 @@ const TableAbsen = () => {
                                   <img
                                     src={row.fotomasuk}
                                     alt="Foto Masuk"
-                                    style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                    style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
+                                    onClick={() => {
+                                      setSelectedPhoto(row.fotomasuk);
+                                      setOpenModal(true);
+                                    }}
                                   />
                                 </div>
                               ) : (
@@ -949,6 +956,81 @@ const TableAbsen = () => {
             labelRowsPerPage="Jumlah Data"
           />
         </div>
+        {/* Modal untuk menampilkan foto */}
+        <Modal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          aria-labelledby="photo-preview-modal"
+          aria-describedby="photo-preview-modal-description"
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: { xs: '80%', sm: '70%', md: '50%' },
+              maxWidth: '28cm',
+              height: 'auto',
+              maxHeight: '80vh',
+              p: 0,
+              boxShadow: 24,
+              bgcolor: 'background.paper',
+              borderRadius: '8px',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Icon Close (❌) */}
+            <IconButton
+              sx={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                color: 'red',
+                zIndex: 2,
+              }}
+              onClick={() => setOpenModal(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            {/* Foto Preview */}
+            <img
+              src={selectedPhoto}
+              alt="Preview"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                border: 'none',
+                display: 'block',
+              }}
+            />
+
+            {/* Tombol Download */}
+            <Box
+              sx={{
+                textAlign: 'center',
+                padding: '16px',
+                backgroundColor: '#f0f0f0',
+              }}
+            >
+              <a
+                href={selectedPhoto}
+                download="photo.jpg"
+                style={{
+                  textDecoration: 'none',
+                  color: '#2E7D32',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                }}
+              >
+                Download Photo
+              </a>
+            </Box>
+          </Box>
+        </Modal>
+
       </div>
       {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
     </div>
