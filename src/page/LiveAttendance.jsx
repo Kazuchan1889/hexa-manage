@@ -68,33 +68,33 @@ function LiveAttendance() {
     }, []);
 
     const capturePhoto = () => {
-        const video = videoRef.current;
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-    
-        const ctx = canvas.getContext("2d");
-    
-        // Gambar frame video ke dalam canvas
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
-        // Buat timestamp
-        const now = new Date();
-        const timestamp = now.toLocaleString(); // Format waktu lokal
-    
-        // Tambahkan timestamp ke canvas
-        ctx.font = "24px Helvetica";
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
-    
-        // Gambar teks dengan outline hitam agar lebih terbaca
-        ctx.strokeText(timestamp, 10, canvas.height - 30);
-        ctx.fillText(timestamp, 10, canvas.height - 30);
-    
-        // Konversi canvas ke data URL
-        return canvas.toDataURL("image/jpeg");
-    };
+    const video = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    // Gambar frame video ke dalam canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Buat timestamp
+    const now = new Date();
+    const timestamp = now.toLocaleString(); // Format waktu lokal
+
+    // Tambahkan timestamp ke canvas
+    ctx.font = "24px Helvetica";
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+
+    // Gambar teks dengan outline hitam agar lebih terbaca
+    ctx.strokeText(timestamp, 10, canvas.height - 30);
+    ctx.fillText(timestamp, 10, canvas.height - 30);
+
+    // Konversi canvas ke data URL
+    return canvas.toDataURL("image/jpeg");
+};
 
     const getLocation = () => {
         return new Promise((resolve, reject) => {
