@@ -5,7 +5,7 @@ import ip from "../ip";
 import axios from "axios";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 function LiveAttendance() {
     const [masuk, setMasuk] = useState("");
@@ -16,8 +16,8 @@ function LiveAttendance() {
     );
     const [location, setLocation] = useState(null);
     const videoRef = useRef(null);
-    const [isLoading, setIsLoading] = useState(false); 
-    const navigate = useNavigate(); 
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const isUserCheckin = checkInStatus === "udahMasuk";
     const isUserCheckout = checkInStatus === "udahKeluar";
@@ -66,35 +66,56 @@ function LiveAttendance() {
         const intervalId = setInterval(fetchServerTime, 1000);
         return () => clearInterval(intervalId);
     }, []);
+    
+    // Fungsi untuk mengambil lokasi kerja dari access token
+    function getLokasiKerjaFromAccessToken() {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return null; // Token tidak ditemukan
+
+        try {
+            // Token biasanya berupa format Base64 (mungkin JWT)
+            const payloadBase64 = token.split('.')[1]; // Bagian payload dari token (biasanya setelah titik pertama)
+            const decodedPayload = atob(payloadBase64); // Decode dari Base64
+            const payload = JSON.parse(decodedPayload); // Parsing JSON payload
+
+            return payload.lokasikerja || null; // Mengambil lokasi kerja jika ada
+        } catch (error) {
+            console.error("Invalid token format:", error);
+            return null;
+        }
+    }
 
     const capturePhoto = () => {
-    const video = videoRef.current;
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+        const video = videoRef.current;
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
 
-    const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
 
-    // Gambar frame video ke dalam canvas
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Gambar frame video ke dalam canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Buat timestamp
-    const now = new Date();
-    const timestamp = now.toLocaleString(); // Format waktu lokal
+        // Buat timestamp
+        const now = new Date();
+        const timestamp = now.toLocaleString(); // Format waktu lokal
 
-    // Tambahkan timestamp ke canvas
-    ctx.font = "24px Helvetica";
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
+        // Ambil lokasi kerja dari access token
+        let lokasiKerja = getLokasiKerjaFromAccessToken() || "Lokasi Tidak Tersedia"; // Default jika tidak ada lokasi kerja
 
-    // Gambar teks dengan outline hitam agar lebih terbaca
-    ctx.strokeText(timestamp, 10, canvas.height - 30);
-    ctx.fillText(timestamp, 10, canvas.height - 30);
+        // Tambahkan timestamp dan lokasi ke canvas
+        ctx.font = "24px Helvetica";
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
 
-    // Konversi canvas ke data URL
-    return canvas.toDataURL("image/jpeg");
-};
+        // Gambar teks dengan outline hitam agar lebih terbaca
+        ctx.strokeText(timestamp + " - " + lokasiKerja, 10, canvas.height - 30);
+        ctx.fillText(timestamp + " - " + lokasiKerja, 10, canvas.height - 30);
+
+        // Konversi canvas ke data URL
+        return canvas.toDataURL("image/jpeg");
+    };
 
     const getLocation = () => {
         return new Promise((resolve, reject) => {
@@ -145,7 +166,7 @@ function LiveAttendance() {
             const peerConnection = new RTCPeerConnection();
             peerConnection.createDataChannel("");
             peerConnection.createOffer().then((offer) => peerConnection.setLocalDescription(offer));
-            
+
             peerConnection.onicecandidate = (event) => {
                 if (event && event.candidate) {
                     const candidate = event.candidate.candidate;
@@ -159,7 +180,7 @@ function LiveAttendance() {
             setTimeout(() => reject("Unable to get IP address"), 5000);
         });
     };
-    
+
     const handleCheckIn = async () => {
         if (isLoading || isUserCheckin) {
             Swal.fire({
@@ -172,12 +193,12 @@ function LiveAttendance() {
             return;
         }
         setIsLoading(true);
-    
+
         try {
             const localIP = await getLocalIP();
             console.log("Detected IP:", localIP);
-    
-           
+
+
             if (localIP !== "192.168.137.13") {
                 Swal.fire({
                     icon: "error",
@@ -187,10 +208,10 @@ function LiveAttendance() {
                 setIsLoading(false);
                 return;
             }
-    
+
             const fotomasuk = capturePhoto();
             const location = await getLocation();
-    
+
             if (!isWithinArea(location.latitude, location.longitude)) {
                 Swal.fire({
                     icon: "error",
@@ -200,16 +221,16 @@ function LiveAttendance() {
                 setIsLoading(false);
                 return;
             }
-    
+
             const apiSubmit = `${ip}/api/absensi/patch/masuk`;
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
                 "Content-Type": "application/json",
             };
             const payload = { fotomasuk, location };
-    
+
             const response = await axios.patch(apiSubmit, payload, { headers });
-    
+
             if (response.status === 200) {
                 localStorage.setItem("result", "udahMasuk");
                 setCheckInStatus("udahMasuk");
@@ -231,7 +252,7 @@ function LiveAttendance() {
             setIsLoading(false);
         }
     };
-    
+
 
     const handleCheckOut = async () => {
         if (isLoading || isUserCheckout) {
@@ -246,7 +267,7 @@ function LiveAttendance() {
             return;
         }
         setIsLoading(true);
-    
+
         try {
             // 🔍 Validasi IP sebelum check-out
             const localIP = await getLocalIP();
@@ -259,10 +280,10 @@ function LiveAttendance() {
                 setIsLoading(false);
                 return;
             }
-    
+
             // 📸 Ambil foto saat check-out
             const fotokeluar = capturePhoto(); // Get Base64 photo
-    
+
             // 🔗 Endpoint API untuk check-out
             const apiSubmit = `${ip}/api/absensi/patch/keluar`;
             const headers = {
@@ -272,10 +293,10 @@ function LiveAttendance() {
             const payload = {
                 fotokeluar, // send Base64 photo
             };
-    
+
             // 📨 Kirim request ke API
             const response = await axios.patch(apiSubmit, payload, { headers });
-    
+
             // ✅ Jika berhasil
             if (response.status === 200) {
                 localStorage.setItem("result", "udahKeluar");
@@ -298,7 +319,7 @@ function LiveAttendance() {
             setIsLoading(false);
         }
     };
-    
+
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true })

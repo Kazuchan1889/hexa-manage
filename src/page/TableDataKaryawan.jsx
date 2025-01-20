@@ -374,7 +374,7 @@ const TableDataKaryawan = () => {
                                       View Profile
                                     </MenuItem>
                                   )}
-                                  {operation.includes("UPDATE_KARYAWAN") && (
+                                  {/* {operation.includes("UPDATE_KARYAWAN") && (
                                     <MenuItem
                                       onClick={() => handleEdit(selectedIndex)}
                                     >
@@ -384,7 +384,7 @@ const TableDataKaryawan = () => {
                                       />
                                       Edit Profile
                                     </MenuItem>
-                                  )}
+                                  )} */}
                                   {operation.includes("UPDATE_KARYAWAN") && (
                                     <MenuItem
                                       onClick={() =>
@@ -449,7 +449,7 @@ const TableDataKaryawan = () => {
           onClose={() => setDetailOpen(false)}
         />
       )}
-      {isEditOpen && (
+      {/* {isEditOpen && (
         <EditDataKaryawan
           data={selectedData}
           onClose={() => setEditOpen(false)}
@@ -458,7 +458,7 @@ const TableDataKaryawan = () => {
           setRows={setRows}
           fetchData={fetchData}
         />
-      )}
+      )} */}
       {isSettingOpen && (
         <EditOperation
           data={selectedData}

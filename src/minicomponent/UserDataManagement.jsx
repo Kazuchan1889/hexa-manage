@@ -366,17 +366,17 @@ const UserDataManagement = () => {
                                       View Profile
                                     </MenuItem>
                                   )}
-                                  {operation.includes("UPDATE_KARYAWAN") && (
-                                    <MenuItem
-                                      onClick={() => handleEdit(selectedIndex)}
-                                    >
-                                      <EditIcon
-                                        className="text-gray-500"
-                                        style={{ marginRight: "8px" }}
-                                      />
-                                      Edit Profile
-                                    </MenuItem>
-                                  )}
+                                  {/* {operation.includes("UPDATE_KARYAWAN") && (
+                                      <MenuItem
+                                        onClick={() => handleEdit(selectedIndex)}
+                                      >
+                                        <EditIcon
+                                          className="text-gray-500"
+                                          style={{ marginRight: "8px" }}
+                                        />
+                                        Edit Profile
+                                      </MenuItem>
+                                    )} */}
                                   {operation.includes("UPDATE_KARYAWAN") && (
                                     <MenuItem
                                       onClick={() =>
@@ -441,7 +441,7 @@ const UserDataManagement = () => {
           onClose={() => setDetailOpen(false)}
         />
       )}
-      {isEditOpen && (
+      {/* {isEditOpen && (
         <EditDataKaryawan
           data={selectedData}
           onClose={() => setEditOpen(false)}
@@ -450,7 +450,7 @@ const UserDataManagement = () => {
           setRows={setRows}
           fetchData={fetchData}
         />
-      )}
+      )} */}
       {isSettingOpen && (
         <EditOperation
           data={selectedData}
