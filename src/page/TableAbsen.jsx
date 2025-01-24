@@ -1,318 +1,36 @@
-// import { useState, useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux"; // Importing Redux hooks
-// import { loadingAction } from "../store/store"; // Importing Redux action
-// import axios from "axios";
-// import NavbarUser from "../feature/NavbarUser";
-// import SettingHoliday from "../feature/SettingHoliday";
-// import Typography from "@mui/material/Typography";
-// import TableContainer from "@mui/material/TableContainer";
-// import Table from "@mui/material/Table";
-// import TableBody from "@mui/material/TableBody";
-// import TableCell from "@mui/material/TableCell";
-// import TableHead from "@mui/material/TableHead";
-// import TableRow from "@mui/material/TableRow";
-// import { Card, CardContent } from "@mui/material";
-// import SearchIcon from "@mui/icons-material/Search";
-// import MoreVertIcon from "@mui/icons-material/MoreVert";
-// import InputBase from "@mui/material/InputBase";
-// import DescriptionIcon from "@mui/icons-material/Description";
-// import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-// import SettingsIcon from "@mui/icons-material/Settings";
-// import TablePagination from "@mui/material/TablePagination";
-// import Paper from "@mui/material/Paper";
-// import Menu from "@mui/material/Menu";
-// import MenuItem from "@mui/material/MenuItem";
-// import TextField from "@mui/material/TextField";
-// import Button from "@mui/material/Button";
-// import Dialog from "@mui/material/Dialog";
-// import DialogActions from "@mui/material/DialogActions";
-// import DialogContent from "@mui/material/DialogContent";
-// import DialogTitle from "@mui/material/DialogTitle";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-// import ip from "../ip";
-// import PatchStatus from "../feature/PatchStatus";
-// import Loading from "../page/Loading"; // Importing Loading component
-
-// const TableAbsen = () => {
-//   const [rows, setRows] = useState([]);
-//   const [originalRows, setOriginalRows] = useState([]);
-//   const [page, setPage] = useState(0);
-//   const [rowsPerPage, setRowsPerPage] = useState(5);
-//   const [search, setSearch] = useState("");
-//   const [selectedDate, setSelectedDate] = useState(null);
-//   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
-//   const [anchorEl, setAnchorEl] = useState(null);
-//   const [isTimeSettingOpen, setIsTimeSettingOpen] = useState(false);
-//   const [isHolidayOpen, setIsHolidayOpen] = useState(false);
-//   const [timeMasuk, setTimeMasuk] = useState(null);
-//   const [timeKeluar, setTimeKeluar] = useState(null);
-//   const [selectedToleransi, setSelectedToleransi] = useState(null);
-//   const operation = localStorage.getItem("operation");
-//   const apiURLAbsenKaryawan = `${ip}/api/absensi/get/data/dated`;
-//   const apiURLSettingJam = `${ip}/api/absensi/update/seting`;
-
-//   const dispatch = useDispatch(); // Using dispatch from Redux
-//   const loading = useSelector((state) => state.loading.isLoading); // Accessing loading state from Redux
-
-//   const config = {
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: localStorage.getItem("accessToken"),
-//     },
-//   };
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       dispatch(loadingAction.startLoading(true)); // Dispatch loading start
-//       try {
-//         const response = await axios.post(apiURLAbsenKaryawan, { date: selectedDate }, config);
-//         setRows(response.data);
-//         setOriginalRows(response.data);
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//       } finally {
-//         dispatch(loadingAction.startLoading(false)); // Dispatch loading end
-//       }
-//     };
-
-//     fetchData();
-//   }, [selectedDate, dispatch]);
-
-//   const handleSearchChange = (event) => {
-//     const query = event.target.value;
-//     setSearch(query);
-//     setPage(0);
-//     if (!query) {
-//       setRows(originalRows);
-//     }
-//   };
-
-//   const handleSearch = () => {
-//     const filteredRows = originalRows.filter((row) =>
-//       row.nama.toLowerCase().includes(search.toLowerCase())
-//     );
-//     setRows(filteredRows);
-//     setPage(0);
-//   };
-
-//   if (loading) {
-//     return <Loading />; // Show loading state if data is being fetched
-//   }
-
-//   function Base64Image({ base64String }) {
-//     // Buat URL untuk base64 data
-//     const imageUrl = `data:image/jpeg;base64,${base64String}`;
-
-//     return <img src={imageUrl} alt="Gambar" style={{ maxWidth: '100px', maxHeight: '100px' }} />;
-// }
-
-//   return (
-//     <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
-//       <NavbarUser />
-//       <div className="flex w-full justify-center">
-//         <div className="flex w-[90%] items-start justify-start my-2">
-//           <Typography variant="h5" style={{ fontWeight: 600 }}>Data Absensi</Typography>
-//         </div>
-//       </div>
-//       <div className="flex justify-center items-center w-screen my-2">
-//         <Card className="w-[90%]">
-//           <CardContent>
-//             <div className="flex justify-between items-center">
-//               <div className="flex items-center w-full mx-auto space-x-1">
-//                 <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-//                   <SearchIcon style={{ fontSize: 25 }} />
-//                   <InputBase
-//                     placeholder="Search..."
-//                     onKeyPress={(event) => {
-//                       if (event.key === "Enter") {
-//                         handleSearch();
-//                       }
-//                     }}
-//                     onChange={handleSearchChange}
-//                     className="w-full"
-//                   />
-//                 </div>
-//                 <div className="flex rounded-lg space-x-1">
-//                   <Button size="small" variant="text" onClick={() => setIsDateFilterOpen(true)}>
-//                     <CalendarMonthIcon className="text-black" />
-//                   </Button>
-//                   <Button
-//                     variant="contained"
-//                     size="small"
-//                     style={{ backgroundColor: "#204684" }}
-//                     onClick={handleSearch}
-//                   >
-//                     Search
-//                   </Button>
-//                   <Dialog open={isDateFilterOpen} onClose={() => setIsDateFilterOpen(false)}>
-//                     <DialogTitle>Pilih Tanggal</DialogTitle>
-//                     <DialogContent>
-//                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-//                         <DatePicker
-//                           value={selectedDate}
-//                           onChange={(date) => {
-//                             setSelectedDate(date);
-//                             setIsDateFilterOpen(false);
-//                           }}
-//                           renderInput={(params) => (
-//                             <div className="w-64 mt-2">
-//                               <input
-//                                 {...params.inputProps}
-//                                 className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-//                               />
-//                             </div>
-//                           )}
-//                         />
-//                       </LocalizationProvider>
-//                     </DialogContent>
-//                   </Dialog>
-//                 </div>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//       <div className="flex flex-col justify-between items-center my-2 rounded-xl mx-auto drop-shadow-xl">
-//         <Card className="w-[90%]">
-//           <CardContent>
-//             <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-lg">
-//               <TableContainer component={Paper} style={{ width: "100%" }}>
-//                 <Table aria-label="simple table" size="small">
-//                   <TableHead style={{ backgroundColor: "#204684" }}>
-//                     <TableRow>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Nama</p>
-//                       </TableCell>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Jam Masuk</p>
-//                       </TableCell>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Jam Pulang</p>
-//                       </TableCell>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Tanggal</p>
-//                       </TableCell>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Photo</p>
-//                       </TableCell>
-//                       <TableCell align="center">
-//                         <p className="text-white font-semibold">Status</p>
-//                       </TableCell>
-//                     </TableRow>
-//                   </TableHead>
-//                   <TableBody className="bg-gray-100">
-//                     {(rowsPerPage > 0
-//                       ? rows.slice(
-//                           page * rowsPerPage,
-//                           page * rowsPerPage + rowsPerPage
-//                         )
-//                       : rows
-//                     )
-//                       .sort((a, b) => a.nama.localeCompare(b.nama))
-//                       .map((row, index) => {
-//                         const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
-//                         const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
-//                         const isLateMasuk = jamMasukRow > timeMasuk;
-//                         const isLateKeluar = jamKeluarRow > timeKeluar;
-
-//                         return (
-//                           <TableRow key={index}>
-//                             <TableCell align="center">{row.nama}</TableCell>
-//                             <TableCell 
-//                               align="center" 
-//                               style={{ color: isLateMasuk ? 'red' : 'black' }}
-//                             >
-//                               {row.masuk}
-//                             </TableCell>
-//                             <TableCell 
-//                               align="center" 
-//                               style={{ color: isLateKeluar ? 'red' : 'black' }}
-//                             >
-//                               {row.keluar}
-//                             </TableCell>
-//                             <TableCell align="center">{row.date}</TableCell>
-//                             <TableCell align="center">
-//                                   <img 
-//                                     src={row.fotomasuk} 
-//                                     alt="Foto Masuk" 
-//                                     style={{ width: "50px", height: "50px", objectFit: "cover" }} 
-//                                   />
-//                                 </TableCell>
-//                             <TableCell align="center" className="flex items-center">
-//                               <PatchStatus string={row.status} id={row.id} />
-//                             </TableCell>
-//                           </TableRow>
-//                         );
-//                       })}
-//                   </TableBody>
-//                 </Table>
-//               </TableContainer>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//       <div className="flex w-full justify-center">
-//         <div className="flex w-11/12 items-end justify-end">
-//           <TablePagination
-//             rowsPerPageOptions={[5, 10, 25]}
-//             component="div"
-//             count={rows.length}
-//             rowsPerPage={rowsPerPage}
-//             page={page}
-//             onPageChange={(event, newPage) => setPage(newPage)}
-//             onRowsPerPageChange={(event) => setRowsPerPage(parseInt(event.target.value, 10))}
-//             labelRowsPerPage="Jumlah Data"
-//           />
-//         </div>
-//       </div>
-//       {isHolidayOpen && <SettingHoliday onClose={() => setIsHolidayOpen(false)} />}
-//     </div>
-//   );
-// };
-
-// export default TableAbsen;
-
-import { useState, useEffect } from "react";
-import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
-import SettingHoliday from "../feature/SettingHoliday";
-import Typography from "@mui/material/Typography";
+import React, { useState, useEffect } from "react";
+import SettingsIcon from "@mui/icons-material/Settings";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import TableContainer from "@mui/material/TableContainer";
+import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Card, CardContent } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import InputBase from "@mui/material/InputBase";
-import DescriptionIcon from "@mui/icons-material/Description";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import SettingsIcon from "@mui/icons-material/Settings";
-import TablePagination from "@mui/material/TablePagination";
-import Paper from "@mui/material/Paper";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import ip from "../ip";
+import SettingHoliday from "../feature/SettingHoliday";
 import PatchStatus from "../feature/PatchStatus";
 import ActionButton from "../feature/ActionButton";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
-import { Modal, Box, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import Paper from "@mui/material/Paper";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Button from "@mui/material/Button";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import axios from 'axios';
+import ip from "../ip";
+
 
 const TableAbsen = () => {
   const [rows, setRows] = useState([]);
@@ -334,6 +52,9 @@ const TableAbsen = () => {
   const currentDay = new Date().getDay(); // 0 untuk Minggu, 1 untuk Senin, dst.
   const [openModal, setOpenModal] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState("");
+  const [date, setDate] = useState("");
+  const [hour, setHour] = useState(null);
+
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
   const isWeekend = currentDay === 6 || currentDay === 0;
@@ -624,417 +345,289 @@ const TableAbsen = () => {
     return <img src={imageUrl} alt="Gambar" style={{ maxWidth: '100px', maxHeight: '100px' }} />;
   }
 
+  useEffect(() => {
+    // Get the server time using your existing method or API if needed
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric", // Added the year to the format
+    });
+    const currentHour = new Date().getHours();
+
+    setDate(currentDate); // Set the formatted date
+    setHour(currentHour); // Set the current hour
+  }, []);
+
+
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-auto">
-      <NavbarUser />
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            {" "}
-            Attendance Data{" "}
-          </Typography>
+    <div className="min-h-screen bg-gray-100">
+      {/* Container 1 */}
+      <div className="bg-[#11284E] text-white p-6 rounded-b-lg shadow-lg">
+        <div className="flex justify-between items-center">
+          {/* Left Corner */}
+          <div>
+            <p className="text-lg font-bold">{date}</p>
+            {hour !== null && (
+              <p className="text-sm">Current hour: {hour} o'clock</p>
+            )}
+          </div>
+
+          {/* Right Corner */}
+          <div className="flex items-center space-x-4">
+            <NotificationsIcon className="w-6 h-6 cursor-pointer" />
+            <SettingsIcon className="w-6 h-6 cursor-pointer" />
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onKeyPress={handleKeyPress}
-                    onChange={handleSearchChange}
-                    className="w-full"
+
+        {/* Center Content */}
+        <div className="text-center mt-6">
+          <h1 className="text-2xl font-bold">Attendance Data</h1>
+          <div className="mt-4 flex justify-center items-center space-x-4">
+            {/* Button with Dots */}
+            <button
+              className="p-2 bg-white rounded-full shadow"
+              onClick={handleClick}
+            >
+              <MoreHorizIcon className="text-[#11284E] w-6 h-6" />
+            </button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={openTimeSetting} onClose={handleClose}>
+                <SettingsIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                Setting Attendance Hours
+              </MenuItem>
+              <MenuItem onClick={openHolidaySetting} onClose={handleClose}>
+                <CalendarMonthIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                Setting Holiday Dates
+              </MenuItem>
+            </Menu>
+
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="p-2 pl-10 rounded-full border border-gray-300 w-64 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
                   />
-                </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                  <Dialog
-                    open={isDateFilterOpen}
-                    onClose={handleCloseDateFilter}
-                  >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
-                    {/* Judul "Pilih Tanggal" */}
-                    <DialogContent>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          value={selectedDate}
-                          onChange={handleDateFilterChange}
-                          renderInput={(params) => (
-                            <div className="w-64 mt-2">
-                              <input
-                                {...params.inputProps}
-                                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                              />
-                            </div>
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
-                  <Button
-                    disabled={!operation.includes("UPDATE_ABSENSI")}
-                    size="small"
-                    variant="contained"
-                    className="bg-blue-500 hover-bg-blue-400 p-1 rounded-lg"
-                    onClick={handleClick}
-                  >
-                    <MoreVertIcon />
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={openTimeSetting} onClose={handleClose}>
-                      <SettingsIcon
-                        className="text-gray-500"
-                        style={{ marginRight: "8px" }}
-                      />
-                      Setting Attendance Hours
-                    </MenuItem>
-                    <MenuItem
-                      onClick={openHolidaySetting}
-                      onClose={handleClose}
-                    >
-                      <CalendarMonthIcon
-                        className="text-gray-500"
-                        style={{ marginRight: "8px" }}
-                      />
-                      Setting Holiday Dates
-                    </MenuItem>
-                  </Menu>
-                  <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
-                    <DialogTitle>Setting Attendance Hours</DialogTitle>
-                    <DialogContent>
-                      <div className="flex space-x-1">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <div className="flex my-2">
-                            <TimePicker
-                              label="Clock In"
-                              value={timeMasuk}
-                              onChange={(val) => {
-                                handleTimeChange(val, true);
-                              }}
-                              style={{ width: "100%" }}
-                            />
-                          </div>
-                        </LocalizationProvider>
-                        <div className="flex my-2">
-                          <TextField
-                            label="Tolerance (Minute)"
-                            type="number"
-                            value={selectedToleransi}
-                            onChange={(event) =>
-                              handleToleransiChange(
-                                parseInt(event.target.value)
-                              )
-                            }
-                          />
-                        </div>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <div className="flex my-2">
-                            <TimePicker
-                              label="Clock Out"
-                              value={timeKeluar}
-                              onChange={(val) => {
-                                handleTimeChange(val, false);
-                              }}
-                              style={{ width: "100%" }}
-                            />
-                          </div>
-                        </LocalizationProvider>
-                      </div>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={handleTimeSave}
-                        size="small"
-                        style={{ backgroundColor: "#204684" }}
-                        variant="contained"
-                      >
-                        <p>Save</p>
-                      </Button>
-                      <Button
-                        onClick={closeTimeSetting}
-                        style={{ backgroundColor: "#F&FAFC" }}
-                        size="small"
-                        variant="outlined"
-                      >
-                        <p className="bg-gray-100">Close</p>
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={handleExcel}
-                  >
-                    <DescriptionIcon className="text-white" />
-                  </Button>
-                </div>
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
               </div>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* File Icon */}
+            <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+              <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col justify-between items-center my-2 rounded-xl mx-auto drop-shadow-xl">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="max-w-full rounded-lg overflow-y-auto drop-shadow-lg">
-              <TableContainer component={Paper} style={{ width: "100%" }}>
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
-                    <TableRow>
+
+      {/* Container 2 */}
+      <div className="bg-white p-6 mt-4 rounded-lg shadow-md mx-4">
+        <TableContainer component={Paper} style={{ width: "100%" }}>
+          <Table aria-label="simple table" size="small">
+            <TableHead style={{ backgroundColor: "#204684" }}>
+              <TableRow>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Name</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Clock In</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Clock Out</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Date</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Overtime</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Photo</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Status</p>
+                </TableCell>
+                {isWeekend && (
+                  <TableCell align="center">
+                    <p className="text-white font-semibold">Action</p>
+                  </TableCell>
+                )}
+                <TableCell align="center">
+                  <p className="text-white font-semibold">Export</p>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody className="bg-gray-100">
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                  const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                  const isLateMasuk = jamMasukRow > timeMasuk;
+                  const isLateKeluar = jamKeluarRow > timeKeluar;
+
+                  return (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.nama}</TableCell>
+                      <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
+                        {row.masuk}
+                      </TableCell>
+                      <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
+                        {row.keluar}
+                      </TableCell>
+                      <TableCell align="center">{row.date}</TableCell>
+                      <TableCell align="center">no</TableCell>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Name</p>
+                        {row.fotomasuk ? (
+                          <div className="flex justify-center items-center h-full">
+                            <img
+                              src={row.fotomasuk}
+                              alt="Foto Masuk"
+                              style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
+                              onClick={() => {
+                                setSelectedPhoto(row.fotomasuk);
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <p>No Photo</p>
+                        )}
                       </TableCell>
                       <TableCell align="center">
-                        <p className="text-white font-semibold">Clock In</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Clock Out</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Date</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Overtime</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Photo</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-white font-semibold">Status</p>
+                        <PatchStatus string={row.status} id={row.id} />
                       </TableCell>
                       {isWeekend && (
                         <TableCell align="center">
-                          <p className="text-white font-semibold">Action</p>
+                          <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
                         </TableCell>
                       )}
                       <TableCell align="center">
-                        <p className="text-white font-semibold">export</p>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          startIcon={<FileDownloadOutlined />}
+                          onClick={() => {
+                            axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
+                              headers: {
+                                "Content-Type": "application/json",
+                                Authorization: localStorage.getItem("accessToken"),
+                              },
+                              responseType: "blob",
+                            })
+                              .then((response) => {
+                                const url = window.URL.createObjectURL(new Blob([response.data]));
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.setAttribute("download", "data_export.xlsx");
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                              })
+                              .catch((error) => {
+                                console.error("Error exporting data:", error);
+                                alert("Failed to export data.");
+                              });
+                          }}
+                        >
+                          Export
+                        </Button>
                       </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      : rows
-                    )
-                      .sort((a, b) => a.nama.localeCompare(b.nama))
-                      .map((row, index) => {
-                        const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
-                        const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
-                        const isLateMasuk = jamMasukRow > timeMasuk;
-                        const isLateKeluar = jamKeluarRow > timeKeluar;
-
-                        return (
-                          <TableRow key={index}>
-                            <TableCell align="center">{row.nama}</TableCell>
-                            <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
-                              {row.masuk}
-                            </TableCell>
-                            <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
-                              {row.keluar}
-                            </TableCell>
-                            <TableCell align="center">{row.date}</TableCell>
-                            <TableCell align="center">no</TableCell>
-                            <TableCell align="center">
-                              {row.fotomasuk ? (
-                                <div className="flex justify-center items-center h-full">
-                                  <img
-                                    src={row.fotomasuk}
-                                    alt="Foto Masuk"
-                                    style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
-                                    onClick={() => {
-                                      setSelectedPhoto(row.fotomasuk);
-                                      setOpenModal(true);
-                                    }}
-                                  />
-                                </div>
-                              ) : (
-                                <p>No Photo</p>
-                              )}
-                            </TableCell>
-                            <TableCell align="center" className="flex items-center">
-                              <PatchStatus string={row.status} id={row.id} />
-                            </TableCell>
-                            {isWeekend && (
-                              <TableCell align="center" className="flex items-center">
-                                <ActionButton
-                                  onAccept={handleApproval}
-                                  onReject={handleReject}
-                                  data={row}
-                                  tipe={"nonIzin"}
-                                  string={"Absen"}
-                                />
-                              </TableCell>
-                            )}
-                            <TableCell align="center">
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<FileDownloadOutlined />}
-                                onClick={() => {
-                                  console.log("Mengirim userId ke backend:", row.idk); // Log untuk memastikan userId
-
-                                  axios
-                                    .post(
-                                      `${ip}/api/export/data/8`,
-                                      { userId: row.idk }, // Mengirim row.idk sebagai userId
-                                      {
-                                        headers: {
-                                          "Content-Type": "application/json", // Menentukan tipe konten sebagai JSON
-                                          Authorization: localStorage.getItem("accessToken"), // Mengambil access token dari localStorage
-                                        },
-                                        responseType: "blob", // Mengharapkan respons dalam bentuk Blob (binary data)
-                                      }
-                                    )
-                                    .then((response) => {
-                                      // Membuat objek URL untuk file blob yang diterima
-                                      const url = window.URL.createObjectURL(new Blob([response.data]));
-                                      // Membuat elemen link untuk mengunduh file
-                                      const link = document.createElement("a");
-                                      link.href = url;
-                                      link.setAttribute("download", "data_export.xlsx"); // Menentukan nama file unduhan
-                                      document.body.appendChild(link);
-                                      link.click(); // Menyimulasikan klik untuk mengunduh file
-                                      document.body.removeChild(link); // Menghapus elemen link setelah digunakan
-                                      alert("Data exported successfully!");
-                                    })
-                                    .catch((error) => {
-                                      console.error("Error exporting data:", error);
-                                      alert("Failed to export data.");
-                                    });
-                                }}
-                              >
-                                Export
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex w-full justify-center">
-        <div className="flex w-11/12 items-end justify-end">
-          <TablePagination
-            rowsPerPageOptions={[15, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Jumlah Data"
-          />
-        </div>
-        {/* Modal untuk menampilkan foto */}
-        <Modal
-          open={openModal}
-          onClose={() => setOpenModal(false)}
-          aria-labelledby="photo-preview-modal"
-          aria-describedby="photo-preview-modal-description"
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: { xs: '80%', sm: '70%', md: '50%' },
-              maxWidth: '28cm',
-              height: 'auto',
-              maxHeight: '80vh',
-              p: 0,
-              boxShadow: 24,
-              bgcolor: 'background.paper',
-              borderRadius: '8px',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Icon Close (❌) */}
-            <IconButton
-              sx={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                color: 'red',
-                zIndex: 2,
-              }}
-              onClick={() => setOpenModal(false)}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            {/* Foto Preview */}
-            <img
-              src={selectedPhoto}
-              alt="Preview"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                border: 'none',
-                display: 'block',
-              }}
-            />
-
-            {/* Tombol Download */}
-            <Box
-              sx={{
-                textAlign: 'center',
-                padding: '16px',
-                backgroundColor: '#f0f0f0',
-              }}
-            >
-              <a
-                href={selectedPhoto}
-                download="photo.jpg"
-                style={{
-                  textDecoration: 'none',
-                  color: '#2E7D32',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                }}
-              >
-                Download Photo
-              </a>
-            </Box>
-          </Box>
-        </Modal>
-
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
       {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
+
+      <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
+        <DialogTitle>Setting Attendance Hours</DialogTitle>
+        <DialogContent>
+          <div className="flex space-x-1">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <div className="flex my-2">
+                <TimePicker
+                  label="Clock In"
+                  value={timeMasuk}
+                  onChange={(val) => {
+                    handleTimeChange(val, true);
+                  }}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </LocalizationProvider>
+            <div className="flex my-2">
+              <TextField
+                label="Tolerance (Minute)"
+                type="number"
+                value={selectedToleransi}
+                onChange={(event) =>
+                  handleToleransiChange(
+                    parseInt(event.target.value)
+                  )
+                }
+              />
+            </div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <div className="flex my-2">
+                <TimePicker
+                  label="Clock Out"
+                  value={timeKeluar}
+                  onChange={(val) => {
+                    handleTimeChange(val, false);
+                  }}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </LocalizationProvider>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleTimeSave}
+            size="small"
+            style={{ backgroundColor: "#204684" }}
+            variant="contained"
+          >
+            <p>Save</p>
+          </Button>
+          <Button
+            onClick={closeTimeSetting}
+            style={{ backgroundColor: "#F&FAFC" }}
+            size="small"
+            variant="outlined"
+          >
+            <p className="bg-gray-100">Close</p>
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
+
 
 export default TableAbsen;

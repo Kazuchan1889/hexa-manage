@@ -144,16 +144,20 @@ function LiveAttendance() {
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
             };
+    
             const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
             setAbsensiList(response.data);
-
+    
             // Extract user ID from the accessToken
             const accessToken = localStorage.getItem("accessToken");
             const userId = extractUserIdFromToken(accessToken); // Get user ID from the token
-            console.log("User ID from accessToken:", userId); // Log the user ID to the console
-
+    
             // Check if the user has already requested attendance
             const userRequest = response.data.find((item) => item.idk === userId);
+            
+            // Log whether the user request was found
+            console.log("User request found:", userRequest);
+    
             setIsRequested(userRequest ? true : false); // If the user exists in the list, set to true
         } catch (error) {
             console.error("Error fetching absensi:", error);
@@ -161,8 +165,11 @@ function LiveAttendance() {
             setLoading(false);
         }
     };
+    
     fetchAbsensiList();
+    
 
+    
 
     return (
         <div className="w-full h-full" style={{ backgroundColor: "#F0F0F0" }}>
