@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -30,6 +30,16 @@ import Button from "@mui/material/Button";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from 'axios';
 import ip from "../ip";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ClickAwayListener,
+  IconButton,
+  MenuList,
+  Popper,
+  Typography,
+  Grow,
+} from "@mui/material";
+
 
 
 const TableAbsen = () => {
@@ -54,6 +64,10 @@ const TableAbsen = () => {
   const [selectedPhoto, setSelectedPhoto] = useState("");
   const [date, setDate] = useState("");
   const [hour, setHour] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
+  const navigate = useNavigate();
+  const [isRotating, setIsRotating] = useState(false);
 
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
@@ -122,6 +136,14 @@ const TableAbsen = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleCloseA = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    setMenuOpen(false);
+    setIsRotating(false); // Reset rotasi
   };
 
   const openTimeSetting = () => {
@@ -359,11 +381,29 @@ const TableAbsen = () => {
     setHour(currentHour); // Set the current hour
   }, []);
 
+  const handleToggle = () => {
+    setMenuOpen((prevOpen) => !prevOpen);
+    setIsRotating((prevRotating) => !prevRotating);
+  };
+
+
+  const handleLogout = () => {
+    // Hapus token atau proses logout lainnya
+    localStorage.removeItem("accessToken");
+    navigate("/");
+  };
+
+  const handleListKeyDown = (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setMenuOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Container 1 */}
-      <div className="bg-[#11284E] text-white p-6 rounded-b-lg shadow-lg">
+      <div className="bg-[#11284E] text-white p-6  shadow-lg h-72">
         <div className="flex justify-between items-center">
           {/* Left Corner */}
           <div>
@@ -373,11 +413,71 @@ const TableAbsen = () => {
             )}
           </div>
 
-          {/* Right Corner */}
           <div className="flex items-center space-x-4">
-            <NotificationsIcon className="w-6 h-6 cursor-pointer" />
-            <SettingsIcon className="w-6 h-6 cursor-pointer" />
+            {/* Notification Icon */}
+            <IconButton>
+              <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
+            </IconButton>
+
+            {/* Settings Dropdown */}
+
+            {/* Icon Button */}
+            <IconButton
+              ref={anchorRef}
+              aria-controls={menuOpen ? "menu-list-grow" : undefined}
+              aria-haspopup="true"
+              onClick={handleToggle}
+            >
+              <SettingsIcon
+                className={`w-6 h-6 text-white cursor-pointer transform transition-transform duration-300 ${isRotating ? "rotate-180" : ""
+                  }`}
+              />
+            </IconButton>
+
+            {/* Dropdown Menu */}
+            <Popper
+              open={menuOpen}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+              style={{ zIndex: 1 }}
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom",
+                  }}
+                >
+                  <Paper className="mr-3">
+                    <ClickAwayListener onClickAway={handleCloseA}>
+                      <MenuList
+                        autoFocusItem={menuOpen}
+                        id="menu-list-grow"
+                        onKeyDown={handleListKeyDown}
+                        className="outline-none"
+                        
+                      >
+                        <MenuItem
+                          component={Link}
+                          to="/accountsetting"
+                          className="px-4 py-2"
+                        >
+                          <Typography variant="button">Settings</Typography>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout} className="px-4 py-2">
+                          <Typography variant="button">Logout</Typography>
+                        </MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
           </div>
+
         </div>
 
         {/* Center Content */}
@@ -414,7 +514,7 @@ const TableAbsen = () => {
                 value={search}
                 onChange={handleSearchChange}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className="p-2 pl-10 rounded-full border border-gray-300 w-64 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
@@ -441,126 +541,128 @@ const TableAbsen = () => {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Container 2 */}
-      <div className="bg-white p-6 mt-4 rounded-lg shadow-md mx-4">
-        <TableContainer component={Paper} style={{ width: "100%" }}>
-          <Table aria-label="simple table" size="small">
-            <TableHead style={{ backgroundColor: "#204684" }}>
-              <TableRow>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Name</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Clock In</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Clock Out</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Date</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Overtime</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Photo</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Status</p>
-                </TableCell>
-                {isWeekend && (
+        <div className=" mt-8 rounded-full shadow-md mx-4">
+          <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+            <Table aria-label="simple table" size="small">
+              <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                <TableRow className="h-16 rounded-full">
                   <TableCell align="center">
-                    <p className="text-white font-semibold">Action</p>
+                    <p className="text-indigo font-semibold">Name</p>
                   </TableCell>
-                )}
-                <TableCell align="center">
-                  <p className="text-white font-semibold">Export</p>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody className="bg-gray-100">
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
-                  const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
-                  const isLateMasuk = jamMasukRow > timeMasuk;
-                  const isLateKeluar = jamKeluarRow > timeKeluar;
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Clock In</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Clock Out</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Date</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Overtime</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Photo</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Status</p>
+                  </TableCell>
+                  {isWeekend && (
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Action</p>
+                    </TableCell>
+                  )}
+                  <TableCell align="center">
+                    <p className="text-indigo font-semibold">Export</p>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody className="bg-gray-100">
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                    const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                    const isLateMasuk = jamMasukRow > timeMasuk;
+                    const isLateKeluar = jamKeluarRow > timeKeluar;
 
-                  return (
-                    <TableRow key={index}>
-                      <TableCell align="center">{row.nama}</TableCell>
-                      <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
-                        {row.masuk}
-                      </TableCell>
-                      <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
-                        {row.keluar}
-                      </TableCell>
-                      <TableCell align="center">{row.date}</TableCell>
-                      <TableCell align="center">no</TableCell>
-                      <TableCell align="center">
-                        {row.fotomasuk ? (
-                          <div className="flex justify-center items-center h-full">
-                            <img
-                              src={row.fotomasuk}
-                              alt="Foto Masuk"
-                              style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
-                              onClick={() => {
-                                setSelectedPhoto(row.fotomasuk);
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <p>No Photo</p>
-                        )}
-                      </TableCell>
-                      <TableCell align="center">
-                        <PatchStatus string={row.status} id={row.id} />
-                      </TableCell>
-                      {isWeekend && (
-                        <TableCell align="center">
-                          <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
+                    return (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.nama}</TableCell>
+                        <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
+                          {row.masuk}
                         </TableCell>
-                      )}
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="success"
-                          startIcon={<FileDownloadOutlined />}
-                          onClick={() => {
-                            axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
-                              headers: {
-                                "Content-Type": "application/json",
-                                Authorization: localStorage.getItem("accessToken"),
-                              },
-                              responseType: "blob",
-                            })
-                              .then((response) => {
-                                const url = window.URL.createObjectURL(new Blob([response.data]));
-                                const link = document.createElement("a");
-                                link.href = url;
-                                link.setAttribute("download", "data_export.xlsx");
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
+                        <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
+                          {row.keluar}
+                        </TableCell>
+                        <TableCell align="center">{row.date}</TableCell>
+                        <TableCell align="center">no</TableCell>
+                        <TableCell align="center">
+                          {row.fotomasuk ? (
+                            <div className="flex justify-center items-center h-full">
+                              <img
+                                src={row.fotomasuk}
+                                alt="Foto Masuk"
+                                style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
+                                onClick={() => {
+                                  setSelectedPhoto(row.fotomasuk);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <p>No Photo</p>
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          <PatchStatus string={row.status} id={row.id} />
+                        </TableCell>
+                        {isWeekend && (
+                          <TableCell align="center">
+                            <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
+                          </TableCell>
+                        )}
+                        <TableCell align="center">
+                          <Button
+                            variant="contained"
+                            color="success"
+                            startIcon={<FileDownloadOutlined />}
+                            onClick={() => {
+                              axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: localStorage.getItem("accessToken"),
+                                },
+                                responseType: "blob",
                               })
-                              .catch((error) => {
-                                console.error("Error exporting data:", error);
-                                alert("Failed to export data.");
-                              });
-                          }}
-                        >
-                          Export
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                                .then((response) => {
+                                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                                  const link = document.createElement("a");
+                                  link.href = url;
+                                  link.setAttribute("download", "data_export.xlsx");
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                })
+                                .catch((error) => {
+                                  console.error("Error exporting data:", error);
+                                  alert("Failed to export data.");
+                                });
+                            }}
+                          >
+                            Export
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
+
+        {/* Container 2 */}
+
       </div>
       {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
 
@@ -625,6 +727,8 @@ const TableAbsen = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
     </div>
   );
 };
