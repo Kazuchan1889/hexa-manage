@@ -541,11 +541,11 @@ const TableAbsen = () => {
             </button>
           </div>
         </div>
-        <div className=" mt-8 rounded-full shadow-md mx-4">
+        <div className="rounded-lg overflow-y-auto mt-8 shadow-md mx-4">
           <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
             <Table aria-label="simple table" size="small">
               <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                <TableRow className="h-16 rounded-full">
+                <TableRow className="h-16 ">
                   <TableCell align="center">
                     <p className="text-indigo font-semibold">Name</p>
                   </TableCell>

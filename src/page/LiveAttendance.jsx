@@ -4,7 +4,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ip from "../ip";
 import axios from "axios";
 import Swal from "sweetalert2";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/Headbar";
 import { useNavigate } from "react-router-dom";
 
 function LiveAttendance() {
@@ -66,7 +66,7 @@ function LiveAttendance() {
         const intervalId = setInterval(fetchServerTime, 1000);
         return () => clearInterval(intervalId);
     }, []);
-    
+
     // Fungsi untuk mengambil lokasi kerja dari access token
     function getLokasiKerjaFromAccessToken() {
         const token = localStorage.getItem("accessToken");
@@ -199,7 +199,7 @@ function LiveAttendance() {
             console.log("Detected IP:", localIP);
 
 
-            if (localIP !== "192.168.1.2") {
+            if (localIP !== "192.168.1.22") {
                 Swal.fire({
                     icon: "error",
                     title: "Check In Gagal!",
@@ -349,45 +349,45 @@ function LiveAttendance() {
     }
 
     return (
-        <div className="w-full h-full" style={{ backgroundColor: "#F0F0F0" }}>
+        <div className="w-full h-full">
             <NavbarUser />
-            <div className="m-10 p-6 border rounded-lg drop-shadow-lg bg-white">
-                <h1 className="text-left font-bold text-2xl text-primary">
-                    Live Attendance
+            {/* Header */}
+            <div className="w-full py-6 flex flex-col items-center bg-[#11284E]">
+                <h1 className="text-white font-bold text-2xl text-center px-2">
+                    LIVE ATTENDANCE
                 </h1>
-                <div className="flex flex-row justify-between pt-2">
-                    <div>
-                        <Typography variant="subtitle2" fontWeight={600}>
-                            {formattedDate}
-                        </Typography>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="text-2xl font-bold" style={{ color: "#3F51B5" }}>
-                            {formatServerTime(serverTime)}
-                        </div>
-                        <Typography variant="subtitle2">
-                            Check-in Time
-                        </Typography>
-                    </div>
+                <div className="text-white font-bold text-xl mt-2">
+                    {serverTime} WIB
                 </div>
-                <div className="border-b-2 w-full border-gray-400 my-4"></div>
-                <div className="w-full flex justify-center mb-4">
-                    <video ref={videoRef} className="w-full max-w-sm rounded-md" />
+                <Typography variant="subtitle2" className="text-white text-sm">
+                    Check-in Time
+                </Typography>
+                
+            </div>
+            <div className="m-auto mt-10 p-6 border rounded-lg drop-shadow-lg bg-white flex flex-col items-center max-w-[1000px] w-full h-auto">
+                {/* Video Stream */}
+                <div className="w-full flex justify-center mb-6">
+                    <video
+                        ref={videoRef}
+                        className="w-40 sm:w-80 aspect-square rounded-full border-4 border-gray-300 object-cover"
+                    />
                 </div>
-                <div className="flex flex-col items-center">
+
+                {/* Attendance Actions */}
+                <div className="flex mt-5 flex-col items-center w-full">
                     {checkInStatus === "udahMasuk" && !isUserCheckout ? (
                         <Button
                             variant="contained"
                             color="secondary"
                             size="large"
                             onClick={handleCheckOut}
-                            style={{ width: "80%" }}
-                            disabled={isUserCheckout || isLoading} // Disable button if already checked out
+                            className="w-full sm:w-1/2 bg-[#11284E]"
+                            disabled={isUserCheckout || isLoading}
                         >
                             Check Out
                         </Button>
                     ) : checkInStatus === "udahKeluar" || (isUserCheckin && isUserCheckout) ? (
-                        <span style={{ color: "red", fontSize: "1.2rem" }}>
+                        <span className="text-red-600 text-lg">
                             Kamu sudah absen hari ini!
                         </span>
                     ) : (
@@ -396,17 +396,18 @@ function LiveAttendance() {
                             color="primary"
                             size="large"
                             onClick={handleCheckIn}
-                            style={{ width: "80%" }}
-                            disabled={isUserCheckin || isLoading} // Disable button if already checked in
+                            className="w-full sm:w-1/2 bg-[#11284E]"
+                            disabled={isUserCheckin || isLoading}
                         >
                             Check In
                         </Button>
                     )}
                 </div>
-
             </div>
+            {/* Main Container */}
+            
         </div>
     );
-}
+};
 
 export default LiveAttendance;

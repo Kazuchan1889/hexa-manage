@@ -283,9 +283,9 @@ const Headb = () => {
   return (
       
       
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center bg-[#11284E]">
           {/* Left Corner */}
-          <div>
+          <div className="text-white">
             <p className="text-lg font-bold">{date}</p>
             {hour !== null && (
               <p className="text-sm">Current hour: {hour} o'clock</p>
@@ -357,7 +357,7 @@ const Headb = () => {
             </Popper>
           </div>
           </div>
-          
+         
 
 
   );

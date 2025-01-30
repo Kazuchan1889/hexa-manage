@@ -269,7 +269,7 @@ const TableDataKaryawan = () => {
       <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
         <Card className="w-[90%]">
           <CardContent>
-            <div className="max-w-full rounded-md overflow-y-auto drop-shadow-lg">
+            <div className="max-w-full w drop-shadow-lg">
               <TableContainer component={Paper} style={{ width: "100%" }}>
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#204684" }}>
