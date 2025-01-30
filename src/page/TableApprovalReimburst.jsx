@@ -1,9 +1,8 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -12,41 +11,48 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import {
-  Card,
-  CardContent,
-  CircularProgress,
-  Modal,
-  TextField,
-} from "@mui/material";
+import { Button, Card, CardContent, CircularProgress } from "@mui/material"; // Add CircularProgress
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import DescriptionIcon from "@mui/icons-material/Description";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import TablePagination from "@mui/material/TablePagination";
-import DownloadIcon from "@mui/icons-material/Download";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ActionButton from "../feature/ActionButton";
-import Button from "@mui/material/Button";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Swal from "sweetalert2";
 import ip from "../ip";
+import ActionButton from "../feature/ActionButton";
+import SettingJatahCuti from "../feature/SettingJatahCuti";
+import SettingJadwalCuti from "../feature/SettingJadwalCuti";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import DownloadIcon from "@mui/icons-material/Download";
 
-const TableApprovalReimburst = () => {
+
+
+const TableApprovalreimbur = () => {
   const [page, setPage] = useState(0);
+  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(15);
-  const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
-  const [reportType, setReportType] = useState("approval");
+  const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState();
+  const [reportType, setReportType] = useState("approval");
+  const [data, setData] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("All");
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedRowData, setSelectedRowData] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-
   const dispatch = useDispatch(); // Initialize Redux dispatch
   const loading = useSelector((state) => state.loading.isLoading); // Access loading state
+  const [selectedYear, setSelectedYear] = useState(null);
+  const jabatan = localStorage.getItem("jabatan");
 
   const monthsIndex = {
     All: null,
@@ -327,155 +333,119 @@ const TableApprovalReimburst = () => {
     );
   }
 
+
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
+    <div className="min-h-screen bg-gray-100">
       <NavbarUser />
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Reimbursement Approval Data
-          </Typography>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onKeyPress={handleKeyPress}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-                <TextField
-                  select
-                  label="Month"
-                  value={selectedMonth}
-                  size="small"
-                  onChange={handleMonthChange}
-                  variant="outlined"
-                  className="w-1/6 text-left"
-                >
-                  {months.map((month) => (
-                    <MenuItem key={month} value={month}>
-                      {month}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  type="number"
-                  label="Year"
-                  size="small"
-                  className="w-1/6"
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                ></TextField>
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ backgroundColor: "#204684" }}
-                  onClick={handleSearch}
-                >
-                  Search
-                </Button>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={(event) => handleMenuOpen(event)}
-                  >
-                    {reportType === "approval" ? (
-                      <Typography variant="button">Approval</Typography>
-                    ) : reportType === "history" ? (
-                      <Typography variant="button">History</Typography>
-                    ) : (
-                      <Typography variant="button">Accepted</Typography>
-                    )}
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem
-                      onClick={() => handleReportTypeChange("approval")}
-                    >
-                      <p className="text-gray-500">Approval</p>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleReportTypeChange("history")}>
-                      <p className="text-gray-500">History</p>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handleReportTypeChange("accepted")}
-                    >
-                      <p className="text-gray-500">Accepted</p>
-                    </MenuItem>
-                  </Menu>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={handleExcel}
-                  >
-                    <DescriptionIcon className="text-white" />
-                  </Button>
-                </div>
-              </div>
+      {/* Center Content with Search Bar and Buttons */}
+      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+        <h1 className="text-2xl ml-5 font-bold">Rreimburst Aproval Data</h1>
+        <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={(event) => handleMenuOpen(event)}
+            style={{ borderColor: "white", color: "white" }} // Outline white and text white
+          >
+            {reportType === "approval" ? (
+              <Typography variant="button">Approval</Typography>
+            ) : (
+              <Typography variant="button">History</Typography>
+            )}
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem
+              onClick={() => handleReportTypeChange("approval")}
+            >
+              <p className="text-gray-500">Approval</p>
+            </MenuItem>
+            <MenuItem onClick={() => handleReportTypeChange("history")}>
+              <p className="text-gray-500">History</p>
+            </MenuItem>
+          </Menu>
+          {/* Search Bar */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 text-gray-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 15.75L19.5 19.5"
+                />
+                <circle cx="11" cy="11" r="8" />
+              </svg>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="rounded-lg overflow-y-auto drop-shadow-lg">
-              <TableContainer
+          </div>
+
+          {/* File Icon */}
+          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+           <TableContainer
                 component={Paper}
                 style={{ backgroundColor: "#FFFFFF", width: "100%" }}
               >
                 <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
+                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Name</p>
+                        <p className="text-indigo font-semibold">Name</p>
                       </TableCell>
                       {(reportType === "approval" ||
                         reportType === "history") && (
                           <>
                             <TableCell align="center" className="w-[5%]">
-                              <p className="text-white font-semibold">Position</p>
+                              <p className="text-indigo font-semibold">Position</p>
                             </TableCell>
                             <TableCell align="center" className="w-[35%]">
-                              <p className="text-white font-semibold">
+                              <p className="text-indigo font-semibold">
                                 Detail
                               </p>
                             </TableCell>
                             <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Cost</p>
+                              <p className="text-indigo font-semibold">Cost</p>
                             </TableCell>
                             <TableCell align="center" className="w-[15%]">
-                              <p className="text-white font-semibold">
+                              <p className="text-indigo font-semibold">
                                 Filing Date
                               </p>
                             </TableCell>
                             <TableCell align="center" className="w-[5%]">
-                              <p className="text-white font-semibold">Document</p>
+                              <p className="text-indigo font-semibold">Document</p>
                             </TableCell>
                           </>
                         )}
                       {reportType === "history" && (
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Status</p>
+                          <p className="text-indigo font-semibold">Status</p>
                         </TableCell>
                       )}
                       {reportType === "approval" && (
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold text-center">
+                          <p className="text-indigo font-semibold text-center">
                             Action
                           </p>
                         </TableCell>
@@ -483,29 +453,29 @@ const TableApprovalReimburst = () => {
                       {reportType === "accepted" && (
                         <>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold text-center">
+                            <p className="text-indigo font-semibold text-center">
                               Jabatan
                             </p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Month</p>
+                            <p className="text-indigo font-semibold">Month</p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Amount</p>
+                            <p className="text-indigo font-semibold">Amount</p>
                           </TableCell>
                           <TableCell align="center" className="w-[15%]">
-                            <p className="text-white font-semibold">Bank Name</p>
+                            <p className="text-indigo font-semibold">Bank Name</p>
                           </TableCell>
                           <TableCell align="center" className="w-[15%]">
-                            <p className="text-white font-semibold">
+                            <p className="text-indigo font-semibold">
                               Bank account number
                             </p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold">Detail</p>
+                            <p className="text-indigo font-semibold">Detail</p>
                           </TableCell>
                           <TableCell align="center" className="w-[10%]">
-                            <p className="text-white font-semibold text-center">
+                            <p className="text-indigo font-semibold text-center">
                               Action
                             </p>
                           </TableCell>
@@ -718,95 +688,13 @@ const TableApprovalReimburst = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      {selectedRowData && reportType === "accepted" && (
-        <Modal
-          open={isOpen}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              boxShadow: 24,
-              borderRadius: "8px",
-              padding: "1rem",
-            }}
-            className="bg-white w-1/2 h-2/5"
-          >
-            <div className="flex justify-between">
-              <div className="my-2 font-semibold text-lg">
-                {selectedRowData.nama}
-              </div>
-              <div className="my-2 font-semibold text-lg">
-                Jumlah : {selectedRowData.jumlah}
-              </div>
-            </div>
-            <div className="w-full h-full mx-auto">
-              <TableContainer className="border rounded-md max-h-44 overflow-y-auto">
-                <Table size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-1/2">
-                        <p className="text-white font-semibold">Keterangan</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-1/4">
-                        <p className="text-white font-semibold">Biaya</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-1/4">
-                        <p className="text-white font-semibold">
-                          Tanggal Pengajuan
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {selectedRowData.detail.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{row.keterangan}</TableCell>
-                        <TableCell align="center">{row.biaya}</TableCell>
-                        <TableCell align="center">{row.date}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <div className="mt-3 flex justify-end">
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleDownloadDetail}
-                >
-                  Download
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
-      <div className="flex w-full justify-center">
-        <div className="flex w-11/12 items-end justify-end">
-          <TablePagination
-            rowsPerPageOptions={[15, 25]}
-            component="div"
-            count={filteredRows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Jumlah Data"
-          />
         </div>
       </div>
+
+      {/* Table Section */}
+
     </div>
   );
 };
 
-export default TableApprovalReimburst;
+export default TableApprovalreimbur;

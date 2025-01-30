@@ -287,9 +287,9 @@ const Headb = () => {
           {/* Left Corner */}
           <div className="text-white">
             <p className="text-lg font-bold">{date}</p>
-            {hour !== null && (
+            {/* {hour !== null && (
               <p className="text-sm">Current hour: {hour} o'clock</p>
-            )}
+            )} */}
           </div>
 
           <div className="flex items-center space-x-4">

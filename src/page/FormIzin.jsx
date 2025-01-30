@@ -24,6 +24,7 @@ import { CheckCircle as CheckCircleIcon, Height } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import Swal from "sweetalert2";
 import ip from "../ip";
+import Side from "../feature/Side";
 
 function FormIzin() {
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -301,6 +302,7 @@ function FormIzin() {
         </div>
       ) : (
         <div className="w-screen h-fit flex">
+          <Side />
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
               <div className="w-[90%] mb-4 flex justify-between	items-center">
