@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -36,7 +36,7 @@ const TableOverTime = () => {
   const [page, setPage] = useState(0);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
@@ -55,17 +55,17 @@ const TableOverTime = () => {
       date: selectedDate,
     };
 
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("accessToken"),
-        },
-      };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("accessToken"),
+      },
+    };
 
     console.log(search);
     axios
-     //search belom jalan kurang api baru 
-      .get(apiURLover,config)
+      //search belom jalan kurang api baru 
+      .get(apiURLover, config)
       .then((response) => {
         console.log("Response Data:", response.data);
         setRows(response.data);
@@ -104,14 +104,14 @@ const TableOverTime = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-  
+
       const status = 1;
       const id = data.id
       // const overtime_id = data.id
       const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
-  
+
       axios
-        .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
+        .patch(apiApprovalURL, { status }, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after approval
@@ -133,7 +133,7 @@ const TableOverTime = () => {
         });
     }
   };
-  
+
   const handleReject = (data) => {
     if (data) {
       const config = {
@@ -142,14 +142,14 @@ const TableOverTime = () => {
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-  
+
       const status = false;
       console.log(data)
       const id = data.id
       const apiReject = `${ip}/api/overtime/status/${id}`;
-  
+
       axios
-        .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
+        .patch(apiReject, { status }, config) // Sertakan pesan hall dalam payload
         .then((response) => {
           console.log(response.data);
           fetchData(""); // Refresh data after rejection
@@ -171,7 +171,7 @@ const TableOverTime = () => {
         });
     }
   };
-  
+
 
   const searchInRows = (query) => {
     const filteredRows = originalRows.filter((row) => {
@@ -214,7 +214,7 @@ const TableOverTime = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 15));
     setPage(0);
   };
   // const handleReportTypeChange = (newReportType) => {
@@ -222,7 +222,7 @@ const TableOverTime = () => {
   //   setReportType(newReportType);
   //   handleMenuClose();
   // };
-  
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isPaidLeaveOpen, setIsPaidLeaveOpen] = useState(false);
   const [isDatePaidLeaveOpen, setIsDatePaidLeaveOpen] = useState(false);
@@ -266,146 +266,110 @@ const TableOverTime = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  
+
   return (
-    <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
+    <div className="min-h-screen bg-gray-100">
       <NavbarUser />
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Request Overtime
-          </Typography>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onKeyPress={handleKeyPress}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  > 
-                    Search
-                  </Button>
-                  <Dialog
-                    open={isDateFilterOpen}
-                    onClose={handleCloseDateFilter}
-                  >
-                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
-                    {/* Judul "Pilih Tanggal" */}
-                    <DialogContent>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          value={selectedDate}
-                          onChange={handleDateFilterChange}
-                          renderInput={(params) => (
-                            <div className="w-64 mt-2">
-                              <input
-                                {...params.inputProps}
-                                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                              />
-                            </div>
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-4">
-                  <Button 
-                    size="small"
-                    variant="outlined"
-                    onClick={(event) => handleMenuOpen(event)}
-                  >
-                    {reportType === "approval" ? (
-                      <Typography variant="button">Approval</Typography>
-                    ) : (
-                      <Typography variant="button">History</Typography>
-                    )}
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                  >
-                    <MenuItem
-                      onClick={() => handleReportTypeChange("approval")}
-                    >
-                      <p className="text-gray-500">Approval</p>
-                    </MenuItem>
-                    <MenuItem onClick={() => handleReportTypeChange("history")}>
-                      <p className="text-gray-500">History</p>
-                    </MenuItem>
-                  </Menu>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                
-              </div>
+      {/* Center Content with Search Bar and Buttons */}
+      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+        <h1 className="text-2xl ml-5 font-bold">Overtime Aproval Data</h1>
+        <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={(event) => handleMenuOpen(event)}
+            style={{ borderColor: "white", color: "white" }} // Outline white and text white
+          >
+            {reportType === "approval" ? (
+              <Typography variant="button">Approval</Typography>
+            ) : (
+              <Typography variant="button">History</Typography>
+            )}
+          </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem
+              onClick={() => handleReportTypeChange("approval")}
+            >
+              <p className="text-gray-500">Approval</p>
+            </MenuItem>
+            <MenuItem onClick={() => handleReportTypeChange("history")}>
+              <p className="text-gray-500">History</p>
+            </MenuItem>
+          </Menu>
+          {/* Search Bar */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 text-gray-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 15.75L19.5 19.5"
+                />
+                <circle cx="11" cy="11" r="8" />
+              </svg>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
-              <TableContainer
+          </div>
+
+          {/* File Icon */}
+          
+        </div>
+
+        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+        <TableContainer
                 component={Paper}
                 style={{ backgroundColor: "#FFFFFF", width: "100%" }}
               >
                 <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
+                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Catatan</p>
+                        <p className="text-indigo font-semibold">Catatan</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">
+                        <p className="text-indigo font-semibold">
                           Mulai
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">
+                        <p className="text-indigo font-semibold">
                           Selesai
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[30%]">
-                        <p className="text-white font-semibold">Tanggal</p>
+                        <p className="text-indigo font-semibold">Tanggal</p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold text-center">
+                        <p className="text-indigo font-semibold text-center">
                           Tipe Overtime
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold text-center">
+                        <p className="text-indigo font-semibold text-center">
                           
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Action</p>
+                        <p className="text-indigo font-semibold">Action</p>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -454,30 +418,11 @@ const TableOverTime = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex w-full justify-center">
-        <div className="flex w-11/12 items-end justify-end">
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredRows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Jumlah Data"
-          />
         </div>
       </div>
-      {isTambahFormOpen && (
-        <Formovertime 
-        onClose={() => setTambahFormOpen(false)}
-        fetchData={fetchData}
-        />
-      )}
+
+      {/* Table Section */}
+
     </div>
   );
 };
