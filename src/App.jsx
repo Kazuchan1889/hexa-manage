@@ -58,6 +58,7 @@ import Aptes from "./page/1testacc";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 import Face from "./page/Face";
+import Sidebar from "./feature/Sidebar";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -138,6 +139,7 @@ function App() {
           <Route path="/Geotech" element={<Testloc />} />
           <Route path="/Face" element={<Face />} />
           <Route path="/Aptes" element={<Aptes />} />
+          <Route path="/Sidebar" element={<Sidebar />} />
        
           
         </Routes>
