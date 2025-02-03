@@ -1,40 +1,29 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link
-import Modal from "@mui/material/Modal"; // Import Modal dari Material-UI
-import LaporanKegiatanForm from "../page/Formlaporan"; // Import LaporanKegiatanForm
+import React from "react";
+import { Link } from "react-router-dom";
 
 function Shortcut() {
-    const [open, setOpen] = useState(false); // State untuk mengontrol modal
-
-    const handleOpen = () => {
-        setOpen(true); // Buka modal
-    };
-
-    const handleClose = () => {
-        setOpen(false); // Tutup modal
-    };
-
-    return (
-        <div className="mt-6 mb-2">
-            <h1 className="text-sm text-neutral-200">Shortcut</h1>
-            <div className="flex flex-row mt-2 gap-6 text-neutral-200">
-                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <Link className="text-sm" to="/liveattendance">Live Attendance</Link>
-                </div>
-                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <Link className="text-sm" to="/reimburst">Request Reimbursement</Link>
-                </div>
-                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <Link className="text-sm" to="/Form">Request Time Off</Link>
-                </div>
-                <div className="flex border border-white rounded-full px-4 py-2 text-center hover:border-black">
-                    <Link className="text-sm" to="/UserSummary">Summary</Link>
-                </div>
-            </div>
-
-          
-        </div>
-    );
+  return (
+    <div className="mt-6 mb-2">
+      <h1 className="text-xl font-bold text-center text-white mb-4">Quick Access</h1>
+      <div className="flex justify-center gap-8 mt-2 flex-wrap">
+        {[
+          { path: "/liveattendance", label: "Live Attendance" },
+          { path: "/reimburst", label: "Request Reimbursement" },
+          { path: "/Form", label: "Request Time Off" },
+          { path: "/UserSummary", label: "Summary" },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="w-40 h-12 flex items-center justify-center border bg-white text-[#204682] drop-shadow-xl rounded-full text-center hover:border-black p-2"
+          >
+            <Link className="text-sm font-medium break-words whitespace-normal" to={item.path}>
+              {item.label}
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Shortcut;

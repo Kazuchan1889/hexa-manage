@@ -37,7 +37,7 @@ function ChartDataKehadiranUser() {
   }, []);  // Menambahkan dependency array kosong untuk pemanggilan API satu kali
 
   const data = {
-    labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
+    labels: ["Present", "Leave", "Permission", "Sick", "Absent", "Late"],
     datasets: [
       {
         data: userData,
@@ -69,7 +69,8 @@ function ChartDataKehadiranUser() {
         position: "right",
       },
     },
-    cutout: 0,
+    responsive: true,
+    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
   };
 
   if (loading) {
@@ -81,7 +82,7 @@ function ChartDataKehadiranUser() {
       <div className="">
         <Typography variant="h6">Your Monthly Attendance</Typography>
       </div>
-      <div className="mx-auto w-full h-full lg:h-60">
+      <div className="mx-auto w-full h-full p-4">
         <Pie data={data} options={options} />
       </div>
     </div>

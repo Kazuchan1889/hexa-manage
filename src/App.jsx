@@ -59,6 +59,7 @@ import Aptes from "./page/1testacc";
 import Loading from "./page/Loading"; 
 import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
+import DashboardAdminSide from "./page/DashboardAdminSide";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -140,6 +141,7 @@ function App() {
           <Route path="/Face" element={<Face />} />
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
+          <Route path="/DashboardAdminSide" element={<DashboardAdminSide />} />
        
           
         </Routes>

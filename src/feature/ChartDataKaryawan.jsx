@@ -36,7 +36,7 @@ const loading = useSelector((state) => state.loading.isLoading);
   }, []);
 
   const data = {
-    labels: ["Tetap", "Kontrak", "Probation", "Magang", "Resign"],
+    labels: ["Permanent", "Contract", "Probation", "Intern", "Resigned"],
     datasets: [
       {
         data: karyawanData,
@@ -63,11 +63,13 @@ const loading = useSelector((state) => state.loading.isLoading);
     plugins: {
       legend: {
         display: true,
-        position: "right", // Adjust the legend position as needed
+        position: "right",
       },
     },
-    cutout: 0, // Change the cutout to 0 to make it a pie chart
+    responsive: true,
+    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
   };
+  
 
   if (loading) {
     return <Loading />
@@ -78,7 +80,7 @@ const loading = useSelector((state) => state.loading.isLoading);
       <div className="">
         <Typography variant="h6">Employee Data</Typography>
       </div>
-      <div className="mx-auto w-full h-fit lg:h-60">
+      <div className="mx-auto w-full h-full p-4">
         <Pie data={data} options={options} /> {/* Change to Pie chart */}
       </div>
     </div>

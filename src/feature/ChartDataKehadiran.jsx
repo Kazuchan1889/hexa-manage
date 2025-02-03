@@ -35,7 +35,7 @@ function ChartDataKehadiran() {
   }, []); // Tambahkan array kosong [] agar useEffect hanya dipanggil sekali
 
   const data = {
-    labels: ["Masuk", "Cuti", "Izin", "Sakit", "Tanpa Alasan", "Terlambat"],
+    labels: ["Present", "Leave", "Permission", "Sick", "Absent", "Late"],
     datasets: [
       {
         data: kehadiranData,
@@ -67,7 +67,8 @@ function ChartDataKehadiran() {
         position: "right",
       },
     },
-    cutout: 0,
+    responsive: true,
+    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
   };
 
   
@@ -78,9 +79,9 @@ function ChartDataKehadiran() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">OverAll Attendance Data</Typography>
+        <Typography variant="h6">Overall Attendance Data</Typography>
       </div>
-      <div className="mx-auto w-full h-52 lg:h-60">
+      <div className="mx-auto w-full h-full p-4">
         <Pie data={data} options={options} />
       </div>
     </div>

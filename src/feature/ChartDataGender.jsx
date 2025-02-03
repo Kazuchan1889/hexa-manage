@@ -34,7 +34,7 @@ function ChartDataGender() {
   }, []);
 
   const data = {
-    labels: ["Laki-laki", "Perempuan"],
+    labels: ["Male", "Female"],
     datasets: [
       {
         data: DataKaryawanGender,
@@ -55,10 +55,11 @@ function ChartDataGender() {
     plugins: {
       legend: {
         display: true,
-        position: "right", // Adjust the legend position as needed
+        position: "right",
       },
     },
-    cutout: 0, // Change the cutout to 0 to make it a pie chart
+    responsive: true,
+    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
   };
 
   if (loading) {
@@ -68,9 +69,9 @@ function ChartDataGender() {
   return (
     <div className="h-fit w-[16rem] mx-auto">
       <div className="">
-        <Typography variant="h6">gender diversity</Typography>
+        <Typography variant="h6">Gender Diversity</Typography>
       </div>
-      <div className="mx-auto w-full h-fit lg:h-60">
+      <div className="mx-auto w-full h-full p-4">
         <Pie data={data} options={options} /> {/* Change to Pie chart */}
       </div>
     </div>

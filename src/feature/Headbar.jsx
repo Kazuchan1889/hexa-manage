@@ -243,9 +243,9 @@ const Headb = () => {
     setPage(0);
   };
 
-  
 
- 
+
+
 
   useEffect(() => {
     // Get the server time using your existing method or API if needed
@@ -281,85 +281,80 @@ const Headb = () => {
   };
 
   return (
-      
-      
-        <div className="flex justify-between items-center bg-[#11284E]">
-          {/* Left Corner */}
-          <div className="text-white">
-            <p className="text-lg font-bold">{date}</p>
-            {/* {hour !== null && (
+    <div className="flex justify-between p-4 items-center bg-[#11284E]">
+      {/* Left Corner */}
+      <div className="text-white">
+        <p className="text-md ">{date}</p>
+        {/* {hour !== null && (
               <p className="text-sm">Current hour: {hour} o'clock</p>
             )} */}
-          </div>
+      </div>
 
-          <div className="flex items-center space-x-4">
-            {/* Notification Icon */}
-            <IconButton>
-              <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
-            </IconButton>
+      <div className="flex items-center ">
+        {/* Notification Icon */}
+        <IconButton>
+          <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
+        </IconButton>
 
-            {/* Settings Dropdown */}
+        {/* Settings Dropdown */}
 
-            {/* Icon Button */}
-            <IconButton
-              ref={anchorRef}
-              aria-controls={menuOpen ? "menu-list-grow" : undefined}
-              aria-haspopup="true"
-              onClick={handleToggle}
+        {/* Icon Button */}
+        <IconButton
+          ref={anchorRef}
+          aria-controls={menuOpen ? "menu-list-grow" : undefined}
+          aria-haspopup="true"
+          onClick={handleToggle}
+        >
+          <SettingsIcon
+            className={`w-6 h-6 text-white cursor-pointer transform transition-transform duration-300 ${isRotating ? "rotate-180" : ""
+              }`}
+          />
+        </IconButton>
+
+        {/* Dropdown Menu */}
+        <Popper
+          open={menuOpen}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+          style={{ zIndex: 1 }}
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === "bottom" ? "center top" : "center bottom",
+              }}
             >
-              <SettingsIcon
-                className={`w-6 h-6 text-white cursor-pointer transform transition-transform duration-300 ${isRotating ? "rotate-180" : ""
-                  }`}
-              />
-            </IconButton>
+              <Paper className="mr-3">
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList
+                    autoFocusItem={menuOpen}
+                    id="menu-list-grow"
+                    onKeyDown={handleListKeyDown}
+                    className="outline-none"
 
-            {/* Dropdown Menu */}
-            <Popper
-              open={menuOpen}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-              style={{ zIndex: 1 }}
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === "bottom" ? "center top" : "center bottom",
-                  }}
-                >
-                  <Paper className="mr-3">
-                    <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList
-                        autoFocusItem={menuOpen}
-                        id="menu-list-grow"
-                        onKeyDown={handleListKeyDown}
-                        className="outline-none"
-                        
-                      >
-                        <MenuItem
-                          component={Link}
-                          to="/accountsetting"
-                          className="px-4 py-2"
-                        >
-                          <Typography variant="button">Settings</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout} className="px-4 py-2">
-                          <Typography variant="button">Logout</Typography>
-                        </MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
-          </div>
-          </div>
-         
-
-
+                  >
+                    <MenuItem
+                      component={Link}
+                      to="/accountsetting"
+                      className="px-4 py-2"
+                    >
+                      <Typography variant="button">Settings</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout} className="px-4 py-2">
+                      <Typography variant="button">Logout</Typography>
+                    </MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+      </div>
+    </div>
   );
 };
 

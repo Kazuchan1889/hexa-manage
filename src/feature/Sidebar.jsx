@@ -55,7 +55,7 @@ export default function Sidebar() {
     };
 
     return (
-        <nav className={`shadow-md h-screen py-2 flex flex-col duration-500 bg-[#204682] text-white ${open ? 'w-60' : 'w-16'}`}>
+        <nav className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] text-white ${open ? 'w-60' : 'w-16'}`}>
             {/* Header */}
             <div className='px-2 py-2 flex justify-end'>
                 <IconButton onClick={() => setOpen(!open)}>
