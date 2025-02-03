@@ -25,8 +25,9 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DescriptionIcon from "@mui/icons-material/Description";
 import axios from "axios";
 import ip from "../ip"; // Sesuaikan path ini sesuai dengan struktur proyek Anda
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/Headbar";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const TableLaporanKegiatan = () => {
   const [dataLaporan, setDataLaporan] = useState([]);
@@ -38,7 +39,7 @@ const TableLaporanKegiatan = () => {
   const [selectedDescription, setSelectedDescription] = useState("");
   const [endDate, setEndDate] = useState('');
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -58,20 +59,38 @@ const TableLaporanKegiatan = () => {
         setLoading(false);
       }
     };
-
+    
     fetchData();
   }, []);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    const search = e.target.value.toLowerCase();
-    const filtered = dataLaporan.filter((laporan) =>
-      Object.values(laporan).some(
-        (value) =>
-          value && value.toString().toLowerCase().includes(search)
-      )
+  const searchInRows = (query) => {
+    const filteredRows = originalRows.filter((row) =>
+      row.nama.toLowerCase().includes(query.toLowerCase())
     );
-    setFilteredLaporan(filtered);
+
+    setRows(filteredRows);
+    setPage(0);
+  };
+
+  const handleSearch = () => {
+    searchInRows(search);
+    setPage(0);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleSearchChange = (event) => {
+    const query = event.target.value;
+    setSearch(query);
+    setPage(0);
+
+    if (query === "" || query === null) {
+      setRows(originalRows);
+    }
   };
 
   const handleDateFilterChange = () => {
@@ -164,108 +183,63 @@ const TableLaporanKegiatan = () => {
     link.click();
   };
   return (
-    <div className="w-full h-screen bg-gray-100 overflow">
-      <NavbarUser />
-      {/* Header */}
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Activity Report
-          </Typography>
-        </div>
-      </div>
-      {/* Search and Filter Bar */}
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              {/* Search and Filter Section */}
-              <div className="flex items-center w-full space-x-1">
-                {/* Search Bar */}
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onChange={handleSearchChange}
-                    className="w-full"
-                  />
-                </div>
-                {/* Filter Button */}
-                <Button
-                  size="small"
-                  variant="text"
-                  onClick={handleOpenDateFilter}
-                >
-                  <CalendarMonthIcon className="text-black" />
-                </Button>
-              </div>
-              {/* Export Button Section */}
-              <Button
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={handleExcelExport}
-                className="ml-auto"
-              >
-                <DescriptionIcon className="text-white" /> Export
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      {/* Modal for Date Filter */}
-      <Dialog open={isDateFilterOpen} onClose={handleCloseDateFilter}>
-        <DialogTitle>Select Date Range</DialogTitle>
-        <DialogContent>
-          <div className="flex flex-col space-y-4">
-            <div>
-              <Typography>Start Date</Typography>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+    <div className="min-h-screen bg-gray-100">
+    <NavbarUser />
+    {/* Center Content with Search Bar and Buttons */}
+    <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+      <h1 className="text-2xl ml-2 font-bold">Employe Report</h1>
+      <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+
+        
+        {/* Search Bar */}
+        <div className="relative ml-16">
+          <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+            />
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-5 h-5 text-gray-400"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 15.75L19.5 19.5"
               />
-            </div>
-            <div>
-              <Typography>Until Date</Typography>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-              />
-            </div>
+              <circle cx="11" cy="11" r="8" />
+            </svg>
           </div>
-        </DialogContent>
-        <div className="flex justify-end p-4">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleDateFilterChange}
-          >
-            Apply
-          </Button>
         </div>
-      </Dialog>
-      {/* Table Display */}
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="rounded-lg drop-shadow-lg overflow-y-auto">
-              <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
+
+        {/* File Icon */}
+        <button className="p-2 bg-white rounded-full shadow" onClick={handleExcelExport}>
+          <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+        </button>
+      </div>
+
+      <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+      <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
                 <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
+                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Name</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Report Date</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Submission Hours</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Location</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Type</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Detail</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Description</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Document</p></TableCell>
-                      <TableCell align="center" className="w-[10%]"><p className="text-white font-semibold">Export</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Name</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Report Date</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Submission Hours</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Location</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Type</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Detail</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Description</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Document</p></TableCell>
+                      <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Export</p></TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -362,9 +336,6 @@ const TableLaporanKegiatan = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </div>
-          </CardContent>
-        </Card>
       </div>
       <Modal open={openModal} onClose={handleCloseModal}>
         <Box
@@ -420,7 +391,11 @@ const TableLaporanKegiatan = () => {
         </div>
       )}
     </div>
-  );
+
+    {/* Table Section */}
+
+  </div>
+);
 };
 
 export default TableLaporanKegiatan;
