@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
-import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
-import NavbarUser from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -11,7 +9,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Button, Card, CardContent, CircularProgress } from "@mui/material"; // Add CircularProgress
+import { Button, Card, CardContent } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Dialog from "@mui/material/Dialog";
@@ -32,99 +30,31 @@ import ip from "../ip";
 import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import DownloadIcon from "@mui/icons-material/Download";
+import Formovertime from "../page/Formovertime";
 
-
-
-const TableApprovalreimbur = () => {
+const TableOverTime = () => {
   const [page, setPage] = useState(0);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
   const [data, setData] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const dispatch = useDispatch(); // Initialize Redux dispatch
-  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
-  const [selectedYear, setSelectedYear] = useState(null);
+  const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const jabatan = localStorage.getItem("jabatan");
 
-  const monthsIndex = {
-    All: null,
-    January: 1,
-    February: 2,
-    March: 3,
-    April: 4,
-    May: 5,
-    June: 6,
-    July: 7,
-    August: 8,
-    September: 9,
-    October: 10,
-    November: 11,
-    December: 12,
-  };
-
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
-    setPage(0);
-  };
-
-  const months = [
-    "All",
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   const fetchData = (string) => {
-    const apiUrlReimburst = `${ip}/api/reimburst/get`;
+    const apiURLover = `${ip}/api/overtime/list`;
 
-    dispatch(loadingAction.startLoading(true)); // Start loading
     const requestBody = {
       search: string,
       jenis: reportType,
-      bulan: monthsIndex[selectedMonth],
-      year: selectedYear,
+      date: selectedDate,
     };
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    };
-
-    axios
-      .post(apiUrlReimburst, requestBody, config)
-      .then((response) => {
-        setRows(response.data);
-        setOriginalRows(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        dispatch(loadingAction.startLoading(false)); // Stop loading
-      });
-  };
-
-  const handleApprove = (data) => {
-    if (data && data.id) {
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -132,19 +62,69 @@ const TableApprovalreimbur = () => {
         },
       };
 
-      const apiApprovalURL = `${ip}/api/reimburst/patch/${data.id}/true`;
+    console.log(search);
+    axios
+     //search belom jalan kurang api baru 
+      .get(apiURLover,config)
+      .then((response) => {
+        console.log("Response Data:", response.data);
+        setRows(response.data);
+        setOriginalRows(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
 
+  const handleOpenDateFilter = () => {
+    setIsDateFilterOpen(true);
+  };
+
+  const handleCloseDateFilter = () => {
+    setIsDateFilterOpen(false);
+  };
+
+  const handleDateFilterChange = (date) => {
+    setSelectedDate(date);
+    setPage(0);
+    setIsDateFilterOpen(false);
+    // console.log(date.toISOString(),selectedDate);
+  };
+
+  useEffect(() => {
+    fetchData(); // Initial data fetch
+  }, [selectedDate]);
+
+  const handleApproval = (data) => {
+    console.log(data);
+    if (data) {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("accessToken"),
+        },
+      };
+  
+      const status = 1;
+      const id = data.id
+      // const overtime_id = data.id
+      const apiApprovalURL = `${ip}/api/overtime/status/${id}`;
+  
       axios
-        .patch(apiApprovalURL, {}, config)
-        .then(() => {
+        .patch(apiApprovalURL, {status}, config) // Sertakan pesan hall dalam payload
+        .then((response) => {
+          console.log(response.data);
           fetchData(""); // Refresh data after approval
+          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Approval Success",
             text: "The request has been approved successfully.",
           });
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Error approving data:", error);
+          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Approval Error",
@@ -153,37 +133,36 @@ const TableApprovalreimbur = () => {
         });
     }
   };
-
-  const handleApproveAll = (data) => {
-    if (data.detail.length > 0) {
-      data.detail.forEach((item) => {
-        handleApprove(item);
-      });
-    }
-  };
-
+  
   const handleReject = (data) => {
-    if (data && data.id) {
+    if (data) {
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("accessToken"),
         },
       };
-
-      const apiReject = `${ip}/api/reimburst/patch/${data.id}/false`;
-
+  
+      const status = false;
+      console.log(data)
+      const id = data.id
+      const apiReject = `${ip}/api/overtime/status/${id}`;
+  
       axios
-        .patch(apiReject, {}, config)
-        .then(() => {
+        .patch(apiReject, {status}, config) // Sertakan pesan hall dalam payload
+        .then((response) => {
+          console.log(response.data);
           fetchData(""); // Refresh data after rejection
+          // Show success alert
           Swal.fire({
             icon: "success",
             title: "Rejection Success",
             text: "The request has been rejected successfully.",
           });
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Error rejecting data:", error);
+          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Rejection Error",
@@ -192,15 +171,13 @@ const TableApprovalreimbur = () => {
         });
     }
   };
-
-  useEffect(() => {
-    fetchData(""); // Initial data fetch
-  }, [reportType, selectedMonth, selectedYear]);
+  
 
   const searchInRows = (query) => {
-    const filteredRows = originalRows.filter((row) =>
-      row.nama.toLowerCase().includes(query.toLowerCase())
-    );
+    const filteredRows = originalRows.filter((row) => {
+      // Sesuaikan dengan kriteria pencarian Anda
+      return row.nama.toLowerCase().includes(query.toLowerCase());
+    });
 
     setRows(filteredRows);
     setPage(0);
@@ -211,20 +188,69 @@ const TableApprovalreimbur = () => {
     setPage(0);
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   const handleSearchChange = (event) => {
     const query = event.target.value;
     setSearch(query);
     setPage(0);
 
     if (query === "" || query === null) {
+      // Jika kotak pencarian kosong, kembalikan ke data asli
       setRows(originalRows);
     }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const filteredRows = rows.filter((row) =>
+    reportType === "approval" ? row.status === null : row.status !== null
+  );
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  // const handleReportTypeChange = (newReportType) => {
+  //   setPage(0);
+  //   setReportType(newReportType);
+  //   handleMenuClose();
+  // };
+  
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isPaidLeaveOpen, setIsPaidLeaveOpen] = useState(false);
+  const [isDatePaidLeaveOpen, setIsDatePaidLeaveOpen] = useState(false);
+
+  const handleSettingsOpen = (event) => {
+    setIsSettingsOpen(event.currentTarget);
+  };
+
+  const handleOpenPaidLeave = () => {
+    setIsPaidLeaveOpen(true);
+    handleMenuClose();
+  };
+
+  const handleClosePaidLeave = () => {
+    setIsPaidLeaveOpen(false);
+  };
+
+  const handleOpenDatePaidLeave = () => {
+    setIsDatePaidLeaveOpen(true);
+    handleMenuClose();
+  };
+
+  const handleCloseDatePaidLeave = () => {
+    setIsDatePaidLeaveOpen(null);
+  };
+
+  const handleSettingsClose = () => {
+    setIsSettingsOpen(null);
   };
 
   const handleReportTypeChange = (newReportType) => {
@@ -233,468 +259,227 @@ const TableApprovalreimbur = () => {
     handleMenuClose();
   };
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event, index) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const filteredRows = rows.filter((row) =>
-    reportType === "approval"
-      ? row.progres === "waiting"
-      : reportType === "history"
-        ? row.progres === "rejected" || row.progres === "sudah ditransfer"
-        : row.progres === "accepted"
-  );
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 15));
-    setPage(0);
-  };
-
-  const handleExcel = () => {
-    const api = `${ip}/api/export/data/4`;
-
-    const requestBody = {};
-
-    axios({
-      url: api,
-      method: "POST",
-      responseType: "blob",
-      data: requestBody,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "Approval Reimburst.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        if (error.message.includes("400")) alert("Tidak Ada Data");
-        console.error("Error downloading Excel file:", error);
-      });
-  };
-
-  const handleDetailClick = (row) => {
-    setSelectedRowData(row);
-    setIsOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
-  const handleDownloadDetail = () => {
-    const api = `${ip}/api/export/reimburse/detail/pdf`;
-
-    axios({
-      url: api,
-      method: "POST",
-      responseType: "blob",
-      data: { data: selectedRowData },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: localStorage.getItem("accessToken"),
-      },
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "Approval Reimburst.pdf");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((error) => {
-        if (error.message.includes("400")) alert("Tidak Ada Data");
-        console.error("Error downloading PDF file:", error);
-      });
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-40">
-        <CircularProgress />
-      </div>
-    );
-  }
-
-
+  
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
       <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl ml-5 font-bold">Rreimburst Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
-
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={(event) => handleMenuOpen(event)}
-            style={{ borderColor: "white", color: "white" }} // Outline white and text white
-          >
-            {reportType === "approval" ? (
-              <Typography variant="button">Approval</Typography>
-            ) : (
-              <Typography variant="button">History</Typography>
-            )}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => handleReportTypeChange("approval")}
-            >
-              <p className="text-gray-500">Approval</p>
-            </MenuItem>
-            <MenuItem onClick={() => handleReportTypeChange("history")}>
-              <p className="text-gray-500">History</p>
-            </MenuItem>
-          </Menu>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
-            </div>
-          </div>
-
-          {/* File Icon */}
-          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-          </button>
+      <div className="flex w-full justify-center">
+        <div className="flex w-[90%] items-start justify-start my-2">
+          <Typography variant="h5" style={{ fontWeight: 600 }}>
+            Request Overtime
+          </Typography>
         </div>
-
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-           <TableContainer
+      </div>
+      <div className="flex justify-center items-center w-screen my-2">
+        <Card className="w-[90%]">
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center w-full mx-auto space-x-1">
+                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
+                  <SearchIcon style={{ fontSize: 25 }} />
+                  <InputBase
+                    placeholder="Search..."
+                    onKeyPress={handleKeyPress}
+                    onChange={handleSearchChange}
+                  />
+                </div>
+                <div className="flex rounded-lg space-x-1">
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={handleOpenDateFilter}
+                  >
+                    <CalendarMonthIcon className="text-black" />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    style={{ backgroundColor: "#204684" }}
+                    onClick={handleSearch}
+                  > 
+                    Search
+                  </Button>
+                  <Dialog
+                    open={isDateFilterOpen}
+                    onClose={handleCloseDateFilter}
+                  >
+                    <DialogTitle>Pilih Tanggal</DialogTitle>{" "}
+                    {/* Judul "Pilih Tanggal" */}
+                    <DialogContent>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          value={selectedDate}
+                          onChange={handleDateFilterChange}
+                          renderInput={(params) => (
+                            <div className="w-64 mt-2">
+                              <input
+                                {...params.inputProps}
+                                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                              />
+                            </div>
+                          )}
+                        />
+                      </LocalizationProvider>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mx-auto">
+                <div className="flex space-x-4">
+                  <Button 
+                    size="small"
+                    variant="outlined"
+                    onClick={(event) => handleMenuOpen(event)}
+                  >
+                    {reportType === "approval" ? (
+                      <Typography variant="button">Approval</Typography>
+                    ) : (
+                      <Typography variant="button">History</Typography>
+                    )}
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem
+                      onClick={() => handleReportTypeChange("approval")}
+                    >
+                      <p className="text-gray-500">Approval</p>
+                    </MenuItem>
+                    <MenuItem onClick={() => handleReportTypeChange("history")}>
+                      <p className="text-gray-500">History</p>
+                    </MenuItem>
+                  </Menu>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mx-auto">
+                
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
+        <Card className="w-[90%]">
+          <CardContent>
+            <div className="max-h-72 rounded-lg overflow-y-auto drop-shadow-xl">
+              <TableContainer
                 component={Paper}
                 style={{ backgroundColor: "#FFFFFF", width: "100%" }}
               >
                 <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableHead style={{ backgroundColor: "#204684" }}>
                     <TableRow>
                       <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Name</p>
+                        <p className="text-white font-semibold">Catatan</p>
                       </TableCell>
-                      {(reportType === "approval" ||
-                        reportType === "history") && (
-                          <>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-indigo font-semibold">Position</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[35%]">
-                              <p className="text-indigo font-semibold">
-                                Detail
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-indigo font-semibold">Cost</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[15%]">
-                              <p className="text-indigo font-semibold">
-                                Filing Date
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-indigo font-semibold">Document</p>
-                            </TableCell>
-                          </>
-                        )}
-                      {reportType === "history" && (
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Status</p>
-                        </TableCell>
-                      )}
-                      {reportType === "approval" && (
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold text-center">
-                            Action
-                          </p>
-                        </TableCell>
-                      )}
-                      {reportType === "accepted" && (
-                        <>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold text-center">
-                              Jabatan
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Month</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Amount</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-indigo font-semibold">Bank Name</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-indigo font-semibold">
-                              Bank account number
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Detail</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold text-center">
-                              Action
-                            </p>
-                          </TableCell>
-                        </>
-                      )}
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">
+                          Mulai
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">
+                          Selesai
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[30%]">
+                        <p className="text-white font-semibold">Tanggal</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold text-center">
+                          Tipe Overtime
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold text-center">
+                          
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-white font-semibold">Action</p>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
                     {(rowsPerPage > 0
                       ? filteredRows.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
                       : filteredRows
                     ).map((row, index) => (
                       <TableRow key={index}>
+                        <TableCell align="center">{row.note}</TableCell>
+                        <TableCell align="center">{row.mulai}</TableCell>
+                        <TableCell align="center">{row.selesai}</TableCell>
+                        <TableCell align="center">{row.tanggal_overtime}</TableCell>
+                        <TableCell align="center">{row.tipe}</TableCell>
+                        <TableCell align="center">{row.breaktime}</TableCell>
                         <TableCell
-                          align="center"
-                          style={{
-                            whiteSpace: "normal",
-                            wordWrap: "break-word",
-                            maxHeight: "100px",
-                            maxWidth: "100px",
-                          }}
-                        >
-                          {row.nama}
-                        </TableCell>
-                        {(reportType === "approval" ||
-                          reportType === "history") && (
-                            <>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "100px",
-                                }}
-                              >
-                                {row.jabatan}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "100px",
-                                }}
-                              >
-                                {row.keterangan}
-                              </TableCell>
-                              <TableCell align="center">{row.biaya}</TableCell>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "120px",
-                                }}
-                              >
-                                {row.date}
-                              </TableCell>
-                              <TableCell align="center">
-                                {row.dokumen && (
-                                  <div className="flex justify-center">
-                                    <Button
-                                      size="small"
-                                      href={row.dokumen}
-                                      target="_blank "
-                                      download
-                                      className="cursor-pointer"
-                                    >
-                                      <DownloadIcon className="text-gray-400" />
-                                    </Button>
-                                  </div>
-                                )}
-                              </TableCell>
-                              {reportType === "history" ? (
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.progres}
-                                </TableCell>
-                              ) : null}
-                              {row.status === null ? (
-                                <>
-                                  <TableCell
-                                    align="center"
-                                    style={{
-                                      color: row.status ? "black" : "red",
-                                    }}
-                                  >
-                                    {row.status === null ? (
-                                      <ActionButton
-                                        data={row}
-                                        onAccept={handleApprove}
-                                        onReject={handleReject}
-                                        tipe={"nonIzin"}
-                                        string={"Reimburse"}
-                                      ></ActionButton>
-                                    ) : null}
-                                  </TableCell>
-                                </>
-                              ) : null}
-                            </>
-                          )}
-                        {reportType === "accepted" && (
-                          <>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.jabatan}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {`${monthNames(row.bulan, row.tahun)} ${row.tahun
-                                }`}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.jumlah}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.bankname}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.norek}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => {
-                                  handleDetailClick(row);
-                                }}
-                              >
-                                Detail
-                              </Button>
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                color: row.status ? "black" : "red",
-                              }}
-                            >
+                            align="center"
+                            style={{ color: row.status ? "black" : "red" }}
+                          >
+                            {row.status === null ? (
+                              // <DropdownButton
+                              //   onApproveSakit={handleApproveSakit}
+                              //   onApproval={handleApproval}
+                              //   data={row}
+                              //   onReject={handleReject}
+                              // />
                               <ActionButton
+                                onAccept={handleApproval}
+                                onReject={handleReject}
+                          
                                 data={row}
-                                onAccept={handleApproveAll}
-                                onReject={handleRejectAll}
                                 tipe={"nonIzin"}
-                                string={"Reimburse"}
+                                string={"Overtime"}
                               ></ActionButton>
-                            </TableCell>
-                          </>
-                        )}
+                            ) : row.status ? (
+                              "accepted"
+                            ) : (
+                              "rejected"
+                            )}
+                          </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex w-full justify-center">
+        <div className="flex w-11/12 items-end justify-end">
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredRows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="Jumlah Data"
+          />
         </div>
       </div>
-
-      {/* Table Section */}
-
+      {isTambahFormOpen && (
+        <Formovertime 
+        onClose={() => setTambahFormOpen(false)}
+        fetchData={fetchData}
+        />
+      )}
     </div>
   );
 };
 
-export default TableApprovalreimbur;
+export default TableOverTime;
