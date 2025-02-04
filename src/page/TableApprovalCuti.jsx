@@ -33,7 +33,7 @@ import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-
+import Sidebar from "../feature/Sidebar";
 
 const TableApprovalCuti = () => {
   const [page, setPage] = useState(0);
@@ -46,11 +46,16 @@ const TableApprovalCuti = () => {
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
   const [data, setData] = useState(null);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const dispatch = useDispatch(); // Initialize Redux dispatch
   const loading = useSelector((state) => state.loading.isLoading); // Access loading state
-
   const jabatan = localStorage.getItem("jabatan");
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const fetchData = (string) => {
     const apiURLCuti = `${ip}/api/pengajuan/get/cuti`;
@@ -290,171 +295,182 @@ const TableApprovalCuti = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center space-x-4">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <NavbarUser />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+          <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
+          <div className="mt-4 flex justify-center items-center space-x-4">
 
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={(event) => handleMenuOpen(event)}
-            style={{ borderColor: "white", color: "white" }} // Outline white and text white
-          >
-            {reportType === "approval" ? (
-              <Typography variant="button">Approval</Typography>
-            ) : (
-              <Typography variant="button">History</Typography>
-            )}
-          </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={(event) => handleMenuOpen(event)}
+              style={{ borderColor: "white", color: "white" }} // Outline white and text white
+            >
+              {reportType === "approval" ? (
+                <Typography variant="button">Approval</Typography>
+              ) : (
+                <Typography variant="button">History</Typography>
+              )}
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem
+                onClick={() => handleReportTypeChange("approval")}
+              >
+                <p className="text-gray-500">Approval</p>
+              </MenuItem>
+              <MenuItem onClick={() => handleReportTypeChange("history")}>
+                <p className="text-gray-500">History</p>
+              </MenuItem>
+            </Menu>
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
+                  />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </div>
+            </div>
+
+            {/* File Icon */}
+            <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+              <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+            </button>
+            <Button
+              className="p-2 bg-white rounded-full shadow"
+              onClick={(event) => handleSettingsOpen(event)}
+            >
+              <SettingsIcon style={{ color: "#FFFFFF" }} /> {/* Blue icon color */}
+            </Button>
+          </div>
           <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            anchorEl={isSettingsOpen}
+            open={Boolean(isSettingsOpen)}
+            onClose={handleSettingsClose}
           >
             <MenuItem
-              onClick={() => handleReportTypeChange("approval")}
+              onClick={handleOpenPaidLeave}
+              onClose={handleMenuClose}
             >
-              <p className="text-gray-500">Approval</p>
+              <p className="text-gray-500">Leave Allowance</p>
             </MenuItem>
-            <MenuItem onClick={() => handleReportTypeChange("history")}>
-              <p className="text-gray-500">History</p>
+            <MenuItem
+              onClick={handleOpenDatePaidLeave}
+              onClose={handleMenuClose}
+            >
+              <p className="text-gray-500">Leave Schedule</p>
             </MenuItem>
           </Menu>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
-            </div>
-          </div>
 
-          {/* File Icon */}
-          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-          </button>
-          <Button
-            className="p-2 bg-white rounded-full shadow"
-            onClick={(event) => handleSettingsOpen(event)}
-          >
-            <SettingsIcon style={{ color: "#FFFFFF" }} /> {/* Blue icon color */}
-          </Button>
-        </div>
-        <Menu
-          anchorEl={isSettingsOpen}
-          open={Boolean(isSettingsOpen)}
-          onClose={handleSettingsClose}
-        >
-          <MenuItem
-            onClick={handleOpenPaidLeave}
-            onClose={handleMenuClose}
-          >
-            <p className="text-gray-500">Leave Allowance</p>
-          </MenuItem>
-          <MenuItem
-            onClick={handleOpenDatePaidLeave}
-            onClose={handleMenuClose}
-          >
-            <p className="text-gray-500">Leave Schedule</p>
-          </MenuItem>
-        </Menu>
-
-        <SettingJatahCuti
-          isOpen={isPaidLeaveOpen}
-          onClose={handleClosePaidLeave}
-        />
-        <SettingJadwalCuti
-          isOpen={isDatePaidLeaveOpen}
-          onClose={handleCloseDatePaidLeave}
-        />
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-          <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-            <Table aria-label="simple table" size="small">
-              <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                <TableRow>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">Name</p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">
-                      Start
-                    </p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">
-                      End Date
-                    </p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[30%]">
-                    <p className="text-indigo font-semibold">Details</p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold text-center">
-                      Replacement
-                    </p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">Progress</p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">Action</p>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className="bg-gray-100">
-                {(rowsPerPage > 0
-                  ? filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                  : filteredRows
-                ).map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{row.nama}</TableCell>
-                    <TableCell align="center">{row.mulai}</TableCell>
-                    <TableCell align="center">{row.selesai}</TableCell>
-                    <TableCell align="center">{row.alasan}</TableCell>
-                    <TableCell align="center">{row.pengganti}</TableCell>
-                    <TableCell align="center">{row.progress}</TableCell>
-                    <TableCell
-                      align="center"
-                      style={{
-                        color:
-                          jabatan.toLowerCase() === "direktur"
-                            ? row.shead
-                              ? "black"
-                              : "red"
-                            : row.shr
-                              ? "black"
-                              : "red",
-                      }}
-                    >
-                      {row.status === null ? (
-                        jabatan.toLowerCase() === "direktur" ? (
-                          row.shead === null ? (
+          <SettingJatahCuti
+            isOpen={isPaidLeaveOpen}
+            onClose={handleClosePaidLeave}
+          />
+          <SettingJadwalCuti
+            isOpen={isDatePaidLeaveOpen}
+            onClose={handleCloseDatePaidLeave}
+          />
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Name</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">
+                        Start
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">
+                        End Date
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[30%]">
+                      <p className="text-indigo font-semibold">Details</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold text-center">
+                        Replacement
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Progress</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Action</p>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {(rowsPerPage > 0
+                    ? filteredRows.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    : filteredRows
+                  ).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.nama}</TableCell>
+                      <TableCell align="center">{row.mulai}</TableCell>
+                      <TableCell align="center">{row.selesai}</TableCell>
+                      <TableCell align="center">{row.alasan}</TableCell>
+                      <TableCell align="center">{row.pengganti}</TableCell>
+                      <TableCell align="center">{row.progress}</TableCell>
+                      <TableCell
+                        align="center"
+                        style={{
+                          color:
+                            jabatan.toLowerCase() === "direktur"
+                              ? row.shead
+                                ? "black"
+                                : "red"
+                              : row.shr
+                                ? "black"
+                                : "red",
+                        }}
+                      >
+                        {row.status === null ? (
+                          jabatan.toLowerCase() === "direktur" ? (
+                            row.shead === null ? (
+                              <ActionButton
+                                onAccept={handleApproval}
+                                onReject={handleReject}
+                                data={row}
+                                tipe={"nonIzin"}
+                                string={"Cuti"}
+                              />
+                            ) : null
+                          ) : row.shr === null ? (
                             <ActionButton
                               onAccept={handleApproval}
                               onReject={handleReject}
@@ -463,31 +479,22 @@ const TableApprovalCuti = () => {
                               string={"Cuti"}
                             />
                           ) : null
-                        ) : row.shr === null ? (
-                          <ActionButton
-                            onAccept={handleApproval}
-                            onReject={handleReject}
-                            data={row}
-                            tipe={"nonIzin"}
-                            string={"Cuti"}
-                          />
-                        ) : null
-                      ) : row.status ? (
-                        "Accepted"
-                      ) : (
-                        "Rejected"
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                        ) : row.status ? (
+                          "Accepted"
+                        ) : (
+                          "Rejected"
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
+
+        {/* Table Section */}
       </div>
-
-      {/* Table Section */}
-
     </div>
   );
 };

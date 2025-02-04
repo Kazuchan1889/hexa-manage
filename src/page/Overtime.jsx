@@ -31,6 +31,7 @@ import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import Formovertime from "../page/Formovertime";
+import Sidebar from "../feature/Sidebar";
 
 const TableOverTime = () => {
   const [page, setPage] = useState(0);
@@ -45,6 +46,13 @@ const TableOverTime = () => {
   const [data, setData] = useState(null);
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const jabatan = localStorage.getItem("jabatan");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const fetchData = (string) => {
     const apiURLover = `${ip}/api/overtime/list`;
@@ -54,6 +62,8 @@ const TableOverTime = () => {
       jenis: reportType,
       date: selectedDate,
     };
+
+    
 
     const config = {
       headers: {
@@ -268,161 +278,163 @@ const TableOverTime = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl ml-5 font-bold">Overtime Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <NavbarUser />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+          <h1 className="text-2xl ml-5 font-bold">Overtime Aproval Data</h1>
+          <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
 
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={(event) => handleMenuOpen(event)}
-            style={{ borderColor: "white", color: "white" }} // Outline white and text white
-          >
-            {reportType === "approval" ? (
-              <Typography variant="button">Approval</Typography>
-            ) : (
-              <Typography variant="button">History</Typography>
-            )}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => handleReportTypeChange("approval")}
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={(event) => handleMenuOpen(event)}
+              style={{ borderColor: "white", color: "white" }} // Outline white and text white
             >
-              <p className="text-gray-500">Approval</p>
-            </MenuItem>
-            <MenuItem onClick={() => handleReportTypeChange("history")}>
-              <p className="text-gray-500">History</p>
-            </MenuItem>
-          </Menu>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
+              {reportType === "approval" ? (
+                <Typography variant="button">Approval</Typography>
+              ) : (
+                <Typography variant="button">History</Typography>
+              )}
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem
+                onClick={() => handleReportTypeChange("approval")}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
+                <p className="text-gray-500">Approval</p>
+              </MenuItem>
+              <MenuItem onClick={() => handleReportTypeChange("history")}>
+                <p className="text-gray-500">History</p>
+              </MenuItem>
+            </Menu>
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
+                  />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </div>
             </div>
+
+            {/* File Icon */}
+
           </div>
 
-          {/* File Icon */}
-          
-        </div>
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            <TableContainer
+              component={Paper}
+              style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+            >
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Catatan</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">
+                        Mulai
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">
+                        Selesai
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[30%]">
+                      <p className="text-indigo font-semibold">Tanggal</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold text-center">
+                        Tipe Overtime
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold text-center">
 
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-        <TableContainer
-                component={Paper}
-                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-              >
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Catatan</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">
-                          Mulai
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">
-                          Selesai
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[30%]">
-                        <p className="text-indigo font-semibold">Tanggal</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold text-center">
-                          Tipe Overtime
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold text-center">
-                          
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Action</p>
+                      </p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Action</p>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {(rowsPerPage > 0
+                    ? filteredRows.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    : filteredRows
+                  ).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.note}</TableCell>
+                      <TableCell align="center">{row.mulai}</TableCell>
+                      <TableCell align="center">{row.selesai}</TableCell>
+                      <TableCell align="center">{row.tanggal_overtime}</TableCell>
+                      <TableCell align="center">{row.tipe}</TableCell>
+                      <TableCell align="center">{row.breaktime}</TableCell>
+                      <TableCell
+                        align="center"
+                        style={{ color: row.status ? "black" : "red" }}
+                      >
+                        {row.status === null ? (
+                          // <DropdownButton
+                          //   onApproveSakit={handleApproveSakit}
+                          //   onApproval={handleApproval}
+                          //   data={row}
+                          //   onReject={handleReject}
+                          // />
+                          <ActionButton
+                            onAccept={handleApproval}
+                            onReject={handleReject}
+
+                            data={row}
+                            tipe={"nonIzin"}
+                            string={"Overtime"}
+                          ></ActionButton>
+                        ) : row.status ? (
+                          "accepted"
+                        ) : (
+                          "rejected"
+                        )}
                       </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? filteredRows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                      : filteredRows
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{row.note}</TableCell>
-                        <TableCell align="center">{row.mulai}</TableCell>
-                        <TableCell align="center">{row.selesai}</TableCell>
-                        <TableCell align="center">{row.tanggal_overtime}</TableCell>
-                        <TableCell align="center">{row.tipe}</TableCell>
-                        <TableCell align="center">{row.breaktime}</TableCell>
-                        <TableCell
-                            align="center"
-                            style={{ color: row.status ? "black" : "red" }}
-                          >
-                            {row.status === null ? (
-                              // <DropdownButton
-                              //   onApproveSakit={handleApproveSakit}
-                              //   onApproval={handleApproval}
-                              //   data={row}
-                              //   onReject={handleReject}
-                              // />
-                              <ActionButton
-                                onAccept={handleApproval}
-                                onReject={handleReject}
-                          
-                                data={row}
-                                tipe={"nonIzin"}
-                                string={"Overtime"}
-                              ></ActionButton>
-                            ) : row.status ? (
-                              "accepted"
-                            ) : (
-                              "rejected"
-                            )}
-                          </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
+
+        {/* Table Section */}
       </div>
-
-      {/* Table Section */}
-
     </div>
   );
 };

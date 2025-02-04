@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -17,6 +17,8 @@ import Paper from "@mui/material/Paper";
 import ip from "../ip";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
+import Sidebar from "../feature/Sidebar";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const TableResign = () => {
   const [page, setPage] = useState(0);
@@ -24,11 +26,18 @@ const TableResign = () => {
   const [search, setSearch] = useState("");
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.isLoading);
 
   const requestBody = {};
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const config = {
     headers: {
@@ -127,93 +136,78 @@ const TableResign = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-hidden">
-      <NavbarUser />
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Data Resign
-          </Typography>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-[37.6%] border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onKeyPress={handleKeyPress}
-                    onChange={handleSearchChange}
-                    className="w-full"
-                  />
-                </div>
-                <div className="flex rounded-lg">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={handleExcel}
-                  >
-                    <DescriptionIcon className="text-white" />
-                  </Button>
-                </div>
-              </div>
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <NavbarUser />
+      {/* Center Content with Search Bar and Buttons */}
+      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+        <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
+        <div className="mt-4 flex justify-center items-center space-x-4">
+
+          
+          {/* Search Bar */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5 text-gray-400"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 15.75L19.5 19.5"
+                />
+                <circle cx="11" cy="11" r="8" />
+              </svg>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            {loading ? (
-              <div className="flex justify-center items-center h-40">
-                <CircularProgress />
-              </div>
-            ) : (
-              <div className="rounded-lg overflow-y-auto drop-shadow-lg">
-                <TableContainer
-                  component={Paper}
-                  style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-                >
-                  <Table aria-label="simple table" size="small">
-                    <TableHead style={{ backgroundColor: "#204684" }}>
+          </div>
+
+          {/* File Icon */}
+          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+        <div className="rounded-lg overflow-y-auto drop-shadow-lg">
+        <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+            <Table aria-label="simple table" size="small">
+              <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                       <TableRow>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Name</p>
+                          <p className="text-indigo font-semibold">Name</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Divition</p>
+                          <p className="text-indigo font-semibold">Divition</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">Position</p>
+                          <p className="text-indigo font-semibold">Position</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">
+                          <p className="text-indigo font-semibold">
                             Filled Date
                           </p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-white font-semibold">
+                          <p className="text-indigo font-semibold">
                             Resign Date
                           </p>
                         </TableCell>
                         <TableCell align="center" className="w-[30%]">
-                          <p className="text-white font-semibold">Reason</p>
+                          <p className="text-indigo font-semibold">Reason</p>
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -241,10 +235,7 @@ const TableResign = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        </div>
       </div>
       <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
@@ -260,6 +251,10 @@ const TableResign = () => {
           />
         </div>
       </div>
+      {/* Table Section */}
+
+    </div>
+    </div>
     </div>
   );
 };

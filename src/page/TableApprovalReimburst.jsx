@@ -34,6 +34,7 @@ import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DownloadIcon from "@mui/icons-material/Download";
+import Sidebar from "../feature/Sidebar";
 
 
 
@@ -53,6 +54,7 @@ const TableApprovalreimbur = () => {
   const loading = useSelector((state) => state.loading.isLoading); // Access loading state
   const [selectedYear, setSelectedYear] = useState(null);
   const jabatan = localStorage.getItem("jabatan");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   const monthsIndex = {
     All: null,
@@ -70,6 +72,11 @@ const TableApprovalreimbur = () => {
     December: 12,
   };
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
     setPage(0);
@@ -335,262 +342,178 @@ const TableApprovalreimbur = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl ml-5 font-bold">Rreimburst Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <NavbarUser />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+          <h1 className="text-2xl ml-5 font-bold">Rreimburst Aproval Data</h1>
+          <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
 
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={(event) => handleMenuOpen(event)}
-            style={{ borderColor: "white", color: "white" }} // Outline white and text white
-          >
-            {reportType === "approval" ? (
-              <Typography variant="button">Approval</Typography>
-            ) : (
-              <Typography variant="button">History</Typography>
-            )}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => handleReportTypeChange("approval")}
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={(event) => handleMenuOpen(event)}
+              style={{ borderColor: "white", color: "white" }} // Outline white and text white
             >
-              <p className="text-gray-500">Approval</p>
-            </MenuItem>
-            <MenuItem onClick={() => handleReportTypeChange("history")}>
-              <p className="text-gray-500">History</p>
-            </MenuItem>
-          </Menu>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
+              {reportType === "approval" ? (
+                <Typography variant="button">Approval</Typography>
+              ) : (
+                <Typography variant="button">History</Typography>
+              )}
+            </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem
+                onClick={() => handleReportTypeChange("approval")}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
+                <p className="text-gray-500">Approval</p>
+              </MenuItem>
+              <MenuItem onClick={() => handleReportTypeChange("history")}>
+                <p className="text-gray-500">History</p>
+              </MenuItem>
+            </Menu>
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
+                  />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </div>
             </div>
+
+            {/* File Icon */}
+            <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+              <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+            </button>
           </div>
 
-          {/* File Icon */}
-          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-           <TableContainer
-                component={Paper}
-                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-              >
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Name</p>
-                      </TableCell>
-                      {(reportType === "approval" ||
-                        reportType === "history") && (
-                          <>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-indigo font-semibold">Position</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[35%]">
-                              <p className="text-indigo font-semibold">
-                                Detail
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-indigo font-semibold">Cost</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[15%]">
-                              <p className="text-indigo font-semibold">
-                                Filing Date
-                              </p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[5%]">
-                              <p className="text-indigo font-semibold">Document</p>
-                            </TableCell>
-                          </>
-                        )}
-                      {reportType === "history" && (
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Status</p>
-                        </TableCell>
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            <TableContainer
+              component={Paper}
+              style={{ backgroundColor: "#FFFFFF", width: "100%" }}
+            >
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Name</p>
+                    </TableCell>
+                    {(reportType === "approval" ||
+                      reportType === "history") && (
+                        <>
+                          <TableCell align="center" className="w-[5%]">
+                            <p className="text-indigo font-semibold">Position</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[35%]">
+                            <p className="text-indigo font-semibold">
+                              Detail
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[10%]">
+                            <p className="text-indigo font-semibold">Cost</p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[15%]">
+                            <p className="text-indigo font-semibold">
+                              Filing Date
+                            </p>
+                          </TableCell>
+                          <TableCell align="center" className="w-[5%]">
+                            <p className="text-indigo font-semibold">Document</p>
+                          </TableCell>
+                        </>
                       )}
-                      {reportType === "approval" && (
+                    {reportType === "history" && (
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Status</p>
+                      </TableCell>
+                    )}
+                    {reportType === "approval" && (
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold text-center">
+                          Action
+                        </p>
+                      </TableCell>
+                    )}
+                    {reportType === "accepted" && (
+                      <>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold text-center">
+                            Jabatan
+                          </p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Month</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Amount</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[15%]">
+                          <p className="text-indigo font-semibold">Bank Name</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[15%]">
+                          <p className="text-indigo font-semibold">
+                            Bank account number
+                          </p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Detail</p>
+                        </TableCell>
                         <TableCell align="center" className="w-[10%]">
                           <p className="text-indigo font-semibold text-center">
                             Action
                           </p>
                         </TableCell>
-                      )}
-                      {reportType === "accepted" && (
-                        <>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold text-center">
-                              Jabatan
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Month</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Amount</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-indigo font-semibold">Bank Name</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-indigo font-semibold">
-                              Bank account number
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Detail</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold text-center">
-                              Action
-                            </p>
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? filteredRows.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      : filteredRows
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell
-                          align="center"
-                          style={{
-                            whiteSpace: "normal",
-                            wordWrap: "break-word",
-                            maxHeight: "100px",
-                            maxWidth: "100px",
-                          }}
-                        >
-                          {row.nama}
-                        </TableCell>
-                        {(reportType === "approval" ||
-                          reportType === "history") && (
-                            <>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "100px",
-                                }}
-                              >
-                                {row.jabatan}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "100px",
-                                }}
-                              >
-                                {row.keterangan}
-                              </TableCell>
-                              <TableCell align="center">{row.biaya}</TableCell>
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "120px",
-                                }}
-                              >
-                                {row.date}
-                              </TableCell>
-                              <TableCell align="center">
-                                {row.dokumen && (
-                                  <div className="flex justify-center">
-                                    <Button
-                                      size="small"
-                                      href={row.dokumen}
-                                      target="_blank "
-                                      download
-                                      className="cursor-pointer"
-                                    >
-                                      <DownloadIcon className="text-gray-400" />
-                                    </Button>
-                                  </div>
-                                )}
-                              </TableCell>
-                              {reportType === "history" ? (
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                    maxHeight: "100px",
-                                    maxWidth: "100px",
-                                  }}
-                                >
-                                  {row.progres}
-                                </TableCell>
-                              ) : null}
-                              {row.status === null ? (
-                                <>
-                                  <TableCell
-                                    align="center"
-                                    style={{
-                                      color: row.status ? "black" : "red",
-                                    }}
-                                  >
-                                    {row.status === null ? (
-                                      <ActionButton
-                                        data={row}
-                                        onAccept={handleApprove}
-                                        onReject={handleReject}
-                                        tipe={"nonIzin"}
-                                        string={"Reimburse"}
-                                      ></ActionButton>
-                                    ) : null}
-                                  </TableCell>
-                                </>
-                              ) : null}
-                            </>
-                          )}
-                        {reportType === "accepted" && (
+                      </>
+                    )}
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {(rowsPerPage > 0
+                    ? filteredRows.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    : filteredRows
+                  ).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        align="center"
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          maxHeight: "100px",
+                          maxWidth: "100px",
+                        }}
+                      >
+                        {row.nama}
+                      </TableCell>
+                      {(reportType === "approval" ||
+                        reportType === "history") && (
                           <>
                             <TableCell
                               align="center"
@@ -612,87 +535,173 @@ const TableApprovalreimbur = () => {
                                 maxWidth: "100px",
                               }}
                             >
-                              {`${monthNames(row.bulan, row.tahun)} ${row.tahun
-                                }`}
+                              {row.keterangan}
                             </TableCell>
+                            <TableCell align="center">{row.biaya}</TableCell>
                             <TableCell
                               align="center"
                               style={{
                                 whiteSpace: "normal",
                                 wordWrap: "break-word",
                                 maxHeight: "100px",
-                                maxWidth: "100px",
+                                maxWidth: "120px",
                               }}
                             >
-                              {row.jumlah}
+                              {row.date}
                             </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.bankname}
+                            <TableCell align="center">
+                              {row.dokumen && (
+                                <div className="flex justify-center">
+                                  <Button
+                                    size="small"
+                                    href={row.dokumen}
+                                    target="_blank "
+                                    download
+                                    className="cursor-pointer"
+                                  >
+                                    <DownloadIcon className="text-gray-400" />
+                                  </Button>
+                                </div>
+                              )}
                             </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.norek}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => {
-                                  handleDetailClick(row);
+                            {reportType === "history" ? (
+                              <TableCell
+                                align="center"
+                                style={{
+                                  whiteSpace: "normal",
+                                  wordWrap: "break-word",
+                                  maxHeight: "100px",
+                                  maxWidth: "100px",
                                 }}
                               >
-                                Detail
-                              </Button>
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                color: row.status ? "black" : "red",
-                              }}
-                            >
-                              <ActionButton
-                                data={row}
-                                onAccept={handleApproveAll}
-                                onReject={handleRejectAll}
-                                tipe={"nonIzin"}
-                                string={"Reimburse"}
-                              ></ActionButton>
-                            </TableCell>
+                                {row.progres}
+                              </TableCell>
+                            ) : null}
+                            {row.status === null ? (
+                              <>
+                                <TableCell
+                                  align="center"
+                                  style={{
+                                    color: row.status ? "black" : "red",
+                                  }}
+                                >
+                                  {row.status === null ? (
+                                    <ActionButton
+                                      data={row}
+                                      onAccept={handleApprove}
+                                      onReject={handleReject}
+                                      tipe={"nonIzin"}
+                                      string={"Reimburse"}
+                                    ></ActionButton>
+                                  ) : null}
+                                </TableCell>
+                              </>
+                            ) : null}
                           </>
                         )}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                      {reportType === "accepted" && (
+                        <>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {row.jabatan}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {`${monthNames(row.bulan, row.tahun)} ${row.tahun
+                              }`}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {row.jumlah}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {row.bankname}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {row.norek}
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              maxHeight: "100px",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => {
+                                handleDetailClick(row);
+                              }}
+                            >
+                              Detail
+                            </Button>
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              color: row.status ? "black" : "red",
+                            }}
+                          >
+                            <ActionButton
+                              data={row}
+                              onAccept={handleApproveAll}
+                              onReject={handleRejectAll}
+                              tipe={"nonIzin"}
+                              string={"Reimburse"}
+                            ></ActionButton>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
-      </div>
 
-      {/* Table Section */}
-
+        {/* Table Section */}
+      </div>  
     </div>
   );
 };
