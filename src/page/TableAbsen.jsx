@@ -40,6 +40,9 @@ import {
   Grow,
 } from "@mui/material";
 
+import { Close } from "@mui/icons-material";
+
+
 
 
 const TableAbsen = () => {
@@ -68,6 +71,7 @@ const TableAbsen = () => {
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [isRotating, setIsRotating] = useState(false);
+
 
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
@@ -401,6 +405,7 @@ const TableAbsen = () => {
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-100">
       {/* Container 1 */}
       <div className="bg-[#11284E] text-white p-6  shadow-lg h-72">
@@ -458,7 +463,7 @@ const TableAbsen = () => {
                         id="menu-list-grow"
                         onKeyDown={handleListKeyDown}
                         className="outline-none"
-                        
+
                       >
                         <MenuItem
                           component={Link}
@@ -604,9 +609,7 @@ const TableAbsen = () => {
                                 src={row.fotomasuk}
                                 alt="Foto Masuk"
                                 style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
-                                onClick={() => {
-                                  setSelectedPhoto(row.fotomasuk);
-                                }}
+                                onClick={() => setSelectedPhoto(row.fotomasuk)}
                               />
                             </div>
                           ) : (
@@ -727,9 +730,39 @@ const TableAbsen = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      {selectedPhoto && (
+        <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
+          <DialogContent className="relative flex flex-col items-center p-4">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setSelectedPhoto(null)}
+            >
+              <Close fontSize="large" />
+            </button>
+            <img
+              src={selectedPhoto}
+              alt="Preview"
+              className="max-w-full max-h-[80vh] rounded-lg"
+            />
+            <Button
+              className="mt-4"
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = selectedPhoto;
+                link.download = "photo.jpg";
+                link.click();
+              }}
+            >
+              Download Photo
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
+
 
 
     </div>
+
   );
 };
 
