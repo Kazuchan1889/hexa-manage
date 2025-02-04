@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
-import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -34,7 +33,8 @@ import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DownloadIcon from "@mui/icons-material/Download";
-
+import NavbarUser from "../feature/Headbar";
+import Sidebar from "../feature/Sidebar";
 
 
 const TableApprovalizin = () => {
@@ -47,6 +47,7 @@ const TableApprovalizin = () => {
   const [search, setSearch] = useState("");
   const [anchorEl, setAnchorEl] = useState();
   const [reportType, setReportType] = useState("approval");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [data, setData] = useState(null);
 
   const dispatch = useDispatch(); // Initialize Redux dispatch
@@ -93,6 +94,12 @@ const TableApprovalizin = () => {
     setPage(0);
     setIsDateFilterOpen(false);
   };
+
+  useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
   useEffect(() => {
     fetchData(); // Initial data fetch
@@ -290,7 +297,9 @@ const TableApprovalizin = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+    <Sidebar isMobile={isMobile} />
+    <div className="min-h-screen bg-gray-100 overflow-auto ">
       <NavbarUser />
       {/* Center Content with Search Bar and Buttons */}
       <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
@@ -438,6 +447,7 @@ const TableApprovalizin = () => {
 
       {/* Table Section */}
 
+    </div>
     </div>
   );
 };
