@@ -412,11 +412,15 @@ const TableAbsen = () => {
     }
   };
 
+  const handleClickr = () => {
+    navigate('/aptes');
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       <Sidebar isMobile={isMobile} />
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
-        <NavbarUser />
+
         <div className="min-h-screen bg-gray-100">
           {/* Container 1 */}
           <div className="bg-[#11284E] text-white p-6  shadow-lg h-72">
@@ -431,7 +435,7 @@ const TableAbsen = () => {
 
               <div className="flex items-center space-x-4">
                 {/* Notification Icon */}
-                <IconButton>
+                <IconButton onClick={handleClickr}>
                   <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
                 </IconButton>
 
@@ -773,10 +777,10 @@ const TableAbsen = () => {
 
         </div>
       </div>
-      </div>
+    </div>
 
-      );
+  );
 };
 
 
-      export default TableAbsen;
+export default TableAbsen;
