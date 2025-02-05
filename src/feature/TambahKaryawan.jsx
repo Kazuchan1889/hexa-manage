@@ -243,7 +243,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     } catch (error) {
       console.error("Error fetching roles:", error);
     }
-    
+
   }
   const fetchLocations = async () => {
     try {
@@ -264,7 +264,7 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
   };
 
   fetchLocations();
-  
+
 
   const handleChange = (event, value) => {
     setFormData((prevData) => ({
@@ -273,165 +273,177 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
     }));
   };
 
-  
+
 
 
 
   return (
     <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-3 rounded-lg w-full max-w-3xl flex flex-col max-h-96">
+      <div className="bg-white p-3 ml-40 rounded-lg flex flex-col w-full max-w-[1107px] h-[530px] md:w-[900px] md:h-[450px] sm:w-[700px] sm:h-[400px] xs:w-[90%] xs:h-auto">
         <div className="flex justify-between mb-4">
-          <h2 className="text-xl font-semibold">Tambah Karyawan</h2>
-          <button onClick={onClose} className="focus:outline-none">
+          <h2 className="text-black text-xl font-bold text-center ml-8 w-full">Add Employee</h2>
+          <button
+            onClick={onClose}
+            className="text-red-500 p-2 rounded focus:outline-none hover:bg-red-600"
+          >
             <CloseIcon />
           </button>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto">
           {activeStep === 1 && (
             <div>
-              <div className="flex space-x-4 mb-5 max-h-72">
-                <TextField
-                  label="Nama"
-                  variant="outlined"
-                  fullWidth
-                  name="nama"
-                  value={formData.nama}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="flex space-x-4 mb-5">
-                <TextField
-                  label="Email"
-                  variant="outlined"
-                  fullWidth
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
+              <div className="flex flex-col items-center">
+                <div className="flex space-x-4 mb-5 max-w-4xl max-h-72 w-full justify-center">
+                  <TextField
+                    label="Nama"
+                    variant="outlined"
+                    fullWidth
+                    name="nama"
+                    value={formData.nama}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-                <TextField
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  label="Password"
-                  variant="outlined"
-                  type={showPassword ? "text" : "password"}
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton onClick={handleShowPasswordToggle}>
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              </div>
-              <div className="flex space-x-4 mb-5">
-                <TextField
-                  label="NIK"
-                  variant="outlined"
-                  fullWidth
-                  type="integer"
-                  name="nik"
-                  value={formData.nik}
-                  onChange={handleInputChange}
-                />
+                <div className="flex max-w-4xl space-x-4 mb-5 w-full justify-center">
+                  <TextField
+                    label="Email"
+                    variant="outlined"
+                    style={{ width: "487px" }}
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
+                  <TextField
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    label="Password"
+                    variant="outlined"
+                    type={showPassword ? "text" : "password"}
+                    style={{ width: "487px" }}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton onClick={handleShowPasswordToggle}>
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                </div>
 
-                <TextField
-                  label="NPWP"
-                  variant="outlined"
-                  fullWidth
-                  type="integer"
-                  name="npwp"
-                  value={formData.npwp}
-                  onChange={handleInputChange}
-                />
-              </div>
+                <div className="flex max-w-4xl space-x-4 mb-5 w-full justify-center">
+                  <TextField
+                    label="NIK"
+                    variant="outlined"
+                    style={{ width: "487px" }}
+                    type="integer"
+                    name="nik"
+                    value={formData.nik}
+                    onChange={handleInputChange}
+                  />
+                  <TextField
+                    label="NPWP"
+                    variant="outlined"
+                    style={{ width: "487px" }}
+                    type="integer"
+                    name="npwp"
+                    value={formData.npwp}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-              <div className="flex text-left space-x-4 mb-5">
-                <TextField
-                  label="Level"
-                  variant="outlined"
-                  name="level"
-                  fullWidth
-                  select
-                  value={formData.level}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="leader">Leader</MenuItem>
-                  <MenuItem value="Head">Head</MenuItem>
-                  <MenuItem value="Senior">Senior</MenuItem>
-                  <MenuItem value="Staff">Staff</MenuItem>
-                </TextField>
-                <Autocomplete
-                  options={locations}
-                  loading={loading}
-                  value={formData.lokasikerja}
-                  fullWidth
-                  onChange={handleChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Lokasi Kerja"
-                      variant="outlined"
-                      fullWidth
-                    />
-                  )}
-                />
-              </div>
-              <div className="flex text-left ">
-                <TextField
-                  label="Role"
-                  variant="outlined"
-                  select
-                  fullWidth
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                >
-                  {roles.map((role) => (
-                    <MenuItem key={role.id} value={role.role}>
-                      {role.role}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  label="Status"
-                  variant="outlined"
-                  select
-                  fullWidth
-                  name="status"
-                  value={formData.status}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="tetap">Tetap</MenuItem>
-                  <MenuItem value="kontrak">Kontrak</MenuItem>
-                  <MenuItem value="probation">Probation</MenuItem>
-                  <MenuItem value="magang">Magang</MenuItem>
-                </TextField>
-              </div>
-              <div className="flex space-x-4 mt-5">
-                <TextField
-                  label="Divisi"
-                  variant="outlined"
-                  fullWidth
-                  name="divisi"
-                  value={formData.divisi} // Format the displayed value
-                  onChange={handleInputChange}
-                />
+                <div className="flex max-w-4xl space-x-4 mb-5 w-full justify-center">
+                  <TextField
+                    label="Level"
+                    variant="outlined"
+                    name="level"
+                    style={{ width: "487px" }}
+                    select
+                    value={formData.level}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="leader">Leader</MenuItem>
+                    <MenuItem value="Head">Head</MenuItem>
+                    <MenuItem value="Senior">Senior</MenuItem>
+                    <MenuItem value="Staff">Staff</MenuItem>
+                  </TextField>
+                  <Autocomplete
+                    options={locations}
+                    loading={loading}
+                    value={formData.lokasikerja}
+                    style={{ width: "487px" }}
+                    onChange={handleChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Lokasi Kerja"
+                        variant="outlined"
+                      />
+                    )}
+                  />
+                </div>
 
-              </div>
+                <div className="flex max-w-4xl space-x-4 mb-5 w-full justify-center">
+                  <TextField
+                    label="Role"
+                    variant="outlined"
+                    select
+                    style={{ width: "487px" }}
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                  >
+                    {roles.map((role) => (
+                      <MenuItem key={role.id} value={role.role}>
+                        {role.role}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <TextField
+                    label="Status"
+                    variant="outlined"
+                    select
+                    style={{ width: "487px" }}
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="tetap">Tetap</MenuItem>
+                    <MenuItem value="kontrak">Kontrak</MenuItem>
+                    <MenuItem value="probation">Probation</MenuItem>
+                    <MenuItem value="magang">Magang</MenuItem>
+                  </TextField>
+                </div>
 
-              <div className="sticky bottom-0 flex justify-end bg-white mt-4">
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ backgroundColor: "#204684" }}
-                  onClick={(handleStep3)}
-                >
-                  Next
-                </Button>
+                <div className="flex max-w-4xl space-x-4 mt-5 w-full justify-center">
+                  <TextField
+                    label="Divisi"
+                    variant="outlined"
+                    fullWidth
+                    name="divisi"
+                    value={formData.divisi}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                {/* Move Button below Divisi Input */}
+                <div className="flex justify-center mt-4">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    style={{
+                      backgroundColor: "#204684",
+                      borderRadius: "20px",
+                      width: "136px",
+                      height: "40px"
+                    }}
+                    onClick={handleStep3}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -610,45 +622,46 @@ const TambahKaryawan = ({ onClick, onClose, fetchData }) => {
           )} */}
           {activeStep === 3 && step3Data && (
             <div>
-              <div className="max-h-96 text-left">
-                <h2 className="text-xl font-semibold mb-4">Data yang Diisi</h2>
-                <div className="space-y-2">
-                  {Object.entries(step3Data).map(([key, value]) =>
-                    key !== "Authority" ? ( // Exclude Authority from display here
-                      <div key={key}>
-                        <strong>{key}:</strong> {value}
-                      </div>
-                    ) : null
-                  )}
-                  {step3Data.Authority.length > 0 && ( // Display Authority only if it exists
-                    <div className="mt-4">
-                      <div className="w-1/2 pr-4">
-                        <strong>Authority:</strong>
-                      </div>
-                      <div className="w-1/2">
-                        <ul>
-                          {step3Data.Authority.map((authority, index) => (
-                            <li key={index}>{authority}</li>
-                          ))}
-                        </ul>
-                      </div>
+              <div className="space-y-2">
+                {Object.entries(step3Data).map(([key, value]) =>
+                  key !== "Authority" ? ( // Exclude Authority from display here
+                    <div key={key} className="flex items-center text-black">
+                      <strong>{key}:</strong>
+                      <span className="ml-1">{value}</span> {/* Space 1 between colon and value */}
                     </div>
-                  )}
-                </div>
+                  ) : null
+                )}
+
+                {step3Data.Authority.length > 0 && ( // Display Authority only if it exists
+                  <div className="mt-4 text-black">
+                    <div className="flex items-center">
+                      <strong>Authority:</strong>
+                      <ul className="ml-1 list-disc pl-5">
+                        {step3Data.Authority.map((authority, index) => (
+                          <li key={index}>{authority}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="sticky bottom-0 flex justify-end bg-white ">
+
+              <div className="flex justify-center mt-4 sticky bottom-0 p-3">
                 <Button
                   variant="contained"
                   size="small"
-                  style={{ backgroundColor: "#1E6D42" }}
                   onClick={handleSubmit}
-                  className="mr-2"
+                  className="w-32 h-10 rounded-full text-white"
                 >
                   Create
                 </Button>
               </div>
             </div>
           )}
+
+
+
+
         </form>
       </div>
     </div>

@@ -534,7 +534,7 @@ const TableAbsen = () => {
                     value={search}
                     onChange={handleSearchChange}
                     onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                    className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+                    className={`p-2 pl-10 rounded-full border border-gray-300 w-${isMobile ? "60" : "80"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
                   />
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
@@ -553,231 +553,231 @@ const TableAbsen = () => {
                       <circle cx="11" cy="11" r="8" />
                     </svg>
                   </div>
-                </div>
-
-                {/* File Icon */}
-                <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-                  <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-                </button>
               </div>
+
+              {/* File Icon */}
+              <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+                <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+              </button>
             </div>
-            <div className="rounded-lg overflow-y-auto mt-8 shadow-md mx-4">
-              <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                    <TableRow className="h-16 ">
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Name</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Clock In</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Clock Out</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Date</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Overtime</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Photo</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Status</p>
-                      </TableCell>
-                      {isWeekend && (
-                        <TableCell align="center">
-                          <p className="text-indigo font-semibold">Action</p>
-                        </TableCell>
-                      )}
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Export</p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {rows
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row, index) => {
-                        const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
-                        const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
-                        const isLateMasuk = jamMasukRow > timeMasuk;
-                        const isLateKeluar = jamKeluarRow > timeKeluar;
-
-                        return (
-                          <TableRow key={index}>
-                            <TableCell align="center">{row.nama}</TableCell>
-                            <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
-                              {row.masuk}
-                            </TableCell>
-                            <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
-                              {row.keluar}
-                            </TableCell>
-                            <TableCell align="center">{row.date}</TableCell>
-                            <TableCell align="center">no</TableCell>
-                            <TableCell align="center">
-                              {row.fotomasuk ? (
-                                <div className="flex justify-center items-center h-full">
-                                  <img
-                                    src={row.fotomasuk}
-                                    alt="Foto Masuk"
-                                    style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
-                                    onClick={() => setSelectedPhoto(row.fotomasuk)}
-                                  />
-                                </div>
-                              ) : (
-                                <p>No Photo</p>
-                              )}
-                            </TableCell>
-                            <TableCell align="center">
-                              <PatchStatus string={row.status} id={row.id} />
-                            </TableCell>
-                            {isWeekend && (
-                              <TableCell align="center">
-                                <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
-                              </TableCell>
-                            )}
-                            <TableCell align="center">
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<FileDownloadOutlined />}
-                                onClick={() => {
-                                  axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                      Authorization: localStorage.getItem("accessToken"),
-                                    },
-                                    responseType: "blob",
-                                  })
-                                    .then((response) => {
-                                      const url = window.URL.createObjectURL(new Blob([response.data]));
-                                      const link = document.createElement("a");
-                                      link.href = url;
-                                      link.setAttribute("download", "data_export.xlsx");
-                                      document.body.appendChild(link);
-                                      link.click();
-                                      document.body.removeChild(link);
-                                    })
-                                    .catch((error) => {
-                                      console.error("Error exporting data:", error);
-                                      alert("Failed to export data.");
-                                    });
-                                }}
-                              >
-                                Export
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-
-
-            {/* Container 2 */}
-
           </div>
-          {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
+          <div className="rounded-lg overflow-y-auto mt-8 shadow-md mx-4">
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow className="h-16 ">
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Name</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Clock In</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Clock Out</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Date</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Overtime</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Photo</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Status</p>
+                    </TableCell>
+                    {isWeekend && (
+                      <TableCell align="center">
+                        <p className="text-indigo font-semibold">Action</p>
+                      </TableCell>
+                    )}
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Export</p>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                      const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                      const isLateMasuk = jamMasukRow > timeMasuk;
+                      const isLateKeluar = jamKeluarRow > timeKeluar;
 
-          <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
-            <DialogTitle>Setting Attendance Hours</DialogTitle>
-            <DialogContent>
-              <div className="flex space-x-1">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="flex my-2">
-                    <TimePicker
-                      label="Clock In"
-                      value={timeMasuk}
-                      onChange={(val) => {
-                        handleTimeChange(val, true);
-                      }}
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                </LocalizationProvider>
-                <div className="flex my-2">
-                  <TextField
-                    label="Tolerance (Minute)"
-                    type="number"
-                    value={selectedToleransi}
-                    onChange={(event) =>
-                      handleToleransiChange(
-                        parseInt(event.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="flex my-2">
-                    <TimePicker
-                      label="Clock Out"
-                      value={timeKeluar}
-                      onChange={(val) => {
-                        handleTimeChange(val, false);
-                      }}
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                </LocalizationProvider>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={handleTimeSave}
-                size="small"
-                style={{ backgroundColor: "#204684" }}
-                variant="contained"
-              >
-                <p>Save</p>
-              </Button>
-              <Button
-                onClick={closeTimeSetting}
-                style={{ backgroundColor: "#F&FAFC" }}
-                size="small"
-                variant="outlined"
-              >
-                <p className="bg-gray-100">Close</p>
-              </Button>
-            </DialogActions>
-          </Dialog>
-          {selectedPhoto && (
-            <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
-              <DialogContent className="relative flex flex-col items-center p-4">
-                <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setSelectedPhoto(null)}
-                >
-                  <Close fontSize="large" />
-                </button>
-                <img
-                  src={selectedPhoto}
-                  alt="Preview"
-                  className="max-w-full max-h-[80vh] rounded-lg"
-                />
-                <Button
-                  className="mt-4"
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href = selectedPhoto;
-                    link.download = "photo.jpg";
-                    link.click();
-                  }}
-                >
-                  Download Photo
-                </Button>
-              </DialogContent>
-            </Dialog>
-          )}
+                      return (
+                        <TableRow key={index}>
+                          <TableCell align="center">{row.nama}</TableCell>
+                          <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
+                            {row.masuk}
+                          </TableCell>
+                          <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
+                            {row.keluar}
+                          </TableCell>
+                          <TableCell align="center">{row.date}</TableCell>
+                          <TableCell align="center">no</TableCell>
+                          <TableCell align="center">
+                            {row.fotomasuk ? (
+                              <div className="flex justify-center items-center h-full">
+                                <img
+                                  src={row.fotomasuk}
+                                  alt="Foto Masuk"
+                                  style={{ width: "50px", height: "50px", objectFit: "cover", cursor: "pointer" }}
+                                  onClick={() => setSelectedPhoto(row.fotomasuk)}
+                                />
+                              </div>
+                            ) : (
+                              <p>No Photo</p>
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            <PatchStatus string={row.status} id={row.id} />
+                          </TableCell>
+                          {isWeekend && (
+                            <TableCell align="center">
+                              <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
+                            </TableCell>
+                          )}
+                          <TableCell align="center">
+                            <Button
+                              variant="contained"
+                              color="success"
+                              startIcon={<FileDownloadOutlined />}
+                              onClick={() => {
+                                axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: localStorage.getItem("accessToken"),
+                                  },
+                                  responseType: "blob",
+                                })
+                                  .then((response) => {
+                                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                                    const link = document.createElement("a");
+                                    link.href = url;
+                                    link.setAttribute("download", "data_export.xlsx");
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                  })
+                                  .catch((error) => {
+                                    console.error("Error exporting data:", error);
+                                    alert("Failed to export data.");
+                                  });
+                              }}
+                            >
+                              Export
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
 
+
+          {/* Container 2 */}
 
         </div>
+        {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
+
+        <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
+          <DialogTitle>Setting Attendance Hours</DialogTitle>
+          <DialogContent>
+            <div className="flex space-x-1">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="flex my-2">
+                  <TimePicker
+                    label="Clock In"
+                    value={timeMasuk}
+                    onChange={(val) => {
+                      handleTimeChange(val, true);
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </LocalizationProvider>
+              <div className="flex my-2">
+                <TextField
+                  label="Tolerance (Minute)"
+                  type="number"
+                  value={selectedToleransi}
+                  onChange={(event) =>
+                    handleToleransiChange(
+                      parseInt(event.target.value)
+                    )
+                  }
+                />
+              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="flex my-2">
+                  <TimePicker
+                    label="Clock Out"
+                    value={timeKeluar}
+                    onChange={(val) => {
+                      handleTimeChange(val, false);
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </LocalizationProvider>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleTimeSave}
+              size="small"
+              style={{ backgroundColor: "#204684" }}
+              variant="contained"
+            >
+              <p>Save</p>
+            </Button>
+            <Button
+              onClick={closeTimeSetting}
+              style={{ backgroundColor: "#F&FAFC" }}
+              size="small"
+              variant="outlined"
+            >
+              <p className="bg-gray-100">Close</p>
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {selectedPhoto && (
+          <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
+            <DialogContent className="relative flex flex-col items-center p-4">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setSelectedPhoto(null)}
+              >
+                <Close fontSize="large" />
+              </button>
+              <img
+                src={selectedPhoto}
+                alt="Preview"
+                className="max-w-full max-h-[80vh] rounded-lg"
+              />
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = selectedPhoto;
+                  link.download = "photo.jpg";
+                  link.click();
+                }}
+              >
+                Download Photo
+              </Button>
+            </DialogContent>
+          </Dialog>
+        )}
+
+
       </div>
     </div>
+    </div >
 
   );
 };

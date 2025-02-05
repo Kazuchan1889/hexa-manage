@@ -302,7 +302,6 @@ function FormIzin() {
         </div>
       ) : (
         <div className="w-screen h-fit flex">
-          <Side />
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center mt-3">
               <div className="w-[90%] mb-4 flex justify-between	items-center">

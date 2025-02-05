@@ -97,10 +97,10 @@ const TableApprovalizin = () => {
   };
 
   useEffect(() => {
-      const handleResize = () => setIsMobile(window.innerWidth <= 1024);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     fetchData(); // Initial data fetch
@@ -302,153 +302,162 @@ const TableApprovalizin = () => {
       <Sidebar isMobile={isMobile} />
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
         <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center space-x-4">
-
-          <Button
-            size="small"
-            variant="outlined"
-            onClick={(event) => handleMenuOpen(event)}
-            style={{ borderColor: "white", color: "white" }} // Outline white and text white
-          >
-            {reportType === "approval" ? (
-              <Typography variant="button">Approval</Typography>
-            ) : (
-              <Typography variant="button">History</Typography>
-            )}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => handleReportTypeChange("approval")}
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg  h-48">
+          <h1 className="text-2xl font-bold">Permit Aproval Data</h1>
+          <div className="mt-4 flex justify-center items-center space-x-4">
+            {/* Button with Outline */}
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={(event) => handleMenuOpen(event)}
+              style={{ borderColor: "white", color: "white" }}
+              className={`${isMobile ? "w-24 h-6 text-[5px]" : "w-100 h-6"}`}
             >
-              <p className="text-gray-500">Approval</p>
-            </MenuItem>
-            <MenuItem onClick={() => handleReportTypeChange("history")}>
-              <p className="text-gray-500">History</p>
-            </MenuItem>
-          </Menu>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
+              {reportType === "approval" ? (
+                <Typography variant="button">Approval</Typography>
+              ) : (
+                <Typography variant="button">History</Typography>
+              )}
+            </Button>
+
+
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={() => handleReportTypeChange("approval")}>
+                <p className="text-gray-500">Approval</p>
+              </MenuItem>
+              <MenuItem onClick={() => handleReportTypeChange("history")}>
+                <p className="text-gray-500">History</p>
+              </MenuItem>
+            </Menu>
+
+            {/* Search Bar */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className={`p-2 pl-10 rounded-full border border-gray-300 
+        ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
+                  />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </div>
             </div>
+
+            {/* File Icon Button */}
+            <button
+              className={`flex items-center justify-center p-2 bg-white rounded-full shadow ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}
+              onClick={handleExcel}
+            >
+              <InsertDriveFileIcon className="text-[#11284E] w-3 h-3" />
+            </button>
+
+
           </div>
 
-          {/* File Icon */}
-          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-          </button>
+
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableCell align="center" className="w-[10%]">
+                    <p className="text-indigo font-semibold">Name</p>
+                  </TableCell>
+                  <TableCell align="center" className="w-[14%]">
+                    <p className="text-indigo font-semibold">Start Date</p>
+                  </TableCell>
+                  <TableCell align="center" className="w-[14%]">
+                    <p className="text-indigo font-semibold">End Date</p>
+                  </TableCell>
+                  <TableCell align="center" className="w-[30%]">
+                    <p className="text-indigo font-semibold">Detail</p>
+                  </TableCell>
+                  <TableCell align="center" className="w-[10%]">
+                    <p className="text-indigo font-semibold">Document</p>
+                  </TableCell>
+                  <TableCell align="center" className="w-[10%]">
+                    <p className="text-indigo font-semibold text-center">Action</p>
+                  </TableCell>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {(rowsPerPage > 0
+                    ? filteredRows.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    : filteredRows
+                  ).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{row.nama}</TableCell>
+                      <TableCell align="center">{row.mulai}</TableCell>
+                      <TableCell align="center">{row.selesai}</TableCell>
+                      <TableCell align="center">{row.alasan}</TableCell>
+                      <TableCell align="center">
+                        {row.dokumen && (
+                          <div className="flex justify-center">
+                            <Button
+                              size="small"
+                              href={row.dokumen}
+                              target="_blank "
+                              download
+                              className="cursor-pointer"
+                            >
+                              <DownloadIcon className="text-gray-400" />
+                            </Button>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        style={{ color: row.status ? "black" : "red" }}
+                      >
+                        {row.status === null ? (
+                          <ActionButton
+                            onAccept={handleApproval}
+                            onReject={handleReject}
+                            onSakit={handleApproveSakit}
+                            data={row}
+                            tipe={"izin"}
+                            string={"izin"}
+                          />
+                        ) : row.status ? (
+                          "accepted"
+                        ) : (
+                          "rejected"
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
 
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-          <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-            <Table aria-label="simple table" size="small">
-              <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                <TableCell align="center" className="w-[10%]">
-                  <p className="text-indigo font-semibold">Name</p>
-                </TableCell>
-                <TableCell align="center" className="w-[14%]">
-                  <p className="text-indigo font-semibold">Start Date</p>
-                </TableCell>
-                <TableCell align="center" className="w-[14%]">
-                  <p className="text-indigo font-semibold">End Date</p>
-                </TableCell>
-                <TableCell align="center" className="w-[30%]">
-                  <p className="text-indigo font-semibold">Detail</p>
-                </TableCell>
-                <TableCell align="center" className="w-[10%]">
-                  <p className="text-indigo font-semibold">Document</p>
-                </TableCell>
-                <TableCell align="center" className="w-[10%]">
-                  <p className="text-indigo font-semibold text-center">Action</p>
-                </TableCell>
-              </TableHead>
-              <TableBody className="bg-gray-100">
-                {(rowsPerPage > 0
-                  ? filteredRows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                  : filteredRows
-                ).map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{row.nama}</TableCell>
-                    <TableCell align="center">{row.mulai}</TableCell>
-                    <TableCell align="center">{row.selesai}</TableCell>
-                    <TableCell align="center">{row.alasan}</TableCell>
-                    <TableCell align="center">
-                      {row.dokumen && (
-                        <div className="flex justify-center">
-                          <Button
-                            size="small"
-                            href={row.dokumen}
-                            target="_blank "
-                            download
-                            className="cursor-pointer"
-                          >
-                            <DownloadIcon className="text-gray-400" />
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      style={{ color: row.status ? "black" : "red" }}
-                    >
-                      {row.status === null ? (
-                        <ActionButton
-                          onAccept={handleApproval}
-                          onReject={handleReject}
-                          onSakit={handleApproveSakit}
-                          data={row}
-                          tipe={"izin"}
-                          string={"izin"}
-                        />
-                      ) : row.status ? (
-                        "accepted"
-                      ) : (
-                        "rejected"
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+        {/* Table Section */}
+
       </div>
-
-      {/* Table Section */}
-
-    </div>
     </div>
   );
 };
