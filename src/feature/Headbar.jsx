@@ -287,7 +287,7 @@ const Headb = () => {
 
 
   return (
-    <div className="flex justify-between p-4 items-center bg-[#11284E]">
+    <div className="flex justify-between px-4 pt-2 items-center bg-[#11284E]">
       {/* Left Corner */}
       <div className="text-white">
         <p className="text-md ">{date}</p>

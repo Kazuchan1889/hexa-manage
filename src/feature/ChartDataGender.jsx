@@ -50,13 +50,13 @@ function ChartDataGenderKaryawan() {
       datalabels: {
         color: "#FFFFFF", // Warna teks
         font: {
-          weight: "bold",
-          size: 14,
+          weight: "base",
+          size: 12,
         },
         formatter: (value, context) => {
           if (total === 0) return "0%"; // Jika total 0, hindari NaN
           let percentage = ((value / total) * 100).toFixed(1);
-          return `${percentage}%`; // Menampilkan persentase
+          return `${value} (${percentage}%)`; // Menampilkan persentase
         },
       },
     },
