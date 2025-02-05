@@ -255,7 +255,7 @@ const TableLaporanKegiatan = () => {
                   {(rowsPerPage > 0
                     ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredLaporan
-                  ).map((laporan, index) => (
+                  ).map((laporan, index) => ( 
                     <TableRow key={index}>
                       <TableCell align="center">{laporan.nama}</TableCell>
                       <TableCell align="center">{laporan.tanggal}</TableCell>
@@ -403,8 +403,8 @@ const TableLaporanKegiatan = () => {
         {/* Table Section */}
 
       </div>
-      </div>
-      );
+    </div>
+  );
 };
 
-      export default TableLaporanKegiatan;
+export default TableLaporanKegiatan;

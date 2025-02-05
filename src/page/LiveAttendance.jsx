@@ -199,7 +199,7 @@ function LiveAttendance() {
             console.log("Detected IP:", localIP);
 
 
-            if (localIP !== "192.168.4.240") {
+            if (localIP !== "192.168.1.22") {
                 Swal.fire({
                     icon: "error",
                     title: "Check In Gagal!",
@@ -352,60 +352,59 @@ function LiveAttendance() {
         <div className="w-full h-full">
             <NavbarUser />
             {/* Header */}
-            <div className="w-full py-6 flex flex-col items-center bg-[#11284E]">
-                <h1 className="text-white font-bold text-2xl text-center px-2">
-                    LIVE ATTENDANCE
-                </h1>
-                <div className="text-white font-bold text-xl mt-2">
-                    {serverTime} WIB
+            <div>
+                <div className="w-full py-6 flex flex-col items-center bg-[#11284E]">
+                    <h1 className="text-white font-bold text-2xl text-center px-2">
+                        LIVE ATTENDANCE
+                    </h1>
+                    <div className="text-white font-bold text-xl mt-2">
+                        {serverTime} WIB
+                    </div>
+                    <Typography variant="subtitle2" className="text-white text-sm">
+                        Check-in Time
+                    </Typography>
                 </div>
-                <Typography variant="subtitle2" className="text-white text-sm">
-                    Check-in Time
-                </Typography>
-                
-            </div>
-            <div className="m-auto mt-10 p-6 border rounded-lg drop-shadow-lg bg-white flex flex-col items-center max-w-[1000px] w-full h-auto">
-                {/* Video Stream */}
-                <div className="w-full flex justify-center mb-6">
-                    <video
-                        ref={videoRef}
-                        className="w-40 sm:w-80 aspect-square rounded-full border-4 border-gray-300 object-cover"
-                    />
-                </div>
+                <div className="m-auto mt-10 p-6 border rounded-lg drop-shadow-lg bg-white flex flex-col items-center max-w-[1000px] w-full h-auto">
+                    {/* Video Stream */}
+                    <div className="w-full flex justify-center mb-6">
+                        <video
+                            ref={videoRef}
+                            className="w-40 sm:w-80 aspect-square rounded-full border-4 border-gray-300 object-cover"
+                        />
+                    </div>
 
-                {/* Attendance Actions */}
-                <div className="flex mt-5 flex-col items-center w-full">
-                    {checkInStatus === "udahMasuk" && !isUserCheckout ? (
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            size="large"
-                            onClick={handleCheckOut}
-                            className="w-full sm:w-1/2 bg-[#11284E]"
-                            disabled={isUserCheckout || isLoading}
-                        >
-                            Check Out
-                        </Button>
-                    ) : checkInStatus === "udahKeluar" || (isUserCheckin && isUserCheckout) ? (
-                        <span className="text-red-600 text-lg">
-                            Kamu sudah absen hari ini!
-                        </span>
-                    ) : (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            onClick={handleCheckIn}
-                            className="w-full sm:w-1/2 bg-[#11284E]"
-                            disabled={isUserCheckin || isLoading}
-                        >
-                            Check In
-                        </Button>
-                    )}
+                    {/* Attendance Actions */}
+                    <div className="flex  flex-col items-center  w-full">
+                        {checkInStatus === "udahMasuk" && !isUserCheckout ? (
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                size="large"
+                                onClick={handleCheckOut}
+                                className="w-full sm:w-1/2 bg-[#11284E]"
+                                disabled={isUserCheckout || isLoading}
+                            >
+                                Check Out
+                            </Button>
+                        ) : checkInStatus === "udahKeluar" || (isUserCheckin && isUserCheckout) ? (
+                            <span className="text-red-600 text-lg">
+                                Kamu sudah absen hari ini!
+                            </span>
+                        ) : (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                onClick={handleCheckIn}
+                                className="w-full sm:w-1/2 bg-[#11284E]"
+                                disabled={isUserCheckin || isLoading}
+                            >
+                                Check In
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
-            {/* Main Container */}
-            
         </div>
     );
 };

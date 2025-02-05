@@ -68,6 +68,7 @@ const Headb = () => {
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [isRotating, setIsRotating] = useState(false);
+  
 
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
@@ -280,6 +281,11 @@ const Headb = () => {
     }
   };
 
+  const handleClickr = () => {
+    navigate('/aptes');
+  };
+
+
   return (
     <div className="flex justify-between p-4 items-center bg-[#11284E]">
       {/* Left Corner */}
@@ -292,7 +298,7 @@ const Headb = () => {
 
       <div className="flex items-center ">
         {/* Notification Icon */}
-        <IconButton>
+        <IconButton onClick={handleClickr}>
           <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
         </IconButton>
 
