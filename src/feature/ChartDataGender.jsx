@@ -1,19 +1,15 @@
 import { Chart } from "chart.js";
 import { ArcElement, Legend, Tooltip } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // Import plugin datalabels
 import React, { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
-import { Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import axios from "axios";
 import ip from "../ip";
-import { useDispatch, useSelector } from "react-redux";
-import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
 
-function ChartDataGender() {
-  Chart.register(ArcElement, Tooltip, Legend);
-  const dispatch = useDispatch()
-  const loading = useSelector((state) => state.loading.isLoading);
-  const [DataKaryawanGender, setDataKaryawanGender] = useState(null);
+function ChartDataGenderKaryawan() {
+  Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels); // Daftarkan datalabels
+  const [karyawanGenderData, setKaryawanGenderData] = useState([0, 0]);
 
   useEffect(() => {
     const apiUrl = `${ip}/api/karyawan/get/data/gender`;
@@ -21,32 +17,26 @@ function ChartDataGender() {
       Authorization: localStorage.getItem("accessToken"),
       "Content-Type": "application/json",
     };
+
     axios
       .get(apiUrl, { headers })
       .then((response) => {
-        setDataKaryawanGender(response.data);
-        dispatch(loadingAction.startLoading(false))
+        setKaryawanGenderData(response.data || [0, 0]);
       })
       .catch((error) => {
-        console.error("Error", error);
+        console.error("Error fetching data:", error);
       });
-    // Lakukan panggilan API di sini untuk mendapatkan data pengguna);
   }, []);
 
+  const total = karyawanGenderData.reduce((a, b) => a + b, 0);
+
   const data = {
-    labels: ["Male", "Female"],
+    labels: ["Laki-laki", "Perempuan"],
     datasets: [
       {
-        data: DataKaryawanGender,
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-        ],
-        borderWidth: 1,
+        data: karyawanGenderData,
+        backgroundColor: ["rgba(60, 110, 189, 1)", "rgba(217, 70, 153, 1)"],
+        borderColor: ["rgba(60, 110, 189, 1)", "rgba(217, 70, 153, 1)"],
       },
     ],
   };
@@ -54,28 +44,36 @@ function ChartDataGender() {
   const options = {
     plugins: {
       legend: {
-        display: true,
+        display: false,
         position: "right",
+      },
+      datalabels: {
+        color: "#FFFFFF", // Warna teks
+        font: {
+          weight: "bold",
+          size: 14,
+        },
+        formatter: (value, context) => {
+          if (total === 0) return "0%"; // Jika total 0, hindari NaN
+          let percentage = ((value / total) * 100).toFixed(1);
+          return `${percentage}%`; // Menampilkan persentase
+        },
       },
     },
     responsive: true,
-    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
+    maintainAspectRatio: false,
+    cutout: "50%",
   };
 
-  if (loading) {
-    return <Loading />
-  }
-//AL.J V3
   return (
-    <div className="h-fit w-[16rem] mx-auto">
-      <div className="">
-        <Typography variant="h6">Gender Diversity</Typography>
-      </div>
-      <div className="mx-auto w-full h-full p-4">
-        <Pie data={data} options={options} /> {/* Change to Pie chart */}
+    <div className="h-fit w-[15rem] mx-auto">
+      <span className="text-[#204682] text-lg text-center font-bold">Gender Diversity</span>
+      {/* <Typography variant="h6" className="text-[#204682]">Data Gender Karyawan</Typography> */}
+      <div className="mx-auto w-2/3 h-2/3 my-4">
+        <Doughnut data={data} options={options} />
       </div>
     </div>
   );
 }
 
-export default ChartDataGender;
+export default ChartDataGenderKaryawan;

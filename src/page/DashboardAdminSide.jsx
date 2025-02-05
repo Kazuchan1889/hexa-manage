@@ -199,8 +199,8 @@ function DashboardAdminSide() {
                     <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
                     <Shortcut />
                 </div>
-                
-                <div className="flex flex-row justify-center p-6 gap-2">
+
+                <div className="flex flex-row justify-center p-4 gap-4">
                     <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
                         < ChartDataKehadiranUser />
                     </div>
@@ -212,6 +212,61 @@ function DashboardAdminSide() {
                     </div>
                     <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
                         < ChartDataKaryawan />
+                    </div>
+                </div>
+                {/* absensi hari ini */}
+                <div className="flex flex-row justify-between px-4 pb-4 gap-4">
+                    <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem] w-1/4">
+                        <span className="text-[#204682] text-lg text-center font-bold">Today's Absence</span>
+                        <div className="max-h-[18rem] overflow-y-auto">
+                            {loadingAbsensi ? (
+                                <Loading />
+                            ) : (
+                                <ul className="space-y-3">
+                                    {absensiItems.length === 0 ? (
+                                        <p className="text-gray-500 text-center">Tidak ada data absensi hari ini.</p>
+                                    ) : (
+                                        absensiItems.map((item, index) => (
+                                            <li key={index} className="flex items-between p-3 border rounded-lg">
+                                                {/* Foto User */}
+                                                {item.photo ? (
+                                                    <div className="my-auto">
+                                                        <img
+                                                            src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
+                                                            className="w-8 h-8 rounded-full object-cover items-center justify-center"
+                                                            alt="Absensi Photo"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300">
+                                                        <UserIcon style={{ fontSize: 30, color: 'black' }} />
+                                                    </div>
+                                                )}
+
+                                                {/* Nama & Status */}
+                                                <div className="flex flex-col mx-auto">
+                                                    <span className="font-semibold">{item.nama}</span>
+                                                    <span className="text-xs text-gray-600">{item.status}</span>
+                                                </div>
+
+                                                {/* Status Icon */}
+                                                <div className="my-auto justify-end">
+                                                    {item.status === 'tanpa alasan' && <ErrorIcon className="text-red-500" />}
+                                                    {item.status === 'terlambat' && <WarningIcon className="text-yellow-500" />}
+                                                    {['masuk', 'libur', 'izin', 'cuti'].includes(item.status) && <CheckCircleIcon className="text-green-500" />}
+                                                </div>
+                                            </li>
+                                        ))
+                                    )}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                    <div className="w-1/2 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+
+                    </div>
+                    <div className="w-1/4 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+
                     </div>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 p-4">
