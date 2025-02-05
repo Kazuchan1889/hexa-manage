@@ -28,6 +28,7 @@
     "apexcharts": "^3.52.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.13",
     "face-api.js": "^0.22.2",
     "filepond": "^4.31.1",

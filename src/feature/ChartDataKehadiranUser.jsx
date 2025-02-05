@@ -1,7 +1,8 @@
 import { Chart } from "chart.js";
 import { ArcElement, Legend, Tooltip } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // Import plugin datalabels
 import React, { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import axios from "axios";
 import { Typography } from "@mui/material";
 import ip from "../ip";
@@ -10,31 +11,36 @@ import { loadingAction } from "../store/store";
 import Loading from "../page/Loading";
 
 function ChartDataKehadiranUser() {
-  Chart.register(ArcElement, Tooltip, Legend);
-  const [userData, setUserData] = useState(null);
+  Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+  const [userData, setUserData] = useState([]); // Default jadi array kosong
+  const [currentMonth, setCurrentMonth] = useState("");
+  const [totalDays, setTotalDays] = useState(0);
   const loading = useSelector((state) => state.loading.isLoading);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadingAction.startLoading(true))
+    dispatch(loadingAction.startLoading(true));
     const apiUrl = `${ip}/api/absensi/get/status/month`;
     const headers = {
       Authorization: localStorage.getItem("accessToken"),
       "Content-Type": "application/json",
     };
+
     axios
       .get(apiUrl, { headers })
       .then((response) => {
-        setUserData(response.data);
-    
-          dispatch(loadingAction.startLoading(false))
-        
-        console.log(userData)
+        const data = response.data || [0, 0, 0, 0, 0, 0]; // Pastikan data ada
+        setUserData(data);
+        setTotalDays(data.reduce((acc, cur) => acc + cur, 0)); // Hitung total hari
+        setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
       })
       .catch((error) => {
-        console.error("Error", error);
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        dispatch(loadingAction.startLoading(false)); // Stop loading setelah fetch selesai
       });
-  }, []);  // Menambahkan dependency array kosong untuk pemanggilan API satu kali
+  }, [dispatch]);
 
   const data = {
     labels: ["Present", "Leave", "Permission", "Sick", "Absent", "Late"],
@@ -42,18 +48,18 @@ function ChartDataKehadiranUser() {
       {
         data: userData,
         backgroundColor: [
-          "rgba(0, 128, 0, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(255, 0, 0, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
+          "rgba(32, 70, 130, 1)",
+          "rgba(235, 112, 103, 1)",
+          "rgba(50, 184, 211, 1)",
+          "rgba(235, 148, 44, 1)",
+          "rgba(255, 0, 0, 1)",
+          "rgba(153, 102, 255,  1)",
         ],
         borderColor: [
-          "rgba(0, 128, 0, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
+          "rgba(32, 70, 130, 1)",
+          "rgba(235, 112, 103, 1)",
+          "rgba(50, 184, 211, 1)",
+          "rgba(235, 148, 44, 1)",
           "rgba(255, 0, 0, 1)",
           "rgba(153, 102, 255, 1)",
         ],
@@ -65,25 +71,47 @@ function ChartDataKehadiranUser() {
   const options = {
     plugins: {
       legend: {
-        display: true,
+        display: false  ,
         position: "right",
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            let value = tooltipItem.raw;
+            let total = totalDays;
+            let percentage = total ? ((value / total) * 100).toFixed(1) : 0;
+            return `${tooltipItem.label}: ${value} (${percentage}%)`;
+          },
+        },
+      },
+      datalabels: {
+        color: "#FFFFFF",
+        font: {
+          weight: "bold",
+          size: 14,
+        },
+        formatter: (value) => {
+          if (value === 0) return ""; // Jika 0, label tidak muncul
+          let percentage = ((value / totalDays) * 100).toFixed(1);
+          return `${percentage}%`;
+        },
       },
     },
     responsive: true,
-    maintainAspectRatio: false, // Menonaktifkan rasio aspek tetap
+    maintainAspectRatio: false,
+    cutout: "50%", // Ubah menjadi Donut Chart
   };
 
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
-    <div className="h-fit w-[16rem] mx-auto">
-      <div className="">
-        <Typography variant="h6">Your Monthly Attendance</Typography>
-      </div>
-      <div className="mx-auto w-full h-full p-4">
-        <Pie data={data} options={options} />
+    <div className="h-fit w-[15rem] mx-auto">
+      <span className="text-[#204682] text-lg text-center font-bold">Your Monthly Attendance</span>
+      {/* <Typography variant="h6" className="text-[#204682]">Your Monthly Attendance</Typography> */}
+      <div className="mx-auto w-2/3 h-2/3 my-4">
+        <Doughnut data={data} options={options} />
       </div>
     </div>
   );
