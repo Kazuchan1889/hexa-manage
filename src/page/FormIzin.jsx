@@ -447,6 +447,7 @@ function FormIzin() {
                 </Button>
               </div>
             </form>
+            
             <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
               <div className="w-full">
                 <div className="flex justify-between">

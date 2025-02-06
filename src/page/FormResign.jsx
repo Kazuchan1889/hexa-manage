@@ -18,6 +18,8 @@ import {
 import NavbarUser from "../feature/NavbarUser";
 import Swal from "sweetalert2";
 import ip from "../ip";
+import Head from "../feature/Headbar";
+import Sidebar from "../feature/Sidebar";
 
 function FormResign() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,79 +160,75 @@ function FormResign() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-primary overflow-y-hidden">
-      <NavbarUser />
-      {loading ? (
-        <div className="w-screen h-screen flex justify-center items-center">
-          <CircularProgress /> {/* Tampilkan spinner loading saat loading aktif */}
-        </div>
-      ) : (
-        <div className="w-screen flex h-fit">
-          <div className="h-full w-full mx-auto">
-            <div className="flex flex-col justify-between items-center mt-3">
-              <div className="w-[90%] mb-4 flex justify-between items-center">
-                <Typography variant="h5">Form Resign</Typography>
-              </div>
-              <form
-                onSubmit={handleSubmit}
-                className="w-[90%] h-8/12 rounded-md bg-card p-5"
-              >
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      size="small"
-                      id="alasan"
-                      name="alasan"
-                      label="Alasan"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      value={formData.alasan}
-                      onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      size="small"
-                      name="tanggalkeluar"
-                      label="Tanggal Resign"
-                      variant="outlined"
-                      type="date"
-                      fullWidth
-                      className="mb-2"
-                      value={formData.tanggalkeluar}
-                      onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        placeholder: "",
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <div className="mt-5">
-                  <Button
-                    type="submit"
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={!isFormValid}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
+    <div className="flex flex-col mr-10 bg-white lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <Head />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
+          <h1 className="text-2xl font-bold text-center">Reimburst Form</h1>
 
-              {!isMobile && (
-                <div className="w-screen">
-                  <div className="w-[90%] mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+          <div className="h-full w-full mx-auto">
+            <div className="flex flex-col justify-between items-center ">
+              <div className="w-full  max-w-[1107px] ml-40  flex justify-center gap-3">
+                <div className="flex flex-col justify-between items-center mt-3">
+                  {/* Form */}
+                  <form
+                    onSubmit={handleSubmit}
+                    className="w-[113%] mt-16 mr-32 h-8/12 rounded-[15px] flex flex-col justify-center bg-card p-5"
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <TextField
+                          size="small"
+                          id="alasan"
+                          name="alasan"
+                          label="Alasan"
+                          variant="outlined"
+                          fullWidth
+                          className="mb-2"
+                          value={formData.alasan}
+                          onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          size="small"
+                          name="tanggalkeluar"
+                          label="Tanggal Resign"
+                          variant="outlined"
+                          type="date"
+                          fullWidth
+                          className="mb-2"
+                          value={formData.tanggalkeluar}
+                          onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          InputProps={{
+                            placeholder: "",
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                    <div className="mt-5">
+                      <Button
+                        type="submit"
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        disabled={!isFormValid}
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </form>
+
+                  {/* Table */}
+                  <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
                     <div className="w-full">
                       <div className="flex justify-between">
-                        <Typography variant="h6" id="history-modal-title">
-                          History Table
-                        </Typography>
                       </div>
                       <TableContainer
                         className="rounded-md max-h-56 overflow-y-auto"
@@ -305,28 +303,29 @@ function FormResign() {
                           </TableBody>
                         </Table>
                       </TableContainer>
+
                     </div>
+                    {!isMobile && (
+                      <div className="flex w-11/12 items-end justify-end">
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 15]}
+                          variant="body2"
+                          component="div"
+                          count={tableData.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
-              {!isMobile && (
-                <div className="flex w-11/12 items-end justify-end">
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
-                    variant="body2"
-                    component="div"
-                    count={tableData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
