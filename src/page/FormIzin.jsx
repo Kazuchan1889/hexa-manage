@@ -295,86 +295,60 @@ function FormIzin() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-primary overflow-y-hidden">
+    <div className="w-full  ml-32 max-w-screen-lg h-fit flex flex-col md:flex-row items-center">
       {loading ? (
-        <div className="w-screen h-screen flex justify-center items-center mx-auto">
+        <div className="w-full h-full flex justify-center items-center">
           <CircularProgress />
         </div>
       ) : (
-        <div className="w-screen h-fit flex">
-          <div className="h-full w-full mx-auto">
-            <div className="flex flex-col justify-between items-center mt-3">
-              <div className="w-[90%] mb-4 flex justify-between	items-center">
-                <Typography variant="h5">Permission Form</Typography>
-              </div>
-              {uploadAlert && (
-                <Alert
-                  severity="error"
-                  variant="filled"
-                  onClose={() => setUploadAlert(false)}
-                  style={{ marginBottom: "10px" }}
-                >
-                  You must upload a file when choosing "Sehari Penuh."
-                </Alert>
-              )}
-              <form
-                onSubmit={handleSubmit}
-                className="w-[90%] h-8/12 rounded-md flex flex-col justify-center bg-card p-5"
+        <div className="h-full w-full mx-auto">
+          <div className="flex flex-col justify-between items-center ">
+
+            {uploadAlert && (
+              <Alert
+                severity="error"
+                variant="filled"
+                onClose={() => setUploadAlert(false)}
+                style={{ marginBottom: "10px" }}
               >
-                <Grid container spacing={2}>
-                  {/* Alasan */}
-                  <Grid item xs={12} sm={12}>
-                    <TextField
-                      name="alasan"
-                      id="alasan"
-                      label="Reason"
-                      variant="outlined"
-                      fullWidth
-                      multiline
-                      className="mb-2"
-                      size="small"
-                      value={formData.alasan}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
+                You must upload a file when choosing "Sehari Penuh."
+              </Alert>
+            )}
+            <form
+              onSubmit={handleSubmit}
+              className="w-[113%] mr-32 h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-5"
+            >
+              <Grid container spacing={2}>
+                {/* Alasan */}
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    name="alasan"
+                    id="alasan"
+                    label="Reason"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    className="mb-2"
+                    size="small"
+                    value={formData.alasan}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
 
-                  {/* Tanggal */}
-                  <Grid container item xs={12} spacing={2}>
-                    {/* Tanggal Mulai */}
-                    <Grid item xs={12} sm={6}>
-                      <div className="mb-2">
-                        <TextField
-                          name="mulai"
-                          label="Start Date"
-                          id="mulai"
-                          type="date"
-                          variant="outlined"
-                          fullWidth
-                          size="small"
-                          value={formData.mulai}
-                          onChange={handleInputChange}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          InputProps={{
-                            placeholder: "",
-                          }}
-                        />
-                      </div>
-                    </Grid>
-
-                    {/* Tanggal Berakhir */}
-                    <Grid item xs={12} sm={6}>
+                {/* Tanggal */}
+                <Grid container item xs={12} spacing={2}>
+                  {/* Tanggal Mulai */}
+                  <Grid item xs={12} sm={6}>
+                    <div className="mb-2">
                       <TextField
-                        name="selesai"
-                        label="End Date"
-                        id="selesai"
+                        name="mulai"
+                        label="Start Date"
+                        id="mulai"
                         type="date"
                         variant="outlined"
                         fullWidth
-                        className="mb-2"
                         size="small"
-                        value={formData.selesai}
+                        value={formData.mulai}
                         onChange={handleInputChange}
                         InputLabelProps={{
                           shrink: true,
@@ -383,263 +357,284 @@ function FormIzin() {
                           placeholder: "",
                         }}
                       />
-                    </Grid>
+                    </div>
+                  </Grid>
 
-                    {/* Jenis */}
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Type"
-                        name="jenis"
-                        select
-                        variant="outlined"
-                        fullWidth
-                        className="mb-2 text-left"
-                        size="small"
-                        value={formData.jenis}
-                        onChange={handleInputChange}
-                      >
-                        <MenuItem value="setengah hari">Half-Day</MenuItem>
-                        <MenuItem value="sehari penuh">Full-Day</MenuItem>
-                      </TextField>
-                    </Grid>
+                  {/* Tanggal Berakhir */}
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      name="selesai"
+                      label="End Date"
+                      id="selesai"
+                      type="date"
+                      variant="outlined"
+                      fullWidth
+                      className="mb-2"
+                      size="small"
+                      value={formData.selesai}
+                      onChange={handleInputChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      InputProps={{
+                        placeholder: "",
+                      }}
+                    />
+                  </Grid>
 
-                    {/* Image */}
-                    <Grid item xs={12} sm={3}>
-                      <Typography variant="body2" className="text-left">
-                        Upload File
-                      </Typography>
+                  {/* Jenis */}
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="Type"
+                      name="jenis"
+                      select
+                      variant="outlined"
+                      fullWidth
+                      className="mb-2 text-left"
+                      size="small"
+                      value={formData.jenis}
+                      onChange={handleInputChange}
+                    >
+                      <MenuItem value="setengah hari">Half-Day</MenuItem>
+                      <MenuItem value="sehari penuh">Full-Day</MenuItem>
+                    </TextField>
+                  </Grid>
 
-                      <div {...getRootProps()} className="mb-2">
-                        <input {...getInputProps()} id="fileInput" />
+                  {/* Image */}
+                  <Grid item xs={12} sm={3}>
+                    <Typography variant="body2" className="text-left">
+                      Upload File
+                    </Typography>
 
-                        {uploading ? (
-                          <div className="flex items-center">
-                            <CircularProgress color="primary" size={24} />
-                            <Typography variant="body2" className="text-left">
-                              Uploading...
-                            </Typography>
-                          </div>
-                        ) : uploadedFile ? (
-                          <div className="flex items-center">
-                            <CheckCircleIcon color="primary" />
-                            <Typography className=" ml-2 text-left">
-                              Upload successful: {uploadedFile.name}
-                            </Typography>
-                          </div>
-                        ) : (
-                          <Button variant="outlined" color="secondary">
-                            <Typography variant="body2">
-                              Drop file here
-                            </Typography>
-                          </Button>
-                        )}
-                      </div>
-                    </Grid>
+                    <div {...getRootProps()} className="mb-2">
+                      <input {...getInputProps()} id="fileInput" />
+
+                      {uploading ? (
+                        <div className="flex items-center">
+                          <CircularProgress color="primary" size={24} />
+                          <Typography variant="body2" className="text-left">
+                            Uploading...
+                          </Typography>
+                        </div>
+                      ) : uploadedFile ? (
+                        <div className="flex items-center">
+                          <CheckCircleIcon color="primary" />
+                          <Typography className=" ml-2 text-left">
+                            Upload successful: {uploadedFile.name}
+                          </Typography>
+                        </div>
+                      ) : (
+                        <Button variant="outlined" color="secondary">
+                          <Typography variant="body2">
+                            Drop file here
+                          </Typography>
+                        </Button>
+                      )}
+                    </div>
                   </Grid>
                 </Grid>
-                <div className="mt-3">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                    fullWidth
-                    disabled={!isFormValid}
-                  >
-                    Submit
-                  </Button>
+              </Grid>
+              <div className="mt-3">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  fullWidth
+                  disabled={!isFormValid}
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
+            <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+              <div className="w-full">
+                <div className="flex justify-between">
+                  <Typography variant="h6" id="history-modal-title">
+                    Permission Request History
+                  </Typography>
+                  <div className="mt-1">
+                    <Typography
+                      variant="h7"
+                      id="history-modal-title"
+                    ></Typography>
+                  </div>
                 </div>
-              </form>
-
-              
-                <div className="w-[90%] mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
-                  <div className="w-full">
-                    <div className="flex justify-between">
-                      <Typography variant="h6" id="history-modal-title">
-                        Permission Request History
-                      </Typography>
-                      <div className="mt-1">
-                        <Typography
-                          variant="h7"
-                          id="history-modal-title"
-                        ></Typography>
-                      </div>
-                    </div>
-                    <TableContainer
-                      className="rounded-md max-h-52 overflow-y-auto"
-                      component={Paper}
-                    >
-                      <Table>
-                        <TableHead style={{ backgroundColor: "#204684" }}>
-                          <TableRow>
-                            <TableCell size="small" className="w-[30%]">
+                <TableContainer
+                  className="rounded-md max-h-52 overflow-y-auto"
+                  component={Paper}
+                >
+                  <Table>
+                    <TableHead style={{ backgroundColor: "#204684" }}>
+                      <TableRow>
+                        <TableCell size="small" className="w-[30%]">
+                          <Typography
+                            variant="body2"
+                            className="text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Reason
+                          </Typography>
+                        </TableCell>
+                        <TableCell size="small" className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Start Date
+                          </Typography>
+                        </TableCell>
+                        <TableCell size="small" className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            End Date
+                          </Typography>
+                        </TableCell>
+                        <TableCell size="small" className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Type
+                          </Typography>
+                        </TableCell>
+                        <TableCell size="small" className="w-[5%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Evidence
+                          </Typography>
+                        </TableCell>
+                        <TableCell size="small" className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Status
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tableData
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
-                                className="text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Reason
+                                {row.alasan}
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="w-[10%]">
+                            <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Start Date
+                                {row.mulai}
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="w-[10%]">
+                            <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                End Date
+                                {row.selesai}
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="w-[10%]">
+                            <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Type
+                                {row.jenis}
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="w-[5%]">
-                              <Typography
-                                variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
-                              >
-                                Evidence
-                              </Typography>
+                            <TableCell size="small" className="w-1/6">
+                              <div className="flex justify-center">
+                                {row.dokumen && (
+                                  <a
+                                    href={row.dokumen}
+                                    target="_blank "
+                                    download
+                                    className="cursor-pointer"
+                                  >
+                                    <DownloadIcon />
+                                  </a>
+                                )}
+                              </div>
                             </TableCell>
-                            <TableCell size="small" className="w-[10%]">
+                            <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
+                                style={{
+                                  color:
+                                    row.status === null
+                                      ? "grey"
+                                      : row.status === true
+                                        ? "green"
+                                        : "red",
+                                }}
                               >
-                                Status
+                                {row.status === null
+                                  ? "Waiting"
+                                  : row.status === true
+                                    ? "Accepted"
+                                    : "Rejected"}
                               </Typography>
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                            .map((row, index) => (
-                              <TableRow key={index}>
-                                <TableCell size="small" className="w-1/6">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.alasan}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell size="small" className="w-1/6">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.mulai}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell size="small" className="w-1/6">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.selesai}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell size="small" className="w-1/6">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.jenis}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell size="small" className="w-1/6">
-                                  <div className="flex justify-center">
-                                    {row.dokumen && (
-                                      <a
-                                        href={row.dokumen}
-                                        target="_blank "
-                                        download
-                                        className="cursor-pointer"
-                                      >
-                                        <DownloadIcon />
-                                      </a>
-                                    )}
-                                  </div>
-                                </TableCell>
-                                <TableCell size="small" className="w-1/6">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                    style={{
-                                      color:
-                                        row.status === null
-                                          ? "grey"
-                                          : row.status === true
-                                            ? "green"
-                                            : "red",
-                                    }}
-                                  >
-                                    {row.status === null
-                                      ? "Waiting"
-                                      : row.status === true
-                                        ? "Accepted"
-                                        : "Rejected"}
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                </div>
-              
-              
-                <div className="flex w-11/12 items-end justify-end">
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
-                    variant="body2"
-                    component="div"
-                    count={tableData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </div>
-              
-              <Dialog
-                open={Boolean(selectedImage)}
-                onClose={() => setSelectedImage(null)}
-                maxWidth="lg"
-              >
-                <DialogContent>
-                  <img
-                    src={selectedImage}
-                    alt="Selected"
-                    style={{ maxWidth: "100%", maxHeight: "80vh" }}
-                  />
-                </DialogContent>
-              </Dialog>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
             </div>
+
+
+            <div className="flex w-11/12 items-end justify-end">
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 15]}
+                variant="body2"
+                component="div"
+                count={tableData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </div>
+
+            <Dialog
+              open={Boolean(selectedImage)}
+              onClose={() => setSelectedImage(null)}
+              maxWidth="lg"
+            >
+              <DialogContent>
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  style={{ maxWidth: "100%", maxHeight: "80vh" }}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
+
       )}
     </div>
   );
