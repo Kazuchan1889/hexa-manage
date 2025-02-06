@@ -12,8 +12,8 @@ import Loading from "../page/Loading";
 
 function ChartDataKehadiranUser() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels);
-  const [userData, setUserData] = useState([]); // Default jadi array kosong
-  const [currentMonth, setCurrentMonth] = useState("");
+
+  const [userData, setUserData] = useState([0, 0, 0, 0, 0, 0]); // Default array 0 agar tidak error
   const [totalDays, setTotalDays] = useState(0);
   const loading = useSelector((state) => state.loading.isLoading);
   const dispatch = useDispatch();
@@ -29,16 +29,15 @@ function ChartDataKehadiranUser() {
     axios
       .get(apiUrl, { headers })
       .then((response) => {
-        const data = response.data || [0, 0, 0, 0, 0, 0]; // Pastikan data ada
+        const data = response.data || [0, 0, 0, 0, 0, 0];
         setUserData(data);
         setTotalDays(data.reduce((acc, cur) => acc + cur, 0)); // Hitung total hari
-        setCurrentMonth(new Date().toLocaleString("default", { month: "long" }));
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       })
       .finally(() => {
-        dispatch(loadingAction.startLoading(false)); // Stop loading setelah fetch selesai
+        dispatch(loadingAction.startLoading(false));
       });
   }, [dispatch]);
 
@@ -53,7 +52,7 @@ function ChartDataKehadiranUser() {
           "rgba(50, 184, 211, 1)",
           "rgba(235, 148, 44, 1)",
           "rgba(255, 0, 0, 1)",
-          "rgba(153, 102, 255,  1)",
+          "rgba(153, 102, 255, 1)",
         ],
         borderColor: [
           "rgba(32, 70, 130, 1)",
@@ -71,7 +70,7 @@ function ChartDataKehadiranUser() {
   const options = {
     plugins: {
       legend: {
-        display: false  ,
+        display: false,
         position: "right",
       },
       tooltip: {
@@ -80,21 +79,23 @@ function ChartDataKehadiranUser() {
             let value = tooltipItem.raw;
             let total = totalDays;
             let percentage = total ? ((value / total) * 100).toFixed(1) : 0;
-            return `${tooltipItem.label}: ${value} (${percentage}%)`;
+            return `${tooltipItem.label}: ${value} days (${percentage}%)`;
           },
         },
       },
       datalabels: {
-        color: "#FFFFFF",
+        color: "#FFFFFF", // Warna teks putih agar kontras
         font: {
-          weight: "bold",
-          size: 14,
+          weight: "base",
+          size: 12,
         },
-        formatter: (value) => {
-          if (value === 0) return ""; // Jika 0, label tidak muncul
+        formatter: (value, context) => {
+          if (value === 0) return ""; // Tidak menampilkan angka jika 0
           let percentage = ((value / totalDays) * 100).toFixed(1);
-          return `${percentage}%`;
+          return `${value} (${percentage}%)`; // Menampilkan jumlah dan persentase
         },
+        // anchor: "end",
+        // align: "start",
       },
     },
     responsive: true,
@@ -109,7 +110,6 @@ function ChartDataKehadiranUser() {
   return (
     <div className="h-fit w-[15rem] mx-auto">
       <span className="text-[#204682] text-lg text-center font-bold">Your Monthly Attendance</span>
-      {/* <Typography variant="h6" className="text-[#204682]">Your Monthly Attendance</Typography> */}
       <div className="mx-auto w-2/3 h-2/3 my-4">
         <Doughnut data={data} options={options} />
       </div>

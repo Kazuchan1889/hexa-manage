@@ -83,13 +83,13 @@ function ChartDataKehadiran() {
       datalabels: {
         color: "#FFFFFF", // Warna teks
         font: {
-          weight: "bold",
-          size: 14,
+          weight: "base",
+          size: 12,
         },
         formatter: (value) => {
           if (value === 0) return ""; // Tidak menampilkan angka jika 0
           let percentage = ((value / total) * 100).toFixed(1);
-          return `${percentage}%`;
+          return `${value} (${percentage}%)`;
         },
       },
     },

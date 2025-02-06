@@ -98,10 +98,7 @@ const AnnouncementList = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 rounded-lg">
-      <div className="sticky top-0 bg-white z-10 shadow-md p-2 mb-4">
-        <h1 className="text-lg lg:text-xl font-bold">Assignment</h1>
-      </div>
+    <div className="container mx-auto p-4 rounded-lg h-max-[20rem]">  
       <div
         id="announcement-list"
         className="h-[12rem] max-h-[20rem] overflow-auto space-y-4"

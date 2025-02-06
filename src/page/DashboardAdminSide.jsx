@@ -194,8 +194,8 @@ function DashboardAdminSide() {
             <Sidebar isMobile={isMobile} />
             <div className="flex flex-col flex-1 overflow-auto">
                 <Headb />
-                <div className="flex flex-col justify-center bg-[#11284E] p-4 h-54">
-                    <div className="text-white font-bold text-2xl">Good Morning, {name}!</div>
+                <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">
+                    <div className="text-white font-bold text-xl">Good Morning, {name}!</div>
                     <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
                     <Shortcut />
                 </div>
@@ -217,8 +217,10 @@ function DashboardAdminSide() {
                 {/* absensi hari ini */}
                 <div className="flex flex-row justify-between px-4 pb-4 gap-4">
                     <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem] w-1/4">
-                        <span className="text-[#204682] text-lg text-center font-bold">Today's Absence</span>
-                        <div className="max-h-[18rem] overflow-y-auto">
+                        <span className="text-[#204682] text-lg text-center font-bold">
+                            Today's Absence
+                        </span>
+                        <div className="max-h-[18rem] mt-2 overflow-y-auto">
                             {loadingAbsensi ? (
                                 <Loading />
                             ) : (
@@ -263,13 +265,60 @@ function DashboardAdminSide() {
                         </div>
                     </div>
                     <div className="w-1/2 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-
+                        <span className="text-[#204682] text-lg text-center font-bold">
+                            Assignment
+                        </span>
+                        <AnnouncementList />
+                        <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button>
                     </div>
                     <div className="w-1/4 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
+                        <span className="text-[#204682] text-lg text-center font-bold">
+                            Upcoming Schedule
+                        </span>
+                        <div className="max-h-[18rem] overflow-y-auto flex flex-col justify-center items-center">
+                            {loadingSchedule ? (
+                                <Loading /> // Tampilkan loading saat fetching jadwal
+                            ) : (
+                                <ul className="space-y-4 mt-4 w-full">
+                                    {(() => {
+                                        const filteredSchedules = scheduleItems.filter((item) => {
+                                            const scheduleDate = new Date(item.tanggal_mulai);
+                                            const today = new Date();
+                                            today.setHours(0, 0, 0, 0); // Mengatur waktu ke awal hari
+                                            return scheduleDate >= today; // Tampilkan jika jadwal >= hari ini
+                                        });
 
+                                        if (filteredSchedules.length === 0) {
+                                            return (
+                                                <li className="text-gray-500 text-center w-full flex justify-center items-center h-full">
+                                                    There is no schedule
+                                                </li>
+                                            );
+                                        }
+
+                                        return filteredSchedules.map((item, index) => (
+                                            <li key={index} className="border p-4 rounded-lg shadow-sm">
+                                                <div className="text-lg font-semibold">{item.judul}</div>
+                                                <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
+                                                <div className="text-sm text-gray-600">{item.mulai}</div>
+                                                {/* Container untuk tombol */}
+                                                <div className="mt-4 p-2 bg-blue-500 rounded-lg">
+                                                    <button
+                                                        onClick={handleReadMore}
+                                                        className="text-white font-semibold px-4 py-2 rounded-md"
+                                                    >
+                                                        Read More
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ));
+                                    })()}
+                                </ul>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 p-4">
+                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 p-4">
                     <CheckinDashboard />
                     <div className="col-span-2 drop-shadow-lg bg-white p-4 rounded-xl border h-72">
                         <FormControl variant="outlined" size="small" className="w-40 mb-2">
@@ -286,8 +335,8 @@ function DashboardAdminSide() {
                         {selectedChart === "gender" && <ChartDataGender />}
                         {selectedChart === "karyawan" && <ChartDataKaryawan />}
                     </div>
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                </div> */}
+                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                     <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-72">
                         <h2 className="text-lg font-bold">Today's Absences</h2>
                         <div className="overflow-y-auto h-60">
@@ -301,7 +350,7 @@ function DashboardAdminSide() {
                         <AnnouncementList />
                         <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button>
                     </div>
-                </div>
+                </div> */}
             </div>
             {isTambahFormOpen && <Announcment onClose={() => setTambahFormOpen(false)} onSubmit={() => Swal.fire("Added successfully!")} />}
         </div>
