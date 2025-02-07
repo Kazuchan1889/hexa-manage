@@ -140,121 +140,117 @@ const TableResign = () => {
       <Sidebar isMobile={isMobile} />
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
         <NavbarUser />
-      {/* Center Content with Search Bar and Buttons */}
-      <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
-        <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
-        <div className="mt-4 flex justify-center items-center space-x-4">
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
+          <h1 className="text-2xl font-bold">Resign</h1>
+          <div className="mt-4 flex justify-center items-center space-x-4">
 
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={handleSearchChange}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 text-gray-400"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 15.75L19.5 19.5"
-                />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
+            {/* Search Bar */}
+            <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
+                      ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </div>
             </div>
+
+            {/* File Icon */}
+            <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
+              <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
+            </button>
           </div>
 
-          {/* File Icon */}
-          <button className="p-2 bg-white rounded-full shadow" onClick={handleExcel}>
-            <InsertDriveFileIcon className="text-[#11284E] w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-        <div className="rounded-lg overflow-y-auto drop-shadow-lg">
-        <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-            <Table aria-label="simple table" size="small">
-              <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                      <TableRow>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Name</p>
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            <div className="rounded-lg overflow-y-auto drop-shadow-lg">
+              <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+                <Table aria-label="simple table" size="small">
+                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                    <TableRow>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Name</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Divition</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Position</p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">
+                          Filled Date
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">
+                          Resign Date
+                        </p>
+                      </TableCell>
+                      <TableCell align="center" className="w-[30%]">
+                        <p className="text-indigo font-semibold">Reason</p>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className="bg-gray-100">
+                    {(rowsPerPage > 0
+                      ? rows.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      : rows
+                    ).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.nama}</TableCell>
+                        <TableCell align="center">{row.divisi}</TableCell>
+                        <TableCell align="center">{row.jabatan}</TableCell>
+                        <TableCell align="center">
+                          {row.tanggalmengajukan}
                         </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Divition</p>
+                        <TableCell align="center">
+                          {row.tanggalkeluar}
                         </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Position</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">
-                            Filled Date
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">
-                            Resign Date
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[30%]">
-                          <p className="text-indigo font-semibold">Reason</p>
-                        </TableCell>
+                        <TableCell align="center">{row.alasan}</TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody className="bg-gray-100">
-                      {(rowsPerPage > 0
-                        ? rows.slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
-                        : rows
-                      ).map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">{row.nama}</TableCell>
-                          <TableCell align="center">{row.divisi}</TableCell>
-                          <TableCell align="center">{row.jabatan}</TableCell>
-                          <TableCell align="center">
-                            {row.tanggalmengajukan}
-                          </TableCell>
-                          <TableCell align="center">
-                            {row.tanggalkeluar}
-                          </TableCell>
-                          <TableCell align="center">{row.alasan}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-        </div>
-      </div>
-      <div className="flex w-full justify-center">
-        <div className="flex w-11/12 items-end justify-end">
-          <TablePagination
-            rowsPerPageOptions={[15, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            labelRowsPerPage="Jumlah Data"
-          />
-        </div>
-      </div>
-      {/* Table Section */}
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </div>
+          <div className="flex w-full justify-center">
+            <div className="flex w-11/12 items-end justify-end">
+              <TablePagination
+                rowsPerPageOptions={[15, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Jumlah Data"
+              />
+            </div>
+          </div>
+          {/* Table Section */}
 
-    </div>
-    </div>
+        </div>
+      </div>
     </div>
   );
 };

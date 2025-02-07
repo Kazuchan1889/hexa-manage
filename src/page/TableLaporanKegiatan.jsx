@@ -199,15 +199,16 @@ const TableLaporanKegiatan = () => {
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
           <h1 className="text-2xl ml-2 font-bold">Employe Report</h1>
           <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
-            {/* Search Bar */}
-            <div className="relative ml-16">
+           {/* Search Bar */}
+           <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
               <input
                 type="text"
                 placeholder="Search..."
                 value={search}
                 onChange={handleSearchChange}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
+                      ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
@@ -218,15 +219,12 @@ const TableLaporanKegiatan = () => {
                   stroke="currentColor"
                   className="w-5 h-5 text-gray-400"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 15.75L19.5 19.5"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
                   <circle cx="11" cy="11" r="8" />
                 </svg>
               </div>
             </div>
+
 
             {/* File Icon */}
             <button className="p-2 bg-white rounded-full shadow" onClick={handleExcelExport}>
@@ -255,7 +253,7 @@ const TableLaporanKegiatan = () => {
                   {(rowsPerPage > 0
                     ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredLaporan
-                  ).map((laporan, index) => ( 
+                  ).map((laporan, index) => (
                     <TableRow key={index}>
                       <TableCell align="center">{laporan.nama}</TableCell>
                       <TableCell align="center">{laporan.tanggal}</TableCell>

@@ -23,7 +23,7 @@ function App() {
         <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
-          <h1 className="text-2xl font-bold text-center">Request For Time off</h1>
+          <h1 className="text-2xl font-bold mb-20 text-center">Request For Time off</h1>
           <div className="w-full mt-20 max-w-[1107px] max-h-[88px] bg-[#D9D9D9] mx-auto rounded-t-[15px] mt-6 flex flex-col sm:flex-row items-center gap-3 p-6 sm:p-9 justify-center">
             <button
               className={`w-[490px] h-[65px] rounded-[30px] text-2xl font-bold text-center ${selectedForm === 'cuti' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
@@ -41,7 +41,7 @@ function App() {
           </div>
 
           {/* Render form berdasarkan pilihan user */}
-          <div className="w-full  max-w-[1107px] mx-auto  flex justify-center gap-3">
+          <div className="w-full  max-w-[1107px] mx-auto flex justify-center gap-3">
             {selectedForm === 'cuti' ? <FormCuti /> : <FormIzin />}
           </div>
           <div className="mt-4 flex justify-center items-center space-x-4">

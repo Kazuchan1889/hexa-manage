@@ -166,7 +166,7 @@ function FormResign() {
         <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
-          <h1 className="text-2xl font-bold text-center">Reimburst Form</h1>
+          <h1 className="text-2xl font-bold text-center">Form Resign</h1>
 
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center ">

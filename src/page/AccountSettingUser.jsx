@@ -120,7 +120,6 @@ function AccountSettingUser() {
   return (
     <div style={{ backgroundColor: "#F0F0F0" }}>
       <NavbarUser />
-      
       <div className="flex m-4 rounded-xl bg-white drop-shadow-lg">
         {/* Sidebar for user info and navigation */}
         <div className="h-[folH] w-1/4 p-4 border border-gray">

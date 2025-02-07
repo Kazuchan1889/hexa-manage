@@ -305,7 +305,7 @@ const TableApprovalizin = () => {
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg  h-48">
           <h1 className="text-2xl font-bold">Permit Aproval Data</h1>
-          <div className="mt-4 flex justify-center items-center space-x-4">
+          <div className="mt-4 flex justify-center items-center mr-12 space-x-4">
             {/* Button with Outline */}
             <Button
               size="small"
@@ -336,17 +336,17 @@ const TableApprovalizin = () => {
             </Menu>
 
             {/* Search Bar */}
-            <div className="relative">
+            <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
               <input
                 type="text"
                 placeholder="Search..."
                 value={search}
                 onChange={handleSearchChange}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className={`p-2 pl-10 rounded-full border border-gray-300 
-        ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
+                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
+                      ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
               />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <div className="absolute inset-y-0 left-0 flex items-center ml-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -355,11 +355,7 @@ const TableApprovalizin = () => {
                   stroke="currentColor"
                   className="w-5 h-5 text-gray-400"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 15.75L19.5 19.5"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
                   <circle cx="11" cy="11" r="8" />
                 </svg>
               </div>
@@ -367,7 +363,7 @@ const TableApprovalizin = () => {
 
             {/* File Icon Button */}
             <button
-              className={`flex items-center justify-center p-2 bg-white rounded-full shadow ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}
+              className={`flex items-center justify-center bg-white rounded-full shadow ${isMobile ? "w-6 h-6" : "w-8 h-8"}`}
               onClick={handleExcel}
             >
               <InsertDriveFileIcon className="text-[#11284E] w-3 h-3" />
