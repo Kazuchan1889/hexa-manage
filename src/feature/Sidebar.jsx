@@ -6,12 +6,12 @@ const menuItems = [
     {
         id: 1,
         icons: <HomeOutlined fontSize="large" />,
-        label: 'Home'
+        label: 'Dashboard'
     },
     {
         id: 2,
         icons: <Inventory2Outlined fontSize="large" />,
-        label: 'Products',
+        label: 'Form',
         dropdown: [
             { id: 21, label: 'Product A' },
             { id: 22, label: 'Product B' },
@@ -21,7 +21,7 @@ const menuItems = [
     {
         id: 3,
         icons: <DashboardOutlined fontSize="large" />,
-        label: 'Dashboard',
+        label: 'Master Data',
         dropdown: [
             { id: 31, label: 'Overview' },
             { id: 32, label: 'Analytics' },
@@ -31,17 +31,12 @@ const menuItems = [
     {
         id: 4,
         icons: <Settings fontSize="large" />,
-        label: 'Setting'
+        label: 'Schedule'
     },
     {
         id: 5,
         icons: <LayersOutlined fontSize="large" />,
-        label: 'Log'
-    },
-    {
-        id: 6,
-        icons: <ReceiptOutlined fontSize="large" />,
-        label: 'Report'
+        label: 'User Managment'
     }
 ];
 
@@ -63,7 +58,13 @@ export default function Sidebar() {
                 </IconButton>
             </div>
             <div className='px-3 py-2 h-20 flex justify-center'>
-                <img alt="Logo" className={`${open ? 'w-10' : 'w-0'} rounded-md`} />
+                <img
+                    src="/logo-login.png"
+                    className={`${open ? 'w-auto' : 'w-0'} rounded-md`}
+                    alt="logo"
+                    href="/dashboard"
+                ></img>
+                {/* <img alt="Logo" className={`${open ? 'w-10' : 'w-0'} rounded-md`} /> */}
             </div>
             <div className='flex items-center gap-2 px-3 py-2'>
                 <PersonOutline fontSize="large" />
