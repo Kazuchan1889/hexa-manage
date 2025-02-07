@@ -194,13 +194,13 @@ function DashboardAdmin() {
             <div className="drop-shadow-lg bg-home px-5 py-5 my-5 rounded-md w-full">
               <ProfileDashboard />
             </div>
-            
-      {isMobile && (
-        <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-10 my-5 rounded-md w-[100%] lg:w-[30%] h-[17rem]">
-          <CheckinDashboard />
-        </div>
-      )}
-  
+
+            {isMobile && (
+              <div className="flex flex-col items-center drop-shadow-lg bg-white px-5 lg:px-10 my-5 rounded-md w-[100%] lg:w-[30%] h-[17rem]">
+                <CheckinDashboard />
+              </div>
+            )}
+
             {!checkOperation.includes("SELF_ABSENSI") && !isMobile && (
               <div className="drop-shadow-lg bg-white p-5 rounded-md w-full lg:w-[48%]">
                 <div className="flex justify-center items-center h-full">
