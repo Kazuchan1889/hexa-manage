@@ -30,6 +30,10 @@ import dayjs from 'dayjs';
 import Loading from "../page/Loading";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CircularProgress, Box } from "@mui/material";
+import Head from "../feature/Headbar";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import Sidebar from "../feature/Sidebar";
+import AddIcon from "@mui/icons-material/Add";
 
 const OvertimeUser = () => {
   const [page, setPage] = useState(0);
@@ -47,6 +51,7 @@ const OvertimeUser = () => {
   const [daysOff, setDaysOff] = useState(0);
   const [afterConvert, setafterConvert] = useState(0);
   const [currentOvertimeId, setCurrentOvertimeId] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [editFormData, setEditFormData] = useState({
     note: "",
     mulai: "",
@@ -343,84 +348,52 @@ const OvertimeUser = () => {
 
 
   return (
-    <div className="w-screen h-screen bg-gray-100 overflow-y-hidden">
-      <NavbarUser />
-      <div className="flex w-full justify-center">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Request Overtime
-          </Typography>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    value={search}
-                    onChange={handleSearchChange}
-                    onKeyPress={handleKeyPress}
-                    className="w-full px-2"
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      <Sidebar isMobile={isMobile} />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <Head />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
+          <h1 className="text-2xl ml-2 font-bold">Employe Report</h1>
+          <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
+            {/* Search Bar */}
+            <div className="relative ml-16">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className="p-2 pl-10 rounded-full border border-gray-300 w-80 focus:outline-none focus:ring focus:ring-blue-500 text-black"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 15.75L19.5 19.5"
                   />
-                </div>
-                <div className="flex rounded-lg space-x-1">
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={handleOpenDateFilter}
-                  >
-                    <CalendarMonthIcon className="text-black" />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    style={{ backgroundColor: "#204684" }}
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                  <Dialog open={isDateFilterOpen} onClose={handleCloseDateFilter}>
-                    <DialogTitle>Pilih Tanggal</DialogTitle>
-                    <DialogContent>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                          value={selectedDate}
-                          onChange={handleDateFilterChange}
-                          renderInput={(params) => (
-                            <div className="w-64 mt-2">
-                              <input
-                                {...params.inputProps}
-                                className="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
-                              />
-                            </div>
-                          )}
-                        />
-                      </LocalizationProvider>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-4">
-                  <Button
-                    size="small"
-                    variant="contained"
-                    style={{ backgroundColor: "#1E6D42" }}
-                    onClick={() => setTambahFormOpen(true)}
-                  >
-                    Request
-                  </Button>
-                </div>
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
+            <button className="p-2 bg-white text-black rounded-full shadow" size="small"
+                    variant="contained"
+                    style={{ backgroundColor: "#FFFFFF" }}
+                    onClick={() => setTambahFormOpen(true)}>
+              <AddIcon className="text-[#055817] w-6 h-6" />
+              REQUEST
+            </button>
+          </div>
+
+         <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full mt-12">
         <Card className="w-[90%]">
           <CardContent>
             <div className="flex gap-4 align-right justify-end mx-2">
@@ -613,11 +586,14 @@ const OvertimeUser = () => {
           </DialogContent>
         </Dialog>
       </div>
-      {isTambahFormOpen && (
+    </div>
+    </div>
+    {isTambahFormOpen && (
         <Formovertime onClose={() => setTambahFormOpen(false)} fetchData={fetchData} />
       )}
     </div>
   );
 };
+
 
 export default OvertimeUser;

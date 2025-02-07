@@ -252,93 +252,67 @@ function FormCuti() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-primary overflow-y-hidden">
+    <div className="w-full  ml-32 max-w-screen-lg h-fit flex flex-col md:flex-row items-center">
       {loading ? (
-        <div className="w-screen h-full flex justify-center items-center mx-auto">
+        <div className="w-full h-full flex justify-center items-center">
           <CircularProgress />
         </div>
       ) : (
-        <div className="w-screen h-fit flex">
-          <div className="h-full w-full mx-auto">
-            <div className="flex flex-col justify-between items-center mt-3">
-              <div className="w-[90%] mb-4 flex justify-between items-center ">
-                <Typography variant="h5">Leave Form</Typography>
-              </div>
-              <form
-                onSubmit={handleSubmit}
-                className="w-[90%] h-8/12 rounded-md flex flex-col justify-center bg-card p-5"
-              >
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      name="alasan"
-                      id="alasan"
-                      label="Reason"
-                      size="small"
-                      variant="outlined"
-                      fullWidth
-                      multiline
-                      className="mb-2"
-                      value={formData.alasan}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
+        <div className="h-full w-full mx-auto">
+          <div className="flex flex-col justify-between items-center ">
+            <form
+              onSubmit={handleSubmit}
+              className="w-[113%] mr-32 h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-5"
+            >
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    name="alasan"
+                    id="alasan"
+                    label="Reason"
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    className="mb-2"
+                    value={formData.alasan}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
 
-                  <Grid item xs={12}>
-                    <TextField
-                      name="pengganti"
-                      id="pengganti"
-                      variant="outlined"
-                      fullWidth
-                      className="mb-2"
-                      size="small"
-                      select
-                      label="Temporary Replacement"
-                      onChange={(e) => setSelectedPengganti(e.target.value)}
-                    >
-                      {pengganti &&
-                        pengganti.map((item, index) => (
-                          <MenuItem key={index} value={item.id}>
-                            <div className="text-left">{item.nama}</div>
-                          </MenuItem>
-                        ))}
-                    </TextField>
-                  </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    name="pengganti"
+                    id="pengganti"
+                    variant="outlined"
+                    fullWidth
+                    className="mb-2"
+                    size="small"
+                    select
+                    label="Temporary Replacement"
+                    onChange={(e) => setSelectedPengganti(e.target.value)}
+                  >
+                    {pengganti &&
+                      pengganti.map((item, index) => (
+                        <MenuItem key={index} value={item.id}>
+                          <div className="text-left">{item.nama}</div>
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                </Grid>
 
-                  <Grid container item xs={12} spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <div className="mb-2">
-                        <TextField
-                          name="mulai"
-                          id="mulai"
-                          label="Start Date"
-                          type="date"
-                          size="small"
-                          variant="outlined"
-                          fullWidth
-                          value={formData.mulai}
-                          onChange={handleInputChange}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          InputProps={{
-                            placeholder: "",
-                          }}
-                        />
-                      </div>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
+                <Grid container item xs={12} spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <div className="mb-2">
                       <TextField
-                        name="selesai"
-                        id="selesai"
-                        label="End Date"
+                        name="mulai"
+                        id="mulai"
+                        label="Start Date"
                         type="date"
                         size="small"
                         variant="outlined"
                         fullWidth
-                        className="mb-2"
-                        value={formData.selesai}
+                        value={formData.mulai}
                         onChange={handleInputChange}
                         InputLabelProps={{
                           shrink: true,
@@ -347,185 +321,207 @@ function FormCuti() {
                           placeholder: "",
                         }}
                       />
-                    </Grid>
+                    </div>
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      name="selesai"
+                      id="selesai"
+                      label="End Date"
+                      type="date"
+                      size="small"
+                      variant="outlined"
+                      fullWidth
+                      className="mb-2"
+                      value={formData.selesai}
+                      onChange={handleInputChange}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      InputProps={{
+                        placeholder: "",
+                      }}
+                    />
                   </Grid>
                 </Grid>
-                <div className="mt-5">
-                  <Button
-                    type="submit"
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={
-                      !isFormValid || new Date(formData.mulai) < new Date()
-                    }
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
+              </Grid>
+              <div className="mt-5">
+                <Button
+                  type="submit"
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={
+                    !isFormValid || new Date(formData.mulai) < new Date()
+                  }
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
 
-              
-                <div className="w-[90%] flex flex-col justify-center items-center mt-3 mx-auto rounded-md bg-card p-5">
-                  <div className="w-full">
-                    <div className="flex justify-between">
-                      <Typography variant="h6" id="history-modal-title">
-                        Leave Request History
-                      </Typography>
-                      <div className="mt-1">
-                        <Typography variant="h7" className="font-semibold">
-                          Remaining Days Off: {sisaCuti}
-                        </Typography>
-                      </div>
-                    </div>
-                    <TableContainer
-                      className="rounded-md max-h-56 overflow-y-auto"
-                      component={Paper}
-                    >
-                      <Table size="small" className="">
-                        <TableHead style={{ backgroundColor: "#204684" }}>
-                          <TableRow className="text-center">
-                            <TableCell className="w-[30%]">
+
+            <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+              <div className="w-full">
+                <div className="flex justify-between">
+                  <Typography variant="h6" id="history-modal-title">
+                    Leave Request History
+                  </Typography>
+                  <div className="mt-1">
+                    <Typography variant="h7" className="font-semibold">
+                      Remaining Days Off: {sisaCuti}
+                    </Typography>
+                  </div>
+                </div>
+                <TableContainer
+                  className="rounded-md max-h-56 overflow-y-auto"
+                  component={Paper}
+                >
+                  <Table size="small" className="">
+                    <TableHead style={{ backgroundColor: "#204684" }}>
+                      <TableRow className="text-center">
+                        <TableCell className="w-[30%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Reason
+                          </Typography>
+                        </TableCell>
+                        <TableCell className="w-[20%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Temporary Replacement
+                          </Typography>
+                        </TableCell>
+                        <TableCell className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Start Date
+                          </Typography>
+                        </TableCell>
+                        <TableCell className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            End Date
+                          </Typography>
+                        </TableCell>
+                        <TableCell className="w-[10%]">
+                          <Typography
+                            variant="body2"
+                            className="font-semibold text-white text-center"
+                            style={{ fontWeight: "bold" }}
+                          >
+                            Status
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {tableData
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Reason
+                                {row.alasan}
                               </Typography>
                             </TableCell>
-                            <TableCell className="w-[20%]">
+                            <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Temporary Replacement
+                                {row.pengganti}
                               </Typography>
                             </TableCell>
-                            <TableCell className="w-[10%]">
+                            <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                Start Date
+                                {row.mulai}
                               </Typography>
                             </TableCell>
-                            <TableCell className="w-[10%]">
+                            <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
                               >
-                                End Date
+                                {row.selesai}
                               </Typography>
                             </TableCell>
-                            <TableCell className="w-[10%]">
+                            <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
-                                className="font-semibold text-white text-center"
-                                style={{ fontWeight: "bold" }}
+                                className="text-center"
+                                style={{
+                                  color:
+                                    row.progress === "rejected"
+                                      ? "red"
+                                      : row.progress === "accepted"
+                                        ? "green"
+                                        : row.progress ===
+                                          "acc by direktur" ||
+                                          row.progress === "acc by admin"
+                                          ? "#facc15"
+                                          : "grey",
+                                }}
                               >
-                                Status
+                                {row.progress === "rejected"
+                                  ? "Rejected"
+                                  : row.progress === "acc by direktur"
+                                    ? "Accepted by Direktur"
+                                    : row.progress === "acc by admin"
+                                      ? "Accepted by Admin"
+                                      : row.progress === "accepted"
+                                        ? "Accepted"
+                                        : "Waiting"}
                               </Typography>
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData
-                            .slice(
-                              page * rowsPerPage,
-                              page * rowsPerPage + rowsPerPage
-                            )
-                            .map((row, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="w-1/5">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.alasan}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.pengganti}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.mulai}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                  >
-                                    {row.selesai}
-                                  </Typography>
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                  <Typography
-                                    variant="body2"
-                                    className="text-center"
-                                    style={{
-                                      color:
-                                        row.progress === "rejected"
-                                          ? "red"
-                                          : row.progress === "accepted"
-                                            ? "green"
-                                            : row.progress ===
-                                              "acc by direktur" ||
-                                              row.progress === "acc by admin"
-                                              ? "#facc15"
-                                              : "grey",
-                                    }}
-                                  >
-                                    {row.progress === "rejected"
-                                      ? "Rejected"
-                                      : row.progress === "acc by direktur"
-                                        ? "Accepted by Direktur"
-                                        : row.progress === "acc by admin"
-                                          ? "Accepted by Admin"
-                                          : row.progress === "accepted"
-                                            ? "Accepted"
-                                            : "Waiting"}
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-                </div>
-              
-              
-                <div className="flex w-11/12 items-end justify-end">
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 15]}
-                    variant="body2"
-                    component="div"
-                    count={tableData.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </div>
-              
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
             </div>
+
+
+            <div className="flex w-11/12 items-end justify-end">
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 15]}
+                variant="body2"
+                component="div"
+                count={tableData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </div>
+
           </div>
         </div>
+
       )}
     </div>
   );
