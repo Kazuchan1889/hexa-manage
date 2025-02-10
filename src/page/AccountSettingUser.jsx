@@ -8,17 +8,21 @@ import Changepass from './ChangePassPage';
 import Swal from "sweetalert2";
 import ip from "../ip";
 import { Avatar } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import axios from "axios";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ArrowBack, Notifications, Settings } from "@mui/icons-material";
 
 import UserSummary from './UserSummary';
 
 function AccountSettingUser() {
-  const [nama, setNama] = useState("");
+  
   const [dokumen, setDokumen] = useState(null);
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
+  const [userName, setUserName] = useState("");
   const [activeTab, setActiveTab] = useState('profile');
+
+  const [userPhoto, setUserPhoto] = useState(null);
 
   // Fetching accessToken and role from localStorage
   const role = localStorage.getItem("role");
@@ -61,7 +65,7 @@ function AccountSettingUser() {
         }
 
         // Update user data in state
-        setNama(userData.nama || "");
+        setUserName(userData.nama || "");
         setDokumen(userData.dokumen || null);
         setJabatan(userData.jabatan || "");
         setData(userData);
@@ -80,96 +84,122 @@ function AccountSettingUser() {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+  const handleBackClick = () => {
+    navigate("/dashboard");
+  };
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
+      case "profile":
         return <SettingUser />;
-      case 'security':
+      case "security":
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Change Password</h2>
             <Changepass />
           </div>
         );
-      case 'notifications':
+      case "notifications":
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">Notification Settings</h2>
             <Calend />
           </div>
         );
-      case 'CompanyBio':
+      case "CompanyBio":
         return (
           <div>
             <h2 className="text-xl font-bold mb-4">CompanyBio</h2>
             {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
-      // case 'Summary':
-      //   return (
-      //     <div>
-      //       <h2 className="text-xl font-bold mb-4">Sumarry</h2>
-      //       <UserSummary />
-      //     </div>
-      //   );
       default:
         return null;
     }
   };
 
+
+  useEffect(() => {
+    const apiUrl = `${ip}/api/karyawan/get/data/self`;
+    const headers = {
+      Authorization: localStorage.getItem("accessToken"),
+    };
+
+    axios
+      .get(apiUrl, { headers })
+      .then((response) => {
+        const userData = response.data[0];
+        setUserPhoto(userData.dokumen || null);
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Data Not Available",
+          text: "User data is not available. Please check your internet connection or try again later.",
+        });
+      });
+  }, []);
+  
+
   return (
-    <div style={{ backgroundColor: "#F0F0F0" }}>
-      <NavbarUser />
-      <div className="flex m-4 rounded-xl bg-white drop-shadow-lg">
-        {/* Sidebar for user info and navigation */}
-        <div className="h-[folH] w-1/4 p-4 border border-gray">
-          <ul className="h-full flex flex-col space-y-2">
-            <div className="w-full h-16 flex items-center justify-center border-b">
-              <button
-                className="absolute left-4 text-blue-600"
-                onClick={() => router.push('/dashboard')}
-              >
-                <ArrowBackIcon fontSize="large" />
-              </button>
-              <div className="text-[#204682] text-2xl font-bold font-['Inter']">Settings</div>
-            </div>
-            {/* Navigation links */}
-            <li
-              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'profile' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
-              onClick={() => handleTabClick('profile')}
+    <div className="flex flex-col bg-gray-100 min-h-screen">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 bg-[#11284E] text-white">
+        <div className="flex items-center space-x-4">
+          {userPhoto ? (
+            <Avatar src={userPhoto} alt="User Photo" />
+          ) : (
+            <Avatar alt="User Photo" />
+          )}
+          <div>
+            <h1 className="text-lg font-bold">{userName}</h1>
+            <p className="text-sm text-gray-300">Account Settings</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Notifications className="cursor-pointer" />
+          <Settings className="cursor-pointer" />
+        </div>
+      </div>
+
+      <div className="flex gap-6 p-6">
+        {/* Sidebar Container */}
+        <Card className="p-6 bg-white shadow-md rounded-[15px] w-[307px] h-[920px] flex flex-col">
+          <div className="flex mb-4 relative">
+            <ArrowBack
+              className="text-gray-600 cursor-pointer absolute left-4"
+              onClick={handleBackClick} // Navigate to /dashboard when clicked
+            />
+            <h2 className="text-[24px] font-bold text-[#204682] mx-auto">Settings</h2>
+          </div>
+          <div className="flex flex-col text-lg text-left space-y-2">
+            <div
+              className={`${activeTab === 'profile' ? 'bg-[#D1E3FF] ' : 'text-black hover:bg-[#D1E3FF]'}`}
+              onClick={() => handleTabClick("profile")}
             >
               Profile
-            </li>
-            <li
-              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
-              onClick={() => handleTabClick('CompanyBio')}
+            </div>
+            <div
+              
+              className={`${activeTab === 'CompanyBio' ? 'bg-[#D1E3FF] ' : 'text-black hover:bg-[#D1E3FF]'}`}
+              onClick={() => handleTabClick("CompanyBio")}
             >
               Company Bio
-            </li>
-            <li
-              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'security' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
-              onClick={() => handleTabClick('security')}
+              </div>
+            <div
+              
+              className={`${activeTab === 'security' ? 'bg-[#D1E3FF] ' : 'text-black hover:bg-[#D1E3FF]'}`}
+              onClick={() => handleTabClick("security")}
             >
-              Security
-            </li>
-            {/* <li
-              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
-                activeTab === 'Summary' ? 'bg-blue-500 text-white' : ''
-              }`}
-              onClick={() => handleTabClick('Summary')}
-            >
-              Summary
-            </li> */}
-          </ul>
-        </div>
-        {/* Main content area */}
-        <div
-          id="folH"
-          className="w-full bg-200 p-4 border-t border-r border-b border-gray text-justify text-sm sm:text-base md:text-lg"
-        >
+              Forgot Password
+              </div>
+          </div>
+        </Card>
+
+        {/* Content Container */}
+        <Card className="p-6 bg-white shadow-md rounded-[15px] w-[1200px] h-[920px]">
           {renderContent()}
-        </div>
+        </Card>
       </div>
     </div>
   );
