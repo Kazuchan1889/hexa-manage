@@ -3,6 +3,7 @@ import axios from 'axios';
 import ip from "../ip";
 import CloseIcon from "@mui/icons-material/Close";
 import Swal from "sweetalert2";
+import { TextField, Button, MenuItem } from "@mui/material";
 
 const Formover = ({ onClick, onClose, fetchData }) => {
     const [formData, setFormData] = useState({
@@ -62,47 +63,64 @@ const Formover = ({ onClick, onClose, fetchData }) => {
 
     return (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white rounded-3xl flex justify-center">
-                <form onSubmit={handleSubmit}>
-                    <div className='w-full border p-8 rounded-3xl'>
-                        <div className='flex items-center justify-between mb-2'>
-                            <h2 className="text-left text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                                Request Overtime
-                            </h2>
-                            <button onClick={onClose} className="focus:outline-none">
-                                <CloseIcon />
-                            </button>
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="note" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Catatan:</label>
-                            <input type="text" id="note" name="note" value={formData.note} onChange={handleInputChange}
-                                className="w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="overtimeType" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Jenis Overtime:</label>
-                            <select id="overtimeType" name="tipe" value={formData.tipe} onChange={handleInputChange}
-                                className="w-full rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option value="">Pilih Jenis Overtime</option> {/* Default opsi */}
-                                <option value="Sesudah Shift">Sesudah Shift</option>
-                                <option value="Sebelum Shift">Sebelum Shift</option>
-                            </select>
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="startTime" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Dari Jam:</label>
-                            <input type="time" id="mulai" name="mulai" readOnly value={formData.mulai} 
-                                className="w-[36%] rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            <span className='mx-2'> sampai </span>
-                            <input type="time" id="selesai" name="selesai" value={formData.selesai} onChange={handleInputChange}
-                                className="w-[36%] rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="breakTime" className='block text-sm font-medium leading-6 text-gray-900 text-left mb-2'>Istirahat (menit):</label>
-                            <input type="number" id="breakTime" name="breaktime" value={formData.breaktime} onChange={handleInputChange}
-                                className="w-full rounded-md border-0 py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                        </div>
-                        <button type="submit" className="w-full rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Submit
-                        </button>
+            <div className="bg-white w-full max-w-4xl rounded-2xl p-6 shadow-lg relative">
+                <h2 className="text-center text-2xl font-bold text-black mb-4">Request Overtime</h2>
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-600">✖</button>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <TextField
+                        label="Notes"
+                        variant="outlined"
+                        fullWidth
+                        name="note"
+                        value={formData.note}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        select
+                        label="Overtime Type"
+                        variant="outlined"
+                        fullWidth
+                        name="tipe"
+                        value={formData.tipe}
+                        onChange={handleInputChange}
+                    >
+                        <MenuItem value="">Choose Overtime Type</MenuItem>
+                        <MenuItem value="Sesudah Shift">Sesudah Shift</MenuItem>
+                        <MenuItem value="Sebelum Shift">Sebelum Shift</MenuItem>
+                    </TextField>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <TextField
+                            label="Start Time"
+                            type="time"
+                            variant="outlined"
+                            fullWidth
+                            name="mulai"
+                            value={formData.mulai}
+                            InputProps={{ readOnly: true }}
+                        />
+                        <TextField
+                            label="End Time"
+                            type="time"
+                            variant="outlined"
+                            fullWidth
+                            name="selesai"
+                            value={formData.selesai}
+                            onChange={handleInputChange}
+                        />
+                        <TextField
+                            label="Break (Minutes)"
+                            type="number"
+                            variant="outlined"
+                            fullWidth
+                            name="breaktime"
+                            value={formData.breaktime}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="flex justify-center">
+                        <Button type="submit" variant="contained" color="success" className="w-48">
+                            SUBMIT
+                        </Button>
                     </div>
                 </form>
             </div>

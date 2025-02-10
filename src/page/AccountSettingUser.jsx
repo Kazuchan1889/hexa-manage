@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import { Avatar } from "@mui/material";
 import axios from "axios";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import UserSummary from './UserSummary';
 
@@ -18,7 +19,7 @@ function AccountSettingUser() {
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
-  
+
   // Fetching accessToken and role from localStorage
   const role = localStorage.getItem("role");
 
@@ -124,49 +125,30 @@ function AccountSettingUser() {
         {/* Sidebar for user info and navigation */}
         <div className="h-[folH] w-1/4 p-4 border border-gray">
           <ul className="h-full flex flex-col space-y-2">
-            <div className="flex justify-center w-full pl-4 pt-4 pr-4">
-              {/* Responsive Avatar */}
-              {dokumen && (
-                <Avatar
-                  alt="User Avatar"
-                  src={dokumen}
-                  // Responsive width and height
-                  className="w-36 h-36 md:w-32 md:h-32 sm:w-28 sm:h-28"
-                  // Adjust size for very small screens
-                  sx={{
-                    '@media (max-width: 640px)': {
-                      width: 72, // equivalent to w-18 in Tailwind
-                      height: 72,
-                    },
-                  }}
-                />
-              )}
-            </div>
-            {/* User's name */}
-            <div className="flex justify-center pb-4">
-              <h1 className="font-bold text-lg sm:text-base md:text-lg lg:text-xl">{nama}</h1>
+            <div className="w-full h-16 flex items-center justify-center border-b">
+              <button
+                className="absolute left-4 text-blue-600"
+                onClick={() => router.push('/dashboard')}
+              >
+                <ArrowBackIcon fontSize="large" />
+              </button>
+              <div className="text-[#204682] text-2xl font-bold font-['Inter']">Settings</div>
             </div>
             {/* Navigation links */}
             <li
-              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
-                activeTab === 'profile' ? 'bg-blue-500 text-white' : ''
-              }`}
+              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'profile' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
               onClick={() => handleTabClick('profile')}
             >
               Profile
             </li>
             <li
-              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
-                activeTab === 'CompanyBio' ? 'bg-blue-500 text-white' : ''
-              }`}
+              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'CompanyBio' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
               onClick={() => handleTabClick('CompanyBio')}
             >
               Company Bio
             </li>
             <li
-              className={`py-2 px-4 cursor-pointer rounded-lg text-justify text-sm md:text-base lg:text-lg ${
-                activeTab === 'security' ? 'bg-blue-500 text-white' : ''
-              }`}
+              className={`w-full px-6 py-3 text-base font-normal cursor-pointer ${activeTab === 'security' ? 'bg-[#D1E3FF] text-blue-500' : 'text-black'} hover:bg-[#D1E3FF]`} 
               onClick={() => handleTabClick('security')}
             >
               Security
