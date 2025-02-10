@@ -141,7 +141,7 @@ function App() {
           <Route path="/Face" element={<Face />} />
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
-          <Route path="/DashboardAdminSide" element={<DashboardAdminSide />} />
+          <Route path="/DashboardAdminSide" element={<DashboardAdmin />} />
        
           
         </Routes>
