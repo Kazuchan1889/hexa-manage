@@ -142,9 +142,11 @@ const Sidebar = () => {
                 <Avatar>
                     <img src={userData.dokumen} alt="User Profile" />
                 </Avatar>
-                <div className={`flex items-center gap-24 leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
-                    <p className="text-left">{userData.nama}</p>
-                    <EditIcon />
+                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
+                    <div className="flex w-full justify-between">
+                        <p className="text-left">{userData.nama}</p>
+                        <EditIcon />
+                    </div>
                 </div>
             </div>
 
