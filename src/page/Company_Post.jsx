@@ -1,59 +1,59 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ip from "../ip";
+import { Avatar, Typography, TextField, Button } from "@mui/material";
 
 const AddCompanyProfile = () => {
   const [formData, setFormData] = useState({
-    logo: '',
-    company_name: '',
-    company_pnumber: '',
-    email: '',
-    address: '',
-    province: '',
-    city: '',
-    industry: '',
-    company_size: '',
-    
-    jumlah_karyawan: '' // Added field for number of employees
+    logo: "",
+    company_name: "",
+    company_pnumber: "",
+    email: "",
+    address: "",
+    province: "",
+    city: "",
+    industry: "",
+    company_size: "",
+    jumlah_karyawan: "",
   });
 
+  const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const apiUrl = `${ip}/api/perusahaan/get`;
-        const headers = {
-          Authorization: localStorage.getItem("accessToken"),
-        };
+        const headers = { Authorization: localStorage.getItem("accessToken") };
 
         const companyResponse = await axios.get(apiUrl, { headers });
         if (companyResponse.data && companyResponse.data.length > 0) {
           const data = companyResponse.data[0];
-          setFormData(prevState => ({
+          setFormData((prevState) => ({
             ...prevState,
-            logo: data.logo || '',
-            company_name: data.company_name || '',
-            company_pnumber: data.company_pnumber || '',
-            email: data.email || '',
-            address: data.address || '',
-            province: data.province || '',
-            city: data.city || '',
-            industry: data.industry || '',
-            company_size: data.company_size || '',
+            logo: data.logo || "",
+            company_name: data.company_name || "",
+            company_pnumber: data.company_pnumber || "",
+            email: data.email || "",
+            address: data.address || "",
+            province: data.province || "",
+            city: data.city || "",
+            industry: data.industry || "",
+            company_size: data.company_size || "",
           }));
         }
 
-        // Fetch the number of employees
+        // Fetch jumlah karyawan
         const jumlahKaryawanResponse = await axios.get(`${ip}/api/perusahaan/jumlah`, { headers });
         if (jumlahKaryawanResponse.data && jumlahKaryawanResponse.data.length > 0) {
-          setFormData(prevState => ({
+          setFormData((prevState) => ({
             ...prevState,
-            jumlah_karyawan: jumlahKaryawanResponse.data[0].jumlah_karyawan || '0'
+            jumlah_karyawan: jumlahKaryawanResponse.data[0].jumlah_karyawan || "0",
           }));
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -62,9 +62,9 @@ const AddCompanyProfile = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -72,9 +72,9 @@ const AddCompanyProfile = () => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        logo: reader.result
+        logo: reader.result,
       }));
     };
     if (file) {
@@ -85,17 +85,16 @@ const AddCompanyProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const apiUrl = `${ip}/api/perusahaan/update`;
-    const headers = {
-      Authorization: localStorage.getItem("accessToken"),
-    };
+    const headers = { Authorization: localStorage.getItem("accessToken") };
 
     try {
       const response = await axios.patch(apiUrl, formData, { headers });
       console.log(response.data);
-      alert('Data berhasil ditambahkan');
+      alert("Data berhasil diperbarui");
+      setIsEditing(false); // Kembali ke mode tampilan setelah update
     } catch (error) {
-      console.error('Error posting data:', error);
-      alert('Gagal menambahkan data');
+      console.error("Error updating data:", error);
+      alert("Gagal memperbarui data");
     }
   };
 
@@ -103,61 +102,92 @@ const AddCompanyProfile = () => {
     fileInputRef.current.click();
   };
 
+
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <div className="text-center mb-4">
-        <img 
-          src={formData.logo} 
-          alt="Company Logo" 
-          className="mx-auto w-24 h-24 rounded-full object-cover cursor-pointer"
-          onClick={handleLogoClick} 
+    <div className="w-full h-full bg-white flex flex-col items-center p-4">
+      {/* Header - Profile Image & Name */}
+      <div className="w-full flex items-center mb-6">
+        <Avatar
+          src={formData.logo}
+          alt="Upload File"
+          sx={{ width: 130, height: 130, cursor: "pointer" }}
+          className="ml-4 border border-gray-300 shadow-md"
+          onClick={isEditing ? handleLogoClick : null}
         />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={fileInputRef}
-          className="hidden"
-        />
-      </div>
-      <form onSubmit={handleSubmit}>
-        <h1 className="text-2xl font-bold mb-4">Add Company Profile</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {Object.keys(formData).map((key) => (
-            key !== 'logo' && key !== 'company_name' && (
-              <div key={key}>
-                <label className="block font-semibold text-left">{key.replace(/_/g, ' ')}:</label>
-                {key === 'show_branch_name' ? (
-                  <input
-                    type="checkbox"
-                    name={key}
-                    checked={formData[key]}
-                    onChange={handleChange}
-                    className="mt-1"
-                  />
-                ) : key === 'jumlah_karyawan' ? (
-                  <input
-                    type="text"
-                    name={key}
-                    value={formData[key]}
-                    readOnly
-                    className="mt-1 p-2 w-full border rounded bg-gray-100 drop-shadow-md"
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    name={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="mt-1 p-2 w-full border rounded drop-shadow-md"
-                  />
-                )}
-              </div>
-            )
-          ))}
+        <input type="file" accept="image/*" onChange={handleImageChange} ref={fileInputRef} className="hidden" />
+
+        <div className="ml-6">
+          <Typography
+            variant="h6"
+            className="font-bold"
+            style={{ fontSize: 30, fontFamily: "Helvetica Bold", textAlign: "left" }}
+          >
+            {formData.company_name || "Nama Perusahaan"}
+          </Typography>
+
+          <div className="text-left">
+            {!isEditing ? (
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-1 text-sm"
+              >
+                Edit Profile
+              </Button>
+            ) : (
+              <Button
+                size="small"
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                className="px-4 py-1 text-sm"
+              >
+                Save Changes
+              </Button>
+            )}
+          </div>
         </div>
-        <button type="submit" className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
-      </form>
+      </div>
+
+      {/* Form Section */}
+      <div className="w-full p-4">
+        <form onSubmit={handleSubmit} className="flex flex-col bg-white p-6 rounded-lg">
+          {[
+            { label: "Alamat", name: "address" },
+            { label: "Email Address", name: "email" },
+            { label: "No HP", name: "company_pnumber", type: "text" },
+            { label: "Provinsi", name: "province" },
+            { label: "Kota", name: "city" },
+            { label: "Industri", name: "industry" },
+            { label: "Ukuran Perusahaan", name: "company_size" },
+            { label: "Jumlah Karyawan", name: "jumlah_karyawan", readonly: true },
+          ].map((field, index) => (
+            <div key={index} className="flex items-center rounded-lg p-2">
+              <Typography className="w-1/3 text-left pr-4" variant="body1">
+                {field.label}:
+              </Typography>
+              <TextField
+                size="small"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id={field.name}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                InputProps={{
+                  style: { paddingLeft: 8, borderRadius: 10 },
+                  readOnly: field.readonly || !isEditing, // Hanya bisa diedit jika dalam mode editing
+                }}
+                className="w-2/3 rounded-lg bg-gray-100"
+              />
+            </div>
+          ))}
+        </form>
+      </div>
     </div>
   );
 };

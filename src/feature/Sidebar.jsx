@@ -18,7 +18,7 @@ const menuItems = [
         id: 1,
         icons: <HomeOutlined fontSize="large" />,
         label: "Dashboard",
-        path: "/dashboardadminside",
+        path: "/dashboard",
     },
     {
         id: 2,
