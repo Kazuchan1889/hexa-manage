@@ -68,7 +68,8 @@ const Headb = () => {
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [isRotating, setIsRotating] = useState(false);
-  
+  const [uniqueIdkCount, setUniqueIdkCount] = useState(0);
+
 
 
   // Periksa apakah hari ini adalah Sabtu (6) atau Minggu (0)
@@ -84,6 +85,8 @@ const Headb = () => {
       Authorization: localStorage.getItem("accessToken"),
     },
   };
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -285,6 +288,37 @@ const Headb = () => {
     navigate('/aptes');
   };
 
+  const fetchAbsensiList = async () => {
+    try {
+      const headers = {
+        Authorization: localStorage.getItem("accessToken"),
+      };
+
+      console.log("Fetching absensi list with headers:", headers);
+
+      const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+      console.log("Response from absensi list:", response.data);
+
+      setAbsensiList(response.data); // Menyimpan data absensi ke state
+
+      // Memfilter data dengan status selain "approve"
+      const filteredData = response.data.filter(item => item.status !== true);
+
+      // Menghitung jumlah nama unik dari data yang sudah difilter
+      const uniqueNames = new Set(filteredData.map((item) => item.nama));
+      console.log("Unique nama count (excluding approve):", uniqueNames.size);
+
+      setUniqueIdkCount(uniqueNames.size); // Simpan jumlah nama unik ke state
+    } catch (error) {
+      console.error("Error fetching absensi:", error);
+    } finally {
+      setLoading(false);
+    }
+
+  fetchAbsensiList();
+  }
+
+  console.log("Total unique nama count:", uniqueIdkCount);
 
   return (
     <div className="flex justify-between px-4 pt-2 items-center bg-[#11284E]">
@@ -300,6 +334,11 @@ const Headb = () => {
         {/* Notification Icon */}
         <IconButton onClick={handleClickr}>
           <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
+          {uniqueIdkCount > 0 && (
+            <span className="absolute top-3 right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+              {uniqueIdkCount}
+            </span>
+          )}
         </IconButton>
 
         {/* Settings Dropdown */}
@@ -363,6 +402,7 @@ const Headb = () => {
     </div>
   );
 };
+
 
 
 export default Headb;

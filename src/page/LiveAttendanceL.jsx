@@ -203,7 +203,7 @@ function LiveAttendance() {
                         color={isRequested ? "grey" : "primary"} // Change color based on request status
                         size="large"
                         onClick={handleRequestAbsen}
-                        disabled={isRequested} // Disable the button if already requested
+                        
                         style={{ width: "80%" }}
                     >
                         Request Absen

@@ -95,7 +95,6 @@ function AccountSettingUser() {
       case "security":
         return (
           <div>
-            <h2 className="text-xl font-bold mb-4">Change Password</h2>
             <Changepass />
           </div>
         );
@@ -109,7 +108,6 @@ function AccountSettingUser() {
       case "CompanyBio":
         return (
           <div>
-            <h2 className="text-xl font-bold mb-4">CompanyBio</h2>
             {role === "admin" ? <CompanyBioP /> : <CompanyBio />}
           </div>
         );
@@ -166,10 +164,10 @@ function AccountSettingUser() {
         {/* Sidebar Container */}
         <Card className="p-6 bg-white shadow-md rounded-[15px] w-[307px] h-[920px] flex flex-col">
           <div className="flex mb-4 relative">
-            <ArrowBack
-              className="text-gray-600 cursor-pointer absolute left-4"
-              onClick={handleBackClick} // Navigate to /dashboard when clicked
-            />
+              <ArrowBack
+                className="text-gray-600 cursor-pointer absolute left-4"
+                onClick={handleBackClick} // Navigate to /dashboard when clicked
+              />
             <h2 className="text-[24px] font-bold text-[#204682] mx-auto">Settings</h2>
           </div>
           <div className="flex flex-col text-lg text-left space-y-2">
