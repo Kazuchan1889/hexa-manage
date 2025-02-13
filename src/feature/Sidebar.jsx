@@ -57,7 +57,11 @@ const menuItems = [
         id: 5,
         icons: <LayersOutlined fontSize="large" />,
         label: "User Management",
-        path: "/UserDataManagement",
+        dropdown: [
+            { id: 39, label: "User Managment", path: "/UserDataManagement" },
+            { id: 40, label: "Role", path: "/addrole" },
+
+        ],
     },
 ];
 
@@ -66,6 +70,8 @@ const Sidebar = () => {
     const [activeItem, setActiveItem] = useState(1);
     const [openDropdown, setOpenDropdown] = useState(null);
     const navigate = useNavigate();
+    const [formData, setFormData] = useState({ logo: '' });
+    
 
     const [userData, setUserData] = useState({
         nama: "",
@@ -112,6 +118,28 @@ const Sidebar = () => {
             });
         }
     };
+    //logo
+    const fetchData = async () => {
+        try {
+          const apiUrl = `${ip}/api/perusahaan/get`;
+          const headers = {
+            Authorization: localStorage.getItem("accessToken"),
+          };
+  
+          const companyResponse = await axios.get(apiUrl, { headers });
+          if (companyResponse.data && companyResponse.data.length > 0) {
+            const data = companyResponse.data[0];
+            setFormData(prevState => ({
+              ...prevState,
+              logo: data.logo || '',
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching company data:', error);
+        }
+      };
+      fetchData();
+    
     // Fungsi untuk menangani navigasi
     const handleMenuItemClick = (item) => {
         if (item.path) {
@@ -135,7 +163,7 @@ const Sidebar = () => {
             </div>
 
             <div className="px-3 py-2 h-20 flex justify-center">
-                <img src="/logo-login.png" className={`${open ? "w-auto" : "w-0"} rounded-md`} alt="logo" />
+                <img src={formData.logo} className={`${open ? "w-auto" : "w-0"} rounded-md`} alt="logo" />
             </div>
 
             <div className="flex items-center gap-2 px-2 py-2">
