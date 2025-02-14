@@ -1,13 +1,13 @@
 import React from "react";
 // import DashboardAdmin from "./DashboardAdmin";
-import DashboardUser from "./DashboardUser";
+import DashboardUserSide from "./DashboardUserSide";
 import DashboardAdminSide from "./DashboardAdminSide";
 
 function Dashboard() {
   localStorage.getItem("accessToken");
   const role = localStorage.getItem("role");
 
-  return <div>{role === "admin" ? <DashboardAdminSide /> : <DashboardUser  />}</div>;
+  return <div>{role === "admin" ? <DashboardAdminSide /> : <DashboardUserSide  />}</div>;
 }
 
 export default Dashboard;
