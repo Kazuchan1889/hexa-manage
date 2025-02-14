@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Shortcut() {
   return (
-    <div className="mt-2 ">
+    <div className="mt-2">
       <h1 className="text-xl font-bold text-center text-white mb-4">Quick Access</h1>
       <div className="flex justify-center gap-8 mt-2 flex-wrap">
         {[

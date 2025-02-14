@@ -60,6 +60,7 @@ import Loading from "./page/Loading";
 import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
+import DashboardUserSide from "./page/DashboardUserSide";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -141,7 +142,7 @@ function App() {
           <Route path="/Face" element={<Face />} />
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
-          <Route path="/DashboardAdminSide" element={<DashboardAdmin />} />
+          <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
        
           
         </Routes>
