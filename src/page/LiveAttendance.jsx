@@ -271,7 +271,7 @@ function LiveAttendance() {
         try {
             // 🔍 Validasi IP sebelum check-out
             const localIP = await getLocalIP();
-            if (localIP !== "192.168.4.53") {
+            if (localIP !== "192.168.1.142") {
                 Swal.fire({
                     icon: "error",
                     title: "Check Out Gagal!",

@@ -68,21 +68,21 @@ function CheckinDashboard() {
           <div className="w-full flex flex-row justify-center items-center">
             <div className="flex flex-col justify-center h-12">
               <Typography variant="body2" className="text-center">Check In</Typography>
-              <div>
+              <div className="flex flex-col items-center">
                 <div
-                  className="p-2 rounded-lg my-2"
+                  className="p-2 rounded-lg my-2 w-fit"
                   style={{
                     backgroundColor: isUserCheckin ? "#1e3a8a" : "#f3f4f6",
                   }}
                 >
+                  <CheckCircleRoundedIcon
+                    className="text-black text-center"
+                    style={{
+                      fontSize: 40,
+                      color: isUserCheckin ? "#84cc16" : "#d1d5db",
+                    }}
+                  />
                 </div>
-                <CheckCircleRoundedIcon
-                  className="text-black text-center"
-                  style={{
-                    fontSize: 40,
-                    color: isUserCheckin ? "#84cc16" : "#d1d5db",
-                  }}
-                />
               </div>
               <Typography variant="body2" className="text-center">
                 {masuk || "Haven’t Check-In yet"}
@@ -94,20 +94,20 @@ function CheckinDashboard() {
           <div className="w-full flex flex-row justify-center items-center">
             <div className="flex flex-col justify-center h-12">
               <Typography variant="body2" className="text-center">Check Out</Typography>
-              <div>
+              <div className="flex flex-col items-center ">
                 <div
-                  className="p-2 rounded-lg my-2"
+                  className="p-2 rounded-lg my-2 w-fit"
                   style={{
                     backgroundColor: isUserCheckout ? "#1e3a8a" : "#f3f4f6",
                   }}
                 >
+                  <CheckCircleRoundedIcon
+                    style={{
+                      fontSize: 40,
+                      color: isUserCheckout ? "#84cc16" : "#d1d5db",
+                    }}
+                  />
                 </div>
-                <CheckCircleRoundedIcon
-                  style={{
-                    fontSize: 40,
-                    color: isUserCheckout ? "#84cc16" : "#d1d5db",
-                  }}
-                />
               </div>
               <Typography variant="body2" className="text-center">
                 {keluar || "Haven’t Check-Out yet"}

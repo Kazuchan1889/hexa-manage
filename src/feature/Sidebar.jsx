@@ -71,7 +71,8 @@ const Sidebar = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ logo: '' });
-    
+    const isUserAdmin = localStorage.getItem("role") === "admin";
+
 
     const [userData, setUserData] = useState({
         nama: "",
@@ -121,25 +122,25 @@ const Sidebar = () => {
     //logo
     const fetchData = async () => {
         try {
-          const apiUrl = `${ip}/api/perusahaan/get`;
-          const headers = {
-            Authorization: localStorage.getItem("accessToken"),
-          };
-  
-          const companyResponse = await axios.get(apiUrl, { headers });
-          if (companyResponse.data && companyResponse.data.length > 0) {
-            const data = companyResponse.data[0];
-            setFormData(prevState => ({
-              ...prevState,
-              logo: data.logo || '',
-            }));
-          }
+            const apiUrl = `${ip}/api/perusahaan/get`;
+            const headers = {
+                Authorization: localStorage.getItem("accessToken"),
+            };
+
+            const companyResponse = await axios.get(apiUrl, { headers });
+            if (companyResponse.data && companyResponse.data.length > 0) {
+                const data = companyResponse.data[0];
+                setFormData(prevState => ({
+                    ...prevState,
+                    logo: data.logo || '',
+                }));
+            }
         } catch (error) {
-          console.error('Error fetching company data:', error);
+            console.error('Error fetching company data:', error);
         }
-      };
-      fetchData();
-    
+    };
+    fetchData();
+
     // Fungsi untuk menangani navigasi
     const handleMenuItemClick = (item) => {
         if (item.path) {
@@ -152,6 +153,13 @@ const Sidebar = () => {
     const handleDropdownToggle = (id) => {
         setOpenDropdown(openDropdown === id ? null : id);
     };
+
+    const filteredMenuItems = menuItems.filter(item => {
+        if (item.label === "User Management" || item.label === "Master Data") {
+            return isUserAdmin;
+        }
+        return true;
+    });
 
     return (
         <nav className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"}`}>
@@ -180,7 +188,7 @@ const Sidebar = () => {
 
             {/* Menu */}
             <ul className="flex-1">
-                {menuItems.map((item) => {
+                {filteredMenuItems.map((item) => {
                     const isActive = activeItem === item.id;
                     const hasDropdown = item.dropdown && item.dropdown.length > 0;
                     const isDropdownOpen = openDropdown === item.id;
