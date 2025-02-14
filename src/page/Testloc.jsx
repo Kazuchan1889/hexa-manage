@@ -183,12 +183,12 @@ const LocationPickerPage = () => {
                 )}
               </div>
 
-            </div>
+            </div>  
 
 
-            <div className="w-full lg:w-2/3 rounded-r-xl p-2 sm:p-4 md:p-6 bg-white flex flex-col min-w-0">
+            <div className="w-full lg:w-2/3 rounded-r-xl py-2 sm:p-4 md:p-6 bg-white flex flex-col min-w-0">
               <div className="flex justify-between items-center mb-2 sm:mb-4">
-                <h2 className="text-xl sm:text-2xl text-black font-bold">Orbital Strike</h2>
+                <h2 className="text-xl sm:text-2xl text-black font-bold">Geo Tech</h2>
               </div>
               <div className="flex flex-col items-center gap-3">
 
