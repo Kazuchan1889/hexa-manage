@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
 import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
-import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -34,6 +33,9 @@ import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import Sidebar from "../feature/Sidebar";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
+
 
 const TableApprovalCuti = () => {
   const [page, setPage] = useState(0);
@@ -296,9 +298,9 @@ const TableApprovalCuti = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
-        <NavbarUser />
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
           <h1 className="text-2xl font-bold">Time Off Aproval Data</h1>
