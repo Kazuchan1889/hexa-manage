@@ -150,7 +150,7 @@ const LocationPickerPage = () => {
       <Sidebar isMobile={isMobile} />
       <div className="w-full min-h-screen bg-gray-100 overflow-auto">
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48">
-          <h1 className="text-2xl font-bold">Schedjule</h1>
+          <h1 className="text-2xl font-bold">Geo Tech</h1>
           <div className="mt-4 flex justify-end items-center w-full pr-4 sm:pr-16">
 
           </div>
@@ -188,7 +188,7 @@ const LocationPickerPage = () => {
 
             <div className="w-full lg:w-2/3 rounded-r-xl py-2 sm:p-4 md:p-6 bg-white flex flex-col min-w-0">
               <div className="flex justify-between items-center mb-2 sm:mb-4">
-                <h2 className="text-xl sm:text-2xl text-black font-bold">Geo Tech</h2>
+                {/* <h2 className="text-xl sm:text-2xl text-black font-bold">Geo Tech</h2> */}
               </div>
               <div className="flex flex-col items-center gap-3">
 
