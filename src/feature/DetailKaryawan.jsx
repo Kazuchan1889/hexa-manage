@@ -68,15 +68,15 @@ const DetailKaryawan = ({ karyawan, onClose, fetchData, rows, setRows }) => {
             fetchData={fetchData}
           />
         ) : (
-          <div className="justify-center items-center">
+          <div className="justify-center items-center text-black">
             <h3 className="text-xl my-4">Detail Profile</h3>
-            <div className="flex my-4 items-center">
+            <div className="flex my-4 items-center justify-center">
               <img
                 alt=""
                 src={karyawan?.dokumen}
                 className="h-20 w-20 rounded-full cursor-pointer mx-1"
               />
-            </div>
+            </div>  
             <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
               <ViewItem label="Nomor Induk Karyawan" value={karyawan?.nikid} />
               <ViewItem label="Name" value={karyawan?.nama} />
@@ -98,7 +98,7 @@ const DetailKaryawan = ({ karyawan, onClose, fetchData, rows, setRows }) => {
               <ViewItem label="Status" value={karyawan?.status} />
               <ViewItem label="NIK (KTP)" value={karyawan?.nik} />
               <ViewItem label="NPWP" value={karyawan?.npwp} />
-              <ViewItem
+              {/* <ViewItem
                 label="Leave Allowance (independent)"
                 value={karyawan?.cutimandiri}
               />
@@ -106,7 +106,7 @@ const DetailKaryawan = ({ karyawan, onClose, fetchData, rows, setRows }) => {
                 label="Leave Allowance (together)"
                 value={karyawan?.cutibersama}
               />
-              <ViewItem label="Role" value={karyawan?.role} />
+              <ViewItem label="Role" value={karyawan?.role} /> */}
             </div>
           </div>
         )}

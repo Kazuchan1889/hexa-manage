@@ -5,7 +5,7 @@ import LiveAttendanceL from "./LiveAttendanceL";
 function AttendanceDashboard() {
   // Mendapatkan nama hari saat ini
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-  const isWeekend = today === "Saturday" || today === "Sunday";
+  const isWeekend = today === "Friday" || today === "Sunday";
 
   return (
     <div>
