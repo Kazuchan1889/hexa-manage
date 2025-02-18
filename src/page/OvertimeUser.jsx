@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -31,8 +30,8 @@ import Loading from "../page/Loading";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CircularProgress, Box } from "@mui/material";
 import Head from "../feature/Headbar";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import Sidebar from "../feature/Sidebar";
+import NavbarUser from "../feature/NavbarUser";
 import AddIcon from "@mui/icons-material/Add";
 
 const OvertimeUser = () => {
@@ -345,17 +344,29 @@ const OvertimeUser = () => {
     }
   }
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
 
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 ">
           <h1 className="text-2xl ml-2 font-bold">Overtime User</h1>
-          <div className="mt-4 flex justify-center items-center relative w-full">
+          <div className={`mt-4 flex ${isMobile ? 'flex-col items-center relative w-full' : 'justify-center items-center relative w-full'}`}>
 
             {/* Search Bar */}
             <div className="relative w-full max-w-lg">
@@ -365,8 +376,7 @@ const OvertimeUser = () => {
                 value={search}
                 onChange={handleSearchChange}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
-          ${isMobile ? "w-68 h-6" : "w-80 h-10"}`}
+                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black ${isMobile ? "w-68 h-6" : "w-80 h-10"}`}
               />
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
@@ -385,7 +395,7 @@ const OvertimeUser = () => {
 
             {/* Request Button */}
             <button
-              className="w-[115px] h-[33px] bg-white text-black rounded-full shadow flex items-center justify-center space-x-2 absolute right-20"
+              className={`w-[115px] h-[33px] bg-white text-black rounded-full shadow flex items-center justify-center space-x-2 ${isMobile ? 'mt-4 self-end' : 'absolute right-20'}`}
               size="small"
               variant="contained"
               style={{ backgroundColor: "#FFFFFF" }}
@@ -394,6 +404,7 @@ const OvertimeUser = () => {
               <AddIcon className="text-[#055817] w-4 h-4" />
               <span className="text-sm font-medium">REQUEST</span>
             </button>
+
 
           </div>
 

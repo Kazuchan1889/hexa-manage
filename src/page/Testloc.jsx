@@ -147,6 +147,18 @@ const LocationPickerPage = () => {
     }
   };
 
+  useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 1024);
+      };
+  
+      window.addEventListener("resize", handleResize);
+  
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}

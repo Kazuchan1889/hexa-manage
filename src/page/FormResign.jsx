@@ -15,11 +15,11 @@ import {
   Typography,
   CircularProgress, // Import CircularProgress untuk loading spinner
 } from "@mui/material";
-import NavbarUser from "../feature/NavbarUser";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
+import NavbarUser from "../feature/NavbarUser";
 
 function FormResign() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -161,7 +161,7 @@ function FormResign() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+     {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}

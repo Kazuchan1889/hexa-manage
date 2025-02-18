@@ -4,6 +4,7 @@ import FormCuti from './FormCuti';
 import FormIzin from './FormIzin';
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
+import NavbarUser from "../feature/NavbarUser";
 
 function App() {
   const [selectedForm, setSelectedForm] = useState('cuti');
@@ -18,7 +19,7 @@ function App() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}

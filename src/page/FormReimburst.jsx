@@ -21,12 +21,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import NavbarUser from "../feature/NavbarUser";
 import Swal from "sweetalert2";
 import ip from "../ip";
 import DownloadIcon from "@mui/icons-material/Download";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
+import NavbarUser from "../feature/NavbarUser";
 
 function FormReimburst() {
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -295,7 +295,7 @@ function FormReimburst() {
   };
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
