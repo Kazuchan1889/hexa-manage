@@ -38,11 +38,14 @@ import {
   Popper,
   Typography,
   Grow,
+  Modal,
 } from "@mui/material";
 import NavbarUser from "../feature/NavbarUser";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
 import { Close } from "@mui/icons-material";
+import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from '@mui/icons-material/Info';
 
 
 
@@ -74,6 +77,8 @@ const TableAbsen = () => {
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [isRotating, setIsRotating] = useState(false);
+
+  const [selectedRow, setSelectedRow] = useState(null);
 
 
 
@@ -417,74 +422,42 @@ const TableAbsen = () => {
     navigate('/aptes');
   };
 
+  const handleDetailClick = (row) => {
+    setSelectedRow(row);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
         <div className="min-h-screen bg-gray-100">
           {/* Container 1 */}
-          <div className="bg-[#11284E] text-white p-6  shadow-lg h-72">
+          <div className="bg-[#11284E] text-white p-6 shadow-lg h-72">
             <div className="flex justify-between items-center">
-              {/* Left Corner */}
               <div>
                 <p className="text-lg font-bold">{date}</p>
-                {hour !== null && (
-                  <p className="text-sm">Current hour: {hour} o'clock</p>
-                )}
+                {hour !== null && <p className="text-sm">Current hour: {hour} o'clock</p>}
               </div>
 
               <div className="flex items-center space-x-4">
-                {/* Notification Icon */}
                 <IconButton onClick={handleClickr}>
                   <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
                 </IconButton>
-
-                {/* Settings Dropdown */}
-
-                {/* Icon Button */}
-                <IconButton
-                  ref={anchorRef}
-                  aria-controls={menuOpen ? "menu-list-grow" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleToggle}
-                >
-                  <SettingsIcon
-                    className={`w-6 h-6 text-white cursor-pointer transform transition-transform duration-300 ${isRotating ? "rotate-180" : ""
-                      }`}
-                  />
+                <IconButton ref={anchorRef} aria-controls={menuOpen ? "menu-list-grow" : undefined} aria-haspopup="true" onClick={handleToggle}>
+                  <SettingsIcon className={`w-6 h-6 text-white cursor-pointer transform transition-transform duration-300 ${isRotating ? "rotate-180" : ""}`} />
                 </IconButton>
-
-                {/* Dropdown Menu */}
-                <Popper
-                  open={menuOpen}
-                  anchorEl={anchorRef.current}
-                  role={undefined}
-                  transition
-                  disablePortal
-                  style={{ zIndex: 1 }}
-                >
+                <Popper open={menuOpen} anchorEl={anchorRef.current} role={undefined} transition disablePortal style={{ zIndex: 1 }}>
                   {({ TransitionProps, placement }) => (
-                    <Grow
-                      {...TransitionProps}
-                      style={{
-                        transformOrigin:
-                          placement === "bottom" ? "center top" : "center bottom",
-                      }}
-                    >
+                    <Grow {...TransitionProps} style={{ transformOrigin: placement === "bottom" ? "center top" : "center bottom" }}>
                       <Paper className="mr-3">
                         <ClickAwayListener onClickAway={handleCloseA}>
-                          <MenuList
-                            autoFocusItem={menuOpen}
-                            id="menu-list-grow"
-                            onKeyDown={handleListKeyDown}
-                            className="outline-none"
-
-                          >
-                            <MenuItem
-                              component={Link}
-                              to="/accountsetting"
-                              className="px-4 py-2"
-                            >
+                          <MenuList autoFocusItem={menuOpen} id="menu-list-grow" onKeyDown={handleListKeyDown} className="outline-none">
+                            <MenuItem component={Link} to="/accountsetting" className="px-4 py-2">
                               <Typography variant="button">Settings</Typography>
                             </MenuItem>
                             <MenuItem onClick={handleLogout} className="px-4 py-2">
@@ -497,126 +470,123 @@ const TableAbsen = () => {
                   )}
                 </Popper>
               </div>
-
             </div>
+          
 
-            {/* Center Content */}
-            <div className="text-center mt-6">
-              <h1 className="text-2xl font-bold">Attendance Data</h1>
-              <div className="mt-4 flex justify-center items-center space-x-4">
+          {/* Center Content */}
+          <div className="text-center mt-6">
+            <h1 className="text-2xl font-bold">Attendance Data</h1>
+            <div className="mt-4 flex justify-center items-center space-x-4">
 
-                {/* Button with Dots */}
-                <button
-                  className={`p-2 bg-white rounded-full shadow flex items-center  ${isMobile ? 'w-9 h-9' : 'w-9 h-9'}`}
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon className={`text-[#11284E] -ml-0 flex ${isMobile ? 'w-[1.64px] h-[13.64px]' : 'w-6 h-6'}`} />
-                </button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
-                  <MenuItem onClick={openTimeSetting} onClose={handleClose}>
-                    <SettingsIcon className="text-gray-500" style={{ marginRight: "8px" }} />
-                    Setting Attendance Hours
-                  </MenuItem>
-                  <MenuItem onClick={openHolidaySetting} onClose={handleClose}>
-                    <CalendarMonthIcon className="text-gray-500" style={{ marginRight: "8px" }} />
-                    Setting Holiday Dates
-                  </MenuItem>
-                </Menu>
+              {/* Button with Dots */}
+              <button
+                className={`p-2 bg-white rounded-full shadow flex items-center  ${isMobile ? 'w-9 h-9' : 'w-9 h-9'}`}
+                onClick={handleClick}
+              >
+                <MoreHorizIcon className={`text-[#11284E] -ml-0 flex ${isMobile ? 'w-[1.64px] h-[13.64px]' : 'w-6 h-6'}`} />
+              </button>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={openTimeSetting} onClose={handleClose}>
+                  <SettingsIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                  Setting Attendance Hours
+                </MenuItem>
+                <MenuItem onClick={openHolidaySetting} onClose={handleClose}>
+                  <CalendarMonthIcon className="text-gray-500" style={{ marginRight: "8px" }} />
+                  Setting Holiday Dates
+                </MenuItem>
+              </Menu>
 
-                {/* Search Bar */}
-                <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={handleSearchChange}
-                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                    className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
+              {/* Search Bar */}
+              <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={handleSearchChange}
+                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                  className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
                       ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
-                  />
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="w-5 h-5 text-gray-400"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
-                      <circle cx="11" cy="11" r="8" />
-                    </svg>
-                  </div>
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-5 h-5 text-gray-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
+                    <circle cx="11" cy="11" r="8" />
+                  </svg>
                 </div>
-
-                {/* File Icon */}
-                <button
-                  className={`p-2 bg-white rounded-full shadow ${isMobile ? 'w-9 h-9' : 'w-9 h-9'}`}
-                  onClick={handleExcel}
-                >
-                  <InsertDriveFileIcon className={`text-[#11284E] mb-8 items-center ${isMobile ? 'w-[18px] h-[18px]' : 'w-6 h-6'}`} />
-                </button>
-
               </div>
-            </div>
-            <div className="rounded-lg overflow-y-auto mt-8 shadow-md mx-4">
-              <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                    <TableRow className="h-16 ">
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Name</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Clock In</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Clock Out</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Date</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Overtime</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Photo</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Status</p>
-                      </TableCell>
-                      {isWeekend && (
-                        <TableCell align="center">
-                          <p className="text-indigo font-semibold">Action</p>
-                        </TableCell>
-                      )}
-                      <TableCell align="center">
-                        <p className="text-indigo font-semibold">Export</p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {rows
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row, index) => {
-                        const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
-                        const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
-                        const isLateMasuk = jamMasukRow > timeMasuk;
-                        const isLateKeluar = jamKeluarRow > timeKeluar;
 
-                        return (
-                          <TableRow key={index}>
-                            <TableCell align="center">{row.nama}</TableCell>
-                            <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>
-                              {row.masuk}
-                            </TableCell>
-                            <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>
-                              {row.keluar}
-                            </TableCell>
+              {/* File Icon */}
+              <button
+                className={`p-2 bg-white rounded-full shadow ${isMobile ? 'w-9 h-9' : 'w-9 h-9'}`}
+                onClick={handleExcel}
+              >
+                <InsertDriveFileIcon className={`text-[#11284E] mb-8 items-center ${isMobile ? 'w-[18px] h-[18px]' : 'w-6 h-6'}`} />
+              </button>
+
+            </div>
+          </div>
+          <div className="rounded-lg overflow-y-auto mt-8 shadow-md mx-4">
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow className="h-16">
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Name</p>
+                    </TableCell>
+                    {!isMobile && (
+                      <>
+                        <TableCell align="center">
+                          <p className="text-indigo font-semibold">Clock In</p>
+                        </TableCell>
+                        <TableCell align="center">
+                          <p className="text-indigo font-semibold">Clock Out</p>
+                        </TableCell>
+                        <TableCell align="center">
+                          <p className="text-indigo font-semibold">Date</p>
+                        </TableCell>
+                        <TableCell align="center">
+                          <p className="text-indigo font-semibold">Overtime</p>
+                        </TableCell>
+                        <TableCell align="center">
+                          <p className="text-indigo font-semibold">Photo</p>
+                        </TableCell>
+                      </>
+                    )}
+                    <TableCell align="center">
+                      <p className="text-indigo font-semibold">Status</p>
+                    </TableCell>
+                    {isMobile && (
+                      <TableCell align="center">
+                        <p className="text-indigo font-semibold">Detail</p>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    const jamMasukRow = new Date(`1970-01-01T${row.masuk}:00`);
+                    const jamKeluarRow = new Date(`1970-01-01T${row.keluar}:00`);
+                    const isLateMasuk = jamMasukRow > timeMasuk;
+                    const isLateKeluar = jamKeluarRow > timeKeluar;
+
+                    return (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.nama}</TableCell>
+                        {!isMobile && (
+                          <>
+                            <TableCell align="center" style={{ color: isLateMasuk ? "red" : "black" }}>{row.masuk}</TableCell>
+                            <TableCell align="center" style={{ color: isLateKeluar ? "red" : "black" }}>{row.keluar}</TableCell>
                             <TableCell align="center">{row.date}</TableCell>
                             <TableCell align="center">no</TableCell>
                             <TableCell align="center">
@@ -633,152 +603,205 @@ const TableAbsen = () => {
                                 <p>No Photo</p>
                               )}
                             </TableCell>
-                            <TableCell align="center">
-                              <PatchStatus string={row.status} id={row.id} />
-                            </TableCell>
-                            {isWeekend && (
-                              <TableCell align="center">
-                                <ActionButton onAccept={() => { }} onReject={() => { }} data={row} />
-                              </TableCell>
-                            )}
-                            <TableCell align="center">
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<FileDownloadOutlined />}
-                                onClick={() => {
-                                  axios.post(`${ip}/api/export/data/8`, { userId: row.idk }, {
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                      Authorization: localStorage.getItem("accessToken"),
-                                    },
-                                    responseType: "blob",
-                                  })
-                                    .then((response) => {
-                                      const url = window.URL.createObjectURL(new Blob([response.data]));
-                                      const link = document.createElement("a");
-                                      link.href = url;
-                                      link.setAttribute("download", "data_export.xlsx");
-                                      document.body.appendChild(link);
-                                      link.click();
-                                      document.body.removeChild(link);
-                                    })
-                                    .catch((error) => {
-                                      console.error("Error exporting data:", error);
-                                      alert("Failed to export data.");
-                                    });
-                                }}
-                              >
-                                Export
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+                          </>
+                        )}
+                        <TableCell align="center">
+                          <PatchStatus string={row.status} id={row.id} />
+                        </TableCell>
+                        {isMobile && (
+                          <TableCell align="center">
+                            <div
+                              className="flex justify-center items-center rounded-full p-2 cursor-pointer"
+                              onClick={() => handleDetailClick(row)} // Pass the row data
+                            >
+                              <InfoIcon className="text-blue-500 text-xl" />
+                            </div>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
 
+                {/* Modal */}
+                <Modal
+                  open={openModal}
+                  onClose={handleCloseModal}
+                  aria-labelledby="modal-title"
+                  aria-describedby="modal-description"
+                >
+                  <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
+                    <div className="w-96 h-auto bg-white rounded-2xl p-6 relative" style={{ paddingLeft: "2rem", paddingRight: "2rem" }}>
+                      {/* Close Button */}
+                      <IconButton
+                        onClick={handleCloseModal}
+                        className="absolute top-2 right-2 text-red-500"
+                      >
+                        <CloseIcon />
+                      </IconButton>
 
-            {/* Container 2 */}
+                      {/* Modal Content */}
+                      <div className="text-center mb-4 text-[#10284d] font-semibold text-lg">
+                        Attendance Details
+                      </div>
 
+                      {/* Details */}
+                      <div className="text-xs text-[#10284d] font-semibold mb-2">
+                        <span>Name: </span><span>{selectedRow?.nama || "admin1"}</span>
+                      </div>
+                      <div className="text-xs text-[#10284d] font-semibold mb-2">
+                        <span>Date: </span><span>{selectedRow?.date || "11/02/2025"}</span>
+                      </div>
+                      <div className="text-xs text-[#10284d] font-semibold mb-2">
+                        <span>Overtime: </span><span>{selectedRow?.overtime || "No"}</span>
+                      </div>
+                      <div className="text-xs text-[#10284d] font-semibold mb-2">
+                        <span>Clock In: </span><span>{selectedRow?.masuk || "-"}</span>
+                      </div>
+                      <div className="text-xs text-[#10284d] font-semibold mb-2">
+                        <span>Clock Out: </span><span>{selectedRow?.keluar || "-"}</span>
+                      </div>
+
+                      {/* Photo Section */}
+                      <div className="text-xs text-[#10284d] font-semibold mb-4">
+                        <span>Photo: </span>
+                        <div className="bg-[#d9d9d9] w-28 h-20">
+                          <img
+                            src={selectedRow?.fotomasuk}
+                            alt="Foto Masuk"
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Status Section */}
+                      <div className="flex items-center text-xs text-[#10284d] font-semibold mb-4">
+                        <span>Status: </span>
+                        <span className="ml-2">{selectedRow?.status || "Absent"}</span>
+                        {/* Dropdown arrow */}
+                        <svg width="13" height="7" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-2">
+                          <path d="M0 0L6.25 6.25L12.5 0H0Z" fill="#505050" />
+                        </svg>
+                      </div>
+
+                      {/* Export Button */}
+                      <div className="flex justify-center mt-4">
+                        <Button
+                          onClick={handleExcel}
+                          variant="contained"
+                          color="success"
+                          className="w-32 h-9 rounded-2xl text-white font-semibold"
+                        >
+                          Export
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Modal>
+
+              </Table>
+            </TableContainer>
           </div>
-          {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
 
-          <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
-            <DialogTitle>Setting Attendance Hours</DialogTitle>
-            <DialogContent>
-              <div className="flex space-x-1">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="flex my-2">
-                    <TimePicker
-                      label="Clock In"
-                      value={timeMasuk}
-                      onChange={(val) => {
-                        handleTimeChange(val, true);
-                      }}
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                </LocalizationProvider>
-                <div className="flex my-2">
-                  <TextField
-                    label="Tolerance (Minute)"
-                    type="number"
-                    value={selectedToleransi}
-                    onChange={(event) =>
-                      handleToleransiChange(
-                        parseInt(event.target.value)
-                      )
-                    }
-                  />
-                </div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="flex my-2">
-                    <TimePicker
-                      label="Clock Out"
-                      value={timeKeluar}
-                      onChange={(val) => {
-                        handleTimeChange(val, false);
-                      }}
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                </LocalizationProvider>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={handleTimeSave}
-                size="small"
-                style={{ backgroundColor: "#204684" }}
-                variant="contained"
-              >
-                <p>Save</p>
-              </Button>
-              <Button
-                onClick={closeTimeSetting}
-                style={{ backgroundColor: "#F&FAFC" }}
-                size="small"
-                variant="outlined"
-              >
-                <p className="bg-gray-100">Close</p>
-              </Button>
-            </DialogActions>
-          </Dialog>
-          {selectedPhoto && (
-            <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
-              <DialogContent className="relative flex flex-col items-center p-4">
-                <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                  onClick={() => setSelectedPhoto(null)}
-                >
-                  <Close fontSize="large" />
-                </button>
-                <img
-                  src={selectedPhoto}
-                  alt="Preview"
-                  className="max-w-full max-h-[80vh] rounded-lg"
-                />
-                <Button
-                  className="mt-4"
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href = selectedPhoto;
-                    link.download = "photo.jpg";
-                    link.click();
-                  }}
-                >
-                  Download Photo
-                </Button>
-              </DialogContent>
-            </Dialog>
-          )}
 
+          {/* Container 2 */}
 
         </div>
+        {isHolidayOpen && <SettingHoliday onClose={closeHolidaySetting} />}
+
+        <Dialog open={isTimeSettingOpen} onClose={closeTimeSetting}>
+          <DialogTitle>Setting Attendance Hours</DialogTitle>
+          <DialogContent>
+            <div className="flex space-x-1">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="flex my-2">
+                  <TimePicker
+                    label="Clock In"
+                    value={timeMasuk}
+                    onChange={(val) => {
+                      handleTimeChange(val, true);
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </LocalizationProvider>
+              <div className="flex my-2">
+                <TextField
+                  label="Tolerance (Minute)"
+                  type="number"
+                  value={selectedToleransi}
+                  onChange={(event) =>
+                    handleToleransiChange(
+                      parseInt(event.target.value)
+                    )
+                  }
+                />
+              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="flex my-2">
+                  <TimePicker
+                    label="Clock Out"
+                    value={timeKeluar}
+                    onChange={(val) => {
+                      handleTimeChange(val, false);
+                    }}
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </LocalizationProvider>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleTimeSave}
+              size="small"
+              style={{ backgroundColor: "#204684" }}
+              variant="contained"
+            >
+              <p>Save</p>
+            </Button>
+            <Button
+              onClick={closeTimeSetting}
+              style={{ backgroundColor: "#F&FAFC" }}
+              size="small"
+              variant="outlined"
+            >
+              <p className="bg-gray-100">Close</p>
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {selectedPhoto && (
+          <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
+            <DialogContent className="relative flex flex-col items-center p-4">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                onClick={() => setSelectedPhoto(null)}
+              >
+                <Close fontSize="large" />
+              </button>
+              <img
+                src={selectedPhoto}
+                alt="Preview"
+                className="max-w-full max-h-[80vh] rounded-lg"
+              />
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = selectedPhoto;
+                  link.download = "photo.jpg";
+                  link.click();
+                }}
+              >
+                Download Photo
+              </Button>
+            </DialogContent>
+          </Dialog>
+        )}
+
+
       </div>
+    </div>
     </div >
 
   );

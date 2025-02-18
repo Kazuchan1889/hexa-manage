@@ -34,7 +34,8 @@ import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DownloadIcon from "@mui/icons-material/Download";
-import NavbarUser from "../feature/Headbar";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import Sidebar from "../feature/Sidebar";
 
 
@@ -300,26 +301,28 @@ const TableApprovalizin = () => {
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-      <div className="flex flex-col flex-1 overflow-auto">
-        <NavbarUser />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg  h-48">
           <h1 className="text-2xl font-bold">Permit Aproval Data</h1>
           <div className="mt-4 flex justify-center items-center mr-12 space-x-4">
+            {/* Button with Outline */}
             {/* Button with Outline */}
             <Button
               size="small"
               variant="outlined"
               onClick={(event) => handleMenuOpen(event)}
               style={{ borderColor: "white", color: "white" }}
-              className={`${isMobile ? "w-24 h-6 text-[5px]" : "w-100 h-6"}`}
+              className={`${isMobile ? "w-20 h-5 text-[4px]" : "w-100 h-6 text-[14px]"}`}
             >
               {reportType === "approval" ? (
-                <Typography variant="button">Approval</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8px' : '14px' }}>Approval</Typography>
               ) : (
-                <Typography variant="button">History</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8x' : '14px' }}>History</Typography>
               )}
             </Button>
+
 
 
             <Menu

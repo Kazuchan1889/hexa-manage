@@ -25,7 +25,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DescriptionIcon from "@mui/icons-material/Description";
 import axios from "axios";
 import ip from "../ip"; // Sesuaikan path ini sesuai dengan struktur proyek Anda
-import NavbarUser from "../feature/Headbar";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import Sidebar from "../feature/Sidebar";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
@@ -193,8 +194,8 @@ const TableLaporanKegiatan = () => {
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-      <div className="flex flex-col flex-1 overflow-auto">
-        <NavbarUser />
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
           <h1 className="text-2xl ml-2 font-bold">Employe Report</h1>

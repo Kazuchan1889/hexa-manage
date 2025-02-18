@@ -3,9 +3,11 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import Swal from "sweetalert2";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import NavbarUser from "../feature/NavbarUser";
+
 import axios from "axios";
 import ip from "../ip";  // Import the IP configuration
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import Sidebar from "../feature/Sidebar";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -147,7 +149,7 @@ const LocationPickerPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto">
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48">
           <h1 className="text-2xl font-bold">Geo Tech</h1>
@@ -183,7 +185,7 @@ const LocationPickerPage = () => {
                 )}
               </div>
 
-            </div>  
+            </div>
 
 
             <div className="w-full lg:w-2/3 rounded-r-xl py-2 sm:p-4 md:p-6 bg-white flex flex-col min-w-0">
