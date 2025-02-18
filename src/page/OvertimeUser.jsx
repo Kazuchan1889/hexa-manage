@@ -350,10 +350,10 @@ const OvertimeUser = () => {
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       <Sidebar isMobile={isMobile} />
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+      <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
-        <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
+        <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 ">
           <h1 className="text-2xl ml-2 font-bold">Overtime User</h1>
           <div className="mt-4 flex justify-center items-center relative w-full">
 
@@ -399,8 +399,8 @@ const OvertimeUser = () => {
 
 
 
-          <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full mt-12">
-            <Card className="w-[90%]">
+          <div className="flex flex-col justify-between items-center rounded-[15px] mx-auto drop-shadow-xl w-full mt-12">
+            <Card className="w-full">
               <CardContent>
                 <div className="flex gap-4 align-right justify-end mx-2">
                   <h3 className="font-semibold">Overtime Hours : {overtimeHours} Hours</h3>

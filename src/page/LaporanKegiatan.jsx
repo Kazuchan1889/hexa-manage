@@ -271,21 +271,20 @@ function LaporanKegiatan() {
   };
 
   return (
-    <div className="flex flex-col mr-10 bg-white lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+      <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
           <h1 className="text-2xl font-bold text-center">Activity Report</h1>
           <div className="h-full w-full mx-auto">
-            <div className="flex flex-col justify-between items-center ">
-              <div className="w-full  max-w-[1107px] ml-40  flex justify-center gap-3">
-                <div className="flex flex-col justify-between items-center mt-3">
+            <div className="flex flex-col justify-between items-center">
+                <div className="w-full flex flex-col justify-between items-center mt-3">
                   {/* Form */}
                   <form
                     onSubmit={handleSubmit}
-                    className="w-[113%] mt-16 mr-32 h-8/12 rounded-[15px] flex flex-col justify-center bg-card p-5"
+                    className="w-full mt-16 h-8/12 rounded-[15px] flex flex-col justify-center bg-card p-5"
                   >
                     {uploadAlert && (
                       <Alert
@@ -484,7 +483,7 @@ function LaporanKegiatan() {
                   </form>
 
                   {/* Table */}
-                  <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+                  <div className="w-full mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
                     <div className="w-full">
                       <div className="flex justify-between">
                       </div>
@@ -550,7 +549,7 @@ function LaporanKegiatan() {
 
                     </div>
                     {!isMobile && (
-                      <div className="flex w-11/12 items-end justify-end">
+                      <div className="flex w-full items-end justify-end">
                         <TablePagination
                           rowsPerPageOptions={[5, 10, 15]}
                           variant="body2"
@@ -656,7 +655,7 @@ function LaporanKegiatan() {
                     </DialogActions>
                   </Dialog>
                 </div>
-              </div>
+              
             </div>
           </div>
         </div>

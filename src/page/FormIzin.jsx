@@ -295,7 +295,7 @@ function FormIzin() {
   }, []);
 
   return (
-    <div className="w-full  ml-32 max-w-screen-lg h-fit flex flex-col md:flex-row items-center">
+    <div className="w-full h-fit flex flex-col justify-center items-center">
       {loading ? (
         <div className="w-full h-full flex justify-center items-center">
           <CircularProgress />
@@ -316,7 +316,7 @@ function FormIzin() {
             )}
             <form
               onSubmit={handleSubmit}
-              className="w-[113%] mr-32 h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-5"
+              className="w-full h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-5"
             >
               <Grid container spacing={2}>
                 {/* Alasan */}
@@ -448,7 +448,7 @@ function FormIzin() {
               </div>
             </form>
             
-            <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+            <div className="w-full mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
               <div className="w-full">
                 <div className="flex justify-between">
                   <Typography variant="h6" id="history-modal-title">
@@ -607,7 +607,7 @@ function FormIzin() {
             </div>
 
 
-            <div className="flex w-11/12 items-end justify-end">
+            <div className="flex w-full items-end justify-end p-3">
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
                 variant="body2"

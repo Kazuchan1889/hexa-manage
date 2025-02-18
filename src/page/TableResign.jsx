@@ -137,8 +137,8 @@ const TableResign = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+      <div className="flex flex-col flex-1 overflow-auto">
         <NavbarUser />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">

@@ -238,9 +238,9 @@ const TablePayroll = () => {
   ];
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-y-auto">
-      <NavbarUser />
-      <div className="flex w-full justify-center">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+      <div className="flex flex-col flex-1 overflow-auto">
         <div className="flex w-[90%] items-start justify-start my-2">
           <Typography variant="h5" style={{ fontWeight: 600 }}>
             Payroll Data

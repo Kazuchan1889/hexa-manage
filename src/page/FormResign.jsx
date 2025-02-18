@@ -160,166 +160,163 @@ function FormResign() {
   }, []);
 
   return (
-    <div className="flex flex-col mr-10 bg-white lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       <Sidebar isMobile={isMobile} />
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+      <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
           <h1 className="text-2xl font-bold text-center">Form Resign</h1>
-
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-between items-center ">
-              <div className="w-full  max-w-[1107px] ml-40  flex justify-center gap-3">
-                <div className="flex flex-col justify-between items-center mt-3">
-                  {/* Form */}
-                  <form
-                    onSubmit={handleSubmit}
-                    className="w-[113%] mt-16 mr-32 h-8/12 rounded-[15px] flex flex-col justify-center bg-card p-5"
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <TextField
-                          size="small"
-                          id="alasan"
-                          name="alasan"
-                          label="Alasan"
-                          variant="outlined"
-                          fullWidth
-                          className="mb-2"
-                          value={formData.alasan}
-                          onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          size="small"
-                          name="tanggalkeluar"
-                          label="Tanggal Resign"
-                          variant="outlined"
-                          type="date"
-                          fullWidth
-                          className="mb-2"
-                          value={formData.tanggalkeluar}
-                          onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          InputProps={{
-                            placeholder: "",
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                    <div className="mt-5">
-                      <Button
-                        type="submit"
+              <div className="flex w-full flex-col justify-between items-center mt-3">
+                {/* Form */}
+                <form
+                  onSubmit={handleSubmit}
+                  className="w-full mt-16 h-8/12 rounded-[15px] flex flex-col justify-center bg-card p-4"
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <TextField
                         size="small"
-                        variant="contained"
-                        color="primary"
+                        id="alasan"
+                        name="alasan"
+                        label="Alasan"
+                        variant="outlined"
                         fullWidth
-                        disabled={!isFormValid}
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </form>
-
-                  {/* Table */}
-                  <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
-                    <div className="w-full">
-                      <div className="flex justify-between">
-                      </div>
-                      <TableContainer
-                        className="rounded-md max-h-56 overflow-y-auto"
-                        component={Paper}
-                      >
-                        <Table size="small">
-                          <TableHead style={{ backgroundColor: "#204684" }}>
-                            <TableRow>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  className="text-white flex justify-center"
-                                  style={{ fontWeight: "bold" }}
-                                >
-                                  Alasan
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  className="text-white flex justify-center"
-                                  style={{ fontWeight: "bold" }}
-                                >
-                                  Tanggal Mengajukan
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography
-                                  variant="body2"
-                                  className="text-white flex justify-center"
-                                  style={{ fontWeight: "bold" }}
-                                >
-                                  Tanggal Resign
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {tableData
-                              .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                              .map((row, index) => (
-                                <TableRow key={index}>
-                                  <TableCell className="w-1/3">
-                                    <Typography
-                                      variant="body2"
-                                      className="text-center"
-                                    >
-                                      {row.alasan}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="w-1/3">
-                                    <Typography
-                                      variant="body2"
-                                      className="text-center"
-                                    >
-                                      {row.tanggalmengajukan}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="w-1/3">
-                                    <Typography
-                                      variant="body2"
-                                      className="text-center"
-                                    >
-                                      {row.tanggalkeluar}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-
-                    </div>
-                    {!isMobile && (
-                      <div className="flex w-11/12 items-end justify-end">
-                        <TablePagination
-                          rowsPerPageOptions={[5, 10, 15]}
-                          variant="body2"
-                          component="div"
-                          count={tableData.length}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      </div>
-                    )}
+                        className="mb-2"
+                        value={formData.alasan}
+                        onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        size="small"
+                        name="tanggalkeluar"
+                        label="Tanggal Resign"
+                        variant="outlined"
+                        type="date"
+                        fullWidth
+                        className="mb-2"
+                        value={formData.tanggalkeluar}
+                        onChange={handleInputChange} // pastikan onChange memanggil handleInputChange
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        InputProps={{
+                          placeholder: "",
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <div className="mt-5">
+                    <Button
+                      type="submit"
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      disabled={!isFormValid}
+                    >
+                      Submit
+                    </Button>
                   </div>
+                </form>
+
+                {/* Table */}
+                <div className="w-full mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-4">
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                    </div>
+                    <TableContainer
+                      className="rounded-md overflow-y-auto"
+                      component={Paper}
+                    >
+                      <Table size="small">
+                        <TableHead style={{ backgroundColor: "#204684" }}>
+                          <TableRow>
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                className="text-white flex justify-center"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Alasan
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                className="text-white flex justify-center"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Tanggal Mengajukan
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography
+                                variant="body2"
+                                className="text-white flex justify-center"
+                                style={{ fontWeight: "bold" }}
+                              >
+                                Tanggal Resign
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {tableData
+                            .slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                            .map((row, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="w-1/3">
+                                  <Typography
+                                    variant="body2"
+                                    className="text-center"
+                                  >
+                                    {row.alasan}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="w-1/3">
+                                  <Typography
+                                    variant="body2"
+                                    className="text-center"
+                                  >
+                                    {row.tanggalmengajukan}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="w-1/3">
+                                  <Typography
+                                    variant="body2"
+                                    className="text-center"
+                                  >
+                                    {row.tanggalkeluar}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                  </div>
+                  {!isMobile && (
+                    <div className="flex w-11/12 items-end justify-end">
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 15]}
+                        variant="body2"
+                        component="div"
+                        count={tableData.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

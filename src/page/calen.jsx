@@ -283,8 +283,8 @@ const CalendarComponent = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto">
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+      <div className="flex flex-col flex-1 overflow-auto">
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48">
           <h1 className="text-2xl font-bold">Schedjule</h1>
           <div className="mt-4 flex justify-end items-center w-full pr-4 sm:pr-16">

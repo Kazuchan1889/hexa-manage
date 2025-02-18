@@ -418,9 +418,9 @@ const TableAbsen = () => {
   };
 
   return (
-    <div className="flex flex-col mr-10 bg-white lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+      <div className="flex flex-col flex-1 overflow-auto">
         <div className="min-h-screen bg-gray-100">
           {/* Container 1 */}
           <div className="bg-[#11284E] text-white p-6  shadow-lg h-72">

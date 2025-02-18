@@ -252,17 +252,17 @@ function FormCuti() {
   }, []);
 
   return (
-    <div className="w-full  ml-32 max-w-screen-lg h-fit flex flex-col md:flex-row items-center">
+    <div className="w-full h-fit flex flex-col md:flex-row items-center">
       {loading ? (
         <div className="w-full h-full flex justify-center items-center">
           <CircularProgress />
         </div>
       ) : (
         <div className="h-full w-full mx-auto">
-          <div className="flex flex-col justify-between items-center ">
+          <div className="flex flex-col items-center ">
             <form
               onSubmit={handleSubmit}
-              className="w-[113%] mr-32 h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-5"
+              className="w-full h-8/12 rounded-b-[15px] flex flex-col justify-center bg-card p-4"
             >
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -361,9 +361,7 @@ function FormCuti() {
                 </Button>
               </div>
             </form>
-
-
-            <div className="w-[113%] mr-32 ml-0 mt-3 mr-20 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+            <div className="w-full flex flex-col justify-center items-center mx-auto rounded-md bg-card p-4">
               <div className="w-full">
                 <div className="flex justify-between">
                   <Typography variant="h6" id="history-modal-title">
@@ -506,7 +504,7 @@ function FormCuti() {
             </div>
 
 
-            <div className="flex w-11/12 items-end justify-end">
+            <div className="flex w-full px-3 items-end justify-end">
               <TablePagination
                 rowsPerPageOptions={[5, 10, 15]}
                 variant="body2"

@@ -2,7 +2,7 @@
 //  const ip = "https://f628-117-54-99-215.ngrok-free.app";
   //  const ip = "http://192.168.1.27:3000";
   //  const ip = "http://192.168.4.236:3000";
-  //  const ip = "http://192.168.1.166:3000";
+  //  const ip = "http://192.168.4.42:3000";
 
 
 // const ip = "https://hrhexaon.hexaoncloud.com";
