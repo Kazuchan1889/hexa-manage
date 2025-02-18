@@ -70,6 +70,8 @@ const Headb = () => {
   const [isRotating, setIsRotating] = useState(false);
   const [uniqueIdkCount, setUniqueIdkCount] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [cutiCount, setCutiCount] = useState(0);
+  const [izinCount, setIzinCount] = useState(0);
 
 
 
@@ -288,36 +290,46 @@ const Headb = () => {
   const handleClickr = () => {
     navigate('/aptes');
   };
-
-  const fetchAbsensiList = async () => {
+//buat itung merah auo uo
+  const fetchData = async () => {
     try {
       const headers = {
         Authorization: localStorage.getItem("accessToken"),
       };
 
-      console.log("Fetching absensi list with headers:", headers);
+      console.log("Fetching data with headers:", headers);
 
-      const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
-      console.log("Response from absensi list:", response.data);
+      // Fetch Absensi data
+      const absensiResponse = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+      console.log("Response from absensi list:", absensiResponse.data);
 
-      setAbsensiList(response.data); // Menyimpan data absensi ke state
-
-      // Memfilter data dengan status selain "approve"
-      const filteredData = response.data.filter(item => item.status !== true);
-
-      // Menghitung jumlah nama unik dari data yang sudah difilter
-      const uniqueNames = new Set(filteredData.map((item) => item.nama));
+      // Filter data with status not equal to "approve"
+      const filteredAbsensiData = absensiResponse.data.filter(item => item.status !== true);
+      const uniqueNames = new Set(filteredAbsensiData.map((item) => item.nama));
       console.log("Unique nama count (excluding approve):", uniqueNames.size);
 
-      setUniqueIdkCount(uniqueNames.size); // Simpan jumlah nama unik ke state
-    } catch (error) {
-      console.error("Error fetching absensi:", error);
-    } finally {
-      setLoading(false);
-    }
+      setUniqueIdkCount(uniqueNames.size); // Set the unique count to state
 
-  fetchAbsensiList();
-  }
+      // Fetch Cuti and Izin data
+      const cutiResponse = await axios.get(`${ip}/api/pengajuan/get/cuti/self`, { headers });
+      const cutiData = cutiResponse.data.filter(item => item.status === null);
+      setCutiCount(cutiData.length); // Set the count for Cuti
+
+      const izinResponse = await axios.get(`${ip}/api/pengajuan/get/izin/self`, { headers });
+      const izinData = izinResponse.data.filter(item => item.status === null);
+      setIzinCount(izinData.length); // Set the count for Izin
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Set loading state to false once data is fetched
+    }
+  };
+
+  // Fetch all data when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -339,20 +351,19 @@ const Headb = () => {
             )} */}
       </div>
 
-      <div className="flex items-center ">
+      <div className="flex items-center">
         {/* Notification Icon */}
-        <IconButton onClick={handleClickr}>
+        <IconButton onClick={handleClickr} className="relative">
           <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
-          {uniqueIdkCount > 0 && (
-            <span className="absolute top-3 right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
-              {uniqueIdkCount}
+          {uniqueIdkCount + cutiCount + izinCount > 0 && (
+            <span className="absolute top-1 right-1 bg-red-500 text-white rounded-full text-sm w-4 h-4 flex items-center justify-center">
+              {uniqueIdkCount + cutiCount + izinCount}
             </span>
           )}
         </IconButton>
 
         {/* Settings Dropdown */}
 
-        {/* Icon Button */}
         <IconButton
           ref={anchorRef}
           aria-controls={menuOpen ? "menu-list-grow" : undefined}

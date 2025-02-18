@@ -7,27 +7,38 @@ import { Button, Menu, MenuItem, Typography, Table, TableBody, TableCell, TableC
 
 const AbsensiPage = () => {
   const [absensiList, setAbsensiList] = useState([]);
+  const [cutiData, setCutiData] = useState([]);
+  const [izinData, setIzinData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showHistory, setShowHistory] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [reportType, setReportType] = useState("approval");
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const headers = {
     Authorization: localStorage.getItem("accessToken"),
   };
 
   useEffect(() => {
-    const fetchAbsensiList = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
-        setAbsensiList(response.data);
+        // Fetch Absensi List
+        const absensiResponse = await axios.get(`${ip}/api/weekendabsensi/get/list`, { headers });
+        setAbsensiList(absensiResponse.data);
+
+        // Fetch Cuti Data
+        const cutiResponse = await axios.get(`${ip}/api/pengajuan/get/cuti/self`, { headers });
+        setCutiData(cutiResponse.data);
+
+        // Fetch Izin Data
+        const izinResponse = await axios.get(`${ip}/api/pengajuan/get/izin/self`, { headers });
+        setIzinData(izinResponse.data);
       } catch (error) {
-        console.error("Error fetching absensi:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchAbsensiList();
+
+    fetchData();
   }, []);
 
   const handleApproval = async (id, status) => {
@@ -67,9 +78,14 @@ const AbsensiPage = () => {
     handleMenuClose();
   };
 
+  // Filter absensi berdasarkan approval status
   const filteredAbsensi = reportType === "approval"
-    ? absensiList.filter((item) => !item.status)
-    : absensiList.filter((item) => item.status);
+    ? absensiList.filter((item) => !item.status) // Menampilkan yang masih pending
+    : absensiList.filter((item) => item.status); // Menampilkan yang sudah disetujui
+
+  // Filter cuti dan izin untuk approval (status == null)
+  const filteredCuti = reportType === "approval" ? cutiData.filter((item) => item.status === null) : [];
+  const filteredIzin = reportType === "approval" ? izinData.filter((item) => item.status === null) : [];
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
@@ -77,7 +93,7 @@ const AbsensiPage = () => {
       <div className="w-full min-h-screen bg-gray-100 overflow-auto">
         <Head />
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 flex justify-between items-center px-10">
-          <h1 className="text-2xl ml-20 font-bold text-center flex-1">Weekend absance</h1>
+          <h1 className="text-2xl ml-20 font-bold text-center flex-1">Weekend Absence</h1>
           <Button variant="outlined" onClick={handleMenuOpen} style={{ borderColor: "white", color: "white" }}>
             <Typography variant="button">{reportType === "approval" ? "Approval" : "History"}</Typography>
           </Button>
@@ -99,6 +115,7 @@ const AbsensiPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {/* Absensi */}
                 {filteredAbsensi.length > 0 ? (
                   filteredAbsensi.map((item, index) => (
                     <TableRow key={index}>
@@ -124,13 +141,49 @@ const AbsensiPage = () => {
                     </TableCell>
                   </TableRow>
                 )}
+
+                {/* Izin - Only for Approval */}
+                {filteredIzin.length > 0 && filteredIzin.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell align="center">{item.nama}</TableCell>
+                    <TableCell align="center">{item.alasan}</TableCell>
+                    <TableCell align="center">{formatDate(item.mulai)}</TableCell>
+                    <TableCell align="center">Pending</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        onClick={() => window.location.href = '/masterizin'}
+                      >
+                        Detail
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+                {/* Cuti - Only for Approval */}
+                {filteredCuti.length > 0 && filteredCuti.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell align="center">{item.nama}</TableCell>
+                    <TableCell align="center">{item.alasan}</TableCell>
+                    <TableCell align="center">{formatDate(item.mulai)}</TableCell>
+                    <TableCell align="center">Pending</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        onClick={() => window.location.href = '/mastercuti'}
+                      >
+                        Detail
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
               </TableBody>
             </Table>
           </TableContainer>
         </div>
       </div>
     </div>
-
   );
 };
 

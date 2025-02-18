@@ -313,7 +313,7 @@ const CalendarComponent = () => {
 
           <div className="container mx-auto px-2 sm:px-4 mt-6 flex flex-col lg:flex-row min-h-[580px] overflow-hidden">
             <div className="w-full lg:w-1/3 p-4 sm:p-6 rounded-l-xl bg-[#DFEBFE] border-b lg:border-b-0 lg:border-r border-gray-200 flex justify-center">
-              <div className="scale-100 sm:scale-125 transform translate-y-20 sm:translate-y-28">
+              <div className={`scale-100 sm:scale-125 transform ${isMobile ? 'translate-y-2' : 'translate-y-20 sm:translate-y-28'}`}>
                 <DatePicker
                   selected={selectedDate}
                   onChange={handleDateChange}
@@ -323,6 +323,7 @@ const CalendarComponent = () => {
                 />
               </div>
             </div>
+
 
             <div className="w-full lg:w-2/3 rounded-r-xl p-2 sm:p-4 md:p-6 bg-white flex flex-col min-w-0">
               <div className="flex justify-between items-center mb-2 sm:mb-4">
