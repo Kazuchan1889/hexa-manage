@@ -69,6 +69,7 @@ const Headb = () => {
   const navigate = useNavigate();
   const [isRotating, setIsRotating] = useState(false);
   const [uniqueIdkCount, setUniqueIdkCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
 
 
@@ -317,6 +318,14 @@ const Headb = () => {
 
   fetchAbsensiList();
   }
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  if (isMobile) return null; // Menyembunyikan komponen jika isMobile true
 
   console.log("Total unique nama count:", uniqueIdkCount);
 

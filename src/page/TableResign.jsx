@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -18,6 +17,8 @@ import ip from "../ip";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
 import Sidebar from "../feature/Sidebar";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const TableResign = () => {
@@ -137,9 +138,9 @@ const TableResign = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
-        <NavbarUser />
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
           <h1 className="text-2xl font-bold">Resign</h1>

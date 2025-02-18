@@ -310,12 +310,13 @@ const TableApprovalCuti = () => {
               size="small"
               variant="outlined"
               onClick={(event) => handleMenuOpen(event)}
-              style={{ borderColor: "white", color: "white" }} // Outline white and text white
+              style={{ borderColor: "white", color: "white" }}
+              className={`${isMobile ? "w-20 h-5 text-[4px]" : "w-100 h-6 text-[14px]"}`}
             >
               {reportType === "approval" ? (
-                <Typography variant="button">Approval</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8px' : '14px' }}>Approval</Typography>
               ) : (
-                <Typography variant="button">History</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8x' : '14px' }}>History</Typography>
               )}
             </Button>
             <Menu

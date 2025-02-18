@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import NavbarUser from "../feature/Headbar";
 import Typography from "@mui/material/Typography";
 import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
@@ -31,6 +30,8 @@ import ActionButton from "../feature/ActionButton";
 import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import Formovertime from "../page/Formovertime";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/NavbarUser";
 import Sidebar from "../feature/Sidebar";
 
 const TableOverTime = () => {
@@ -279,9 +280,9 @@ const TableOverTime = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar isMobile={isMobile} />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
-        <NavbarUser />
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
           <h1 className="text-2xl ml-5 font-bold">Overtime Aproval Data</h1>
@@ -291,12 +292,13 @@ const TableOverTime = () => {
               size="small"
               variant="outlined"
               onClick={(event) => handleMenuOpen(event)}
-              style={{ borderColor: "white", color: "white" }} // Outline white and text white
+              style={{ borderColor: "white", color: "white" }}
+              className={`${isMobile ? "w-20 h-5 text-[4px]" : "w-100 h-6 text-[14px]"}`}
             >
               {reportType === "approval" ? (
-                <Typography variant="button">Approval</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8px' : '14px' }}>Approval</Typography>
               ) : (
-                <Typography variant="button">History</Typography>
+                <Typography variant="button" style={{ fontSize: isMobile ? '8px' : '14px' }}>History</Typography>
               )}
             </Button>
             <Menu
