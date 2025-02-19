@@ -40,7 +40,7 @@ import {
   Grow,
   Modal,
 } from "@mui/material";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
 import { Close } from "@mui/icons-material";

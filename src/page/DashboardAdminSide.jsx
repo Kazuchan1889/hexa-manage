@@ -191,7 +191,7 @@ function DashboardAdminSide() {
 
     return (
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-            <Sidebar isMobile={isMobile} />
+            {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
             <div className="flex flex-col flex-1 overflow-auto">
                 <Headb />
                 <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">

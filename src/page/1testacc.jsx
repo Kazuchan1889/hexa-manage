@@ -4,6 +4,8 @@ import ip from "../ip";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
 import { Button, Menu, MenuItem, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import NavbarUser from "../feature/NavbarUser";
+
 
 const AbsensiPage = () => {
   const [absensiList, setAbsensiList] = useState([]);
@@ -12,6 +14,7 @@ const AbsensiPage = () => {
   const [loading, setLoading] = useState(true);
   const [reportType, setReportType] = useState("approval");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   const headers = {
     Authorization: localStorage.getItem("accessToken"),
@@ -87,9 +90,15 @@ const AbsensiPage = () => {
   const filteredCuti = reportType === "approval" ? cutiData.filter((item) => item.status === null) : [];
   const filteredIzin = reportType === "approval" ? izinData.filter((item) => item.status === null) : [];
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-      <Sidebar />
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto">
         <Head />
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 flex justify-between items-center px-10">
