@@ -26,7 +26,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import axios from "axios";
 import ip from "../ip"; // Sesuaikan path ini sesuai dengan struktur proyek Anda
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";

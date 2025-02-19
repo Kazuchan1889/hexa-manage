@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 
 function FormResign() {
   const [isModalOpen, setIsModalOpen] = useState(false);

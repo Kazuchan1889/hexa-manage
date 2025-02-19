@@ -4,7 +4,7 @@ import ip from "../ip";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
 import { Button, Menu, MenuItem, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 
 
 const AbsensiPage = () => {

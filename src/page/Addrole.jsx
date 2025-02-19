@@ -28,7 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
 
@@ -103,6 +103,12 @@ const RoleManage = () => {
             console.error("Error adding role:", error);
         }
     };
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
 
     const handleSearchChange = (event) => {
         const query = event.target.value;

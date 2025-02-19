@@ -24,7 +24,7 @@ import {
   Alert,
 } from "@mui/material";
 import { CheckCircle as CheckCircleIcon } from "@mui/icons-material";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import ip from "../ip";
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";

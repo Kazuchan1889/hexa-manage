@@ -4,7 +4,7 @@ import FormCuti from './FormCuti';
 import FormIzin from './FormIzin';
 import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 
 function App() {
   const [selectedForm, setSelectedForm] = useState('cuti');

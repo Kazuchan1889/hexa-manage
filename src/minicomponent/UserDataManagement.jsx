@@ -32,8 +32,10 @@ import MenuItem from "@mui/material/MenuItem";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
 import Loading from "../page/Loading"; // Importing Loading component
-import NavbarUser from "../feature/Headbar";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
+
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const TableDataKaryawan = () => {
@@ -220,7 +222,7 @@ const TableDataKaryawan = () => {
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="flex flex-col flex-1 overflow-auto">
-        <NavbarUser />
+        <Head />
         {/* Center Content with Search Bar and Buttons */}
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48">
           <h1 className="text-2xl font-bold">User Data</h1>

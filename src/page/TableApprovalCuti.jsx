@@ -34,7 +34,7 @@ import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 
 
 const TableApprovalCuti = () => {

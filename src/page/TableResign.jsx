@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
 import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 
 const TableResign = () => {

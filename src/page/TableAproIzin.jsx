@@ -35,7 +35,7 @@ import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import DownloadIcon from "@mui/icons-material/Download";
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 
 

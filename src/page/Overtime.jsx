@@ -31,7 +31,7 @@ import SettingJatahCuti from "../feature/SettingJatahCuti";
 import SettingJadwalCuti from "../feature/SettingJadwalCuti";
 import Formovertime from "../page/Formovertime";
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 
 const TableOverTime = () => {
