@@ -108,7 +108,7 @@ const RoleManage = () => {
         const handleResize = () => setIsMobile(window.innerWidth <= 1024);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
-      }, []);
+    }, []);
 
     const handleSearchChange = (event) => {
         const query = event.target.value;
@@ -218,9 +218,9 @@ const RoleManage = () => {
             <div className="flex flex-col flex-1 overflow-auto">
                 <Head />
                 {/* Center Content with Search Bar and Buttons */}
-                <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
-                    <h1 className="text-2xl ml-2 font-bold">Overtime User</h1>
-                    <div className="mt-4 flex justify-center items-center relative w-full">
+                <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 ">
+                    <h1 className="text-2xl ml-2 font-bold">Role Managment</h1>
+                    <div className={`mt-4 flex ${isMobile ? 'flex-col items-center relative w-full' : 'justify-center items-center relative w-full'}`}>
 
                         {/* Search Bar */}
                         <div className="relative w-full max-w-lg">
@@ -230,8 +230,7 @@ const RoleManage = () => {
                                 value={search}
                                 onChange={handleSearchChange}
                                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
-            ${isMobile ? "w-68 h-6" : "w-80 h-10"}`}
+                                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black ${isMobile ? "w-68 h-6" : "w-80 h-10"}`}
                             />
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg
@@ -250,15 +249,14 @@ const RoleManage = () => {
 
                         {/* Request Button */}
                         <button
-                            className="w-[115px] h-[33px] bg-white text-black rounded-full shadow flex items-center justify-center space-x-2 absolute right-20"
+                            className={`w-[115px] h-[33px] bg-white text-black rounded-full shadow flex items-center justify-center space-x-2 ${isMobile ? 'mt-4 self-end' : 'absolute right-20'}`}
                             size="small"
                             variant="contained"
                             style={{ backgroundColor: "#FFFFFF" }}
-                            onClick={handleOpenAddRole}
-
+                            onClick={() => setTambahFormOpen(true)}
                         >
                             <AddIcon className="text-[#055817] w-4 h-4" />
-                            <span className="text-sm font-medium">Add Role</span>
+                            <span className="text-sm font-medium">REQUEST</span>
                         </button>
 
                     </div>

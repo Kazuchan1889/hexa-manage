@@ -7,7 +7,7 @@ import L from "leaflet";
 import axios from "axios";
 import ip from "../ip";  // Import the IP configuration
 import Head from "../feature/Headbar";
-import NavbarUser from "../feature/NavbarUser";
+import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import LocationOnIcon from '@mui/icons-material/LocationOn';

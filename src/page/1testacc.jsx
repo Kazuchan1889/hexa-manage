@@ -102,7 +102,7 @@ const AbsensiPage = () => {
       <div className="w-full min-h-screen bg-gray-100 overflow-auto">
         <Head />
         <div className="bg-[#11284E] text-white p-6 shadow-lg h-48 flex justify-between items-center px-10">
-          <h1 className="text-2xl ml-20 font-bold text-center flex-1">Weekend Absence</h1>
+          <h1 className="text-2xl ml-20 font-bold text-center flex-1">Notification</h1>
           <Button variant="outlined" onClick={handleMenuOpen} style={{ borderColor: "white", color: "white" }}>
             <Typography variant="button">{reportType === "approval" ? "Approval" : "History"}</Typography>
           </Button>
