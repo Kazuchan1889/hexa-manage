@@ -37,6 +37,18 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
+import { Info as InfoIcon} from "@mui/icons-material";
+import { useMediaQuery } from "@mui/material";
+import {
+ 
+ 
+ 
+ 
+ 
+  Modal,
+  Box,
+} from "@mui/material";
+
 
 
 const TableApprovalizin = () => {
@@ -51,7 +63,8 @@ const TableApprovalizin = () => {
   const [reportType, setReportType] = useState("approval");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [data, setData] = useState(null);
-
+  const [open, setOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const dispatch = useDispatch(); // Initialize Redux dispatch
   const loading = useSelector((state) => state.loading.isLoading); // Access loading state
 
@@ -297,6 +310,16 @@ const TableApprovalizin = () => {
     );
   }
 
+  const handleOpenModal = (row) => {
+    setSelectedRow(row);
+    setOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpen(false);
+    setSelectedRow(null);
+  };
+
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
@@ -377,15 +400,22 @@ const TableApprovalizin = () => {
 
 
           <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
-              <Table aria-label="simple table" size="small">
-                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
-                  <TableCell align="center" className="w-[10%]">
-                    <p className="text-indigo font-semibold">Name</p>
-                  </TableCell>
-                  <TableCell align="center" className="w-[14%]">
-                    <p className="text-indigo font-semibold">Start Date</p>
-                  </TableCell>
+          <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+        <Table aria-label="simple table" size="small">
+          <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+            <TableRow>
+              <TableCell align="center" className="w-[10%]">
+                <p className="text-indigo font-semibold">Name</p>
+              </TableCell>
+              <TableCell align="center" className="w-[14%]">
+                <p className="text-indigo font-semibold">Start Date</p>
+              </TableCell>
+              {isMobile ? (
+                <TableCell align="center" className="w-[10%]">
+                  <p className="text-indigo font-semibold">Detail</p>
+                </TableCell>
+              ) : (
+                <>
                   <TableCell align="center" className="w-[14%]">
                     <p className="text-indigo font-semibold">End Date</p>
                   </TableCell>
@@ -398,59 +428,83 @@ const TableApprovalizin = () => {
                   <TableCell align="center" className="w-[10%]">
                     <p className="text-indigo font-semibold text-center">Action</p>
                   </TableCell>
-                </TableHead>
-                <TableBody className="bg-gray-100">
-                  {(rowsPerPage > 0
-                    ? filteredRows.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                    : filteredRows
-                  ).map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">{row.nama}</TableCell>
-                      <TableCell align="center">{row.mulai}</TableCell>
-                      <TableCell align="center">{row.selesai}</TableCell>
-                      <TableCell align="center">{row.alasan}</TableCell>
-                      <TableCell align="center">
-                        {row.dokumen && (
-                          <div className="flex justify-center">
-                            <Button
-                              size="small"
-                              href={row.dokumen}
-                              target="_blank "
-                              download
-                              className="cursor-pointer"
-                            >
-                              <DownloadIcon className="text-gray-400" />
-                            </Button>
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ color: row.status ? "black" : "red" }}
-                      >
-                        {row.status === null ? (
-                          <ActionButton
-                            onAccept={handleApproval}
-                            onReject={handleReject}
-                            onSakit={handleApproveSakit}
-                            data={row}
-                            tipe={"izin"}
-                            string={"izin"}
-                          />
-                        ) : row.status ? (
-                          "accepted"
-                        ) : (
-                          "rejected"
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                </>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody className="bg-gray-100">
+            {filteredRows.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell align="center">{row.nama}</TableCell>
+                <TableCell align="center">{row.mulai}</TableCell>
+                {isMobile ? (
+                  <TableCell align="center">
+                    <InfoIcon className="cursor-pointer text-indigo-600" onClick={() => handleOpenModal(row)} />
+                  </TableCell>
+                ) : (
+                  <>
+                    <TableCell align="center">{row.selesai}</TableCell>
+                    <TableCell align="center">{row.alasan}</TableCell>
+                    <TableCell align="center">
+                      {row.dokumen && (
+                        <div className="flex justify-center">
+                          <Button size="small" href={row.dokumen} target="_blank" download>
+                            <DownloadIcon className="text-gray-400" />
+                          </Button>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell align="center" style={{ color: row.status ? "black" : "red" }}>
+                      {row.status === null ? (
+                        <ActionButton
+                          onAccept={handleApproval}
+                          onReject={handleReject}
+                          onSakit={handleApproveSakit}
+                          data={row}
+                          tipe={"izin"}
+                          string={"izin"}
+                        />
+                      ) : row.status ? (
+                        "accepted"
+                      ) : (
+                        "rejected"
+                      )}
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Modal open={open} onClose={handleCloseModal}>
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+          <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+          {selectedRow && (
+            <div className="flex flex-col space-y-2 mt-4">
+              <p><strong>Name:</strong> {selectedRow.nama}</p>
+              <p><strong>Start Date:</strong> {selectedRow.mulai}</p>
+              <p><strong>End Date:</strong> {selectedRow.selesai}</p>
+              <p><strong>Detail:</strong> {selectedRow.alasan}</p>
+              {selectedRow.dokumen && (
+                <p>
+                  <strong>Document:</strong>
+                  <a href={selectedRow.dokumen} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                    Download
+                  </a>
+                </p>
+              )}
+              <p><strong>Status:</strong> {selectedRow.status === null ? "Pending" : selectedRow.status ? "Accepted" : "Rejected"}</p>
+            </div>
+          )}
+          <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Box>
+      </Modal>
+   
+  
           </div>
         </div>
 

@@ -35,6 +35,8 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
+import { IconButton, Modal, Box } from "@mui/material";
+import { Info } from "@mui/icons-material";
 
 
 const TableApprovalCuti = () => {
@@ -52,6 +54,8 @@ const TableApprovalCuti = () => {
   const dispatch = useDispatch(); // Initialize Redux dispatch
   const loading = useSelector((state) => state.loading.isLoading); // Access loading state
   const jabatan = localStorage.getItem("jabatan");
+  const [open, setOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -288,6 +292,14 @@ const TableApprovalCuti = () => {
     setIsSettingsOpen(null);
   };
 
+
+
+
+  const handleOpen = (row) => {
+    setSelectedRow(row);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -406,89 +418,145 @@ const TableApprovalCuti = () => {
                       <p className="text-indigo font-semibold">Name</p>
                     </TableCell>
                     <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">
-                        Start
-                      </p>
+                      <p className="text-indigo font-semibold">Start</p>
                     </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">
-                        End Date
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[30%]">
-                      <p className="text-indigo font-semibold">Details</p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold text-center">
-                        Replacement
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">Progress</p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">Action</p>
-                    </TableCell>
+                    {isMobile ? (
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Details</p>
+                      </TableCell>
+                    ) : (
+                      <>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">End Date</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[30%]">
+                          <p className="text-indigo font-semibold">Details</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Replacement</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Progress</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Action</p>
+                        </TableCell>
+                      </>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody className="bg-gray-100">
-                  {(rowsPerPage > 0
-                    ? filteredRows.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                    : filteredRows
-                  ).map((row, index) => (
+                  {filteredRows.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell align="center">{row.nama}</TableCell>
                       <TableCell align="center">{row.mulai}</TableCell>
-                      <TableCell align="center">{row.selesai}</TableCell>
-                      <TableCell align="center">{row.alasan}</TableCell>
-                      <TableCell align="center">{row.pengganti}</TableCell>
-                      <TableCell align="center">{row.progress}</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{
-                          color:
-                            jabatan.toLowerCase() === "direktur"
-                              ? row.shead
-                                ? "black"
-                                : "red"
-                              : row.shr
-                                ? "black"
-                                : "red",
-                        }}
-                      >
-                        {row.status === null ? (
-                          jabatan.toLowerCase() === "direktur" ? (
-                            row.shead === null ? (
-                              <ActionButton
-                                onAccept={handleApproval}
-                                onReject={handleReject}
-                                data={row}
-                                tipe={"nonIzin"}
-                                string={"Cuti"}
-                              />
-                            ) : null
-                          ) : row.shr === null ? (
-                            <ActionButton
-                              onAccept={handleApproval}
-                              onReject={handleReject}
-                              data={row}
-                              tipe={"nonIzin"}
-                              string={"Cuti"}
-                            />
-                          ) : null
-                        ) : row.status ? (
-                          "Accepted"
-                        ) : (
-                          "Rejected"
-                        )}
-                      </TableCell>
+                      {isMobile ? (
+                        <TableCell align="center">
+                          <IconButton onClick={() => handleOpen(row)}>
+                            <Info color="primary" />
+                          </IconButton>
+                        </TableCell>
+                      ) : (
+                        <>
+                          <TableCell align="center">{row.selesai}</TableCell>
+                          <TableCell align="center">{row.alasan}</TableCell>
+                          <TableCell align="center">{row.pengganti}</TableCell>
+                          <TableCell align="center">{row.progress}</TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              color:
+                                jabatan.toLowerCase() === "direktur"
+                                  ? row.shead
+                                    ? "black"
+                                    : "red"
+                                  : row.shr
+                                    ? "black"
+                                    : "red",
+                            }}
+                          >
+                            {row.status === null ? (
+                              jabatan.toLowerCase() === "direktur" ? (
+                                row.shead === null ? (
+                                  <ActionButton
+                                    onAccept={handleApproval}
+                                    onReject={handleReject}
+                                    data={row}
+                                    tipe={"nonIzin"}
+                                    string={"Cuti"}
+                                  />
+                                ) : null
+                              ) : row.shr === null ? (
+                                <ActionButton
+                                  onAccept={handleApproval}
+                                  onReject={handleReject}
+                                  data={row}
+                                  tipe={"nonIzin"}
+                                  string={"Cuti"}
+                                />
+                              ) : null
+                            ) : row.status ? (
+                              "Accepted"
+                            ) : (
+                              "Rejected"
+                            )}
+                          </TableCell>
+                        </>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              {/* Modal for displaying details */}
+              <Modal open={open} onClose={handleClose}>
+                <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+                  <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+                  {selectedRow && (
+                    <div className="flex flex-col space-y-2 mt-4">
+                      <p><strong>Name:</strong> {selectedRow.nama}</p>
+                      <p><strong>Start:</strong> {selectedRow.mulai}</p>
+                      <p><strong>End Date:</strong> {selectedRow.selesai}</p>
+                      <p><strong>Details:</strong> {selectedRow.alasan}</p>
+                      <p><strong>Replacement:</strong> {selectedRow.pengganti}</p>
+                      <div className="flex items-center justify-between">
+                        <p><strong>Progress:</strong> {selectedRow.progress}</p>
+                        <div className="flex px-1">
+                          {selectedRow.status === null ? (
+                            jabatan.toLowerCase() === "direktur" ? (
+                              selectedRow.shead === null ? (
+                                <ActionButton
+                                  onAccept={handleApproval}
+                                  onReject={handleReject}
+                                  data={selectedRow}
+                                  tipe={"nonIzin"}
+                                  string={"Cuti"}
+                                  className="w-8"
+                                />
+                              ) : null
+                            ) : selectedRow.shr === null ? (
+                              <ActionButton
+                                onAccept={handleApproval}
+                                onReject={handleReject}
+                                data={selectedRow}
+                                tipe={"nonIzin"}
+                                string={"Cuti"}
+                                className="w-8"
+                              />
+                            ) : null
+                          ) : selectedRow.status ? (
+                            "Accepted"
+                          ) : (
+                            "Rejected"
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleClose}>
+                    Close
+                  </Button>
+                </Box>
+              </Modal>
             </TableContainer>
           </div>
         </div>
