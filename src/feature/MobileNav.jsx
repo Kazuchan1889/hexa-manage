@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  AppBar, Toolbar, IconButton, Drawer, List, Popper, Paper, ClickAwayListener,MenuList, MenuItem,Typography, ListItem, ListItemIcon, ListItemText, Box
+  AppBar, Toolbar, IconButton, Drawer, List, Popper, Paper, ClickAwayListener, MenuList, MenuItem, Typography, ListItem, ListItemIcon, ListItemText, Box
 } from "@mui/material";
 import { ExpandMore, Notifications as NotificationsIcon, Settings as SettingsIcon } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -27,6 +27,8 @@ const MobileNavbar = () => {
   const [cutiCount, setCutiCount] = useState(0);
   const [izinCount, setIzinCount] = useState(0);
   const anchorRef = useRef(null);
+  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
+  const isUserAdmin = localStorage.getItem("role") === "admin";
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -52,6 +54,10 @@ const MobileNavbar = () => {
     setMenuDropdownOpen(false);
   };
 
+  const toggleMasterMenu = () => {
+    setMasterMenuOpen(!masterMenuOpen);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -74,6 +80,8 @@ const MobileNavbar = () => {
         console.error("Error fetching data:", error);
       }
     };
+
+    
 
     fetchData();
   }, []);
@@ -156,6 +164,33 @@ const MobileNavbar = () => {
               })}
             </List>
           </Collapse>
+          {isUserAdmin && (
+            <>
+              <ListItem button onClick={toggleMasterMenu} style={{ color: "white" }}>
+                <ListItemIcon style={{ color: "white" }}><InventoryIcon /></ListItemIcon>
+                <ListItemText primary="Master Menu" />
+                <ExpandMore style={{ transform: masterMenuOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s", color: "white" }} />
+              </ListItem>
+              <Collapse in={masterMenuOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {[
+                    { id: 31, label: "Attendance", path: "/masterabsen" },
+                    { id: 32, label: "Permit", path: "/masterizin" },
+                    { id: 33, label: "Time Off", path: "/mastercuti" },
+                    { id: 34, label: "Reimburse", path: "/masterreimburst" },
+                    { id: 35, label: "Resign", path: "/masterresign" },
+                    { id: 36, label: "Report", path: "/masterlaporan" },
+                    { id: 37, label: "Geotech", path: "/geotech" },
+                    { id: 38, label: "Overtime", path: "/Over" },
+                  ].map((item) => (
+                    <ListItem button component={Link} to={item.path} key={item.id} style={{ paddingLeft: 32, color: "white" }}>
+                      <ListItemText primary={item.label} primaryTypographyProps={{ fontSize: "0.875rem" }} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </>
+          )}
 
           <ListItem button component={Link} to="/AccountSetting" style={{ color: "white" }}>
             <ListItemIcon style={{ color: "white" }}><SettingsIcon /></ListItemIcon>
