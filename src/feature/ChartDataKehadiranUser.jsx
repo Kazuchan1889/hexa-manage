@@ -12,11 +12,17 @@ import Loading from "../page/Loading";
 
 function ChartDataKehadiranUser() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [userData, setUserData] = useState([0, 0, 0, 0, 0, 0]); // Default array 0 agar tidak error
   const [totalDays, setTotalDays] = useState(0);
   const loading = useSelector((state) => state.loading.isLoading);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     dispatch(loadingAction.startLoading(true));
@@ -108,12 +114,19 @@ function ChartDataKehadiranUser() {
   }
 
   return (
-    <div className="h-fit w-[15rem] mx-auto">
-      <span className="text-[#204682] text-lg text-center font-bold">Your Monthly Attendance</span>
-      <div className="mx-auto w-2/3 h-2/3 my-4">
-        <Doughnut data={data} options={options} />
+    <div className={`h-fit mx-auto ${isMobile ? 'w-[10rem]' : 'w-[15rem]'}`}>
+      <span className={`text-[#204682] text-center font-bold ${isMobile ? 'text-md' : 'text-lg'}`}>
+        Your Monthly Attendance
+      </span>
+      <div className="relative  my-4 w-[80%] h-[80%] mx-auto">
+        <Doughnut data={data} options={{
+          ...options,
+          maintainAspectRatio: false, // Memastikan chart tetap fleksibel
+          responsive: true
+        }} />
       </div>
     </div>
+
   );
 }
 

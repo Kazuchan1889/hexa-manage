@@ -185,6 +185,7 @@ function DashboardAdmin() {
     );
   };
 
+
   return (
     <div className="w-screen h-fit lg:h-screen xl:overflow-x-hidden bg-primary">
       <NavbarUser />
@@ -215,7 +216,7 @@ function DashboardAdmin() {
               <div className="w-full flex justify-center gap-4 mb-4">
                 {renderCharts()}
               </div>
-              <div className="flex flex-col lg:flex-row justify-between gap-4">
+              <div className={`px-4 pb-4 gap-4 ${isMobile ? 'flex flex-col' : 'flex flex-row justify-between'}`}>
                 <div className="drop-shadow-lg bg-white p-6 rounded-xl border h-[23rem] lg:w-[22%]">
                   <div className="text-xl font-bold mb-4 bg-white p-2">Today's Absences</div>
                   <div className="h-[calc(100%-2.5rem)] overflow-y-auto">

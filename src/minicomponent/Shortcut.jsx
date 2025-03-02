@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Shortcut() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="mt-2">
       <h1 className="text-xl font-bold text-center text-white mb-4">Quick Access</h1>
-      <div className="flex justify-center gap-8 mt-2 flex-wrap">
+      <div className={`mt-2 flex justify-center gap-8 flex-wrap ${isMobile ? 'grid grid-cols-2' : 'flex'}`}>
         {[
           { path: "/liveattendance", label: "Live Attendance" },
           { path: "/reimburst", label: "Request Reimbursement" },
@@ -23,6 +31,7 @@ function Shortcut() {
         ))}
       </div>
     </div>
+
   );
 }
 

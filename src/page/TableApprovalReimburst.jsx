@@ -36,14 +36,19 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
+import { IconButton, Modal, Box } from "@mui/material";
+import { Info } from "@mui/icons-material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+
 
 
 
 const TableApprovalreimbur = () => {
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [search, setSearch] = useState("");
@@ -56,6 +61,8 @@ const TableApprovalreimbur = () => {
   const [selectedYear, setSelectedYear] = useState(null);
   const jabatan = localStorage.getItem("jabatan");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const monthsIndex = {
     All: null,
@@ -304,6 +311,7 @@ const TableApprovalreimbur = () => {
   const handleCloseModal = () => {
     setIsOpen(false);
   };
+  const handleClose = () => setOpen(false);
 
   const handleDownloadDetail = () => {
     const api = `${ip}/api/export/reimburse/detail/pdf`;
@@ -333,6 +341,24 @@ const TableApprovalreimbur = () => {
       });
   };
 
+  const handleOpenModal = (row) => {
+    setSelectedRow(row);
+    setOpenModal(true);
+  };
+  const handleCloseModall = () => {
+    setOpenModal(false);
+    setSelectedRow(null);
+  };
+
+  const handleDownload = (base64Data, fileName) => {
+    const link = document.createElement("a");
+    link.href = `data:application/octet-stream;base64,${base64Data}`;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-40">
@@ -343,8 +369,9 @@ const TableApprovalreimbur = () => {
 
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-     {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-y-auto">
+
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
       <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
@@ -412,290 +439,145 @@ const TableApprovalreimbur = () => {
           </div>
 
           <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-            <TableContainer
-              component={Paper}
-              style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-            >
+            <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
               <Table aria-label="simple table" size="small">
                 <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                   <TableRow>
                     <TableCell align="center" className="w-[10%]">
                       <p className="text-indigo font-semibold">Name</p>
                     </TableCell>
-                    {(reportType === "approval" ||
-                      reportType === "history") && (
-                        <>
-                          <TableCell align="center" className="w-[5%]">
-                            <p className="text-indigo font-semibold">Position</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[35%]">
-                            <p className="text-indigo font-semibold">
-                              Detail
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[10%]">
-                            <p className="text-indigo font-semibold">Cost</p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[15%]">
-                            <p className="text-indigo font-semibold">
-                              Filing Date
-                            </p>
-                          </TableCell>
-                          <TableCell align="center" className="w-[5%]">
-                            <p className="text-indigo font-semibold">Document</p>
-                          </TableCell>
-                        </>
-                      )}
-                    {reportType === "history" && (
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Status</p>
-                      </TableCell>
-                    )}
-                    {reportType === "approval" && (
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold text-center">
-                          Action
-                        </p>
-                      </TableCell>
-                    )}
-                    {reportType === "accepted" && (
+                    <TableCell align="center" className="w-[15%]">
+                      <p className="text-indigo font-semibold">Filing Date</p>
+                    </TableCell>
+                    {!isMobile && (reportType === "approval" || reportType === "history") && (
                       <>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold text-center">
-                            Jabatan
-                          </p>
+                        <TableCell align="center" className="w-[5%]">
+                          <p className="text-indigo font-semibold">Position</p>
                         </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Month</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold">Amount</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[15%]">
-                          <p className="text-indigo font-semibold">Bank Name</p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[15%]">
-                          <p className="text-indigo font-semibold">
-                            Bank account number
-                          </p>
-                        </TableCell>
-                        <TableCell align="center" className="w-[10%]">
+                        <TableCell align="center" className="w-[35%]">
                           <p className="text-indigo font-semibold">Detail</p>
                         </TableCell>
                         <TableCell align="center" className="w-[10%]">
-                          <p className="text-indigo font-semibold text-center">
-                            Action
-                          </p>
+                          <p className="text-indigo font-semibold">Cost</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Document</p>
+                        </TableCell>
+                        <TableCell align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">Action</p>
                         </TableCell>
                       </>
                     )}
+                    {isMobile && (
+                      <TableCell align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">Detail</p>
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
+
                 <TableBody className="bg-gray-100">
-                  {(rowsPerPage > 0
-                    ? filteredRows.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                    : filteredRows
-                  ).map((row, index) => (
+                  {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell
-                        align="center"
-                        style={{
-                          whiteSpace: "normal",
-                          wordWrap: "break-word",
-                          maxHeight: "100px",
-                          maxWidth: "100px",
-                        }}
-                      >
+                      <TableCell align="center" className="truncate max-w-[100px]">
                         {row.nama}
                       </TableCell>
-                      {(reportType === "approval" ||
-                        reportType === "history") && (
-                          <>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.jabatan}
-                            </TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "100px",
-                              }}
-                            >
-                              {row.keterangan}
-                            </TableCell>
-                            <TableCell align="center">{row.biaya}</TableCell>
-                            <TableCell
-                              align="center"
-                              style={{
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                                maxHeight: "100px",
-                                maxWidth: "120px",
-                              }}
-                            >
-                              {row.date}
-                            </TableCell>
-                            <TableCell align="center">
-                              {row.dokumen && (
-                                <div className="flex justify-center">
-                                  <Button
-                                    size="small"
-                                    href={row.dokumen}
-                                    target="_blank "
-                                    download
-                                    className="cursor-pointer"
-                                  >
-                                    <DownloadIcon className="text-gray-400" />
-                                  </Button>
-                                </div>
-                              )}
-                            </TableCell>
-                            {reportType === "history" ? (
-                              <TableCell
-                                align="center"
-                                style={{
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                  maxHeight: "100px",
-                                  maxWidth: "100px",
-                                }}
-                              >
-                                {row.progres}
-                              </TableCell>
-                            ) : null}
-                            {row.status === null ? (
-                              <>
-                                <TableCell
-                                  align="center"
-                                  style={{
-                                    color: row.status ? "black" : "red",
-                                  }}
-                                >
-                                  {row.status === null ? (
-                                    <ActionButton
-                                      data={row}
-                                      onAccept={handleApprove}
-                                      onReject={handleReject}
-                                      tipe={"nonIzin"}
-                                      string={"Reimburse"}
-                                    ></ActionButton>
-                                  ) : null}
-                                </TableCell>
-                              </>
-                            ) : null}
-                          </>
-                        )}
-                      {reportType === "accepted" && (
+                      <TableCell align="center" className="truncate max-w-[120px]">
+                        {row.date}
+                      </TableCell>
+                      {!isMobile && (reportType === "approval" || reportType === "history") && (
                         <>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
+                          <TableCell align="center" className="truncate max-w-[100px]">
                             {row.jabatan}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            {`${monthNames(row.bulan, row.tahun)} ${row.tahun
-                              }`}
+                          <TableCell align="center" className="truncate max-w-[100px]">
+                            {row.keterangan}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            {row.jumlah}
+                          <TableCell align="center">{row.biaya}</TableCell>
+                          <TableCell align="center">
+                            {row.dokumen && (
+                              <div className="flex items-center space-x-2">
+
+                                <Button size="small" onClick={() => handleDownload(row.dokumen, "document.pdf")} className="text-blue-600 flex items-center space-x-1">
+                                  <span>Download</span> <DownloadIcon className="text-blue-600" />
+                                </Button>
+                              </div>
+                            )}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            {row.bankname}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            {row.norek}
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              maxHeight: "100px",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              onClick={() => {
-                                handleDetailClick(row);
-                              }}
-                            >
-                              Detail
-                            </Button>
-                          </TableCell>
-                          <TableCell
-                            align="center"
-                            style={{
-                              color: row.status ? "black" : "red",
-                            }}
-                          >
-                            <ActionButton
-                              data={row}
-                              onAccept={handleApproveAll}
-                              onReject={handleRejectAll}
-                              tipe={"nonIzin"}
-                              string={"Reimburse"}
-                            ></ActionButton>
-                          </TableCell>
+                          {reportType === "history" ? (
+                            <TableCell align="center" className={row.status === true ? "text-green-600 flex items-center space-x-1" : "text-red-600 flex items-center space-x-1"}>
+                              {row.status === true ? <><CheckCircleIcon /> Accepted</> : <><CancelIcon /> Rejected</>}
+                            </TableCell>
+                          ) : row.status === null ? (
+                            <TableCell align="center" style={{ color: "red" }}>
+                              <ActionButton data={row} onAccept={handleApprove} onReject={handleReject} tipe="nonIzin" string="Reimburse" />
+                            </TableCell>
+                          ) : null}
                         </>
+                      )}
+                      {isMobile && (
+                        <TableCell align="center">
+                          <IconButton onClick={() => handleOpenModal(row)}>
+                            <Info color="primary" className="text-indigo" />
+                          </IconButton>
+                        </TableCell>
                       )}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
+
+            <div className="flex w-11/12 items-end justify-end">
+              <TablePagination
+                rowsPerPageOptions={[15, 25]}
+                component="div"
+                count={filteredRows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Jumlah Data"
+              />
+            </div>
+
+
+            <Modal open={openModal} onClose={handleCloseModall}>
+              <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+                <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+                {selectedRow && (
+                  <div className="flex flex-col space-y-2 mt-4">
+                    <p><strong>Name:</strong> {selectedRow.nama}</p>
+                    <p><strong>Filing Date:</strong> {selectedRow.date}</p>
+                    <p><strong>Position:</strong> {selectedRow.jabatan}</p>
+                    <p><strong>Detail:</strong> {selectedRow.keterangan}</p>
+                    <p><strong>Cost:</strong> {selectedRow.biaya}</p>
+                    <p><strong>Document:</strong> {selectedRow.dokumen ? (
+                      <Button onClick={() => handleDownload(selectedRow.dokumen, "document.pdf")} className="text-blue-600 flex items-center space-x-1">
+                        <span>Download</span> <DownloadIcon />
+                      </Button>
+                    ) : "No Document"}</p>
+                    <div className="flex items-center justify-between">
+                      <p><strong>Progress:</strong> {selectedRow.progress}</p>
+                      <div className="flex px-1">
+                        {selectedRow.status === null ? (
+                          <ActionButton onAccept={handleApprove} onReject={handleReject} data={selectedRow} tipe="nonIzin" string="Reimburse" className="w-8" />
+                        ) : selectedRow.status ? (
+                          "Accepted"
+                        ) : (
+                          "Rejected"
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleCloseModall}>
+                  Close
+                </Button>
+              </Box>
+            </Modal>
+
+
           </div>
         </div>
 

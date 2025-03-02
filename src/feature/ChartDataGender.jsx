@@ -10,6 +10,13 @@ import ip from "../ip";
 function ChartDataGenderKaryawan() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels); // Daftarkan datalabels
   const [karyawanGenderData, setKaryawanGenderData] = useState([0, 0]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const apiUrl = `${ip}/api/karyawan/get/data/gender`;
@@ -66,13 +73,15 @@ function ChartDataGenderKaryawan() {
   };
 
   return (
-    <div className="h-fit w-[15rem] mx-auto">
-      <span className="text-[#204682] text-lg text-center font-bold">Gender Diversity</span>
-      {/* <Typography variant="h6" className="text-[#204682]">Data Gender Karyawan</Typography> */}
-      <div className="mx-auto w-2/3 h-2/3 my-4">
+    <div className={`h-fit mx-auto ${isMobile ? 'w-[10rem]' : 'w-[15rem]'}`}>
+      <span className={`text-[#204682] text-center font-bold ${isMobile ? 'text-md' : 'text-lg'}`}>
+        Gender Diversity
+      </span>
+      <div className="relative my-4 w-[80%] h-[80%] mx-auto">
         <Doughnut data={data} options={options} />
       </div>
     </div>
+
   );
 }
 

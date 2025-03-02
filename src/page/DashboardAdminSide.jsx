@@ -137,58 +137,6 @@ function DashboardAdminSide() {
         navigate('/Cal'); // Arahkan ke halaman /Calen
     };
 
-    const renderCharts = () => {
-        if (isMobile) {
-            return (
-                <div className="w-full">
-                    <div className="flex justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                        <div className="w-full flex flex-col">
-                            <div className="flex justify-end mb-2">
-                                <FormControl variant="outlined" size="small" style={{ width: '150px' }}>
-                                    <InputLabel id="chart-select-label">Select Chart</InputLabel>
-                                    <Select
-                                        labelId="chart-select-label"
-                                        value={selectedChart}
-                                        onChange={handleChartChange}
-                                        label="Select Chart"
-                                    >
-                                        <MenuItem value="kehadiranUser">Kehadiran User</MenuItem>
-                                        <MenuItem value="kehadiran">Kehadiran</MenuItem>
-                                        <MenuItem value="gender">Gender</MenuItem>
-                                        <MenuItem value="karyawan">Karyawan</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </div>
-                            <div className="flex justify-center items-center h-full">
-                                {selectedChart === "kehadiranUser" && <ChartDataKehadiranUser />}
-                                {selectedChart === "kehadiran" && <ChartDataKehadiran />}
-                                {selectedChart === "gender" && <ChartDataGender />}
-                                {selectedChart === "karyawan" && <ChartDataKaryawan />}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        return (
-            <div className="grid grid-cols-4 gap-4 w-full">
-                <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                    <ChartDataKehadiranUser />
-                </div>
-                <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                    <ChartDataKehadiran />
-                </div>
-                <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                    <ChartDataGender />
-                </div>
-                <div className="flex items-center justify-center drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                    <ChartDataKaryawan />
-                </div>
-            </div>
-        );
-    };
-
     return (
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
             {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
@@ -200,59 +148,47 @@ function DashboardAdminSide() {
                     <Shortcut />
                 </div>
 
-                <div className="flex flex-row justify-center p-4 gap-4">
-                    <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
-                        < ChartDataKehadiranUser />
+                {/* Grid Layout */}
+                <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="drop-shadow-md bg-white py-6 rounded-lg">
+                        <ChartDataKehadiranUser />
                     </div>
-                    <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
-                        < ChartDataKehadiran />
+                    <div className="drop-shadow-md bg-white py-6 rounded-lg">
+                        <ChartDataKehadiran />
                     </div>
-                    <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
-                        < ChartDataGender />
+                    <div className="drop-shadow-md bg-white py-6 rounded-lg">
+                        <ChartDataGender />
                     </div>
-                    <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
-                        < ChartDataKaryawan />
+                    <div className="drop-shadow-md bg-white py-6 rounded-lg">
+                        <ChartDataKaryawan />
                     </div>
                 </div>
-                {/* absensi hari ini */}
-                <div className="flex flex-row justify-between px-4 pb-4 gap-4">
-                    <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem] w-1/4">
-                        <span className="text-[#204682] text-lg text-center font-bold">
-                            Today's Absence
-                        </span>
+
+                <div className={`px-4 pb-4 gap-4 ${isMobile ? 'flex flex-col' : 'flex flex-row justify-between'}`}>
+                    {/* Today's Absence */}
+                    <div className={`${isMobile ? 'w-full' : 'w-1/4'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
+                        <span className="text-[#204682] text-lg text-center font-bold">Today's Absence</span>
                         <div className="max-h-[18rem] mt-2 overflow-y-auto">
-                            {loadingAbsensi ? (
-                                <Loading />
-                            ) : (
+                            {loadingAbsensi ? <Loading /> : (
                                 <ul className="space-y-3">
                                     {absensiItems.length === 0 ? (
                                         <p className="text-gray-500 text-center">Tidak ada data absensi hari ini.</p>
                                     ) : (
                                         absensiItems.map((item, index) => (
-                                            <li key={index} className="flex items-between p-3 border rounded-lg">
-                                                {/* Foto User */}
+                                            <li key={index} className="flex items-center p-3 border rounded-lg">
                                                 {item.photo ? (
-                                                    <div className="my-auto">
-                                                        <img
-                                                            src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
-                                                            className="w-8 h-8 rounded-full object-cover items-center justify-center"
-                                                            alt="Absensi Photo"
-                                                        />
-                                                    </div>
+                                                    <img src={item.photo.startsWith("data:image/") ? item.photo : `data:image/jpeg;base64,${item.photo}`}
+                                                        className="w-8 h-8 rounded-full object-cover" alt="Absensi Photo" />
                                                 ) : (
                                                     <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300">
                                                         <UserIcon style={{ fontSize: 30, color: 'black' }} />
                                                     </div>
                                                 )}
-
-                                                {/* Nama & Status */}
                                                 <div className="flex flex-col mx-auto">
                                                     <span className="font-semibold">{item.nama}</span>
                                                     <span className="text-xs text-gray-600">{item.status}</span>
                                                 </div>
-
-                                                {/* Status Icon */}
-                                                <div className="my-auto justify-end">
+                                                <div className="my-auto">
                                                     {item.status === 'tanpa alasan' && <ErrorIcon className="text-red-500" />}
                                                     {item.status === 'terlambat' && <WarningIcon className="text-yellow-500" />}
                                                     {['masuk', 'libur', 'izin', 'cuti'].includes(item.status) && <CheckCircleIcon className="text-green-500" />}
@@ -264,36 +200,32 @@ function DashboardAdminSide() {
                             )}
                         </div>
                     </div>
-                    <div className="w-1/2 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                        <span className="text-[#204682] text-lg text-center font-bold">
-                            Assignment
-                        </span>
+
+                    {/* Assignment */}
+                    <div className={`${isMobile ? 'w-full' : 'w-1/2'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
+                        <span className="text-[#204682] text-lg text-center font-bold">Assignment</span>
                         <AnnouncementList />
                         <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button>
                     </div>
-                    <div className="w-1/4 drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]">
-                        <span className="text-[#204682] text-lg text-center font-bold">
-                            Upcoming Schedule
-                        </span>
+
+                    {/* Upcoming Schedule */}
+                    <div className={`${isMobile ? 'w-full' : 'w-1/4'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
+                        <span className="text-[#204682] text-lg text-center font-bold">Upcoming Schedule</span>
                         <div className="max-h-[18rem] overflow-y-auto flex flex-col justify-center items-center">
                             {loadingSchedule ? (
-                                <Loading /> // Tampilkan loading saat fetching jadwal
+                                <Loading />
                             ) : (
                                 <ul className="space-y-4 mt-4 w-full">
                                     {(() => {
                                         const filteredSchedules = scheduleItems.filter((item) => {
                                             const scheduleDate = new Date(item.tanggal_mulai);
                                             const today = new Date();
-                                            today.setHours(0, 0, 0, 0); // Mengatur waktu ke awal hari
-                                            return scheduleDate >= today; // Tampilkan jika jadwal >= hari ini
+                                            today.setHours(0, 0, 0, 0);
+                                            return scheduleDate >= today;
                                         });
 
                                         if (filteredSchedules.length === 0) {
-                                            return (
-                                                <li className="text-gray-500 text-center w-full flex justify-center items-center h-full">
-                                                    There is no schedule
-                                                </li>
-                                            );
+                                            return <li className="text-gray-500 text-center w-full flex justify-center items-center h-full">There is no schedule</li>;
                                         }
 
                                         return filteredSchedules.map((item, index) => (
@@ -301,12 +233,8 @@ function DashboardAdminSide() {
                                                 <div className="text-lg font-semibold">{item.judul}</div>
                                                 <div className="text-sm text-gray-600">{formatDate(item.tanggal_mulai)}</div>
                                                 <div className="text-sm text-gray-600">{item.mulai}</div>
-                                                {/* Container untuk tombol */}
                                                 <div className="mt-4 p-2 bg-blue-500 rounded-lg">
-                                                    <button
-                                                        onClick={handleReadMore}
-                                                        className="text-white font-semibold px-4 py-2 rounded-md"
-                                                    >
+                                                    <button onClick={handleReadMore} className="text-white font-semibold px-4 py-2 rounded-md">
                                                         Read More
                                                     </button>
                                                 </div>

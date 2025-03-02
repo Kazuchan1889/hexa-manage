@@ -12,10 +12,16 @@ import Loading from "../page/Loading";
 
 function ChartDataKaryawan() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels); // ✅ Register plugin datalabels
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.isLoading);
-  const [karyawanData, setKaryawanData] = useState([0, 0, 0, 0, 0]); // ✅ Default agar tidak error saat data kosong
+  const [karyawanData, setKaryawanData] = useState([0, 0, 0, 0, 0]); // ✅ Default agar tidak error saat data kosong\\
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     dispatch(loadingAction.startLoading(true));
@@ -101,13 +107,15 @@ function ChartDataKaryawan() {
   }
 
   return (
-    <div className="h-fit w-[15rem] mx-auto">
-      <span className="text-[#204682] text-lg text-center font-bold">Employee Data</span>
-      {/* <Typography variant="h6" className="text-[#204682]">Employee Data</Typography> */}
-      <div className="mx-auto w-2/3 h-2/3 my-4">
-        <Doughnut data={data} options={options} /> {/* ✅ Gunakan Doughnut */}
+    <div className={`h-fit mx-auto ${isMobile ? 'w-[10rem]' : 'w-[15rem]'}`}>
+      <span className={`text-[#204682] text-center font-bold ${isMobile ? 'text-md' : 'text-lg'}`}>
+        Employee Data
+      </span>
+      <div className="relative my-4 w-[80%] h-[80%] mx-auto">
+        <Doughnut data={data} options={options} />
       </div>
     </div>
+
   );
 }
 
