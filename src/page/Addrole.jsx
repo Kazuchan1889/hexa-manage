@@ -253,10 +253,10 @@ const RoleManage = () => {
                             size="small"
                             variant="contained"
                             style={{ backgroundColor: "#FFFFFF" }}
-                            onClick={() => setTambahFormOpen(true)}
+                            onClick={handleOpenAddRole}
                         >
                             <AddIcon className="text-[#055817] w-4 h-4" />
-                            <span className="text-sm font-medium">REQUEST</span>
+                            <span className="text-sm font-medium">Add</span>
                         </button>
 
                     </div>
