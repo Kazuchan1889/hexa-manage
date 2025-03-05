@@ -199,7 +199,7 @@ function LiveAttendance() {
             console.log("Detected IP:", localIP);
 
 
-            if (localIP !== "172.20.10.3") {
+            if (localIP !== "192.168.137.53") {
                 Swal.fire({
                     icon: "error",
                     title: "Check In Gagal!",

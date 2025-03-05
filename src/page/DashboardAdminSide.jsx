@@ -54,6 +54,12 @@ function DashboardAdminSide() {
     const checkOperation = localStorage.getItem("operation");
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.loading.isLoading);
+    const [userData, setUserData] = useState({
+        nama: "",
+        dokumen: null,
+        jabatan: "",
+        cutimandiri: ""
+      });
 
     // State untuk loading individual
     const [loadingSchedule, setLoadingSchedule] = useState(false);
@@ -65,6 +71,35 @@ function DashboardAdminSide() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    useEffect(() => {
+        const apiUrl = `${ip}/api/karyawan/get/data/self`;
+        const headers = {
+          Authorization: localStorage.getItem("accessToken"),
+        };
+    
+        axios
+          .get(apiUrl, { headers })
+          .then((response) => {
+            const userData = response.data[0];
+            checkRequiredProperties(userData, ["alamat", "email", "notelp", "nik", "bankname", "bankacc", "maritalstatus"]);
+            setUserData({
+              nama: userData.nama || "",
+              dokumen: userData.dokumen || null,
+              jabatan: userData.jabatan || "",
+              cutimandiri: userData.cutimandiri || ""
+            });
+            localStorage.setItem("cutimandiri", userData.cutimandiri);
+          })
+          .catch((error) => {
+            console.error("Error", error);
+            Swal.fire({
+              icon: "error",
+              title: "Data Not Available",
+              text: "User data is not available. Please check your internet connection or try again later.",
+            });
+          });
+      }, []);
 
     useEffect(() => {
         const fetchScheduleItems = async () => {
@@ -143,7 +178,7 @@ function DashboardAdminSide() {
             <div className="flex flex-col flex-1 overflow-auto">
                 <Headb />
                 <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">
-                    <div className="text-white font-bold text-xl">Good Morning, {name}!</div>
+                    <div className="text-white font-bold text-xl">Good Morning, {userData.nama}!</div>
                     <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
                     <Shortcut />
                 </div>
