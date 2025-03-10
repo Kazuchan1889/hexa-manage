@@ -27,6 +27,7 @@ import CheckinDashboard from "../minicomponent/CheckinDashboard";
 import Sidebar from "../feature/Sidebar";
 import Headb from "../feature/Headbar";
 import Shortcut from "../minicomponent/Shortcut";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ChartDataGenderKaryawan from "../feature/ChartDataGenderKaryawan";
 
 const getIdFromToken = () => {
@@ -59,7 +60,7 @@ function DashboardAdminSide() {
         dokumen: null,
         jabatan: "",
         cutimandiri: ""
-      });
+    });
 
     // State untuk loading individual
     const [loadingSchedule, setLoadingSchedule] = useState(false);
@@ -72,34 +73,39 @@ function DashboardAdminSide() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    useEffect(() => {
-        const apiUrl = `${ip}/api/karyawan/get/data/self`;
-        const headers = {
-          Authorization: localStorage.getItem("accessToken"),
-        };
-    
-        axios
-          .get(apiUrl, { headers })
-          .then((response) => {
-            const userData = response.data[0];
-            checkRequiredProperties(userData, ["alamat", "email", "notelp", "nik", "bankname", "bankacc", "maritalstatus"]);
-            setUserData({
-              nama: userData.nama || "",
-              dokumen: userData.dokumen || null,
-              jabatan: userData.jabatan || "",
-              cutimandiri: userData.cutimandiri || ""
-            });
-            localStorage.setItem("cutimandiri", userData.cutimandiri);
-          })
-          .catch((error) => {
-            console.error("Error", error);
-            Swal.fire({
-              icon: "error",
-              title: "Data Not Available",
-              text: "User data is not available. Please check your internet connection or try again later.",
-            });
-          });
-      }, []);
+    const getNameFromToken = () => {
+        const token = localStorage.getItem('accessToken');
+
+        console.log("Access Token:", token); // Menampilkan access token di console
+
+        if (!token) {
+            console.log("Token tidak ditemukan");
+            return "User";
+        }
+
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            ).join(''));
+
+            const payload = JSON.parse(jsonPayload);
+
+            console.log("Decoded Token Payload:", payload); // Menampilkan payload yang sudah didecode
+            console.log("Nama dari token:", payload.nama); // Menampilkan nama dari token
+
+            return payload.nama || "User";
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return "User";
+        }
+    };
+
+    // Menampilkan isi access token & hasil decoding di console
+    console.log("Nama yang akan ditampilkan:", getNameFromToken());
+
+    console.log("Nama yang akan ditampilkan:", getNameFromToken());
 
     useEffect(() => {
         const fetchScheduleItems = async () => {
@@ -172,14 +178,21 @@ function DashboardAdminSide() {
         navigate('/Cal'); // Arahkan ke halaman /Calen
     };
 
+
+
     return (
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
             {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
             <div className="flex flex-col flex-1 overflow-auto">
                 <Headb />
-                <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">
-                    <div className="text-white font-bold text-xl">Good Morning, {userData.nama}!</div>
-                    <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
+                <div className="flex flex-col items-center justify-center bg-[#11284E] px-4 pb-4 h-54">
+                    <div className="text-white font-bold text-xl text-center">
+                        Good Morning, {getNameFromToken()}!
+                    </div>
+                    <span className="text-yellow-500 text-sm flex items-center text-center">
+                        <WarningAmberIcon className="w-4 h-4 mr-2" />
+                        Time to Check In, Don't Forget!
+                    </span>
                     <Shortcut />
                 </div>
 
