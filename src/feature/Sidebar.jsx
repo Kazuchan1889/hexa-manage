@@ -126,14 +126,19 @@ const Sidebar = () => {
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
             };
-
+    
             const companyResponse = await axios.get(apiUrl, { headers });
             if (companyResponse.data && companyResponse.data.length > 0) {
                 const data = companyResponse.data[0];
-                setFormData(prevState => ({
-                    ...prevState,
-                    logo: data.logo || '',
-                }));
+                setFormData(prevState => {
+                    if (!prevState.logo) {
+                        return {
+                            ...prevState,
+                            logo: data.logo || '',
+                        };
+                    }
+                    return prevState;
+                });
             }
         } catch (error) {
             console.error('Error fetching company data:', error);
