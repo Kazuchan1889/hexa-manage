@@ -434,37 +434,18 @@ const OvertimeUser = () => {
                       <CircularProgress /> {/* Komponen animasi loading */}
                     </Box>
                   ) : (
-                    <TableContainer
-                      component={Paper}
-                      style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-                    >
+                    <TableContainer component={Paper} style={{ backgroundColor: "#FFFFFF", width: "100%" }}>
                       <Table aria-label="simple table" size="small">
                         <TableHead style={{ backgroundColor: "#204684" }}>
                           <TableRow>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Detail</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Start</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Finish</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Date</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold text-center">Overtime Type</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold text-center">Overtime Hours</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Status</p>
-                            </TableCell>
-                            <TableCell align="center" className="w-[10%]">
-                              <p className="text-white font-semibold">Action</p>
-                            </TableCell>
+                            {(isMobile
+                              ? ["Detail", "Date", "Status"]
+                              : ["Detail", "Start", "Finish", "Date", "Overtime Type", "Overtime Hours", "Status", "Action"]
+                            ).map((header) => (
+                              <TableCell align="center" className="w-[10%]" key={header}>
+                                <p className="text-white font-semibold">{header}</p>
+                              </TableCell>
+                            ))}
                           </TableRow>
                         </TableHead>
                         <TableBody className="bg-gray-100">
@@ -474,11 +455,11 @@ const OvertimeUser = () => {
                             .map((row, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center">{row.note}</TableCell>
-                                <TableCell align="center">{row.mulai}</TableCell>
-                                <TableCell align="center">{row.selesai}</TableCell>
+                                {!isMobile && <TableCell align="center">{row.mulai}</TableCell>}
+                                {!isMobile && <TableCell align="center">{row.selesai}</TableCell>}
                                 <TableCell align="center">{formatDate(row.tanggal_overtime)}</TableCell>
-                                <TableCell align="center">{row.tipe}</TableCell>
-                                <TableCell align="center">{ }</TableCell>
+                                {!isMobile && <TableCell align="center">{row.tipe}</TableCell>}
+                                {!isMobile && <TableCell align="center">{ }</TableCell>}
                                 <TableCell
                                   align="center"
                                   style={{
@@ -498,29 +479,32 @@ const OvertimeUser = () => {
                                     "Rejected"
                                   )}
                                 </TableCell>
-                                <TableCell align="center">
-                                  <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={() =>
-                                      handleEditOpen(row.id, {
-                                        note: row.note,
-                                        mulai: row.mulai,
-                                        selesai: row.selesai,
-                                        tipe: row.tipe,
-                                        tanggal_overtime: row.tanggal_overtime,
-                                        istirahat: row.istirahat,
-                                      })
-                                    }
-                                  >
-                                    Edit
-                                  </Button>
-                                </TableCell>
+                                {!isMobile && (
+                                  <TableCell align="center">
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      onClick={() =>
+                                        handleEditOpen(row.id, {
+                                          note: row.note,
+                                          mulai: row.mulai,
+                                          selesai: row.selesai,
+                                          tipe: row.tipe,
+                                          tanggal_overtime: row.tanggal_overtime,
+                                          istirahat: row.istirahat,
+                                        })
+                                      }
+                                    >
+                                      Edit
+                                    </Button>
+                                  </TableCell>
+                                )}
                               </TableRow>
                             ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
+
                   )}
                 </div>
               </CardContent>

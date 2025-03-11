@@ -30,6 +30,10 @@ import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
 import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
+import { IconButton } from "@mui/material";
+
 
 const TableLaporanKegiatan = () => {
   const [dataLaporan, setDataLaporan] = useState([]);
@@ -39,6 +43,7 @@ const TableLaporanKegiatan = () => {
   const [error, setError] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [openModal, setOpenModal] = useState(false);
+  const [openModalMob, setOpenModalMob] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState("");
   const [endDate, setEndDate] = useState('');
   const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
@@ -46,6 +51,9 @@ const TableLaporanKegiatan = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -191,6 +199,16 @@ const TableLaporanKegiatan = () => {
     link.download = fileUrl.split('/').pop(); // Nama file dari URL
     link.click();
   };
+  const handleOpenModalMob = (row) => {
+    setSelectedRow(row);
+    setOpenModalMob(true);
+  };
+
+  const handleCloseModalMob = () => {
+    setOpenModalMob(false);
+    setSelectedRow(null);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
@@ -200,8 +218,8 @@ const TableLaporanKegiatan = () => {
         <div className="bg-[#11284E] text-white p-6  shadow-lg h-48 ">
           <h1 className="text-2xl ml-2 font-bold">Employe Report</h1>
           <div className="mt-4 flex justify-center items-center mr-8 space-x-4">
-           {/* Search Bar */}
-           <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
+            {/* Search Bar */}
+            <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
               <input
                 type="text"
                 placeholder="Search..."
@@ -238,106 +256,86 @@ const TableLaporanKegiatan = () => {
               <Table aria-label="simple table" size="small">
                 <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                   <TableRow>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Name</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Report Date</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Submission Hours</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Location</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Type</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Detail</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Description</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Document</p></TableCell>
-                    <TableCell align="center" className="w-[10%]"><p className="text-indigo font-semibold">Export</p></TableCell>
+                    {(isMobile
+                      ? ["Name", "Report Date", "Detail"]
+                      : ["Name", "Report Date", "Submission Hours", "Location", "Type", "Detail", "Description", "Document", "Export"]
+                    ).map((header) => (
+                      <TableCell key={header} align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">{header}</p>
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
-
                 <TableBody className="bg-gray-100">
-                  {(rowsPerPage > 0
-                    ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    : filteredLaporan
-                  ).map((laporan, index) => (
+                  {(rowsPerPage > 0 ? filteredLaporan.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : filteredLaporan).map((laporan, index) => (
                     <TableRow key={index}>
                       <TableCell align="center">{laporan.nama}</TableCell>
                       <TableCell align="center">{laporan.tanggal}</TableCell>
-                      <TableCell align="center">{laporan.jam}</TableCell>
-                      <TableCell align="center">{laporan.lokasi}</TableCell>
-                      <TableCell align="center">{laporan.jenis}</TableCell>
-                      <TableCell align="center">{laporan.keterangan}</TableCell>
-                      <TableCell align="left">
-                        {laporan.deskripsi.split(" ").length > 10 ? (
-                          <>
-                            {laporan.deskripsi.split(" ").slice(0, 10).join(" ")}...
-                            <span
-                              onClick={() => handleOpenModal(laporan.deskripsi)}
-                              style={{ color: "blue", cursor: "pointer" }}
-                            >
-                              read more
-                            </span>
-                          </>
-                        ) : (
-                          laporan.deskripsi
-                        )}
-                      </TableCell>
-                      <TableCell align="center">
-                        {laporan.dokumen && laporan.dokumen.length > 0 ? (
-                          <div className="flex justify-center gap-[20%]">
-                            {laporan.dokumen.map((doc, docIndex) => (
-                              <img
-                                key={docIndex}
-                                src={doc}
-                                alt={`Document ${docIndex + 1}`}
-                                className="h-7 cursor-pointer m-auto"
-                                onClick={() => setSelectedDoc(doc)}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 italic">NO FILE</p>
-                        )}
-                      </TableCell>
-
-
-                      {/* Button Export */}
-                      <TableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="success"
-                          startIcon={<FileDownloadOutlined />}
-                          onClick={() => {
-                            console.log("Mengirim userId ke backend:", laporan.idk);
-
-                            axios
-                              .post(
-                                `${ip}/api/export/data/3`,
-                                { userId: laporan.idk },
-                                {
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                    Authorization: localStorage.getItem("accessToken"),
-                                  },
-                                  responseType: "blob",
-                                }
-                              )
-                              .then((response) => {
-
-                                const url = window.URL.createObjectURL(new Blob([response.data]));
-
-                                const link = document.createElement("a");
-                                link.href = url;
-                                link.setAttribute("download", "data_export.xlsx"); // Menentukan nama file unduhan
-                                document.body.appendChild(link);
-                                link.click(); // Menyimulasikan klik untuk mengunduh file
-                                document.body.removeChild(link); // Menghapus elemen link setelah digunakan
-                                alert("Data exported successfully!");
-                              })
-                              .catch((error) => {
-                                console.error("Error exporting data:", error);
-                                alert("Failed to export data.");
-                              });
-                          }}
-                        >
-                          Export
-                        </Button>
-                      </TableCell>
+                      {!isMobile && <TableCell align="center">{laporan.jam}</TableCell>}
+                      {!isMobile && <TableCell align="center">{laporan.lokasi}</TableCell>}
+                      {!isMobile && <TableCell align="center">{laporan.jenis}</TableCell>}
+                      {!isMobile && <TableCell align="center">{laporan.keterangan}</TableCell>}
+                      {!isMobile && (
+                        <TableCell align="left">
+                          {laporan.deskripsi.split(" ").length > 10 ? (
+                            <>
+                              {laporan.deskripsi.split(" ").slice(0, 10).join(" ")}...
+                              <span
+                                onClick={() => handleOpenModal(laporan.deskripsi)}
+                                style={{ color: "blue", cursor: "pointer" }}
+                              >
+                                read more
+                              </span>
+                            </>
+                          ) : (
+                            laporan.deskripsi
+                          )}
+                        </TableCell>
+                      )}
+                      {!isMobile && (
+                        <TableCell align="center">
+                          {laporan.dokumen && laporan.dokumen.length > 0 ? (
+                            <div className="flex justify-center gap-[20%]">
+                              {laporan.dokumen.map((doc, docIndex) => (
+                                <img key={docIndex} src={doc} alt={`Document ${docIndex + 1}`} className="h-7 cursor-pointer m-auto" onClick={() => setSelectedDoc(doc)} />
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-500 italic">NO FILE</p>
+                          )}
+                        </TableCell>
+                      )}
+                      {!isMobile && (
+                        <TableCell align="center">
+                          <Button variant="contained" color="success" startIcon={<FileDownloadOutlined />} onClick={() => {
+                            axios.post(`${ip}/api/export/data/3`, { userId: laporan.idk }, {
+                              headers: { "Content-Type": "application/json", Authorization: localStorage.getItem("accessToken") },
+                              responseType: "blob",
+                            }).then((response) => {
+                              const url = window.URL.createObjectURL(new Blob([response.data]));
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.setAttribute("download", "data_export.xlsx");
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              alert("Data exported successfully!");
+                            }).catch((error) => {
+                              console.error("Error exporting data:", error);
+                              alert("Failed to export data.");
+                            });
+                          }}>
+                            Export
+                          </Button>
+                        </TableCell>
+                      )}
+                      {isMobile && (
+                        <TableCell align="center">
+                          <IconButton onClick={() => handleOpenModalMob(laporan)}>
+                            <InfoIcon color="primary" />
+                          </IconButton>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -365,6 +363,33 @@ const TableLaporanKegiatan = () => {
               <h2 style={{ fontWeight: "bold" }}>Full Description</h2>
               <p>{selectedDescription}</p>
               <Button onClick={handleCloseModal} variant="contained" color="primary">
+                Close
+              </Button>
+            </Box>
+          </Modal>
+
+          {/* Modal */}
+          <Modal open={openModalMob} onClose={handleCloseModalMob}>
+            <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+              <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+              {selectedRow && (
+                <div className="flex flex-col space-y-2 mt-4">
+                  <p><strong>Name:</strong> {selectedRow.nama}</p>
+                  <p><strong>Report Date:</strong> {selectedRow.tanggal}</p>
+                  <p><strong>location:</strong> {selectedRow.lokasi}</p>
+                  <p><strong>Title:</strong> {selectedRow.keterangan}</p>
+                  <p><strong>Description:</strong></p>
+                  <div className="max-h-40 overflow-y-auto border p-2 rounded">
+                    {selectedRow.deskripsi}
+                  </div>
+                  {/* <p><strong>Document:</strong> {selectedRow.dokumen ? (
+                    <Button onClick={() => handleDownload(selectedRow.dokumen, "document.pdf")} className="text-blue-600 flex items-center space-x-1">
+                      <span>Download</span>
+                    </Button>
+                  ) : "No Document"}</p> */}
+                </div>
+              )}
+              <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleCloseModalMob}>
                 Close
               </Button>
             </Box>

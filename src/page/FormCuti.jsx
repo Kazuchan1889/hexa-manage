@@ -373,100 +373,55 @@ function FormCuti() {
                     </Typography>
                   </div>
                 </div>
-                <TableContainer
-                  className="rounded-md max-h-56 overflow-y-auto"
-                  component={Paper}
-                >
+                <TableContainer className="rounded-md max-h-56 overflow-y-auto" component={Paper}>
                   <Table size="small" className="">
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow className="text-center">
-                        <TableCell className="w-[30%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Reason
-                          </Typography>
-                        </TableCell>
-                        <TableCell className="w-[20%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Temporary Replacement
-                          </Typography>
-                        </TableCell>
-                        <TableCell className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Start Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            End Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Status
-                          </Typography>
-                        </TableCell>
+                        {(isMobile
+                          ? ["Reason", "Start Date", "Status"]
+                          : ["Reason", "Temporary Replacement", "Start Date", "End Date", "Status"]
+                        ).map((header) => (
+                          <TableCell key={header} className="w-[20%]">
+                            <Typography
+                              variant="body2"
+                              className="font-semibold text-white text-center"
+                              style={{ fontWeight: "bold" }}
+                            >
+                              {header}
+                            </Typography>
+                          </TableCell>
+                        ))}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {tableData
-                        .slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row, index) => (
                           <TableRow key={index}>
                             <TableCell className="w-1/5">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
+                              <Typography variant="body2" className="text-center">
                                 {row.alasan}
                               </Typography>
                             </TableCell>
+                            {!isMobile && (
+                              <TableCell className="w-1/5">
+                                <Typography variant="body2" className="text-center">
+                                  {row.pengganti}
+                                </Typography>
+                              </TableCell>
+                            )}
                             <TableCell className="w-1/5">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
-                                {row.pengganti}
-                              </Typography>
-                            </TableCell>
-                            <TableCell className="w-1/5">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
+                              <Typography variant="body2" className="text-center">
                                 {row.mulai}
                               </Typography>
                             </TableCell>
-                            <TableCell className="w-1/5">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
-                                {row.selesai}
-                              </Typography>
-                            </TableCell>
+                            {!isMobile && (
+                              <TableCell className="w-1/5">
+                                <Typography variant="body2" className="text-center">
+                                  {row.selesai}
+                                </Typography>
+                              </TableCell>
+                            )}
                             <TableCell className="w-1/5">
                               <Typography
                                 variant="body2"
@@ -477,9 +432,7 @@ function FormCuti() {
                                       ? "red"
                                       : row.progress === "accepted"
                                         ? "green"
-                                        : row.progress ===
-                                          "acc by direktur" ||
-                                          row.progress === "acc by admin"
+                                        : row.progress === "acc by direktur" || row.progress === "acc by admin"
                                           ? "#facc15"
                                           : "grey",
                                 }}
@@ -500,6 +453,7 @@ function FormCuti() {
                     </TableBody>
                   </Table>
                 </TableContainer>
+
               </div>
             </div>
 

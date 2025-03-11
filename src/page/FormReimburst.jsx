@@ -303,282 +303,235 @@ function FormReimburst() {
           <h1 className="text-2xl font-bold text-center">Reimburst Form</h1>
           <div className="h-full w-full mx-auto">
             <div className="flex flex-col justify-center items-center">
-                <div className="flex flex-col justify-between items-center mt-3 w-full">
-                  {/* Form */}
-                  <form
-                    onSubmit={handleSubmit}
-                    className="w-full mt-16 rounded-[15px] flex flex-col justify-center bg-card p-5"
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        {!isOtherSelected ? (
-                          <Select
-                            name="keterangan"
-                            value={formData.keterangan}
-                            onChange={handleSelectChange}
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            className="mb-2"
-                            displayEmpty
-                          >
-                            <MenuItem value="">Select an option</MenuItem>
-                            <MenuItem value="tiket parkir">Tiket Parkir</MenuItem>
-                            <MenuItem value="bill obat">Bill Obat</MenuItem>
-                            <MenuItem value="bill rumah sakit / dokter">Bill Rumah Sakit / Dokter</MenuItem>
-                            <MenuItem value="bensin">Bensin</MenuItem>
-                            <MenuItem value="other">Other</MenuItem>
-                          </Select>
-                        ) : (
-                          <TextField
-                            name="keterangan"
-                            label="Details"
-                            size="small"
-                            variant="outlined"
-                            fullWidth
-                            className="mb-2"
-                            value={formData.keterangan}
-                            onChange={handleInputChange}
-                          />
-                        )}
-                      </Grid>
-
-                      <Grid item xs={12} sm={6}>
+              <div className="flex flex-col justify-between items-center mt-3 w-full">
+                {/* Form */}
+                <form
+                  onSubmit={handleSubmit}
+                  className="w-full mt-16 rounded-[15px] flex flex-col justify-center bg-card p-5"
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      {!isOtherSelected ? (
+                        <Select
+                          name="keterangan"
+                          value={formData.keterangan}
+                          onChange={handleSelectChange}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          className="mb-2"
+                          displayEmpty
+                        >
+                          <MenuItem value="">Select an option</MenuItem>
+                          <MenuItem value="tiket parkir">Tiket Parkir</MenuItem>
+                          <MenuItem value="bill obat">Bill Obat</MenuItem>
+                          <MenuItem value="bill rumah sakit / dokter">Bill Rumah Sakit / Dokter</MenuItem>
+                          <MenuItem value="bensin">Bensin</MenuItem>
+                          <MenuItem value="other">Other</MenuItem>
+                        </Select>
+                      ) : (
                         <TextField
-                          name="biaya"
-                          label="Cost"
+                          name="keterangan"
+                          label="Details"
                           size="small"
                           variant="outlined"
                           fullWidth
                           className="mb-2"
-                          value={formData.biaya}
-                          onChange={handleBiayaChange}
+                          value={formData.keterangan}
+                          onChange={handleInputChange}
                         />
-                      </Grid>
+                      )}
+                    </Grid>
 
-                      <Grid item xs={12} sm={6}>
-                        <div className="mb-2">
-                          <TextField
-                            name="tanggal"
-                            label="Date"
-                            type="date"
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        name="biaya"
+                        label="Cost"
+                        size="small"
+                        variant="outlined"
+                        fullWidth
+                        className="mb-2"
+                        value={formData.biaya}
+                        onChange={handleBiayaChange}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <div className="mb-2">
+                        <TextField
+                          name="tanggal"
+                          label="Date"
+                          type="date"
+                          size="small"
+                          variant="outlined"
+                          fullWidth
+                          value={formData.tanggal}
+                          onChange={handleInputChange}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          InputProps={{
+                            placeholder: "",
+                          }}
+                        />
+                      </div>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" className="text-left">
+                        Upload File
+                      </Typography>
+                      <div {...getRootProps()} className="mb-2">
+                        <input {...getInputProps()} />
+                        {uploading ? (
+                          <div className="flex items-center">
+                            <CircularProgress color="primary" size={24} />
+                            <p className="ml-2">Uploading...</p>
+                          </div>
+                        ) : uploadedFile ? (
+                          <div className="flex items-center">
+                            <CheckCircleIcon color="primary" />
+                            <p className="ml-2">
+                              Upload successful: {uploadedFile.name}
+                            </p>
+                          </div>
+                        ) : (
+                          <Button
                             size="small"
                             variant="outlined"
-                            fullWidth
-                            value={formData.tanggal}
-                            onChange={handleInputChange}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            InputProps={{
-                              placeholder: "",
-                            }}
-                          />
-                        </div>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6}>
-                        <Typography variant="body2" className="text-left">
-                          Upload File
-                        </Typography>
-                        <div {...getRootProps()} className="mb-2">
-                          <input {...getInputProps()} />
-                          {uploading ? (
-                            <div className="flex items-center">
-                              <CircularProgress color="primary" size={24} />
-                              <p className="ml-2">Uploading...</p>
-                            </div>
-                          ) : uploadedFile ? (
-                            <div className="flex items-center">
-                              <CheckCircleIcon color="primary" />
-                              <p className="ml-2">
-                                Upload successful: {uploadedFile.name}
-                              </p>
-                            </div>
-                          ) : (
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              color="secondary"
-                            >
-                              <Typography variant="body2">
-                                Drop file here
-                              </Typography>
-                            </Button>
-                          )}
-                        </div>
-                      </Grid>
-                    </Grid>
-                    <div className="mt-5">
-                      <Button
-                        type="submit"
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        disabled={!isFormValid}
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </form>
-
-                  {/* Table */}
-                  <div className="w-full flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
-                    <div className="w-full">
-                      <div className="flex justify-between">
+                            color="secondary"
+                          >
+                            <Typography variant="body2">
+                              Drop file here
+                            </Typography>
+                          </Button>
+                        )}
                       </div>
-                      <TableContainer
-                        className="w-full flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5"
-                        component={Paper}
-                      >
-                        <Table size="small">
-                          <TableHead style={{ backgroundColor: "#204684" }}>
-                            <TableRow>
-                              <TableCell className="w-[30%]">
+                    </Grid>
+                  </Grid>
+                  <div className="mt-5">
+                    <Button
+                      type="submit"
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      disabled={!isFormValid}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </form>
+
+                {/* Table */}
+                <div className="w-full flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                    </div>
+                    <TableContainer className="w-full flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5" component={Paper}>
+                      <Table size="small">
+                        <TableHead style={{ backgroundColor: "#204684" }}>
+                          <TableRow>
+                            {(isMobile
+                              ? ["Cost", "Date", "Status"]
+                              : ["Details", "Cost", "Date", "Evidence", "Status"]
+                            ).map((header) => (
+                              <TableCell key={header} className="w-[20%]">
                                 <Typography
                                   className="font-semibold text-white text-center"
                                   style={{ fontWeight: "bold" }}
                                   variant="body2"
                                 >
-                                  Details
+                                  {header}
                                 </Typography>
                               </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Cost
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Date
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Evidence
-                                </Typography>
-                              </TableCell>
-                              <TableCell className="w-[10%]">
-                                <Typography
-                                  className="font-semibold text-white text-center"
-                                  style={{ fontWeight: "bold" }}
-                                  variant="body2"
-                                >
-                                  Status
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {tableData
-                              .slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                              .map((row, index) => (
-                                <TableRow key={index}>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {tableData
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, index) => (
+                              <TableRow key={index}>
+                                {!isMobile && (
                                   <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
+                                    <Typography className="text-center" variant="body2">
                                       {row.keterangan}
                                     </Typography>
                                   </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
-                                      {row.biaya}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                    >
-                                      {row.date}
-                                    </Typography>
-                                  </TableCell>
+                                )}
+                                <TableCell className="w-1/5">
+                                  <Typography className="text-center" variant="body2">
+                                    {row.biaya}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                  <Typography className="text-center" variant="body2">
+                                    {row.date}
+                                  </Typography>
+                                </TableCell>
+                                {!isMobile && (
                                   <TableCell className="text-center w-1/5 flex justify-center mx-auto">
                                     <div className="flex justify-center">
-                                      <a
-                                        href={row.dokumen}
-                                        target="_blank "
-                                        download
-                                        className="cursor-pointer"
-                                      >
+                                      <a href={row.dokumen} target="_blank " download className="cursor-pointer">
                                         <DownloadIcon />
                                       </a>
                                     </div>
                                   </TableCell>
-                                  <TableCell className="w-1/5">
-                                    <Typography
-                                      className="text-center"
-                                      variant="body2"
-                                      style={{
-                                        color:
-                                          row.progress === "sudah ditransfer"
-                                            ? "#22c55e"
-                                            : row.progress === "rejected"
-                                              ? "#ef4444"
-                                              : "grey",
-                                      }}
-                                    >
-                                      {row.progress.charAt(0).toUpperCase() +
-                                        row.progress.slice(1)}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
+                                )}
+                                <TableCell className="w-1/5">
+                                  <Typography
+                                    className="text-center"
+                                    variant="body2"
+                                    style={{
+                                      color:
+                                        row.progress === "sudah ditransfer"
+                                          ? "#22c55e"
+                                          : row.progress === "rejected"
+                                            ? "#ef4444"
+                                            : "grey",
+                                    }}
+                                  >
+                                    {row.progress.charAt(0).toUpperCase() + row.progress.slice(1)}
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
 
-                    </div>
-                    {!isMobile && (
-                      <div className="flex w-11/12 items-end justify-end">
-                        <TablePagination
-                          rowsPerPageOptions={[5, 10, 15]}
-                          variant="body2"
-                          component="div"
-                          count={tableData.length}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      </div>
-                    )}
-                    <Dialog
-                      open={Boolean(selectedImage)}
-                      onClose={() => setSelectedImage(null)}
-                      maxWidth="lg"
-                    >
-                      <DialogContent>
-                        <img
-                          src={selectedImage}
-                          alt="Selected"
-                          style={{ maxWidth: "100%", maxHeight: "80vh" }}
-                        />
-                      </DialogContent>
-                    </Dialog>
+
                   </div>
+                  {!isMobile && (
+                    <div className="flex w-11/12 items-end justify-end">
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 15]}
+                        variant="body2"
+                        component="div"
+                        count={tableData.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </div>
+                  )}
+                  <Dialog
+                    open={Boolean(selectedImage)}
+                    onClose={() => setSelectedImage(null)}
+                    maxWidth="lg"
+                  >
+                    <DialogContent>
+                      <img
+                        src={selectedImage}
+                        alt="Selected"
+                        style={{ maxWidth: "100%", maxHeight: "80vh" }}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </div>
+              </div>
             </div>
           </div>
         </div>

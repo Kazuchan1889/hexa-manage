@@ -20,6 +20,9 @@ import Sidebar from "../feature/Sidebar";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { Modal, IconButton, Box } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
 
 const TableResign = () => {
   const [page, setPage] = useState(0);
@@ -28,7 +31,8 @@ const TableResign = () => {
   const [rows, setRows] = useState([]);
   const [originalRows, setOriginalRows] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading.isLoading);
 
@@ -136,6 +140,16 @@ const TableResign = () => {
       });
   };
 
+  const handleOpenModal = (row) => {
+    setSelectedRow(row);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedRow(null);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
@@ -184,55 +198,57 @@ const TableResign = () => {
                 <Table aria-label="simple table" size="small">
                   <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                     <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Name</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Divition</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">Position</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">
-                          Filled Date
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-indigo font-semibold">
-                          Resign Date
-                        </p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[30%]">
-                        <p className="text-indigo font-semibold">Reason</p>
-                      </TableCell>
+                      {(isMobile
+                        ? ["Name", "Filled Date", "Detail"]
+                        : ["Name", "Divition", "Position", "Filled Date", "Resign Date", "Reason"]
+                      ).map((header) => (
+                        <TableCell key={header} align="center" className="w-[10%]">
+                          <p className="text-indigo font-semibold">{header}</p>
+                        </TableCell>
+                      ))}
                     </TableRow>
                   </TableHead>
                   <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? rows.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      : rows
-                    ).map((row, index) => (
+                    {(rowsPerPage > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : rows).map((row, index) => (
                       <TableRow key={index}>
                         <TableCell align="center">{row.nama}</TableCell>
-                        <TableCell align="center">{row.divisi}</TableCell>
-                        <TableCell align="center">{row.jabatan}</TableCell>
-                        <TableCell align="center">
-                          {row.tanggalmengajukan}
-                        </TableCell>
-                        <TableCell align="center">
-                          {row.tanggalkeluar}
-                        </TableCell>
-                        <TableCell align="center">{row.alasan}</TableCell>
+                        {!isMobile && <TableCell align="center">{row.divisi}</TableCell>}
+                        {!isMobile && <TableCell align="center">{row.jabatan}</TableCell>}
+                        <TableCell align="center">{row.tanggalmengajukan}</TableCell>
+                        {!isMobile && <TableCell align="center">{row.tanggalkeluar}</TableCell>}
+                        {!isMobile && <TableCell align="center">{row.alasan}</TableCell>}
+                        {isMobile && (
+                          <TableCell align="center">
+                            <IconButton onClick={() => handleOpenModal(row)}>
+                              <InfoIcon color="primary" />
+                            </IconButton>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
             </div>
+            {/* Modal */}
+            <Modal open={openModal} onClose={handleCloseModal}>
+              <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+                <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+                {selectedRow && (
+                  <div className="flex flex-col space-y-2 mt-4">
+                    <p><strong>Name:</strong> {selectedRow.nama}</p>
+                    <p><strong>Filing Date:</strong> {selectedRow.tanggalmengajukan}</p>
+                    <p><strong>Position:</strong> {selectedRow.jabatan}</p>
+                    <div className="flex items-center justify-between">
+                      <p><strong>Progress:</strong> {selectedRow.alasan}</p>
+                    </div>
+                  </div>
+                )}
+                <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleCloseModal}>
+                  Close
+                </Button>
+              </Box>
+            </Modal>
           </div>
           <div className="flex w-full justify-center">
             <div className="flex w-11/12 items-end justify-end">

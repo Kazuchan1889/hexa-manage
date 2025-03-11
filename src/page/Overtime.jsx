@@ -33,6 +33,9 @@ import Formovertime from "../page/Formovertime";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
+import { Modal, IconButton, Box } from "@mui/material";
 
 const TableOverTime = () => {
   const [page, setPage] = useState(0);
@@ -48,6 +51,9 @@ const TableOverTime = () => {
   const [isTambahFormOpen, setTambahFormOpen] = useState(false);
   const jabatan = localStorage.getItem("jabatan");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -256,6 +262,16 @@ const TableOverTime = () => {
     handleMenuClose();
   };
 
+  const handleOpenModal = (row) => {
+    setSelectedRow(row);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedRow(null);
+  };
+
   const handleCloseDatePaidLeave = () => {
     setIsDatePaidLeaveOpen(null);
   };
@@ -278,17 +294,17 @@ const TableOverTime = () => {
     setAnchorEl(null);
   };
 
-   useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 1024);
-      };
-  
-      window.addEventListener("resize", handleResize);
-  
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
@@ -358,42 +374,18 @@ const TableOverTime = () => {
           </div>
 
           <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
-            <TableContainer
-              component={Paper}
-              style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-            >
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
               <Table aria-label="simple table" size="small">
                 <TableHead style={{ backgroundColor: "#FFFFFF" }}>
                   <TableRow>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">Catatan</p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">
-                        Mulai
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">
-                        Selesai
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[30%]">
-                      <p className="text-indigo font-semibold">Tanggal</p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold text-center">
-                        Tipe Overtime
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold text-center">
-
-                      </p>
-                    </TableCell>
-                    <TableCell align="center" className="w-[10%]">
-                      <p className="text-indigo font-semibold">Action</p>
-                    </TableCell>
+                    {(isMobile
+                      ? ["Catatan", "Mulai", "Detail"]
+                      : ["Title", "Start", "End", "Date", "Overtime Type", "Action"]
+                    ).map((header) => (
+                      <TableCell key={header} align="center" className="w-[10%]">
+                        <p className="text-indigo font-semibold">{header}</p>
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
                 <TableBody className="bg-gray-100">
@@ -402,46 +394,83 @@ const TableOverTime = () => {
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
                     )
-                    : filteredRows
-                  ).map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">{row.note}</TableCell>
-                      <TableCell align="center">{row.mulai}</TableCell>
-                      <TableCell align="center">{row.selesai}</TableCell>
-                      <TableCell align="center">{row.tanggal_overtime}</TableCell>
-                      <TableCell align="center">{row.tipe}</TableCell>
-                      <TableCell align="center">{row.breaktime}</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ color: row.status ? "black" : "red" }}
-                      >
-                        {row.status === null ? (
-                          // <DropdownButton
-                          //   onApproveSakit={handleApproveSakit}
-                          //   onApproval={handleApproval}
-                          //   data={row}
-                          //   onReject={handleReject}
-                          // />
-                          <ActionButton
-                            onAccept={handleApproval}
-                            onReject={handleReject}
+                    : filteredRows).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{row.note}</TableCell>
+                        <TableCell align="center">{row.mulai}</TableCell>
+                        {!isMobile && <TableCell align="center">{row.selesai}</TableCell>}
+                        {!isMobile && <TableCell align="center">{row.tanggal_overtime}</TableCell>}
+                        {!isMobile && <TableCell align="center">{row.tipe}</TableCell>}
+                        {!isMobile && (
+                          <TableCell
+                            align="center"
+                            style={{ color: row.status ? "black" : "red" }}
+                          >
+                            {row.status === null ? (
+                              // <DropdownButton
+                              //   onApproveSakit={handleApproveSakit}
+                              //   onApproval={handleApproval}
+                              //   data={row}
+                              //   onReject={handleReject}
+                              // />
+                              <ActionButton
+                                onAccept={handleApproval}
+                                onReject={handleReject}
 
-                            data={row}
-                            tipe={"nonIzin"}
-                            string={"Overtime"}
-                          ></ActionButton>
-                        ) : row.status ? (
-                          "accepted"
-                        ) : (
-                          "rejected"
+                                data={row}
+                                tipe={"nonIzin"}
+                                string={"Overtime"}
+                              ></ActionButton>
+                            ) : row.status ? (
+                              "accepted"
+                            ) : (
+                              "rejected"
+                            )}
+                          </TableCell>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        {isMobile && (
+                          <TableCell align="center">
+                            <IconButton onClick={() => handleOpenModal(row)}>
+                              <InfoIcon color="primary" />
+                            </IconButton>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </div>
+          {/* Modal */}
+          <Modal open={openModal} onClose={handleCloseModal}>
+            <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
+              <Typography variant="h6" className="text-center font-bold">Detail Information</Typography>
+              {selectedRow && (
+                <div className="flex flex-col space-y-2 mt-4">
+                  <p><strong>Catatan:</strong> {selectedRow.note}</p>
+                  <p><strong>Mulai:</strong> {selectedRow.mulai}</p>
+                  <p><strong>Selesai:</strong> {selectedRow.selesai}</p>
+                  <p><strong>Tanggal:</strong> {selectedRow.tanggal_overtime}</p>
+                  <p><strong>Tipe Overtime:</strong> {selectedRow.tipe}</p>
+                  <p><strong>Breaktime:</strong> {selectedRow.breaktime}</p>
+                  <div className="flex items-center justify-between mt-4">
+                    {selectedRow.status === null ? (
+                      <>
+                        <p><strong>Action:</strong></p>
+                        <ActionButton onAccept={handleApproval} onReject={handleReject} data={selectedRow} tipe={"nonIzin"} string={"Overtime"} />
+                      </>
+                    ) : (
+                      <p><strong>Status:</strong> {selectedRow.status ? "Accepted" : "Rejected"}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+              <Button fullWidth variant="contained" color="primary" className="mt-4" onClick={handleCloseModal}>
+                Close
+              </Button>
+            </Box>
+          </Modal>
+
         </div>
 
         {/* Table Section */}

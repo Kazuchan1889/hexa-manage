@@ -447,7 +447,7 @@ function FormIzin() {
                 </Button>
               </div>
             </form>
-            
+
             <div className="w-full mt-3 flex flex-col justify-center items-center mx-auto rounded-md bg-card p-5">
               <div className="w-full">
                 <div className="flex justify-between">
@@ -461,123 +461,64 @@ function FormIzin() {
                     ></Typography>
                   </div>
                 </div>
-                <TableContainer
-                  className="rounded-md max-h-52 overflow-y-auto"
-                  component={Paper}
-                >
+                <TableContainer className="rounded-md max-h-52 overflow-y-auto" component={Paper}>
                   <Table>
                     <TableHead style={{ backgroundColor: "#204684" }}>
                       <TableRow>
-                        <TableCell size="small" className="w-[30%]">
-                          <Typography
-                            variant="body2"
-                            className="text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Reason
-                          </Typography>
-                        </TableCell>
-                        <TableCell size="small" className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Start Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell size="small" className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            End Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell size="small" className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Type
-                          </Typography>
-                        </TableCell>
-                        <TableCell size="small" className="w-[5%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Evidence
-                          </Typography>
-                        </TableCell>
-                        <TableCell size="small" className="w-[10%]">
-                          <Typography
-                            variant="body2"
-                            className="font-semibold text-white text-center"
-                            style={{ fontWeight: "bold" }}
-                          >
-                            Status
-                          </Typography>
-                        </TableCell>
+                        {(isMobile
+                          ? ["Reason", "Start Date", "Status"]
+                          : ["Reason", "Start Date", "End Date", "Type", "Evidence", "Status"]
+                        ).map((header) => (
+                          <TableCell key={header} size="small" className="w-[20%]">
+                            <Typography
+                              variant="body2"
+                              className="text-white text-center"
+                              style={{ fontWeight: "bold" }}
+                            >
+                              {header}
+                            </Typography>
+                          </TableCell>
+                        ))}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {tableData
-                        .slice(
-                          page * rowsPerPage,
-                          page * rowsPerPage + rowsPerPage
-                        )
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row, index) => (
                           <TableRow key={index}>
                             <TableCell size="small" className="w-1/6">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
+                              <Typography variant="body2" className="text-center">
                                 {row.alasan}
                               </Typography>
                             </TableCell>
                             <TableCell size="small" className="w-1/6">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
+                              <Typography variant="body2" className="text-center">
                                 {row.mulai}
                               </Typography>
                             </TableCell>
-                            <TableCell size="small" className="w-1/6">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
-                                {row.selesai}
-                              </Typography>
-                            </TableCell>
-                            <TableCell size="small" className="w-1/6">
-                              <Typography
-                                variant="body2"
-                                className="text-center"
-                              >
-                                {row.jenis}
-                              </Typography>
-                            </TableCell>
-                            <TableCell size="small" className="w-1/6">
-                              <div className="flex justify-center">
-                                {row.dokumen && (
-                                  <a
-                                    href={row.dokumen}
-                                    target="_blank "
-                                    download
-                                    className="cursor-pointer"
-                                  >
-                                    <DownloadIcon />
-                                  </a>
-                                )}
-                              </div>
-                            </TableCell>
+                            {!isMobile && (
+                              <>
+                                <TableCell size="small" className="w-1/6">
+                                  <Typography variant="body2" className="text-center">
+                                    {row.selesai}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell size="small" className="w-1/6">
+                                  <Typography variant="body2" className="text-center">
+                                    {row.jenis}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell size="small" className="w-1/6">
+                                  <div className="flex justify-center">
+                                    {row.dokumen && (
+                                      <a href={row.dokumen} target="_blank" download className="cursor-pointer">
+                                        <DownloadIcon />
+                                      </a>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </>
+                            )}
                             <TableCell size="small" className="w-1/6">
                               <Typography
                                 variant="body2"
@@ -603,6 +544,7 @@ function FormIzin() {
                     </TableBody>
                   </Table>
                 </TableContainer>
+
               </div>
             </div>
 
