@@ -175,7 +175,7 @@ const Sidebar = () => {
                 </IconButton>
             </div>
 
-            <div className="px-3 py-2 h-20 flex justify-center">
+            <div className="px-3 py-2 h-18 flex justify-center">
                 <img src={formData.logo} className={`${open ? "w-auto" : "w-0"} rounded-md`} alt="logo" />
             </div>
 
