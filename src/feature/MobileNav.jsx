@@ -58,6 +58,11 @@ const MobileNavbar = () => {
     setMasterMenuOpen(!masterMenuOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/", { replace: true });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -196,9 +201,9 @@ const MobileNavbar = () => {
             <ListItemIcon style={{ color: "white" }}><SettingsIcon /></ListItemIcon>
             <ListItemText primary="Settings" />
           </ListItem>
-          <ListItem button onClick={() => alert("Logout")} style={{ color: "white" }}>
+          <ListItem button onClick={ handleLogout } style={{color: "white"}}>
             <ListItemIcon style={{ color: "white" }}><ExitToAppIcon /></ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText  primary="Logout" />
           </ListItem>
         </List>
       </Drawer>
@@ -209,7 +214,7 @@ const MobileNavbar = () => {
               <MenuItem component={Link} to="/accountsetting" onClick={handleCloseDropdown}>
                 <Typography variant="button">Settings</Typography>
               </MenuItem>
-              <MenuItem onClick={() => { localStorage.removeItem("accessToken"); navigate("/"); }}>
+              <MenuItem onClick={ handleLogout }>
                 <Typography variant="button">Logout</Typography>
               </MenuItem>
             </MenuList>

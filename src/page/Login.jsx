@@ -104,112 +104,147 @@ function Login() {
   }
 
   return (
-    <div className="px-4 py-6 lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md">
-      <div className="w-[50%] h-full p-4 bg-[#204682] flex justify-center align-center items-center rounded-xl">
-        <img src="/logo-login.png" className="rounded-md h-14 top-12 left-8  absolute"></img>
-        <span className="text-3xl font-bold text-white">
-          Welcome!
-        </span>
-      </div>
-      <div className="w-1/2">
-        <div className="justify-center items-center flex flex-col">
-          <p className="text-xl font-medium ">Welcome Back!</p>
-          <p>Enter your email and password to continue</p>
-          <div className="flex-col mt-5">
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <Grid container>
-                <Grid item xs={12}>
-                  <div className="mb-2">
-                    <div className="text-left mb-2">Email Adress</div>
-                    <TextField
-                      id="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                      variant="outlined"
-                      fullWidth
-                      sx={{
-                        borderRadius: "50px",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "50px",
-                        },
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <div className="mb-2">
-                    <div className="text-left mb-2">Password</div>
-                    <TextField
-                      
-                      id="password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      type={showPassword ? "text" : "password"}
-                      fullWidth
-                      sx={{
-                        borderRadius: "50px",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "50px",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <IconButton onClick={handleShowPasswordToggle}>
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </div>
-                </Grid>
-                <Grid item xs={12}>
-                  <div className="flex justify-center mx-auto my-5">
-                    <Button
-                      style={{ width: "30%", backgroundColor: "#311B92" }}
-                      type="submit"
-                      variant="contained"
-                      sx={{
-                        borderRadius: "50px",
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: "50px",
-                        },
-                      }}
-                    >
-                      Log in
-                    </Button>
-                  </div>
-                </Grid>
-              </Grid>
-            </form>
-            <Button onClick={toggleForgetPassword}>Forgot Password?</Button>
-
-            {showForgetPassword && (
-              <div>
-                <ForgetPassword
-                  isOpen={showForgetPassword}
-                  onClose={toggleForgetPassword}
+    <div>
+      {isMobile ? (
+        <div className="w-full min-h-screen flex flex-col lg:flex-row items-center justify-center bg-[#FFFFFF] px-4 py-6">
+          <div className="w-full h-32 flex flex-col items-center justify-center rounded-xl text-white">
+            <img src="/logo-login.png" className="rounded-md h-14 mb-4" alt="Logo" />
+          </div>
+          <div className="w-full lg:w-1/2 flex flex-col items-center p-6">
+            <p className="text-xl text-[#204682] font-medium">Welcome Back!</p>
+            <p className="text-center text-sm font-medium">Enter your email and password to continue</p>
+            <form onSubmit={handleSubmit} className="w-full max-w-sm mt-5">
+              <div className="mb-4">
+                <label className="block text-left mb-2">Email Address</label>
+                <TextField id="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth variant="outlined" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-left mb-2">Password</label>
+                <TextField
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                  fullWidth
+                  variant="outlined"
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleShowPasswordToggle}>
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    ),
+                  }}
                 />
               </div>
-            )}
+              <div className="flex justify-center my-5">
+                <Button type="submit" variant="contained" style={{ backgroundColor: "#311B92" }}>Log in</Button>
+              </div>
+            </form>
+            <Button onClick={toggleForgetPassword}>Forgot Password?</Button>
+            {showForgetPassword && <ForgetPassword isOpen={showForgetPassword} onClose={toggleForgetPassword} />}
           </div>
         </div>
-      </div>
-      {/* <div className="w-1/2 flex justify-center items-center">
-        {!isMobile && (
-          <img
-            src="/login.png"
-            className="rounded-md h-full"
-            alt="Login"
-          />
-        )}
-      </div> */}
+      ) : (
+        <div className="px-4 py-6 lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md">
+
+          <div className="w-[50%] h-full p-4 bg-[#204682] flex justify-center align-center items-center rounded-xl">
+            <img src="/logo-login.png" className="rounded-md h-14 top-12 left-8  absolute"></img>
+            <span className="text-3xl font-bold text-white">
+              Welcome!
+            </span>
+          </div>
+          <div className="w-1/2">
+            <div className="justify-center items-center flex flex-col">
+              <p className="text-xl font-medium ">Welcome Back!</p>
+              <p>Enter your email and password to continue</p>
+              <div className="flex-col mt-5">
+                <form
+                  onSubmit={handleSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <div className="mb-2">
+                        <div className="text-left mb-2">Email Adress</div>
+                        <TextField
+                          id="email"
+                          value={email}
+                          onChange={handleEmailChange}
+                          variant="outlined"
+                          fullWidth
+                          sx={{
+                            borderRadius: "50px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "50px",
+                            },
+                          }}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div className="mb-2">
+                        <div className="text-left mb-2">Password</div>
+                        <TextField
+
+                          id="password"
+                          value={password}
+                          onChange={handlePasswordChange}
+                          type={showPassword ? "text" : "password"}
+                          fullWidth
+                          sx={{
+                            borderRadius: "50px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "50px",
+                            },
+                          }}
+                          InputProps={{
+                            endAdornment: (
+                              <IconButton onClick={handleShowPasswordToggle}>
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            ),
+                          }}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div className="flex justify-center mx-auto my-5">
+                        <Button
+                          style={{ width: "30%", backgroundColor: "#311B92" }}
+                          type="submit"
+                          variant="contained"
+                          sx={{
+                            borderRadius: "50px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "50px",
+                            },
+                          }}
+                        >
+                          Log in
+                        </Button>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </form>
+                <Button onClick={toggleForgetPassword}>Forgot Password?</Button>
+
+                {showForgetPassword && (
+                  <div>
+                    <ForgetPassword
+                      isOpen={showForgetPassword}
+                      onClose={toggleForgetPassword}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

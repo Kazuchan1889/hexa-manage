@@ -191,36 +191,66 @@ function DashboardUserSide() {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
-           {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+        <div className="flex flex-col lg:flex-row h-screen w-screen bg-[#E4E4E4] overflow-hidden">
+            {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
             <div className="flex flex-col flex-1 overflow-auto">
                 <Headb />
-                <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">
+                <div className={`flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54`}>
                     <div className="text-white font-bold text-xl">Good Morning, {name}!</div>
                     <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
-                    <div className="flex justify-center gap-4">
+                    {isMobile ? (
+                        <div>
+                            <div className="flex flex-col items-center jutify-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
+                                <CheckinDashboard />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex justify-center gap-4">
+                            <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
+                                <StatusApproval />
+                            </div>
+                            <div className="flex flex-col items-center jutify-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
+                                <CheckinDashboard />
+                            </div>
+                        </div>
+                    )}
+                    {/* <div className={`gap-4 ${isMobile ? '' : 'flex justify-center'}`}>
+
                         <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
                             <StatusApproval />
                         </div>
                         <div className="flex flex-col items-center jutify-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
                             <CheckinDashboard />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
-
-                <div className="flex flex-row justify-start p-4 gap-4">
-                    <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
-                        < ChartDataKehadiranUser />
+                {isMobile ? (
+                    <div className="flex flex-col justify-center p-4 gap-4">
+                        <div className="w-full drop-shadow-md bg-white py-6 rounded-lg">
+                            < ChartDataKehadiranUser />
+                        </div>
+                        <div className="w-full drop-shadow-lg bg-white p-4 rounded-xl border ">
+                            <span className="text-[#204682] text-lg text-center font-bold">
+                                Assignment
+                            </span>
+                            <AnnouncementList />
+                            {/* <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button> */}
+                        </div>
                     </div>
-
-                    <div className="w-full drop-shadow-lg bg-white p-4 rounded-xl border ">
-                        <span className="text-[#204682] text-lg text-center font-bold">
-                            Assignment
-                        </span>
-                        <AnnouncementList />
-                        {/* <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button> */}
+                ) : (
+                    <div className="flex flex-row justify-start p-4 gap-4">
+                        <div className="w-1/4 drop-shadow-md bg-white py-6 rounded-lg">
+                            < ChartDataKehadiranUser />
+                        </div>
+                        <div className="w-full drop-shadow-lg bg-white p-4 rounded-xl border ">
+                            <span className="text-[#204682] text-lg text-center font-bold">
+                                Assignment
+                            </span>
+                            <AnnouncementList />
+                            {/* <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button> */}
+                        </div>
                     </div>
-                </div>
+                )}
                 {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 p-4">
                     <CheckinDashboard />
                     <div className="col-span-2 drop-shadow-lg bg-white p-4 rounded-xl border h-72">
