@@ -147,12 +147,17 @@ function Login() {
       ) : (
         <div className="px-4 py-6 lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md">
 
-          <div className="w-[50%] h-full p-4 bg-[#204682] flex justify-center align-center items-center rounded-xl">
-            <img src="/logo-login.png" className="rounded-md h-14 top-12 left-8  absolute"></img>
-            <span className="text-3xl font-bold text-white">
-              Welcome!
-            </span>
+          <div className="w-[50%] h-full p-4 bg-[#204682] flex flex-col justify-center items-center rounded-xl relative gap-1">
+            <img
+              src="/logo-login.png"
+              className="rounded-md"
+              style={{ transform: 'scale(0.4)' }}
+              alt="Logo"
+            />
           </div>
+
+
+
           <div className="w-1/2">
             <div className="justify-center items-center flex flex-col">
               <p className="text-xl font-medium ">Welcome Back!</p>

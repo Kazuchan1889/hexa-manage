@@ -54,6 +54,7 @@ import Tetris from "./page/Tetris";
 import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
+import Gant from "./page/Gant";
 
 // Import komponen loading
 import Loading from "./page/Loading"; 
@@ -143,6 +144,7 @@ function App() {
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
+          <Route path="/Gant" element={<Gant />} />
        
           
         </Routes>
