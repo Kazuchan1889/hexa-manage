@@ -62,6 +62,7 @@ import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
 import DashboardUserSide from "./page/DashboardUserSide";
+import TitleBar from "./minicomponent/titlebar";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -94,6 +95,7 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        {/* <TitleBar/> */}
         <AuthInterceptor />
         <Routes>
           <Route path="/" element={<Login />} />
@@ -145,6 +147,7 @@ function App() {
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
           <Route path="/Gant" element={<Gant />} />
+          <Route path="/ffdf" element={<TitleBar />} />
        
           
         </Routes>
