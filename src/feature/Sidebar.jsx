@@ -13,6 +13,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import Swal from "sweetalert2";
 import ip from "../ip";
+import { AttachMoneyOutlined } from "@mui/icons-material";
+
 const menuItems = [
     {
         id: 1,
@@ -29,7 +31,7 @@ const menuItems = [
             { id: 22, label: "Reimburse", path: "/reimburst" },
             { id: 23, label: "Resign", path: "/resign" },
             { id: 24, label: "Overtime", path: "/OverUser" },
-            { id: 25, label: "Report", path: "/laporan" },
+            { id: 25, label: "Report form", path: "/laporan" },
         ],
     },
     {
@@ -60,10 +62,19 @@ const menuItems = [
         dropdown: [
             { id: 39, label: "User Managment", path: "/UserDataManagement" },
             { id: 40, label: "Role", path: "/addrole" },
-
+        ],
+    },
+    {
+        id: 6,
+        icons: <AttachMoneyOutlined fontSize="large" />, // Ganti ikon jika kamu mau
+        label: "Finance",
+        dropdown: [
+            { id: 41, label: "Reimburse", path: "/masterreimburst" },
+            { id: 42, label: "Payroll", path: "/masterpayroll" },
         ],
     },
 ];
+
 
 const Sidebar = () => {
     const [open, setOpen] = useState(true);
@@ -71,7 +82,7 @@ const Sidebar = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ logo: '' });
-    const isUserAdmin = localStorage.getItem("role") === "admin";
+    const role = localStorage.getItem("role");
 
 
     const [userData, setUserData] = useState({
@@ -126,7 +137,7 @@ const Sidebar = () => {
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
             };
-    
+
             const companyResponse = await axios.get(apiUrl, { headers });
             if (companyResponse.data && companyResponse.data.length > 0) {
                 const data = companyResponse.data[0];
@@ -159,12 +170,45 @@ const Sidebar = () => {
         setOpenDropdown(openDropdown === id ? null : id);
     };
 
-    const filteredMenuItems = menuItems.filter(item => {
-        if (item.label === "User Management" || item.label === "Master Data") {
-            return isUserAdmin;
-        }
-        return true;
-    });
+    const filteredMenuItems = menuItems
+        .map(item => {
+            // Jika role "head" dan item Master Data, filter hanya menu tertentu
+            if (item.label === "Master Data" && role === "head") {
+                const allowedForHead = ["Attendance", "Time Off", "Permit", "Report"];
+                const filteredDropdown = item.dropdown.filter(subItem =>
+                    allowedForHead.includes(subItem.label)
+                );
+                return { ...item, dropdown: filteredDropdown };
+            }
+
+            return item;
+        })
+        .filter(item => {
+            // Jika role bukan admin/head, sembunyikan Master Data dan User Management
+            if ((item.label === "User Management" || item.label === "Master Data") &&
+                role !== "admin" && role !== "head") {
+                return false;
+            }
+
+            // Jika role head, sembunyikan User Management
+            if (item.label === "User Management" && role === "head") {
+                return false;
+            }
+
+            // Jika role finance, sembunyikan Master Data
+            if (item.label === "Master Data" && role === "finance") {
+                return false;
+            }
+
+            // Tampilkan Finance hanya untuk role finance
+            if (item.label === "Finance") {
+                return role === "finance";
+            }
+
+            // Default: tampilkan
+            return true;
+        });
+
 
     return (
         <nav className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"}`}>
