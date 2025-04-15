@@ -111,16 +111,38 @@ function AccountSettings() {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setUploadedFileBase64(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
   return (
     <div className="w-full h-full bg-white flex flex-col items-center p-4">
       {/* Header - Profile Image & Name */}
       <div className="w-full flex items-center mb-6">
-        <Avatar
-          src={uploadedFileBase64}
-          alt="Upload File"
-          sx={{ width: 130, height: 130, cursor: "pointer" }}
-          className="ml-4"
-        />
+          {/* Hidden File Input */}
+          <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+            />
+
+            {/* Avatar sebagai label */}
+            <label htmlFor="avatar-upload">
+                <Avatar
+                    src={uploadedFileBase64}
+                    alt="Upload File"
+                    sx={{ width: 130, height: 130, cursor: "pointer" }}
+                />
+            </label>
         <div className="ml-6">
           <Typography
             variant="h6"
