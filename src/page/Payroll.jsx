@@ -15,6 +15,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import axios from "axios";
 import ip from "../ip";
 import NavbarUser from "../feature/NavbarUser";
+import Sidebar from "../feature/Sidebar";
+import Headb from "../feature/Headbar";
 
 function Payroll() {
   const [tableData, setTableData] = useState([]);
@@ -88,9 +90,10 @@ function Payroll() {
   };
 
   return (
-    <div className="w-screen h-screen bg-white overflow-y-hidden">
-      <NavbarUser />
-      <div className="w-screen flex h-fit">
+    <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+      {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+      <div className="flex flex-col flex-1 overflow-auto">
+        <Headb />
         <div className="h-full w-full mx-auto">
           <div className="mt-3 rounded-xl w-[90%] mx-auto">
             <div className="mb-4 flex justify-between items-center">
