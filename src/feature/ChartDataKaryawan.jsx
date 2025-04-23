@@ -51,15 +51,15 @@ function ChartDataKaryawan() {
       {
         data: karyawanData,
         backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
+          "rgba(32, 70, 130, 1)",
+          "rgba(153, 102, 255, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(255, 206, 186, 1)",
           "rgba(75, 192, 192, 1)",
         ],
         borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
+          "rgba(32, 70, 130, 1)",
+          "rgba(153, 102, 255, 1)",
           "rgba(255, 206, 86, 1)",
           "rgba(255, 206, 186, 1)",
           "rgba(75, 192, 192, 1)",
@@ -108,9 +108,10 @@ function ChartDataKaryawan() {
 
   return (
     <div className={`h-fit mx-auto ${isMobile ? 'w-[10rem]' : 'w-[15rem]'}`}>
-      <span className={`text-[#204682] text-center font-bold ${isMobile ? 'text-md' : 'text-lg'}`}>
+      <span className={`text-[#204682] text-center font-bold font-inter ${isMobile ? 'text-md' : 'text-lg'}`}>
         Employee Data
       </span>
+
       <div className="relative my-4 w-[80%] h-[80%] mx-auto">
         <Doughnut data={data} options={options} />
       </div>

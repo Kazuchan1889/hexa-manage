@@ -27,18 +27,17 @@ function App() {
           <h1 className="text-2xl font-bold mb-20 text-center">Request For Time off</h1>
           <div className="w-full h-3/4 mt-20 bg-[#D9D9D9] mx-auto rounded-t-[15px] flex flex-row items-center gap-3 p-4  justify-center">
             <button
-              className={`w-1/2 h-1/2 rounded-[30px] text-xl font-bold text-center ${selectedForm === 'cuti' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
+              className={`w-1/2 h-1/2 rounded-[30px] border border-black text-xl border font-bold text-center ${selectedForm === 'cuti' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
               onClick={() => setSelectedForm('cuti')}
             >
               Leave Form
             </button>
             <button
-              className={`w-1/2 h-1/2 rounded-[30px] text-xl font-bold text-center ${selectedForm === 'izin' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
+              className={`w-1/2 h-1/2 rounded-[30px] border border-black text-xl font-bold text-center ${selectedForm === 'izin' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
               onClick={() => setSelectedForm('izin')}
             >
               Permission Form
             </button>
-
           </div>
 
           {/* Render form berdasarkan pilihan user */}
