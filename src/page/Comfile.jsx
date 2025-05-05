@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
-import AddFile from '../minicomponent/AddFile';
+// import AddFile from '../minicomponent/AddFile';
 const apiURL = `${ip}/api/CompanyFile/list/other`;
 
 const CompanyFilePage = () => {

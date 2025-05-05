@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Shortcut() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -10,6 +11,27 @@ function Shortcut() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleLogAccessToken = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.log("Access Token not found");
+      return;
+    }
+
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.log("Invalid token format");
+      return;
+    }
+
+    try {
+      const payloadBase64 = parts[1];
+      const payloadDecoded = JSON.parse(atob(payloadBase64));
+      console.log("Decoded Access Token Payload:", payloadDecoded);
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  };
   return (
     <div className="mt-2">
       <h1 className="text-xl font-bold text-center text-white mb-4">Quick Access</h1>
@@ -19,6 +41,7 @@ function Shortcut() {
           { path: "/reimburst", label: "Request Reimbursement" },
           { path: "/Form", label: "Request Time Off" },
           { path: "/UserSummary", label: "Summary" },
+          { path: "/Key", label: "Acticity tracker" },
         ].map((item, index) => (
           <div
             key={index}
@@ -30,8 +53,17 @@ function Shortcut() {
           </div>
         ))}
       </div>
-    </div>
 
+      {/* Button to log access token */}
+      <div className="mt-6 flex justify-center">
+        {/* <button
+          onClick={handleLogAccessToken}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full"
+        >
+          Log Access Token
+        </button> */}
+      </div>
+      </div>
   );
 }
 

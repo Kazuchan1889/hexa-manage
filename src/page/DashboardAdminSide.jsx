@@ -27,6 +27,7 @@ import CheckinDashboard from "../minicomponent/CheckinDashboard";
 import Sidebar from "../feature/Sidebar";
 import Headb from "../feature/Headbar";
 import Shortcut from "../minicomponent/Shortcut";
+
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ChartDataGenderKaryawan from "../feature/ChartDataGenderKaryawan";
 
@@ -181,6 +182,7 @@ function DashboardAdminSide() {
 
 
     return (
+        
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
             {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
             <div className="flex flex-col flex-1 overflow-auto">

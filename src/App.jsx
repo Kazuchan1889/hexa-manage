@@ -41,7 +41,7 @@ import Fasset from "./page/Formasset";
 import Ann from "./minicomponent/Announcment";
 import ViewA from "./minicomponent/ViewAnnounce";
 import Compf from "./page/Comfile";
-import UpFile from "./minicomponent/AddFile";
+import Key from "./minicomponent/Keystrokes";
 import AnnouncementEdit from "./minicomponent/AnnouncementEdit";
 import OverUser from "./page/OvertimeUser";
 import Pagechangpass from "./page/ChangePassPage";
@@ -54,7 +54,7 @@ import Tetris from "./page/Tetris";
 import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
-
+import A from "./page/Aaaa";
 // Import komponen loading
 import Loading from "./page/Loading"; 
 import Face from "./page/Face";
@@ -127,7 +127,7 @@ function App() {
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
-          <Route path="/UpFile" element={<UpFile />} />
+          <Route path="/Key" element={<Key />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
@@ -143,6 +143,7 @@ function App() {
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
+          <Route path="/A" element={<A />} />
        
           
         </Routes>

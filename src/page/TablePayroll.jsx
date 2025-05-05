@@ -1,33 +1,53 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
+import { loadingAction } from "../store/store"; // Importing Redux action
 import axios from "axios";
-import NavbarUser from "../feature/NavbarUser";
+
 import Typography from "@mui/material/Typography";
+import DropdownButton from "../feature/ApprovalButton";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Card, CardContent, TextField } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress } from "@mui/material"; // Add CircularProgress
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import SearchIcon from "@mui/icons-material/Search";
-import SettingsIcon from "@mui/icons-material/Settings";
 import InputBase from "@mui/material/InputBase";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DescriptionIcon from "@mui/icons-material/Description";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import TablePagination from "@mui/material/TablePagination";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import DescriptionIcon from "@mui/icons-material/Description";
-import AddIcon from "@mui/icons-material/Add";
-import TablePagination from "@mui/material/TablePagination";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Swal from "sweetalert2";
 import ip from "../ip";
-import CreatePayroll from "../feature/CreatePayroll";
-import SettingRumusPayroll from "../feature/SettingRumusPayroll";
+import ActionButton from "../feature/ActionButton";
+import SettingJatahCuti from "../feature/SettingJatahCuti";
+import SettingJadwalCuti from "../feature/SettingJadwalCuti";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import DownloadIcon from "@mui/icons-material/Download";
+import Head from "../feature/Headbar";
+import NavbarUser from "../feature/MobileNav";
+import Sidebar from "../feature/Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Info as InfoIcon } from "@mui/icons-material";
 import { faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
+import { useMediaQuery } from "@mui/material";
+import {
+
+  Modal,
+  Box,
+} from "@mui/material";
+
+
 
 const TablePayroll = () => {
   const dispatch = useDispatch();
@@ -51,7 +71,7 @@ const TablePayroll = () => {
     useState(false);
   const [isCreatePayrollOpen, setIsCreatePayrollOpen] = useState(false);
   const operation = localStorage.getItem("operation");
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const apiURLPayroll = `${ip}/api/payroll/get`;
 
   const monthsIndex = {
@@ -102,6 +122,12 @@ const TablePayroll = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -237,199 +263,128 @@ const TablePayroll = () => {
     "December",
   ];
 
+
   return (
     <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
       {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-      <div className="flex flex-col flex-1 overflow-auto">
-        <div className="flex w-[90%] items-start justify-start my-2">
-          <Typography variant="h5" style={{ fontWeight: 600 }}>
-            Payroll Data
-          </Typography>
-        </div>
-      </div>
-      <div className="flex justify-center items-center w-screen my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center w-full mx-auto space-x-1">
-                <div className="bg-gray-200 rounded-lg flex justify-start items-center w-2/5 border border-gray-400">
-                  <SearchIcon style={{ fontSize: 25 }} />
-                  <InputBase
-                    placeholder="Search..."
-                    onKeyPress={handleKeyPress}
-                    onChange={handleSearchChange}
-                    fullWidth
-                  />
-                </div>
-                <TextField
-                  select
-                  label="Month"
-                  value={selectedMonth}
-                  size="small"
-                  onChange={handleMonthChange}
-                  variant="outlined"
-                  className="w-1/6 text-left"
+      <div className="w-full min-h-screen bg-gray-100 overflow-auto ">
+        <Head />
+        {/* Center Content with Search Bar and Buttons */}
+        <div className="bg-[#11284E] text-white p-6  shadow-lg  h-48">
+          <h1 className="text-2xl font-bold">Payroll</h1>
+          <div className="mt-4 flex justify-center items-center mr-12 space-x-4">
+    
+
+            {/* Search Bar */}
+            <div className="relative ml-4 sm:ml-8 md:ml-16 w-full max-w-lg">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearchChange}
+                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                className={`p-2 pl-10 rounded-full border border-gray-300 w-full focus:outline-none focus:ring focus:ring-blue-500 text-black
+                      ${isMobile ? "w-68 h-6" : "w-80 h-10"} focus:outline-none focus:ring focus:ring-blue-500 text-black`}
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center ml-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5 text-gray-400"
                 >
-                  {months.map((month) => (
-                    <MenuItem key={month} value={month}>
-                      {month}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  type="number"
-                  label="Year"
-                  size="small"
-                  className="w-1/6"
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                ></TextField>
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ backgroundColor: "#204684" }}
-                  onClick={handleSearch}
-                >
-                  Search
-                </Button>
-              </div>
-              <div className="flex items-center justify-between mx-auto">
-                <div className="flex space-x-1">
-                  <Button
-                    disabled={!operation.includes("UPDATE_PAYROLL")}
-                    size="small"
-                    variant="contained"
-                    onClick={handleClick}
-                  >
-                    <MoreVertIcon />
-                  </Button>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    {operation.includes("ADD_PAYROLL") && (
-                      <MenuItem
-                        onClick={openCreatePayroll}
-                        onClose={handleClose}
-                      >
-                        <AddIcon
-                          className="text-gray-500"
-                          style={{ marginRight: "8px" }}
-                        />
-                        Create Payroll
-                      </MenuItem>
-                    )}
-                    <MenuItem
-                      onClick={openSettingRumusPayroll}
-                      onClose={handleClose}
-                    >
-                      <SettingsIcon
-                        className="text-gray-500"
-                        style={{ marginRight: "8px" }}
-                      />
-                      Payroll Formula Settings
-                    </MenuItem>
-                  </Menu>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={handleExcel}
-                    style={{ backgroundColor: "#1E6D42" }}
-                  >
-                    <DescriptionIcon className="text-white" />
-                  </Button>
-                </div>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75L19.5 19.5" />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex flex-col justify-between items-center rounded-xl mx-auto drop-shadow-xl w-full my-2">
-        <Card className="w-[90%]">
-          <CardContent>
-            <div className="max-w-full rounded-md overflow-y-auto drop-shadow-lg">
-              <TableContainer
-                component={Paper}
-                style={{ backgroundColor: "#FFFFFF", width: "100%" }}
-              >
-                <Table aria-label="simple table" size="small">
-                  <TableHead style={{ backgroundColor: "#204684" }}>
-                    <TableRow>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Name</p>
+
+
+
+
+          </div>
+
+
+          <div className="rounded-lg overflow-y-auto mt-10 shadow-md mx-4">
+            {/* Table Section */}
+            <TableContainer component={Paper} style={{ width: "100%" }} className="rounded-full">
+              <Table aria-label="simple table" size="small">
+                <TableHead style={{ backgroundColor: "#FFFFFF" }}>
+                  <TableRow>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Name</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Position</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Month</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Bank Account Number</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold">Nominal Salary</p>
+                    </TableCell>
+                    <TableCell align="center" className="w-[10%]">
+                      <p className="text-indigo font-semibold" >Salary slip</p>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody className="bg-gray-100">
+                  {(rowsPerPage > 0
+                    ? rows.slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                    )
+                    : rows
+                  ).map((rows, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{rows.nama}</TableCell>
+                      <TableCell align="center">{rows.jabatan}</TableCell>
+                      <TableCell align="center">
+                        {rows.month},{rows.year}
                       </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Position</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Month</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Bank Account Number</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Nominal Salary</p>
-                      </TableCell>
-                      <TableCell align="center" className="w-[10%]">
-                        <p className="text-white font-semibold">Salary slip</p>
+                      <TableCell align="center">{rows.rekening}</TableCell>
+                      <TableCell align="center">{rows.nominal}</TableCell>
+                      <TableCell align="center">
+                        <div className="flex justify-evenly">
+                          <Button
+                            variant="text"
+                            color="primary"
+                            onClick={() =>
+                              handleDownloadPayroll(rows.id, "xlsx")
+                            }
+                          >
+                            <FontAwesomeIcon
+                              className="text-green-700"
+                              icon={faFileExcel}
+                            />
+                          </Button>
+                          <Button
+                            variant="text"
+                            color="primary"
+                            onClick={() =>
+                              handleDownloadPayroll(rows.id, "pdf")
+                            }
+                          >
+                            <FontAwesomeIcon
+                              className="text-red-700"
+                              icon={faFilePdf}
+                            />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody className="bg-gray-100">
-                    {(rowsPerPage > 0
-                      ? rows.slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      : rows
-                    ).map((rows, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{rows.nama}</TableCell>
-                        <TableCell align="center">{rows.jabatan}</TableCell>
-                        <TableCell align="center">
-                          {rows.month},{rows.year}
-                        </TableCell>
-                        <TableCell align="center">{rows.rekening}</TableCell>
-                        <TableCell align="center">{rows.nominal}</TableCell>
-                        <TableCell align="center">
-                          <div className="flex justify-evenly">
-                            <Button
-                              variant="text"
-                              color="primary"
-                              onClick={() =>
-                                handleDownloadPayroll(rows.id, "xlsx")
-                              }
-                            >
-                              <FontAwesomeIcon
-                                className="text-green-700"
-                                icon={faFileExcel}
-                              />
-                            </Button>
-                            <Button
-                              variant="text"
-                              color="primary"
-                              onClick={() =>
-                                handleDownloadPayroll(rows.id, "pdf")
-                              }
-                            >
-                              <FontAwesomeIcon
-                                className="text-red-700"
-                                icon={faFilePdf}
-                              />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="flex w-full justify-center">
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+          </div>
+          <div className="flex w-full justify-center">
         <div className="flex w-11/12 items-end justify-end">
           <TablePagination
             rowsPerPageOptions={[15, 25]}
@@ -443,14 +398,10 @@ const TablePayroll = () => {
           />
         </div>
       </div>
-      <SettingRumusPayroll
-        isOpen={isSettingRumusPayrollOpen}
-        onClose={closeSettingRumusPayroll}
-      />
-      <CreatePayroll
-        isOpen={isCreatePayrollOpen}
-        onClose={closeCreatePayroll}
-      />
+
+        </div>
+        
+      </div>
     </div>
   );
 };

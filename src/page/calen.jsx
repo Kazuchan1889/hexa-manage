@@ -71,13 +71,14 @@ const CalendarComponent = () => {
       const userData = JSON.parse(atob(accessToken.split(".")[1])); // Decode payload token
       const role = userData?.role; // Ambil role dari payload token
 
-      if (role === "admin") {
-        setIsAdmin(true); // Set state jika user admin
+      if (role === "admin" || role === "head") {
+        setIsAdmin(true); // Set state jika user admin atau head
       }
     } catch (error) {
       console.error("Error checking user role:", error);
     }
   };
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1024);
