@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Head from "../feature/Headbar"; // Impor Head
+import Sidebar from "../feature/Sidebar"; // Impor Sidebar
 
 const KeystrokeTracker = () => {
     const navigate = useNavigate();
@@ -7,9 +9,22 @@ const KeystrokeTracker = () => {
     const [clicks, setClicks] = useState(0);
     const [logs, setLogs] = useState([]);
     const [appHistory, setAppHistory] = useState([]);
-    const [visitedTabs, setVisitedTabs] = useState([]); // 🔹 State untuk menyimpan tab yang dikunjungi
+    const [visitedTabs, setVisitedTabs] = useState([]); // State untuk menyimpan tab yang dikunjungi
     const [lastApp, setLastApp] = useState(null);
     const [startTime, setStartTime] = useState(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024); // Menentukan apakah perangkat mobile
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 1024); // Update isMobile saat resize
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize); // Bersihkan event listener saat komponen unmount
+        };
+    }, []);
 
     useEffect(() => {
         if (window.electron) {
@@ -44,7 +59,7 @@ const KeystrokeTracker = () => {
                     setLastApp(data);
                     setStartTime(new Date());
 
-                    // 🔹 Jika aplikasi adalah browser dan memiliki title (tab), simpan ke daftar visitedTabs
+                    // Jika aplikasi adalah browser dan memiliki title (tab), simpan ke daftar visitedTabs
                     if (data.name.includes("chrome.exe") && data.title) {
                         setVisitedTabs((prevTabs) => {
                             if (!prevTabs.includes(data.title)) {
@@ -75,74 +90,87 @@ const KeystrokeTracker = () => {
     }, []);
 
     return (
-        <div className="p-6 bg-gradient-to-br from-gray-100 to-white min-h-screen">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-center mb-8 text-blue-700 drop-shadow-sm">
-                    Keystroke, Click & Active App Tracker
-                </h1>
+        <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
+            {/* Sidebar atau NavbarUser untuk tampilan mobile */}
+            {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
+            
+            <div className="flex flex-col flex-1 overflow-auto">
+                {/* Head component */}
+                <Head />
 
-                <div className="flex justify-center mb-6">
-                    <button
-                        className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow transition duration-300"
-                        onClick={() => navigate("/dashboard")}
-                    >
-                        ← Back to Dashboard
-                    </button>
-                </div>
-
-                {/* Keystroke & Click */}
-                <div className="bg-white shadow-lg rounded-2xl p-6 mb-6 border border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Keystroke & Click</h2>
-                    <p className="text-lg text-gray-700 mb-1">
-                        Total Keystrokes: <span className="font-bold text-blue-600">{keystrokes}</span>
-                    </p>
-                    <p className="text-lg text-gray-700">
-                        Total Mouse Clicks: <span className="font-bold text-blue-600">{clicks}</span>
-                    </p>
-
-                    <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Recent Logs:</h3>
-                    <ul className="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-40 overflow-y-auto">
-                        {logs.length > 0 ? logs.map((log, index) => (
-                            <li key={index} className="text-sm text-gray-700 py-1 border-b last:border-b-0">{log}</li>
-                        )) : <li className="text-sm text-gray-500">Belum ada data</li>}
-                    </ul>
-                </div>
-
-                {/* Application History */}
-                <div className="bg-white shadow-lg rounded-2xl p-6 mb-6 border border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Application History</h2>
-                    <ul className="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
-                        {appHistory.length > 0 ? appHistory.map((app, index) => (
-                            <li key={index} className="text-sm text-gray-800 border-b last:border-b-0 py-3">
-                                <div className="font-semibold text-blue-700">{app.name || "Unknown App"}</div>
-                                <div>{app.title || "No Title"}</div>
-                                <div className="text-xs text-gray-500">{app.timestamp || "Unknown Time"}</div>
-                                <div className="text-sm text-gray-700 mt-1">Durasi Aktif: {app.duration} detik</div>
-                                {app.name.includes("chrome.exe") && app.title && (
-                                    <div className="mt-1 text-xs text-blue-500 italic">
-                                        🔹 Tab: {app.title}
+                {/* Bagian pertama: Profil dan Counter */}
+                <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
+                    <h1 className="text-2xl font-bold text-center text-white">Activity Tracker</h1>
+                    <div className="h-full w-full mx-auto">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Komponen Profil Pengguna */}
+                            <div className="bg-white p-4 rounded-lg shadow-md">
+                                <div className="flex items-center space-x-4">
+                                    {/* Gambar User digantikan dengan Icon Orang */}
+                                    <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
+                                        <i className="fas fa-user text-white text-2xl"></i> {/* Ikon orang */}
                                     </div>
-                                )}
-                            </li>
-                        )) : <li className="text-sm text-gray-500">Belum ada aplikasi yang terdeteksi</li>}
-                    </ul>
+                                    <div className="">
+                                        <h2 className="text-2xl font-semibold text-black">Nama Pengguna</h2>
+                                        <p className="text-xl text-gray-500">Jabatan Pengguna</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Komponen Counter Mouse Click dan Key Stroke */}
+                            <div className="bg-white p-4 rounded-lg shadow-md">
+                                <h3 className="text-lg font-semibold text-black mb-4">Counter</h3>
+                                <div className="space-y-4">
+                                    <div className="flex justify-between text-black">
+                                        <span>Mouse Clicks</span>
+                                        <span>{clicks}</span> {/* Dinamis dari state clicks */}
+                                    </div>
+                                    <div className="flex justify-between text-black">
+                                        <span>Key Strokes</span>
+                                        <span>{keystrokes}</span> {/* Dinamis dari state keystrokes */}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Visited Tabs */}
-                <div className="bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Visited Tabs</h2>
-                    <ul className="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-48 overflow-y-auto">
-                        {visitedTabs.length > 0 ? visitedTabs.map((tab, index) => (
-                            <li key={index} className="text-sm text-gray-700 border-b last:border-b-0 py-2">
-                                🔹 {tab}
-                            </li>
-                        )) : <li className="text-sm text-gray-500">Belum ada tab yang dikunjungi</li>}
-                    </ul>
+                {/* Bagian kedua: Log, Aplikasi Terbuka, dan Tab yang Dikunjungi */}
+                <div className="flex flex-col lg:flex-row gap-6 p-6">
+                    {/* Log Keystroke dan Mouse Click */}
+                    <div className="bg-white border border-black p-4 rounded-lg shadow-md flex-1">
+                        <h3 className="text-lg font-semibold text-black mb-4">Log Activity</h3>
+                        <div className="space-y-2">
+                            {logs.map((log, index) => (
+                                <div key={index} className="flex justify-between text-black">
+                                    <span>{log}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Aplikasi yang Terbuka */}
+                    <div className="bg-white border border-black p-4 rounded-lg shadow-md flex-1">
+                        <h3 className="text-lg font-semibold text-black mb-4">Opened Applications</h3>
+                        <div className="space-y-2">
+                            {appHistory.map((app, index) => (
+                                <div key={index}>{app.name}</div> // Tampilkan nama aplikasi
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Tab yang Dikunjungi */}
+                    <div className="bg-white p-4 border border-black rounded-lg shadow-md flex-1">
+                        <h3 className="text-lg font-semibold text-black mb-4">Visited Tabs</h3>
+                        <div className="space-y-2">
+                            {visitedTabs.map((tab, index) => (
+                                <div key={index}>{tab}</div> // Tampilkan tab yang dikunjungi
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-
     );
 };
 
