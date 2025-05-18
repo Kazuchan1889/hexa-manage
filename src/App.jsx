@@ -61,6 +61,7 @@ import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
 import DashboardUserSide from "./page/DashboardUserSide";
+import Mkey from "./page/TableEmployeActivity";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -127,7 +128,6 @@ function App() {
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
-          <Route path="/Key" element={<Key />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
@@ -144,6 +144,8 @@ function App() {
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
           <Route path="/A" element={<A />} />
+          <Route path="/Key" element={<Key />} />
+          <Route path="/Masterkey" element={<Mkey />} />
        
           
         </Routes>

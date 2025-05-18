@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Head from "../feature/Headbar"; // Impor Head
 import Sidebar from "../feature/Sidebar"; // Impor Sidebar
+import axios from "axios"; // Menggunakan axios untuk mengambil data dari API
+import ip from "../ip"; // Menggunakan ip untuk mengambil base URL dari backend
 
 const KeystrokeTracker = () => {
     const navigate = useNavigate();
@@ -9,91 +11,104 @@ const KeystrokeTracker = () => {
     const [clicks, setClicks] = useState(0);
     const [logs, setLogs] = useState([]);
     const [appHistory, setAppHistory] = useState([]);
-    const [visitedTabs, setVisitedTabs] = useState([]); // State untuk menyimpan tab yang dikunjungi
+    const [visitedTabs, setVisitedTabs] = useState([]);
     const [lastApp, setLastApp] = useState(null);
     const [startTime, setStartTime] = useState(null);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024); // Menentukan apakah perangkat mobile
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
+    // State untuk data pengguna
+    const [userData, setUserData] = useState({
+        nama: "",
+        foto: null,
+        jabatan: "",
+    });
+
+    // Ambil token dari localStorage dan kirimkan ke main process (hanya jika menggunakan Electron)
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 1024); // Update isMobile saat resize
-        };
-
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize); // Bersihkan event listener saat komponen unmount
-        };
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken) {
+            // Cek jika aplikasi berjalan di dalam Electron
+            if (window.electron && typeof window.electron.sendAccessToken === 'function') {
+                // Mengirimkan token ke main process melalui IPC jika Electron tersedia
+                window.electron.sendAccessToken(accessToken);
+            } else {
+                console.warn('Electron is not available, skipping token send.');
+            }
+        }
     }, []);
 
+    // Mengambil data aktivitas pengguna dari backend
     useEffect(() => {
-        if (window.electron) {
-            console.log("Electron ditemukan, menunggu data...");
+        const fetchData = async () => {
+            const accessToken = localStorage.getItem("accessToken");
 
-            window.electron.receive("keystroke-data", (data) => {
-                console.log("Data diterima dari Electron:", data);
-                if (typeof data === "string") {
-                    if (data.startsWith("Key Pressed:")) {
-                        setKeystrokes((prev) => prev + 1);
-                    } else if (data.startsWith("Mouse Clicked:")) {
-                        setClicks((prev) => prev + 1);
-                    }
-                    setLogs((prevLogs) => [...prevLogs, data].slice(-10));
+            if (!accessToken) {
+                console.error("No access token found!");
+                return;
+            }
+
+            try {
+                // Ambil IDK dari token JWT atau localStorage (misalnya)
+                const decodedToken = JSON.parse(atob(accessToken.split('.')[1]));
+                const idk = decodedToken.id; // Ambil IDK dari token yang sudah didekode
+
+                // Mengambil data aktivitas pengguna dari backend
+                const response = await axios.get(`${ip}/api/Act/activity/${idk}`, {
+                    headers: {
+                        Authorization: accessToken, // Menyertakan token dalam header
+                    },
+                });
+
+                const activityData = response.data.activity;
+
+                if (activityData) {
+                    // Memperbarui state dengan data yang diambil
+                    setKeystrokes(activityData.keystrokes.length); // Hitung jumlah keystroke
+                    setClicks(activityData.mouseClicks.length); // Hitung jumlah klik mouse
+                    setLogs(activityData.keystrokes.concat(activityData.mouseClicks)); // Gabungkan log keystroke dan klik mouse
+                    setVisitedTabs(activityData.visitedTabs.map(tab => tab.title)); // Ambil title tab yang dikunjungi
+                    setAppHistory(activityData.visitedTabs.map(tab => ({
+                        app: tab.app,
+                        title: tab.title,
+                        timestamp: tab.timestamp,
+                    }))); // Menyimpan riwayat aplikasi yang dikunjungi
                 }
-            });
 
-            window.electron.receive("active-app-history", (data) => {
-                console.log("🚀 Data aplikasi diterima:", data);
+                // Mengambil data pengguna
+                const userResponse = await axios.get(`${ip}/api/karyawan/get/data/self`, {
+                    headers: {
+                        Authorization: accessToken, // Menyertakan token dalam header
+                    },
+                });
 
-                if (data && data.name) {
-                    setAppHistory((prevHistory) => {
-                        const existingApp = prevHistory.find((app) => app.name === data.name);
-                        if (existingApp) {
-                            return prevHistory.map((app) =>
-                                app.name === data.name ? { ...app, timestamp: data.timestamp } : app
-                            );
-                        }
-                        return [...prevHistory, { ...data, duration: 0 }];
-                    });
+                const user = userResponse.data[0]; // Data pengguna ada pada array pertama
+                console.log("User data:", user); // Debug: Tampilkan data pengguna di console
 
-                    setLastApp(data);
-                    setStartTime(new Date());
-
-                    // Jika aplikasi adalah browser dan memiliki title (tab), simpan ke daftar visitedTabs
-                    if (data.name.includes("chrome.exe") && data.title) {
-                        setVisitedTabs((prevTabs) => {
-                            if (!prevTabs.includes(data.title)) {
-                                return [...prevTabs, data.title];
-                            }
-                            return prevTabs;
-                        });
-                    }
-                } else {
-                    console.warn("⚠️ Data aplikasi tidak valid:", data);
+                // Memperbarui state dengan nama dan foto pengguna
+                let userFoto = user.dokumen;
+                // Menghilangkan prefix duplikat jika ada
+                if (userFoto && userFoto.startsWith("data:image/jpeg;base64,data:image/jpeg;base64,")) {
+                    userFoto = userFoto.replace("data:image/jpeg;base64,data:image/jpeg;base64,", "data:image/jpeg;base64,");
                 }
-            });
 
-            window.electron.receive("active-app-time", (data) => {
-                console.log("⏳ Update durasi aplikasi diterima:", data);
+                setUserData({
+                    nama: user.nama || "Nama Pengguna", 
+                    jabatan: user.jabatan || "jabatan", 
+                    foto: userFoto || "default-profile-pic.jpg", // Foto dalam base64
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
 
-                if (data && data.name) {
-                    setAppHistory((prevHistory) =>
-                        prevHistory.map((app) =>
-                            app.name === data.name ? { ...app, duration: data.duration } : app
-                        )
-                    );
-                }
-            });
-        } else {
-            console.warn("window.electron tidak ditemukan!");
-        }
+        fetchData();
     }, []);
 
     return (
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
             {/* Sidebar atau NavbarUser untuk tampilan mobile */}
             {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
-            
+
             <div className="flex flex-col flex-1 overflow-auto">
                 {/* Head component */}
                 <Head />
@@ -106,13 +121,18 @@ const KeystrokeTracker = () => {
                             {/* Komponen Profil Pengguna */}
                             <div className="bg-white p-4 rounded-lg shadow-md">
                                 <div className="flex items-center space-x-4">
-                                    {/* Gambar User digantikan dengan Icon Orang */}
                                     <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <i className="fas fa-user text-white text-2xl"></i> {/* Ikon orang */}
+                                        {/* Foto Profil */}
+                                        <img 
+                                            src={userData.foto} 
+                                            alt="User Profile" 
+                                            className="w-full h-full rounded-full" 
+                                        />
                                     </div>
-                                    <div className="">
-                                        <h2 className="text-2xl font-semibold text-black">Nama Pengguna</h2>
-                                        <p className="text-xl text-gray-500">Jabatan Pengguna</p>
+                                    <div className="text-left">
+                                        {/* Nama Pengguna */}
+                                        <h2 className="text-2xl font-semibold text-black">{userData.nama}</h2>
+                                        <p className="text-xl text-gray-500">{userData.jabatan}</p>
                                     </div>
                                 </div>
                             </div>
@@ -123,11 +143,11 @@ const KeystrokeTracker = () => {
                                 <div className="space-y-4">
                                     <div className="flex justify-between text-black">
                                         <span>Mouse Clicks</span>
-                                        <span>{clicks}</span> {/* Dinamis dari state clicks */}
+                                        <span>{clicks}</span>
                                     </div>
                                     <div className="flex justify-between text-black">
                                         <span>Key Strokes</span>
-                                        <span>{keystrokes}</span> {/* Dinamis dari state keystrokes */}
+                                        <span>{keystrokes}</span>
                                     </div>
                                 </div>
                             </div>
@@ -154,17 +174,9 @@ const KeystrokeTracker = () => {
                         <h3 className="text-lg font-semibold text-black mb-4">Opened Applications</h3>
                         <div className="space-y-2">
                             {appHistory.map((app, index) => (
-                                <div key={index}>{app.name}</div> // Tampilkan nama aplikasi
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Tab yang Dikunjungi */}
-                    <div className="bg-white p-4 border border-black rounded-lg shadow-md flex-1">
-                        <h3 className="text-lg font-semibold text-black mb-4">Visited Tabs</h3>
-                        <div className="space-y-2">
-                            {visitedTabs.map((tab, index) => (
-                                <div key={index}>{tab}</div> // Tampilkan tab yang dikunjungi
+                                <div key={index} className="text-black">
+                                    {app.app}: {app.title} (Visited at {app.timestamp})
+                                </div>
                             ))}
                         </div>
                     </div>

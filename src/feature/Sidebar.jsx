@@ -32,6 +32,7 @@ const menuItems = [
             { id: 23, label: "Resign", path: "/resign" },
             { id: 24, label: "Overtime", path: "/OverUser" },
             { id: 25, label: "Report form", path: "/laporan" },
+            { id: 25, label: "Activity", path: "/key" },
         ],
     },
     {
@@ -47,6 +48,7 @@ const menuItems = [
             { id: 36, label: "Report", path: "/masterlaporan" },
             { id: 37, label: "Geotech", path: "/geotech" },
             { id: 38, label: "Overtime", path: "/Over" },
+            { id: 38, label: "Employe Tracker", path: "/Masterkey" },
         ],
     },
     {
