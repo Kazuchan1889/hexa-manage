@@ -235,7 +235,7 @@ function DashboardAdminSide() {
                                                     </div>
                                                 )}
                                                 <div className="flex flex-col mx-auto">
-                                                    <span className="font-semibold">{item.nama}</span>
+                                                    <span className="text-sm lg:text-md font-semibold">{item.nama}</span>
                                                     <span className="text-xs text-gray-600">{item.status}</span>
                                                 </div>
                                                 <div className="my-auto">
@@ -275,7 +275,7 @@ function DashboardAdminSide() {
                                         });
 
                                         if (filteredSchedules.length === 0) {
-                                            return <li className="text-gray-500 text-center w-full flex justify-center items-center h-full">There is no schedule</li>;
+                                            return <li className="text-gray-500 text-center text-xs lg:text-sm w-full flex justify-center items-center h-full">There is no schedule</li>;
                                         }
 
                                         return filteredSchedules.map((item, index) => (

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Avatar, IconButton } from "@mui/material";
 import {
     Menu as MenuIcon,
-    HomeOutlined,
     Settings,
     DashboardOutlined,
     Inventory2Outlined,
@@ -15,16 +14,17 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import { AttachMoneyOutlined } from "@mui/icons-material";
 
+
 const menuItems = [
     {
         id: 1,
-        icons: <HomeOutlined fontSize="large" />,
+        icons: <img src="/Home.png" alt="Dashboard" className="w-6 h-6 mr-3 object-contain" />,
         label: "Dashboard",
         path: "/dashboard",
     },
     {
         id: 2,
-        icons: <Inventory2Outlined fontSize="large" />,
+        icons: <img src="/Form.png" alt="Dashboard" className="w-5 h-5 mr-4  object-contain" />,
         label: "Form",
         dropdown: [
             { id: 21, label: "Time Off", path: "/Form" },
@@ -37,7 +37,7 @@ const menuItems = [
     },
     {
         id: 3,
-        icons: <DashboardOutlined fontSize="large" />,
+        icons: <img src="/Master.png" alt="Dashboard" className="w-5 h-5 mr-4  object-contain" />,
         label: "Master Data",
         dropdown: [
             { id: 31, label: "Attendance", path: "/masterabsen" },
@@ -53,13 +53,13 @@ const menuItems = [
     },
     {
         id: 4,
-        icons: <Settings fontSize="large" />,
+        icons: <img src="/Schedule.png" alt="Dashboard" className="w-5 h-5 mr-4  object-contain" />,
         label: "Schedule",
         path: "/Cal",
     },
     {
         id: 5,
-        icons: <LayersOutlined fontSize="large" />,
+        icons: <img src="/User.png" alt="Dashboard" className="w-5 h-5 mr-4  object-contain" />,
         label: "User Management",
         dropdown: [
             { id: 39, label: "User Managment", path: "/UserDataManagement" },
@@ -91,7 +91,9 @@ const Sidebar = () => {
         nama: "",
         dokumen: null,
         jabatan: "",
-        cutimandiri: ""
+        cutimandiri: "",
+        status: ""
+
     });
 
     useEffect(() => {
@@ -109,7 +111,8 @@ const Sidebar = () => {
                     nama: userData.nama || "",
                     dokumen: userData.dokumen || null,
                     jabatan: userData.jabatan || "",
-                    cutimandiri: userData.cutimandiri || ""
+                    cutimandiri: userData.cutimandiri || "",
+                    status: userData.status || ""
                 });
                 localStorage.setItem("cutimandiri", userData.cutimandiri);
             })
@@ -215,25 +218,37 @@ const Sidebar = () => {
     return (
         <nav className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"}`}>
             {/* Header */}
-            <div className="px-2 py-2 flex justify-end">
-                <IconButton onClick={() => setOpen(!open)}>
-                    <MenuIcon fontSize="medium" className={`text-white duration-500 ${!open && "rotate-180"}`} />
-                </IconButton>
+            {/* <IconButton onClick={() => setOpen(!open)}> */}
+            <div className="flex items-center mb-4 ml-4">
+                <img src={formData.logo} className={`${open ? "w-auto h-12" : "w-0"} rounded-md`} alt="logo" />
+                {/* <MenuIcon fontSize="medium" className={`text-white duration-500 ${!open && "rotate-180"}`} /> */}
             </div>
+            {/* </IconButton> */}
 
-            <div className="px-3 py-2 h-18 flex justify-center">
-                <img src={formData.logo} className={`${open ? "w-auto" : "w-0"} rounded-md`} alt="logo" />
-            </div>
 
-            <div className="flex items-center gap-2 px-2 py-2">
-                <Avatar>
-                    <img src={userData.dokumen} alt="User Profile" />
-                </Avatar>
-                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
+
+
+            <div className="flex-col  mb-3 bg-[#11284E] rounded-md  gap-2 mx-2 px-2 py-2">
+                <div className="flex ml-1  items-center">
+                    <Avatar className="w-4 h-4">
+                        <img src={userData.dokumen} alt="User Profile" />
+                    </Avatar>
                     <div className="flex w-full justify-between">
-                        <p className="text-left">{userData.nama}</p>
+                        <p className="text-left font-semibold text-lg ml-2">{userData.nama}</p>
                         <EditIcon />
                     </div>
+                </div>
+                <div className="text-left ml-1 mt-3.5 text-[16px] font-sm font-semibold">
+                    {userData.jabatan}
+                </div>
+                <div className="text-left ml-1 text-[16px]">
+                    {userData.status}
+                </div>
+                <div className="text-left ml-1 text-[16px]">
+                    Hexaon Busines Mitrasindo
+                </div>
+
+                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
                 </div>
             </div>
 
@@ -246,7 +261,7 @@ const Sidebar = () => {
 
                     return (
                         <li key={item.id} className={`px-3 py-2 my-2 duration-300 cursor-pointer flex flex-col gap-2 relative group
-                  ${isActive && !hasDropdown ? "bg-[#D9D9D9] text-[#204682]" : "hover:bg-blue-800"}`}
+                  ${isActive && !hasDropdown ? " text-[#ffffff]" : "hover:bg-[#3973CF]"}`}
                             onClick={() => handleMenuItemClick(item)}
                         >
                             {/* Main menu item */}
@@ -261,10 +276,10 @@ const Sidebar = () => {
                                 className="flex items-center gap-2"
                             >
                                 <div>{item.icons}</div>
-                                <p className={`${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
+                                <p className={`${!open && "w-0 translate-x-24"} text-xs lg:text-[16px] font-semibold duration-500 overflow-hidden`}>
                                     {item.label}
                                 </p>
-                                {hasDropdown && (
+                                {hasDropdown && open && (
                                     <span className="ml-auto">{isDropdownOpen ? "-" : "+"}</span>
                                 )}
                             </div>

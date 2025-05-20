@@ -137,7 +137,7 @@ function Login() {
                 />
               </div>
               <div className="flex justify-center my-5">
-                <Button type="submit" variant="contained" style={{ backgroundColor: "#311B92" }}>Log in</Button>
+                <Button type="submit" variant="contained" style={{ backgroundColor: "#204682" }}>Log in</Button>
               </div>
             </form>
             <Button onClick={toggleForgetPassword}>Forgot Password?</Button>

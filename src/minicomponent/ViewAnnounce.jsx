@@ -98,7 +98,7 @@ const AnnouncementList = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 rounded-lg h-max-[20rem]">  
+    <div className="container mx-auto p-4 rounded-lg h-max-[20rem]">
       <div
         id="announcement-list"
         className="h-[12rem] max-h-[20rem] overflow-auto space-y-4"
@@ -107,13 +107,13 @@ const AnnouncementList = () => {
           announcements.map((announcement, index) => (
             <div
               key={index}
-              className="flex flex-col lg:flex-row items-start bg-white p-4 rounded-xl border border-gray-300 shadow-md space-y-2 lg:space-y-0"
+              className="flex flex-col  lg:flex-row items-start bg-white p-4 rounded-xl border border-gray-300  space-y-2 lg:space-y-0"
             >
               <div className="flex-1 pr-0 lg:pr-4">
-                <h2 className="text-sm lg:text-lg font-semibold">
+                <h2 className="text-left text-sm lg:text-md font-semibold">
                   {announcement.title}
                 </h2>
-                <p className="text-xs lg:text-sm text-gray-600">
+                <p className="text-left text-xs lg:text-sm text-gray-600">
                   {announcement.description}
                 </p>
               </div>
