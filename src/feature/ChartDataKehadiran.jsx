@@ -51,19 +51,19 @@ function ChartDataKehadiran() {
       {
         data: kehadiranData,
         backgroundColor: [
-          "rgba(32, 70, 130, 1)",
+          "#204682",
           "rgba(54, 162, 235, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(235, 112, 103, 1)",
+          "#D94699",
           "rgba(153, 102, 255, 1)",
         ],
         borderColor: [
-          "rgba(32, 70, 130, 1)",
+          "#204682",
           "rgba(54, 162, 235, 1)",
           "rgba(54, 162, 235, 1)",
           "rgba(75, 192, 192, 1)",
-          "rgba(235, 112, 103, 1)", 
+          "#D94699", 
           "rgba(153, 102, 255, 1)",
         ],
         borderWidth: 1,
