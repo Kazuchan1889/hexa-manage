@@ -62,16 +62,24 @@ const KeystrokeTracker = () => {
                 const activityData = response.data.activity;
 
                 if (activityData) {
-                    // Memperbarui state dengan data yang diambil
                     setKeystrokes(activityData.keystrokes.length); // Hitung jumlah keystroke
-                    setClicks(activityData.mouseClicks.length); // Hitung jumlah klik mouse
-                    setLogs(activityData.keystrokes.concat(activityData.mouseClicks)); // Gabungkan log keystroke dan klik mouse
-                    setVisitedTabs(activityData.visitedTabs.map(tab => tab.title)); // Ambil title tab yang dikunjungi
-                    setAppHistory(activityData.visitedTabs.map(tab => ({
+                    setClicks(activityData.mouseClicks); // Langsung ambil angka dari backend
+                    setLogs(activityData.keystrokes.concat(activityData.mouseClicks));
+                    setVisitedTabs(activityData.visitedTabs.map(tab => tab.title));
+
+                    // Filter aplikasi yang dibuka hari ini
+                    const today = new Date().toISOString().split('T')[0]; // Ambil tanggal hari ini (yyyy-mm-dd)
+                    const filteredAppHistory = activityData.visitedTabs.filter((tab) => {
+                        const tabDate = new Date(tab.timestamp).toISOString().split('T')[0]; // Dapatkan tanggal aplikasi dibuka
+                        return tabDate === today; // Bandingkan tanggal
+                    });
+
+                    // Format timestamp untuk hanya menampilkan jam
+                    setAppHistory(filteredAppHistory.map((tab) => ({
                         app: tab.app,
                         title: tab.title,
-                        timestamp: tab.timestamp,
-                    }))); // Menyimpan riwayat aplikasi yang dikunjungi
+                        timestamp: new Date(tab.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Menampilkan jam saja
+                    })));
                 }
 
                 // Mengambil data pengguna
@@ -143,7 +151,7 @@ const KeystrokeTracker = () => {
                                 <div className="space-y-4">
                                     <div className="flex justify-between text-black">
                                         <span>Mouse Clicks</span>
-                                        <span>{clicks}</span>
+                                        <span>{clicks}</span> {/* Menampilkan angka klik mouse langsung */}
                                     </div>
                                     <div className="flex justify-between text-black">
                                         <span>Key Strokes</span>
@@ -174,8 +182,12 @@ const KeystrokeTracker = () => {
                         <h3 className="text-lg font-semibold text-black mb-4">Opened Applications</h3>
                         <div className="space-y-2">
                             {appHistory.map((app, index) => (
-                                <div key={index} className="text-black">
-                                    {app.app}: {app.title} (Visited at {app.timestamp})
+                                <div key={index} className="flex justify-between">
+                                    {/* App dan Title di sebelah kiri */}
+                                    <div className="text-left">{app.app}: {app.title}</div>
+
+                                    {/* Jam dibuka di sebelah kanan */}
+                                    <div className="text-right">{app.timestamp}</div>
                                 </div>
                             ))}
                         </div>

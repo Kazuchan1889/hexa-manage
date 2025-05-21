@@ -12,6 +12,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import Swal from "sweetalert2";
 import ip from "../ip";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { AttachMoneyOutlined } from "@mui/icons-material";
 
 
@@ -93,8 +95,8 @@ const Sidebar = () => {
         jabatan: "",
         cutimandiri: "",
         status: ""
-
     });
+    const [loading, setLoading] = useState(true); // State untuk memantau loading
 
     useEffect(() => {
         const apiUrl = `${ip}/api/karyawan/get/data/self`;
@@ -115,6 +117,7 @@ const Sidebar = () => {
                     status: userData.status || ""
                 });
                 localStorage.setItem("cutimandiri", userData.cutimandiri);
+                setLoading(false); // Set loading ke false setelah data ter-fetch
             })
             .catch((error) => {
                 console.error("Error", error);
@@ -228,28 +231,45 @@ const Sidebar = () => {
 
 
 
-            <div className="flex-col  mb-3 bg-[#11284E] rounded-md  gap-2 mx-2 px-2 py-2">
-                <div className="flex ml-1  items-center">
+            <div className="flex-col mb-3 bg-[#11284E] rounded-md gap-2 mx-2 px-2 py-2">
+                <div className="flex ml-1 items-center">
                     <Avatar className="w-4 h-4">
-                        <img src={userData.dokumen} alt="User Profile" />
+                        {loading ? (
+                            <div className="w-10 h-10 bg-gray-500 rounded-full animate-pulse"></div> // Skeleton untuk gambar
+                        ) : (
+                            <img src={userData.dokumen} alt="User Profile" />
+                        )}
                     </Avatar>
                     <div className="flex w-full justify-between">
-                        <p className="text-left font-semibold text-lg ml-2">{userData.nama}</p>
+                        <p className="text-left font-semibold text-lg ml-2">
+                            {loading ? (
+                                <div className="w-36 h-6 bg-gray-500 rounded animate-pulse"></div> // Skeleton untuk nama
+                            ) : (
+                                userData.nama
+                            )}
+                        </p>
                         <EditIcon />
                     </div>
                 </div>
                 <div className="text-left ml-1 mt-3.5 text-[16px] font-sm font-semibold">
-                    {userData.jabatan}
+                    {loading ? (
+                        <div className="w-28 h-4 bg-gray-500 rounded animate-pulse"></div> // Skeleton untuk jabatan
+                    ) : (
+                        userData.jabatan
+                    )}
                 </div>
                 <div className="text-left ml-1 text-[16px]">
-                    {userData.status}
+                    {loading ? (
+                        <div className="w-24 h-4 bg-gray-500 rounded animate-pulse mt-4"></div> // Skeleton untuk status
+                    ) : (
+                        userData.status
+                    )}
                 </div>
                 <div className="text-left ml-1 text-[16px]">
-                    Hexaon Busines Mitrasindo
+                    Hexaon Business Mitrasindo
                 </div>
 
-                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}>
-                </div>
+                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}></div>
             </div>
 
             {/* Menu */}

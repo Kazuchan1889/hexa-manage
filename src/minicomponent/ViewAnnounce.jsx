@@ -6,9 +6,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
 import Loading from "../page/Loading";
 
+// Modal component to display detailed announcement
+const AnnouncementDetailModal = ({ announcement, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg w-96">
+        <h2 className="text-2xl font-bold text-center">{announcement.title}</h2>
+        {announcement.photo && (
+          <div className="mt-4">
+            <img src={announcement.photo} alt="Announcement" className="w-full h-auto rounded" />
+          </div>
+        )}
+        <p className="mt-4">{announcement.description}</p>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={onClose}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AnnouncementList = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [editAnnouncement, setEditAnnouncement] = useState(null);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null); // State for selected announcement for modal
   const apiUrl = `${ip}/api/announcment`;
   const isUserAdmin = localStorage.getItem("role");
 
@@ -93,6 +119,16 @@ const AnnouncementList = () => {
     return null;
   };
 
+  // Function to handle "Read more" click to open modal
+  const handleReadMore = (announcement) => {
+    setSelectedAnnouncement(announcement);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setSelectedAnnouncement(null);
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -104,51 +140,72 @@ const AnnouncementList = () => {
         className="h-[12rem] max-h-[20rem] overflow-auto space-y-4"
       >
         {announcements.length > 0 ? (
-          announcements.map((announcement, index) => (
-            <div
-              key={index}
-              className="flex flex-col  lg:flex-row items-start bg-white p-4 rounded-xl border border-gray-300  space-y-2 lg:space-y-0"
-            >
-              <div className="flex-1 pr-0 lg:pr-4">
-                <h2 className="text-left text-sm lg:text-md font-semibold">
-                  {announcement.title}
-                </h2>
-                <p className="text-left text-xs lg:text-sm text-gray-600">
-                  {announcement.description}
-                </p>
-              </div>
-              <div className="flex flex-col items-start lg:items-end space-y-2">
-                <p className="text-xs lg:text-sm text-gray-500">
-                  {formatDate(announcement.tanggal_upload)}
-                </p>
-                <div className="flex space-x-2">
-                  {renderDownloadButton(announcement.attachment)}
-                  {isUserAdmin === "admin" && (
-                    <>
+          announcements.map((announcement, index) => {
+            const descriptionPreview = announcement.description.split(" ").slice(0, 10).join(" "); // Get the first 10 words
+            const isLongDescription = announcement.description.split(" ").length > 10; // Check if description is longer than 10 words
+            return (
+              <div
+                key={index}
+                className="flex flex-col lg:flex-row items-start bg-white p-4 rounded-xl border border-gray-300 space-y-2 lg:space-y-0"
+              >
+                <div className="flex-1 pr-0 lg:pr-4">
+                  <h2 className="text-left text-sm lg:text-md font-semibold">
+                    {announcement.title}
+                  </h2>
+                  <p className="text-left text-xs lg:text-sm text-gray-600">
+                    {descriptionPreview}
+                    {isLongDescription && (
                       <button
-                        className="bg-blue-500 text-white text-xs lg:text-sm px-3 py-1 rounded"
-                        onClick={() => setEditAnnouncement(announcement)}
+                        onClick={() => handleReadMore(announcement)}
+                        className="text-blue-500 text-xs lg:text-sm ml-2"
                       >
-                        Edit
+                        Read more
                       </button>
-                      <button
-                        className="bg-red-500 text-white text-xs lg:text-sm px-3 py-1 rounded"
-                        onClick={() => handleDelete(announcement.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
+                    )}
+                  </p>
+                </div>
+                <div className="flex flex-col items-start lg:items-end space-y-2">
+                  <p className="text-xs lg:text-sm text-gray-500">
+                    {formatDate(announcement.tanggal_upload)}
+                  </p>
+                  <div className="flex space-x-2">
+                    {renderDownloadButton(announcement.attachment)}
+                    {isUserAdmin === "admin" && (
+                      <>
+                        <button
+                          className="bg-blue-500 text-white text-xs lg:text-sm px-3 py-1 rounded"
+                          onClick={() => setEditAnnouncement(announcement)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-500 text-white text-xs lg:text-sm px-3 py-1 rounded"
+                          onClick={() => handleDelete(announcement.id)}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="text-center text-gray-500 text-xs lg:text-sm mt-4">
             No assignments today
           </div>
         )}
       </div>
+
+      {/* Modal for Announcement Detail */}
+      {selectedAnnouncement && (
+        <AnnouncementDetailModal
+          announcement={selectedAnnouncement}
+          onClose={closeModal}
+        />
+      )}
+
       {editAnnouncement && (
         <AnnouncementEdit
           announcement={editAnnouncement}
@@ -159,5 +216,5 @@ const AnnouncementList = () => {
     </div>
   );
 };
-
-export default AnnouncementList;
+ 
+export default AnnouncemeyntList;
