@@ -53,19 +53,19 @@ function ChartDataKehadiranUser() {
       {
         data: userData,
         backgroundColor: [
-          "rgba(32, 70, 130, 1)",
+          "#204682",
           "rgba(255, 0, 0, 1)",
           "rgba(50, 184, 211, 1)",
           "rgba(235, 148, 44, 1)",
-          "rgba(235, 112, 103, 1)",
+          "#D94699",
           "rgba(153, 102, 255, 1)",
         ],
         borderColor: [
-          "rgba(32, 70, 130, 1)",
+          "#204682",
           "rgba(255, 0, 0, 1)",
           "rgba(50, 184, 211, 1)",
           "rgba(235, 148, 44, 1)",
-          "rgba(235, 112, 103, 1)",
+          "#D94699",
           "rgba(153, 102, 255, 1)",
         ],
         borderWidth: 1,

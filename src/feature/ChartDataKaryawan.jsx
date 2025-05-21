@@ -51,17 +51,17 @@ function ChartDataKaryawan() {
       {
         data: karyawanData,
         backgroundColor: [
-          "rgba(32, 70, 130, 1)",
-          "rgba(153, 102, 255, 1)",
+          "#204682",
+          "#D94699",
           "rgba(255, 206, 86, 1)",
-          "rgba(255, 206, 186, 1)",
+          "#FFAE4C",
           "rgba(75, 192, 192, 1)",
         ],
         borderColor: [
-          "rgba(32, 70, 130, 1)",
-          "rgba(153, 102, 255, 1)",
+          "#204682",
+          "#D94699",
           "rgba(255, 206, 86, 1)",
-          "rgba(255, 206, 186, 1)",
+          "#FFAE4C",
           "rgba(75, 192, 192, 1)",
         ],
         borderWidth: 1,

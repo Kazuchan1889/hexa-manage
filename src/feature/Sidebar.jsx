@@ -280,7 +280,7 @@ const Sidebar = () => {
                     const isDropdownOpen = openDropdown === item.id;
 
                     return (
-                        <li key={item.id} className={`px-3 py-2 my-2 duration-300 cursor-pointer flex flex-col gap-2 relative group
+                        <li key={item.id} className={`px-4 py-2 my-2 duration-300 cursor-pointer flex flex-col relative group
                   ${isActive && !hasDropdown ? " text-[#ffffff]" : "hover:bg-[#3973CF]"}`}
                             onClick={() => handleMenuItemClick(item)}
                         >
