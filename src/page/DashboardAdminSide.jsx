@@ -1,35 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, IconButton } from "@mui/material";
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/MobileNav";
 import ChartDataKaryawan from "../feature/ChartDataKaryawan";
 import ChartDataKehadiran from "../feature/ChartDataKehadiran";
 import ChartDataKehadiranUser from "../feature/ChartDataKehadiranUser";
-import ChartDataLama from "../feature/ChartDataLama";
 import { useNavigate } from 'react-router-dom';
 import ChartDataGender from "../feature/ChartDataGender";
-import ProfileDashboard from "../minicomponent/ProfileDashboard";
 import AnnouncementList from "../minicomponent/ViewAnnounce";
 import Announcment from "../minicomponent/Announcment";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 import ip from "../ip";
 import UserIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from "react-redux";
-import { loadingAction } from "../store/store";
 import Loading from "../page/Loading";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningIcon from '@mui/icons-material/Warning';
-import CheckinDashboard from "../minicomponent/CheckinDashboard";
 import Sidebar from "../feature/Sidebar";
 import Headb from "../feature/Headbar";
 import Shortcut from "../minicomponent/Shortcut";
-
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import ChartDataGenderKaryawan from "../feature/ChartDataGenderKaryawan";
+
 
 const getIdFromToken = () => {
     const token = localStorage.getItem('accessToken');
@@ -49,10 +41,8 @@ const getIdFromToken = () => {
 function DashboardAdminSide() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
     const [isTambahFormOpen, setTambahFormOpen] = useState(false);
-    const [isBubbleOpen, setIsBubbleOpen] = useState(false);
     const [scheduleItems, setScheduleItems] = useState([]);
     const [absensiItems, setAbsensiItems] = useState([]);
-    const [selectedChart, setSelectedChart] = useState("kehadiranUser");
     const checkOperation = localStorage.getItem("operation");
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.loading.isLoading);
@@ -103,11 +93,6 @@ function DashboardAdminSide() {
         }
     };
 
-    // Menampilkan isi access token & hasil decoding di console
-    console.log("Nama yang akan ditampilkan:", getNameFromToken());
-
-    console.log("Nama yang akan ditampilkan:", getNameFromToken());
-
     useEffect(() => {
         const fetchScheduleItems = async () => {
             setLoadingSchedule(true); // Mulai loading untuk jadwal
@@ -155,25 +140,11 @@ function DashboardAdminSide() {
         fetchAbsensiItems();
     }, [dispatch]);
 
-    const handleSubmit = () => {
-        Swal.fire({
-            icon: "success",
-            title: "Announcement added successfully!",
-            showConfirmButton: false,
-            timer: 1500,
-        }).then(() => {
-            window.location.reload();
-        });
-    };
-
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
     };
 
-    const handleChartChange = (event) => {
-        setSelectedChart(event.target.value);
-    };
     const navigate = useNavigate();
     const handleReadMore = () => {
         navigate('/Cal'); // Arahkan ke halaman /Calen
@@ -182,7 +153,6 @@ function DashboardAdminSide() {
 
 
     return (
-        
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
             {isMobile ? <NavbarUser /> : <Sidebar isMobile={isMobile} />}
             <div className="flex flex-col flex-1 overflow-auto">
@@ -296,39 +266,6 @@ function DashboardAdminSide() {
                         </div>
                     </div>
                 </div>
-                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4 p-4">
-                    <CheckinDashboard />
-                    <div className="col-span-2 drop-shadow-lg bg-white p-4 rounded-xl border h-72">
-                        <FormControl variant="outlined" size="small" className="w-40 mb-2">
-                            <InputLabel>Select Chart</InputLabel>
-                            <Select value={selectedChart} onChange={(e) => setSelectedChart(e.target.value)}>
-                                <MenuItem value="kehadiranUser">Kehadiran User</MenuItem>
-                                <MenuItem value="kehadiran">Kehadiran</MenuItem>
-                                <MenuItem value="gender">Gender</MenuItem>
-                                <MenuItem value="karyawan">Karyawan</MenuItem>
-                            </Select>
-                        </FormControl>
-                        {selectedChart === "kehadiranUser" && <ChartDataKehadiranUser />}
-                        {selectedChart === "kehadiran" && <ChartDataKehadiran />}
-                        {selectedChart === "gender" && <ChartDataGender />}
-                        {selectedChart === "karyawan" && <ChartDataKaryawan />}
-                    </div>
-                </div> */}
-                {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-                    <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-72">
-                        <h2 className="text-lg font-bold">Today's Absences</h2>
-                        <div className="overflow-y-auto h-60">
-                            {loading ? <Loading /> : absensiItems.map((item, index) => (
-                                <div key={index} className="p-2 border-b">{item.nama} - {item.status}</div>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-72">
-                        <h2 className="text-lg font-bold">Announcements</h2>
-                        <AnnouncementList />
-                        <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button>
-                    </div>
-                </div> */}
             </div>
             {isTambahFormOpen && <Announcment onClose={() => setTambahFormOpen(false)} onSubmit={() => Swal.fire("Added successfully!")} />}
         </div>

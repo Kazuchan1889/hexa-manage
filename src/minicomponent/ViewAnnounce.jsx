@@ -217,4 +217,4 @@ const AnnouncementList = () => {
   );
 };
  
-export default AnnouncemeyntList;
+export default AnnouncementList;

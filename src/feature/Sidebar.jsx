@@ -216,6 +216,9 @@ const Sidebar = () => {
             // Default: tampilkan
             return true;
         });
+    const handleEditClick = () => {
+        navigate("/accountsetting");
+    };
 
 
     return (
@@ -248,7 +251,7 @@ const Sidebar = () => {
                                 userData.nama
                             )}
                         </p>
-                        <EditIcon />
+                        <EditIcon onClick={handleEditClick} />
                     </div>
                 </div>
                 <div className="text-left ml-1 mt-3.5 text-[16px] font-sm font-semibold">
