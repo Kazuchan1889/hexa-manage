@@ -53,8 +53,6 @@ import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
 import A from "./page/Aaaa";
-// Import komponen loading
-import Loading from "./page/Loading"; 
 import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
