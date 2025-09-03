@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
-
 // Import komponen halaman
 import DashboardAdmin from "./page/DashboardAdmin";
 import DashboardUser from "./page/DashboardUser";
@@ -50,7 +49,6 @@ import FormLapor from "./page/Formlaporan";
 import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
 import UserDataManagement from "./minicomponent/UserDataManagement";
-import Tetris from "./page/Tetris";
 import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
@@ -61,7 +59,8 @@ import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
 import DashboardUserSide from "./page/DashboardUserSide";
-import Mkey from "./page/TableEmployeActivity";
+import Gant from "./page/Gant";
+import DeviceManager from "./page/DeviceManager";
 
 function App() {
   // Setup tema untuk aplikasi
@@ -128,6 +127,7 @@ function App() {
           <Route path="/Announce" element={<Ann />} />
           <Route path="/ViewAnounce" element={<ViewA />} />
           <Route path="/Companyfile" element={<Compf />} />
+          <Route path="/Key" element={<Key />} />
           <Route path="/editt" element={<AnnouncementEdit />} />
           <Route path="/OverUser" element={<OverUser />} />
           <Route path="/Changepass" element={<Pagechangpass />} />
@@ -136,7 +136,7 @@ function App() {
           <Route path="/Addrole" element={<Addrole />} />
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
-          <Route path="/Tetris" element={<Tetris />} />
+
           <Route path="/UserSummary" element={<UserSummary />} />
           <Route path="/Geotech" element={<Testloc />} />
           <Route path="/Face" element={<Face />} />
@@ -144,8 +144,8 @@ function App() {
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
           <Route path="/A" element={<A />} />
-          <Route path="/Key" element={<Key />} />
-          <Route path="/Masterkey" element={<Mkey />} />
+          <Route path="/Gant" element={<Gant />} />
+          <Route path="/Device" element={<DeviceManager />} />
        
           
         </Routes>

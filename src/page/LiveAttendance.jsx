@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/Headbar";
 import { useNavigate } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
 
 function LiveAttendance() {
     const [masuk, setMasuk] = useState("");
@@ -199,7 +200,7 @@ function LiveAttendance() {
             console.log("Detected IP:", localIP);
 
 
-            if (localIP !== "192.168.4.144") {
+            if (localIP !== "192.168.0.114") {
                 Swal.fire({
                     icon: "error",
                     title: "Check In Gagal!",
@@ -271,7 +272,7 @@ function LiveAttendance() {
         try {
             // 🔍 Validasi IP sebelum check-out
             const localIP = await getLocalIP();
-            if (localIP !== "192.168.4.144") {
+            if (localIP !== "192.168.1.16") {
                 Swal.fire({
                     icon: "error",
                     title: "Check Out Gagal!",
@@ -348,12 +349,25 @@ function LiveAttendance() {
         return `${hours}:${minutes}`;
     }
 
+    const handleBackClick = () => {
+        window.location.href = "/dashboard"; // Arahkan ke dashboard
+    };
+
     return (
         <div className="w-full h-full">
             <NavbarUser />
+
             {/* Header */}
             <div>
-                <div className="w-full py-6 flex flex-col items-center bg-[#11284E]">
+                <div className="w-full py-6 flex flex-col items-center bg-[#11284E] relative">
+                    {/* ArrowBack di dalam header pojok kiri atas */}
+                    <div className="absolute top-4 left-4">
+                        <ArrowBack
+                            className="text-white cursor-pointer"
+                            onClick={handleBackClick}
+                        />
+                    </div>
+
                     <h1 className="text-white font-bold text-2xl text-center px-2">
                         LIVE ATTENDANCE
                     </h1>
@@ -364,6 +378,7 @@ function LiveAttendance() {
                         Check-in Time
                     </Typography>
                 </div>
+
                 <div className="m-auto mt-10 p-6 border rounded-lg drop-shadow-lg bg-white flex flex-col items-center max-w-[1000px] w-full h-auto">
                     {/* Video Stream */}
                     <div className="w-full flex justify-center mb-6">
@@ -374,7 +389,7 @@ function LiveAttendance() {
                     </div>
 
                     {/* Attendance Actions */}
-                    <div className="flex  flex-col items-center  w-full">
+                    <div className="flex flex-col items-center w-full">
                         {checkInStatus === "udahMasuk" && !isUserCheckout ? (
                             <Button
                                 variant="contained"
@@ -406,6 +421,8 @@ function LiveAttendance() {
                 </div>
             </div>
         </div>
+
+
     );
 };
 

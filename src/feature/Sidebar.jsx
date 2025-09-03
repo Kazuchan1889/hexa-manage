@@ -222,58 +222,105 @@ const Sidebar = () => {
 
 
     return (
-        <nav className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"}`}>
+        <nav
+            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"
+                }`}
+        >
             {/* Header */}
-            {/* <IconButton onClick={() => setOpen(!open)}> */}
-            <div className="flex items-center mb-4 ml-4">
-                <img src={formData.logo} className={`${open ? "w-auto h-12" : "w-0"} rounded-md`} alt="logo" />
-                {/* <MenuIcon fontSize="medium" className={`text-white duration-500 ${!open && "rotate-180"}`} /> */}
-            </div>
-            {/* </IconButton> */}
+            {open ? (
+                // Saat sidebar open → Logo di kiri, menu icon di kanan
+                <div className="flex flex-row justify-between items-center px-4 mb-4">
+                    <img
+                        src={formData.logo}
+                        alt="logo"
+                        className="rounded-md object-contain max-h-12 w-auto transition-all duration-300"
+                    />
+                    <IconButton onClick={() => setOpen(!open)} className="p-1">
+                        <MenuIcon
+                            fontSize="medium"
+                            className="text-white transition-transform duration-500"
+                        />
+                    </IconButton>
+                </div>
+            ) : (
+                // Saat sidebar minimize → Logo di atas menu icon
+                <div className="flex flex-col items-center gap-2 mb-4">
+                    <img
+                        src={formData.logo}
+                        alt="logo"
+                        className="object-contain max-h-5 w-auto transition-all duration-300"
+                    />
+                    <IconButton onClick={() => setOpen(!open)} className="p-1">
+                        <MenuIcon
+                            fontSize="medium"
+                            className="text-white rotate-180 transition-transform duration-500"
+                        />
+                    </IconButton>
+                </div>
+            )}
 
-
-
-
-            <div className="flex-col mb-3 bg-[#11284E] rounded-md gap-2 mx-2 px-2 py-2">
-                <div className="flex ml-1 items-center">
-                    <Avatar className="w-4 h-4">
-                        {loading ? (
-                            <div className="w-10 h-10 bg-gray-500 rounded-full animate-pulse"></div> // Skeleton untuk gambar
-                        ) : (
-                            <img src={userData.dokumen} alt="User Profile" />
-                        )}
-                    </Avatar>
-                    <div className="flex w-full justify-between">
-                        <p className="text-left font-semibold text-lg ml-2">
-                            {loading ? (
-                                <div className="w-36 h-6 bg-gray-500 rounded animate-pulse"></div> // Skeleton untuk nama
-                            ) : (
-                                userData.nama
-                            )}
-                        </p>
-                        <EditIcon onClick={handleEditClick} />
+            {/* Profile Section */}
+            <div
+                className={`flex flex-col mb-3 rounded-md mx-2 px-2 py-2 transition-all duration-300 ${open
+                        ? "bg-[#11284E] items-start justify-start"
+                        : "bg-transparent items-center justify-center"
+                    }`}
+            >
+                {/* Avatar + Nama + Edit Icon (hanya saat open) */}
+                {open && (
+                    <div className="flex items-center w-full justify-between">
+                        <div className="flex items-center">
+                            <Avatar className="w-10 h-10">
+                                {loading ? (
+                                    <div className="w-10 h-10 bg-gray-500 rounded-full animate-pulse"></div>
+                                ) : (
+                                    <img src={userData.dokumen} alt="User Profile" />
+                                )}
+                            </Avatar>
+                            <p className="text-left font-semibold text-lg ml-2">
+                                {loading ? (
+                                    <div className="w-36 h-6 bg-gray-500 rounded animate-pulse"></div>
+                                ) : (
+                                    userData.nama
+                                )}
+                            </p>
+                        </div>
+                        <EditIcon onClick={handleEditClick} className="cursor-pointer" />
                     </div>
-                </div>
-                <div className="text-left ml-1 mt-3.5 text-[16px] font-sm font-semibold">
-                    {loading ? (
-                        <div className="w-28 h-4 bg-gray-500 rounded animate-pulse"></div> // Skeleton untuk jabatan
-                    ) : (
-                        userData.jabatan
-                    )}
-                </div>
-                <div className="text-left ml-1 text-[16px]">
-                    {loading ? (
-                        <div className="w-24 h-4 bg-gray-500 rounded animate-pulse mt-4"></div> // Skeleton untuk status
-                    ) : (
-                        userData.status
-                    )}
-                </div>
-                <div className="text-left ml-1 text-[16px]">
-                    Hexaon Business Mitrasindo
-                </div>
+                )}
 
-                <div className={`flex-1 items-center leading-5 ${!open && "w-0 translate-x-24"} duration-500 overflow-hidden`}></div>
+                {/* Info tambahan */}
+                {open && (
+                    <>
+                        <div className="text-left ml-1 mt-3.5 text-[16px] font-semibold">
+                            {loading ? (
+                                <div className="w-28 h-4 bg-gray-500 rounded animate-pulse"></div>
+                            ) : (
+                                userData.jabatan
+                            )}
+                        </div>
+                        <div className="text-left ml-1 text-[16px]">
+                            {loading ? (
+                                <div className="w-24 h-4 bg-gray-500 rounded animate-pulse mt-4"></div>
+                            ) : (
+                                userData.status
+                            )}
+                        </div>
+                        <div className="text-left ml-1 text-[16px]">
+                            Hexaon Business Mitrasindo
+                        </div>
+                    </>
+                )}
+
+                {/* Spacer untuk transisi */}
+                <div
+                    className={`flex-1 items-center leading-5 duration-500 overflow-hidden ${!open && "w-0 translate-x-24"
+                        }`}
+                ></div>
             </div>
+
+
+
 
             {/* Menu */}
             <ul className="flex-1">
