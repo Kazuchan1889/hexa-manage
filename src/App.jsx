@@ -53,6 +53,8 @@ import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
 import A from "./page/Aaaa";
+// Import komponen loading
+
 import Face from "./page/Face";
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
@@ -70,22 +72,22 @@ function App() {
     },
   });
 
-  // Ambil loading state dari Redux
-  const isLoading = useSelector((state) => state.loading.isLoading);
-  const dispatch = useDispatch();
+  // // Ambil loading state dari Redux
+  // const isLoading = useSelector((state) => state.loading.isLoading);
+  // const dispatch = useDispatch();
 
-  // Menghentikan loading setelah 2 detik
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(stopLoading()); // Memanggil stopLoading action untuk menghentikan loading
-    }, 2000); // 2 detik loading
-    return () => clearTimeout(timer);
-  }, [dispatch]);
+  // // Menghentikan loading setelah 2 detik
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     dispatch(stopLoading()); // Memanggil stopLoading action untuk menghentikan loading
+  //   }, 2000); // 2 detik loading
+  //   return () => clearTimeout(timer);
+  // }, [dispatch]);
 
-  // Jika sedang loading, tampilkan komponen Loading
-  if (isLoading) {
-    return <Loading />; // Pastikan komponen Loading sudah benar
-  }
+  // // Jika sedang loading, tampilkan komponen Loading
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   // Jika tidak loading, tampilkan konten aplikasi
   return (
@@ -134,6 +136,7 @@ function App() {
           <Route path="/Addrole" element={<Addrole />} />
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
+
           <Route path="/UserSummary" element={<UserSummary />} />
           <Route path="/Geotech" element={<Testloc />} />
           <Route path="/Face" element={<Face />} />
@@ -143,6 +146,8 @@ function App() {
           <Route path="/A" element={<A />} />
           <Route path="/Gant" element={<Gant />} />
           <Route path="/Device" element={<DeviceManager />} />
+       
+          
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

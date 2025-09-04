@@ -18,8 +18,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ip from "../ip";
 import UserIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from "react-redux";
-
-
+import { loadingAction } from "../store/store";
+import Loading from "../page/Loading";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningIcon from '@mui/icons-material/Warning';
