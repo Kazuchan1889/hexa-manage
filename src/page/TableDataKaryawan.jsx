@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks
-import { loadingAction } from "../store/store"; // Importing Redux action
-import axios from "axios";
+import { Button, IconButton } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
 import TambahKaryawan from "../feature/TambahKaryawan";
 import EditDataKaryawan from "../feature/EditDataKaryawan";
@@ -32,7 +31,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
-import Loading from "../page/Loading"; // Importing Loading component
 
 const TableDataKaryawan = () => {
   const [rows, setRows] = useState([]);
@@ -54,9 +52,6 @@ const TableDataKaryawan = () => {
 
   const apiURLDataKaryawan = `${ip}/api/karyawan/get/data/search`;
 
-  const dispatch = useDispatch(); // Initialize Redux dispatch
-  const loading = useSelector((state) => state.loading.isLoading); // Access loading state
-
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -65,15 +60,12 @@ const TableDataKaryawan = () => {
   };
 
   const fetchData = async () => {
-    dispatch(loadingAction.startLoading(true)); // Start loading
     try {
       const response = await axios.post(apiURLDataKaryawan, {}, config);
       setRows(response.data);
       setOriginalRows(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      dispatch(loadingAction.startLoading(false)); // Stop loading
     }
   };
 
@@ -86,7 +78,6 @@ const TableDataKaryawan = () => {
     setSelectedIndex(index);
   };
 
-  
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedIndex(null);
@@ -203,10 +194,6 @@ const TableDataKaryawan = () => {
       });
   };
 
-  if (loading) {
-    return <Loading />; // Render loading spinner when data is being fetched
-  }
-
   return (
     <div className="w-full h-screen bg-gray-100 overflow-y-auto">
       <NavbarUser />
@@ -279,11 +266,6 @@ const TableDataKaryawan = () => {
                           Name
                         </p>
                       </TableCell>
-                      {/* <TableCell align="center" className="w-[15%]">
-                        <p className="text-white font-semibold sticky top-0">
-                          Position
-                        </p>
-                      </TableCell> */}
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
                           Division
@@ -291,7 +273,7 @@ const TableDataKaryawan = () => {
                       </TableCell>
                       <TableCell align="center" className="w-[20%]">
                         <p className="text-white font-semibold sticky top-0">
-                          lokasi
+                          Location
                         </p>
                       </TableCell>
                       <TableCell align="center" className="w-[5%]">
@@ -330,9 +312,6 @@ const TableDataKaryawan = () => {
                             <TableCell align="center" style={{ width: "20%" }}>
                               {row.nama}
                             </TableCell>
-                            {/* <TableCell align="center" style={{ width: "10%" }}>
-                              {row.jabatan}
-                            </TableCell> */}
                             <TableCell align="center" style={{ width: "10%" }}>
                               {row.divisi}
                             </TableCell>
@@ -375,17 +354,6 @@ const TableDataKaryawan = () => {
                                       View Profile
                                     </MenuItem>
                                   )}
-                                  {/* {operation.includes("UPDATE_KARYAWAN") && (
-                                    <MenuItem
-                                      onClick={() => handleEdit(selectedIndex)}
-                                    >
-                                      <EditIcon
-                                        className="text-gray-500"
-                                        style={{ marginRight: "8px" }}
-                                      />
-                                      Edit Profile
-                                    </MenuItem>
-                                  )} */}
                                   {operation.includes("UPDATE_KARYAWAN") && (
                                     <MenuItem
                                       onClick={() =>
@@ -450,16 +418,6 @@ const TableDataKaryawan = () => {
           onClose={() => setDetailOpen(false)}
         />
       )}
-      {/* {isEditOpen && (
-        <EditDataKaryawan
-          data={selectedData}
-          onClose={() => setEditOpen(false)}
-          rows={rows}
-          selectedRowIndex={selectedRowIndex}
-          setRows={setRows}
-          fetchData={fetchData}
-        />
-      )} */}
       {isSettingOpen && (
         <EditOperation
           data={selectedData}
