@@ -22,7 +22,6 @@ import Headb from "../feature/Headbar";
 import Shortcut from "../minicomponent/Shortcut";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-
 const getIdFromToken = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) return null;
@@ -43,20 +42,20 @@ function DashboardAdminSide() {
     const [isTambahFormOpen, setTambahFormOpen] = useState(false);
     const [scheduleItems, setScheduleItems] = useState([]);
     const [absensiItems, setAbsensiItems] = useState([]);
-    const checkOperation = localStorage.getItem("operation");
-    const dispatch = useDispatch();
-    const loading = useSelector((state) => state.loading.isLoading);
     const [userData, setUserData] = useState({
         nama: "",
         dokumen: null,
         jabatan: "",
         cutimandiri: ""
     });
-
-    // State untuk loading individual
     const [loadingSchedule, setLoadingSchedule] = useState(false);
     const [loadingAbsensi, setLoadingAbsensi] = useState(false);
     const [loadingAnnouncement, setLoadingAnnouncement] = useState(false);
+
+    const navigate = useNavigate();
+    const checkOperation = localStorage.getItem("operation");
+    const dispatch = useDispatch();
+    const loading = useSelector((state) => state.loading.isLoading);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 1024);
@@ -66,9 +65,6 @@ function DashboardAdminSide() {
 
     const getNameFromToken = () => {
         const token = localStorage.getItem('accessToken');
-
-        console.log("Access Token:", token); // Menampilkan access token di console
-
         if (!token) {
             console.log("Token tidak ditemukan");
             return "User";
@@ -82,10 +78,6 @@ function DashboardAdminSide() {
             ).join(''));
 
             const payload = JSON.parse(jsonPayload);
-
-            console.log("Decoded Token Payload:", payload); // Menampilkan payload yang sudah didecode
-            console.log("Nama dari token:", payload.nama); // Menampilkan nama dari token
-
             return payload.nama || "User";
         } catch (error) {
             console.error("Error decoding token:", error);
@@ -95,14 +87,13 @@ function DashboardAdminSide() {
 
     useEffect(() => {
         const fetchScheduleItems = async () => {
-            setLoadingSchedule(true); // Mulai loading untuk jadwal
+            setLoadingSchedule(true);
             try {
-                const id = getIdFromToken("accessToken");
+                const id = getIdFromToken();
                 if (!id) {
                     console.error('ID not found in token');
                     return;
                 }
-
                 const response = await axios.get(`${ip}/api/schedjul/scheduler/assigned/karyawan/${id}`, {
                     headers: { Authorization: localStorage.getItem("accessToken") },
                 });
@@ -110,29 +101,23 @@ function DashboardAdminSide() {
             } catch (error) {
                 console.error("Error fetching schedule items:", error);
             } finally {
-                setLoadingSchedule(false); // Akhiri loading untuk jadwal
+                setLoadingSchedule(false);
             }
         };
 
-
         const fetchAbsensiItems = async () => {
-            setLoadingAbsensi(true); // Mulai loading untuk absensi
+            setLoadingAbsensi(true);
             try {
                 const response = await axios.post(
                     `${ip}/api/absensi/get/data/dated`,
-                    {
-                        date: new Date().toISOString().split("T")[0],
-                        search: "",
-                    },
-                    {
-                        headers: { Authorization: localStorage.getItem("accessToken") },
-                    }
+                    { date: new Date().toISOString().split("T")[0], search: "" },
+                    { headers: { Authorization: localStorage.getItem("accessToken") } }
                 );
                 setAbsensiItems(response.data);
             } catch (error) {
                 console.error("Error fetching absensi items:", error);
             } finally {
-                setLoadingAbsensi(false); // Akhiri loading untuk absensi
+                setLoadingAbsensi(false);
             }
         };
 
@@ -145,12 +130,9 @@ function DashboardAdminSide() {
         return new Intl.DateTimeFormat('id-ID', options).format(new Date(dateString));
     };
 
-    const navigate = useNavigate();
     const handleReadMore = () => {
-        navigate('/Cal'); // Arahkan ke halaman /Calen
+        navigate('/Cal');
     };
-
-
 
     return (
         <div className="flex flex-col lg:flex-row h-screen w-screen bg-primary overflow-hidden">
@@ -168,7 +150,6 @@ function DashboardAdminSide() {
                     <Shortcut />
                 </div>
 
-                {/* Grid Layout */}
                 <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="drop-shadow-md bg-white py-6 rounded-lg">
                         <ChartDataKehadiranUser />
@@ -185,7 +166,6 @@ function DashboardAdminSide() {
                 </div>
 
                 <div className={`px-4 pb-4 gap-4 ${isMobile ? 'flex flex-col' : 'flex flex-row justify-between'}`}>
-                    {/* Today's Absence */}
                     <div className={`${isMobile ? 'w-full' : 'w-1/4'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
                         <span className="text-[#204682] text-lg text-center font-bold">Today's Absence</span>
                         <div className="max-h-[18rem] mt-2 overflow-y-auto">
@@ -221,14 +201,12 @@ function DashboardAdminSide() {
                         </div>
                     </div>
 
-                    {/* Assignment */}
                     <div className={`${isMobile ? 'w-full' : 'w-1/2'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
                         <span className="text-[#204682] text-lg text-center font-bold">Assignment</span>
                         <AnnouncementList />
                         <Button variant="contained" color="primary" onClick={() => setTambahFormOpen(true)}>Add Announcement</Button>
                     </div>
 
-                    {/* Upcoming Schedule */}
                     <div className={`${isMobile ? 'w-full' : 'w-1/4'} drop-shadow-lg bg-white p-4 rounded-xl border h-[23rem]`}>
                         <span className="text-[#204682] text-lg text-center font-bold">Upcoming Schedule</span>
                         <div className="max-h-[18rem] overflow-y-auto flex flex-col justify-center items-center">
@@ -271,4 +249,5 @@ function DashboardAdminSide() {
         </div>
     );
 };
+
 export default DashboardAdminSide;

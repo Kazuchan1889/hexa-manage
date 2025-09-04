@@ -10,9 +10,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ip from "../ip";
 import ForgetPassword from "../feature/ForgetPassword";
 import Swal from "sweetalert2";
-import { useDispatch, useSelector } from "react-redux";
-import loadingSlice from "../store/loadingSlice";
-import { loadingAction } from "../store/store";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -22,7 +20,6 @@ function Login() {
   const navigate = useNavigate();
   const [showForgetPassword, setShowForgetPassword] = useState(false);
 
-  const loading = useSelector((state) => state.loading.isLoading);
   const dispatch = useDispatch();
 
   const toggleForgetPassword = () => {
@@ -42,7 +39,6 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    dispatch(loadingAction.startLoading(true));
     e.preventDefault();
 
     try {
@@ -63,20 +59,17 @@ function Login() {
         localStorage.setItem("operation", operation);
         localStorage.setItem("status", status);
 
-        dispatch(loadingAction.startLoading(false));
         navigate("/dashboard");
       } else {
         throw new Error("No access token received");
       }
     } catch (error) {
       console.error("Login failed", error);
-      dispatch(loadingAction.startLoading(false));
       Swal.fire({
         icon: "error",
         title: "Login Failed",
         text: "Invalid username or password. Please try again.",
       });
-      dispatch(loadingSlice.startLoading(false));
     }
   };
 
@@ -91,15 +84,6 @@ function Login() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        {/* Replace this with a loading spinner or animation */}
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div>

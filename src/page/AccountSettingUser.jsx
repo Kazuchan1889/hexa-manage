@@ -11,18 +11,15 @@ import { Avatar } from "@mui/material";
 import { Button, Card } from "@mui/material";
 import axios from "axios";
 import { ArrowBack, Notifications, Settings } from "@mui/icons-material";
-
 import UserSummary from './UserSummary';
 
 function AccountSettingUser() {
-
   const [dokumen, setDokumen] = useState(null);
   const [jabatan, setJabatan] = useState("");
   const [data, setData] = useState(null);
   const [userName, setUserName] = useState("");
   const [activeTab, setActiveTab] = useState('profile');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
   const [userPhoto, setUserPhoto] = useState(null);
 
   // Fetching accessToken and role from localStorage
@@ -80,12 +77,12 @@ function AccountSettingUser() {
           text: "User data is not available. Please check your internet connection or try again later.",
         });
       });
-
   }, []);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
   const handleBackClick = () => {
     window.location.href = "/dashboard"; // Arahkan ke dashboard
   };
@@ -118,7 +115,6 @@ function AccountSettingUser() {
     }
   };
 
-
   useEffect(() => {
     const apiUrl = `${ip}/api/karyawan/get/data/self`;
     const headers = {
@@ -138,8 +134,6 @@ function AccountSettingUser() {
           text: "User data is not available. Please check your internet connection or try again later.",
         });
       });
-
-
   }, []);
 
   useEffect(() => {
@@ -152,7 +146,6 @@ function AccountSettingUser() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
 
   return (
     <div className="flex flex-col bg-gray-100 min-h-screen">

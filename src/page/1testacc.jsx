@@ -6,12 +6,10 @@ import Sidebar from "../feature/Sidebar";
 import { Button, Menu, MenuItem, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import NavbarUser from "../feature/MobileNav";
 
-
 const AbsensiPage = () => {
   const [absensiList, setAbsensiList] = useState([]);
   const [cutiData, setCutiData] = useState([]);
   const [izinData, setIzinData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [reportType, setReportType] = useState("approval");
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
@@ -36,8 +34,6 @@ const AbsensiPage = () => {
         setIzinData(izinResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -186,7 +182,6 @@ const AbsensiPage = () => {
                     </TableCell>
                   </TableRow>
                 ))}
-
               </TableBody>
             </Table>
           </TableContainer>
