@@ -13,7 +13,6 @@ import ForgetPassword from "../feature/ForgetPassword";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import loadingSlice from "../store/loadingSlice";
-import Loading from "./Loading";
 import { loadingAction } from "../store/store";
 
 function Login() {
