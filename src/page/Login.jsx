@@ -1,4 +1,3 @@
-//AL.j v.3
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -23,7 +22,7 @@ function Login() {
   const navigate = useNavigate();
   const [showForgetPassword, setShowForgetPassword] = useState(false);
 
-  const loading = useSelector((state => state.loading.isLoading))
+  const loading = useSelector((state) => state.loading.isLoading);
   const dispatch = useDispatch();
 
   const toggleForgetPassword = () => {
@@ -56,7 +55,7 @@ function Login() {
 
       const { accessToken, result, role, jabatan, operation, status } = response.data;
 
-      if (accessToken) { // Ensure accessToken is valid
+      if (accessToken) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("role", role);
         localStorage.setItem("result", result);
@@ -64,7 +63,6 @@ function Login() {
         localStorage.setItem("operation", operation);
         localStorage.setItem("status", status);
 
-        // Stop loading on success
         dispatch(loadingAction.startLoading(false));
         navigate("/dashboard");
       } else {
@@ -73,22 +71,18 @@ function Login() {
     } catch (error) {
       console.error("Login failed", error);
       dispatch(loadingAction.startLoading(false));
-      // Show sweet alert on login failure
       Swal.fire({
         icon: "error",
         title: "Login Failed",
         text: "Invalid username or password. Please try again.",
       });
-
-      // Stop loading on error
       dispatch(loadingSlice.startLoading(false));
     }
   };
 
-
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024); // Adjust the breakpoint as needed
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     window.addEventListener("resize", handleResize);
@@ -99,7 +93,12 @@ function Login() {
   }, []);
 
   if (loading) {
-    return <Loading />
+    return (
+      <div className="loading-container">
+        {/* Replace this with a loading spinner or animation */}
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -115,7 +114,13 @@ function Login() {
             <form onSubmit={handleSubmit} className="w-full max-w-sm mt-5">
               <div className="mb-4">
                 <label className="block text-left mb-2">Email Address</label>
-                <TextField id="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth variant="outlined" />
+                <TextField
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                />
               </div>
               <div className="mb-4">
                 <label className="block text-left mb-2">Password</label>
@@ -136,7 +141,9 @@ function Login() {
                 />
               </div>
               <div className="flex justify-center my-5">
-                <Button type="submit" variant="contained" style={{ backgroundColor: "#204682" }}>Log in</Button>
+                <Button type="submit" variant="contained" style={{ backgroundColor: "#204682" }}>
+                  Log in
+                </Button>
               </div>
             </form>
             <Button onClick={toggleForgetPassword}>Forgot Password?</Button>
@@ -145,18 +152,14 @@ function Login() {
         </div>
       ) : (
         <div className="px-4 py-6 lg:w-full w-screen h-screen bg-violet-100 flex flex-col lg:flex-row justify-center items-center rounded-md">
-
           <div className="w-[50%] h-full p-4 bg-[#204682] flex flex-col justify-center items-center rounded-xl relative gap-1">
             <img
               src="/logo-login.png"
               className="rounded-md"
-              style={{ transform: 'scale(0.4)' }}
+              style={{ transform: "scale(0.4)" }}
               alt="Logo"
             />
           </div>
-
-
-
           <div className="w-1/2">
             <div className="justify-center items-center flex flex-col">
               <p className="text-xl font-medium ">Welcome Back!</p>
@@ -173,7 +176,7 @@ function Login() {
                   <Grid container>
                     <Grid item xs={12}>
                       <div className="mb-2">
-                        <div className="text-left mb-2">Email Adress</div>
+                        <div className="text-left mb-2">Email Address</div>
                         <TextField
                           id="email"
                           value={email}
@@ -193,7 +196,6 @@ function Login() {
                       <div className="mb-2">
                         <div className="text-left mb-2">Password</div>
                         <TextField
-
                           id="password"
                           value={password}
                           onChange={handlePasswordChange}
@@ -235,13 +237,9 @@ function Login() {
                   </Grid>
                 </form>
                 <Button onClick={toggleForgetPassword}>Forgot Password?</Button>
-
                 {showForgetPassword && (
                   <div>
-                    <ForgetPassword
-                      isOpen={showForgetPassword}
-                      onClose={toggleForgetPassword}
-                    />
+                    <ForgetPassword isOpen={showForgetPassword} onClose={toggleForgetPassword} />
                   </div>
                 )}
               </div>
