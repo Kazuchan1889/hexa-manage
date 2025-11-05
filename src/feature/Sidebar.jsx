@@ -223,8 +223,8 @@ const Sidebar = () => {
 
 
     return (
-        <nav
-            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"
+        <aside
+            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] rounded-br-lg rounded-tr-lg overflow-auto text-white rounded- ${open ? "w-60" : "w-16"
                 }`}
         >
             {/* Header */}
@@ -263,8 +263,8 @@ const Sidebar = () => {
             {/* Profile Section */}
             <div
                 className={`flex flex-col mb-3 rounded-md mx-2 px-2 py-2 transition-all duration-300 ${open
-                        ? "bg-[#11284E] items-start justify-start"
-                        : "bg-transparent items-center justify-center"
+                    ? "bg-[#11284E] items-start justify-start"
+                    : "bg-transparent items-center justify-center"
                     }`}
             >
                 {/* Avatar + Nama + Edit Icon (hanya saat open) */}
@@ -374,7 +374,7 @@ const Sidebar = () => {
                     );
                 })}
             </ul>
-        </nav>
+        </aside>
     );
 };
 

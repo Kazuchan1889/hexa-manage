@@ -49,7 +49,6 @@ import FormLapor from "./page/Formlaporan";
 import AttendanceLog from "./page/AttendanceLog";
 import Addrole from "./page/Addrole";
 import UserDataManagement from "./minicomponent/UserDataManagement";
-import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
 import ActivityTracker from "./page/ActivityTracker";
@@ -136,8 +135,6 @@ function App() {
           <Route path="/Addrole" element={<Addrole />} />
           <Route path="/AttendanceLog" element={<AttendanceLog />} />
           <Route path="/UserDataManagement" element={<UserDataManagement />} />
-
-          <Route path="/UserSummary" element={<UserSummary />} />
           <Route path="/Geotech" element={<Testloc />} />
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />

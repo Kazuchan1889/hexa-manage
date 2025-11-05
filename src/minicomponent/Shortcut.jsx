@@ -40,7 +40,7 @@ function Shortcut() {
           { path: "/liveattendance", label: "Live Attendance" },
           { path: "/reimburst", label: "Request Reimbursement" },
           { path: "/Form", label: "Request Time Off" },
-          { path: "/UserSummary", label: "Summary" },
+          // { path: "/UserSummary", label: "Summary" },
           // { path: "/Key", label: "Acticity tracker" },
         ].map((item, index) => (
           <div
