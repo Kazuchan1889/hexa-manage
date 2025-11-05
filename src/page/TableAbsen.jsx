@@ -41,8 +41,8 @@ import {
   Modal,
 } from "@mui/material";
 import NavbarUser from "../feature/MobileNav";
-import Head from "../feature/Headbar";
 import Sidebar from "../feature/Sidebar";
+import Head from "../feature/Headbar";
 import { Close } from "@mui/icons-material";
 import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';

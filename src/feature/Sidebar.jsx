@@ -66,6 +66,7 @@ const menuItems = [
         dropdown: [
             { id: 39, label: "User Managment", path: "/UserDataManagement" },
             { id: 40, label: "Role", path: "/addrole" },
+            { id: 41, label: "Biometric", path: "/Biometric" },
         ],
     },
     {
@@ -73,8 +74,8 @@ const menuItems = [
         icons: <AttachMoneyOutlined fontSize="large" />, // Ganti ikon jika kamu mau
         label: "Finance",
         dropdown: [
-            { id: 41, label: "Reimburse", path: "/masterreimburst" },
-            { id: 42, label: "Payroll", path: "/masterpayroll" },
+            { id: 42, label: "Reimburse", path: "/masterreimburst" },
+            { id: 43, label: "Payroll", path: "/masterpayroll" },
         ],
     },
 ];

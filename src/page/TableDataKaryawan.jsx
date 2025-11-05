@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { Button, IconButton, Menu, MenuItem, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, TablePagination, Typography, InputBase, Card, CardContent } from "@mui/material";
-import { MoreVertIcon, BadgeIcon, DeleteIcon, EditIcon, SettingsIcon, PersonAddIcon, SearchIcon, DescriptionIcon } from "@mui/icons-material";
-import axios from "axios";
+import { Button, IconButton } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import Swal from "sweetalert2";
 import NavbarUser from "../feature/NavbarUser";
 import TambahKaryawan from "../feature/TambahKaryawan";
@@ -10,6 +8,26 @@ import EditDataKaryawan from "../feature/EditDataKaryawan";
 import DetailKaryawan from "../feature/DetailKaryawan";
 import EditOperation from "../feature/EditOperation";
 import DeleteConfirmation from "../feature/DeleteData";
+import { Card, CardContent } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import BadgeIcon from "@mui/icons-material/Badge";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SearchIcon from "@mui/icons-material/Search";  
+import Menu from "@mui/material/Menu";
+import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
 
 const TableDataKaryawan = () => {
@@ -29,6 +47,7 @@ const TableDataKaryawan = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [isSettingOpen, setSettingOpen] = useState(null);
   const operation = localStorage.getItem("operation");
+  
 
   const apiURLDataKaryawan = `${ip}/api/karyawan/get/data/search`;
 

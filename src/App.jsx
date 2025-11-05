@@ -52,16 +52,16 @@ import UserDataManagement from "./minicomponent/UserDataManagement";
 import UserSummary from "./page/UserSummary";
 import Testloc from "./page/Testloc";
 import Aptes from "./page/1testacc";
-import A from "./page/Aaaa";
+import ActivityTracker from "./page/ActivityTracker";
 // Import komponen loading
 
-import Face from "./page/Face";
+
 import Sidebar from "./feature/Sidebar";
 import DashboardAdminSide from "./page/DashboardAdminSide";
 import DashboardUserSide from "./page/DashboardUserSide";
 import Gant from "./page/Gant";
-import DeviceManager from "./page/DeviceManager";
-
+import Testabsen from "./page/testabsen";
+import Biometric from "./page/BiometricDevice";
 function App() {
   // Setup tema untuk aplikasi
   const theme = createTheme({
@@ -139,15 +139,14 @@ function App() {
 
           <Route path="/UserSummary" element={<UserSummary />} />
           <Route path="/Geotech" element={<Testloc />} />
-          <Route path="/Face" element={<Face />} />
           <Route path="/Aptes" element={<Aptes />} />
           <Route path="/Sidebar" element={<Sidebar />} />
           <Route path="/DashboardUserSide" element={<DashboardUserSide />} />
-          <Route path="/A" element={<A />} />
+          <Route path="/ActivityTracker" element={<ActivityTracker />} />
           <Route path="/Gant" element={<Gant />} />
-          <Route path="/Device" element={<DeviceManager />} />
-       
-          
+          <Route path="/testabsen" element={<Testabsen />} />
+          <Route path="/Biometric" element={<Biometric />} />
+
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
