@@ -34,8 +34,7 @@ const TableResign = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
     const [openModal, setOpenModal] = useState(false);
     const [name, setName] = useState(""); // State untuk nama
-    const [idPengguna, setIdPengguna] = useState(""); // State untuk ID Pengguna
-    const [employees, setEmployees] = useState([]); // State untuk menampung daftar 
+    const [idPengguna, setIdPengguna] = useState(""); // State untuk ID Penggun
     const [users, setUsers] = useState([]); // State untuk menampung daftar pengguna
 
     // Fetching data
@@ -96,24 +95,36 @@ const TableResign = () => {
         const fetchUsers = async () => {
             try {
                 const response = await fetch(`${ip}/api/karyawan/get`, {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: localStorage.getItem("accessToken"),
                     },
                 });
+
+                // Periksa apakah status response baik (200 OK)
+                if (!response.ok) {
+                    console.error("API request gagal. Status:", response.status);
+                    return;
+                }
+
                 const data = await response.json();
-                if (data.success) {
-                    setUsers(data.data); // Menyimpan data pengguna yang didapat dari API
+                console.log("Data dari API:", data); // Log data untuk memastikan respons API
+
+                // Cek apakah data berisi array dan tidak kosong
+                if (Array.isArray(data) && data.length > 0) {
+                    setUsers(data); // Menyimpan data pengguna yang didapat dari API
                 } else {
-                    console.error("Gagal mengambil data pengguna");
+                    console.error("Gagal mengambil data pengguna atau data kosong");
                 }
             } catch (error) {
-                console.error("Error fetching users:", error);
+                console.error("Terjadi error saat fetching data:", error);
             }
         };
+
         fetchUsers();
     }, []);
+
 
     // Menangani perubahan nama yang dipilih dari dropdown
     const handleNameChange = (event) => {
@@ -121,7 +132,7 @@ const TableResign = () => {
         setName(selectedName);
 
         // Mencari ID berdasarkan nama yang dipilih
-        const selectedUser = users.find(user => user.nama === selectedName);
+        const selectedUser = users.find((user) => user.nama === selectedName);
         if (selectedUser) {
             setIdPengguna(selectedUser.id); // Menampilkan ID Pengguna yang sesuai dengan nama yang dipilih
         } else {
@@ -141,13 +152,13 @@ const TableResign = () => {
         console.log("Submitted Data:", { name, idPengguna });
 
         // Menyiapkan data untuk dikirim ke API registerUser
-        const userData = { userId: idPengguna, name };
+        const userData = { userId: name, idPengguna };
 
         try {
             const response = await fetch(`${ip}/api/palm/registerUser`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(userData),
             });
@@ -205,10 +216,10 @@ const TableResign = () => {
                                 <TableBody className="bg-gray-100">
                                     {(rowsPerPage > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : rows).map((row, index) => (
                                         <TableRow key={index}>
-                                            <TableCell align="center">{row.userId}</TableCell>
+                                            <TableCell align="center">{row.userid}</TableCell>
                                             <TableCell align="center">{row.cardId}</TableCell>
                                             <TableCell align="center">{row.status}</TableCell>
-                                            <TableCell align="center">{row.updateTime}</TableCell>
+                                            <TableCell align="center">{row.updatetime}</TableCell>
                                             <TableCell align="center">
                                                 <Button variant="contained" color="primary">
                                                     Verify
@@ -231,27 +242,44 @@ const TableResign = () => {
             </div>
 
 
-            {/* Modal untuk menambah pengguna baru */}
             <Modal open={openModal} onClose={handleCloseModal}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-md">
-                    <Typography variant="h6" className="text-center font-bold">Add New User</Typography>
+                    <Typography variant="h6" className="text-center font-bold">
+                        Add New User
+                    </Typography>
                     <div className="flex flex-col space-y-4 mt-4">
-                        {/* Text input untuk nama pengguna */}
-                        <TextField
-                            label="Name" 
-                            variant="outlined"
-                            fullWidth
-                            value={idPengguna}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+                        {/* Dropdown untuk memilih nama pengguna */}
+                        <FormControl fullWidth>
+                            <InputLabel>Nama</InputLabel>
+                            <Select
+                                value={name}
+                                onChange={handleNameChange}
+                                label="Nama"
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 250, // Membatasi tinggi dropdown
+                                            overflowY: 'auto', // Menambahkan scroll jika item lebih banyak dari maxHeight
+                                        },
+                                    },
+                                }}
+                            >
+                                {/* Menampilkan semua data yang telah di-fetch, namun dapat discroll */}
+                                {users.map((user) => (
+                                    <MenuItem key={user.id} value={user.nama}>
+                                        {user.nama}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
 
-                        {/* Text input untuk ID Pengguna */}
+                        {/* Text input untuk ID Pengguna yang hanya bisa tampil berdasarkan nama yang dipilih */}
                         <TextField
                             label="ID Pengguna"
                             variant="outlined"
                             fullWidth
-                            value={name}
-                            onChange={(e) => setIdPengguna(e.target.value)}
+                            value={idPengguna}
+                            disabled // Nonaktifkan input ID
                         />
                     </div>
 

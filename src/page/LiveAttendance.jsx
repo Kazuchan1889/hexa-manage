@@ -196,42 +196,46 @@ function LiveAttendance() {
         setIsLoading(true);
 
         try {
-            const localIP = await getLocalIP();
-            console.log("Detected IP:", localIP);
+            // Validasi IP (dikomentari)
+            // const localIP = await getLocalIP();
+            // console.log("Detected IP:", localIP);
+            // if (localIP !== "192.168.0.114") {
+            //     Swal.fire({
+            //         icon: "error",
+            //         title: "Check In Gagal!",
+            //         text: "Anda tidak terhubung ke jaringan yang sesuai.",
+            //     });
+            //     setIsLoading(false);
+            //     return;
+            // }
 
+            // Validasi lokasi (dikomentari)
+            // const location = await getLocation();
+            // if (!isWithinArea(location.latitude, location.longitude)) {
+            //     Swal.fire({
+            //         icon: "error",
+            //         title: "Check In Failed!",
+            //         text: "You are not within the required location.",
+            //     });
+            //     setIsLoading(false);
+            //     return;
+            // }
 
-            if (localIP !== "192.168.0.114") {
-                Swal.fire({
-                    icon: "error",
-                    title: "Check In Gagal!",
-                    text: "Anda tidak terhubung ke jaringan yang sesuai.",
-                });
-                setIsLoading(false);
-                return;
-            }
+            // Ambil foto saat check-in
+            const fotomasuk = capturePhoto(); // Get Base64 photo
 
-            const fotomasuk = capturePhoto();
-            const location = await getLocation();
-
-            if (!isWithinArea(location.latitude, location.longitude)) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Check In Failed!",
-                    text: "You are not within the required location.",
-                });
-                setIsLoading(false);
-                return;
-            }
-
+            // Endpoint API untuk check-in
             const apiSubmit = `${ip}/api/absensi/patch/masuk`;
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
                 "Content-Type": "application/json",
             };
-            const payload = { fotomasuk, location };
+            const payload = { fotomasuk };
 
+            // Kirim request ke API
             const response = await axios.patch(apiSubmit, payload, { headers });
 
+            // Jika berhasil
             if (response.status === 200) {
                 localStorage.setItem("result", "udahMasuk");
                 setCheckInStatus("udahMasuk");
@@ -255,9 +259,9 @@ function LiveAttendance() {
     };
 
 
+
     const handleCheckOut = async () => {
         if (isLoading || isUserCheckout) {
-            // Jika user sudah check-out, tampilkan notifikasi dan arahkan ke Home
             Swal.fire({
                 icon: "error",
                 title: "Check Out Gagal!",
@@ -270,22 +274,22 @@ function LiveAttendance() {
         setIsLoading(true);
 
         try {
-            // 🔍 Validasi IP sebelum check-out
-            const localIP = await getLocalIP();
-            if (localIP !== "192.168.1.16") {
-                Swal.fire({
-                    icon: "error",
-                    title: "Check Out Gagal!",
-                    text: `IP Address Anda (${localIP}) tidak diizinkan.`,
-                });
-                setIsLoading(false);
-                return;
-            }
+            // Validasi IP (dikomentari)
+            // const localIP = await getLocalIP();
+            // if (localIP !== "192.168.1.16") {
+            //     Swal.fire({
+            //         icon: "error",
+            //         title: "Check Out Gagal!",
+            //         text: `IP Address Anda (${localIP}) tidak diizinkan.`,
+            //     });
+            //     setIsLoading(false);
+            //     return;
+            // }
 
-            // 📸 Ambil foto saat check-out
+            // Ambil foto saat check-out
             const fotokeluar = capturePhoto(); // Get Base64 photo
 
-            // 🔗 Endpoint API untuk check-out
+            // Endpoint API untuk check-out
             const apiSubmit = `${ip}/api/absensi/patch/keluar`;
             const headers = {
                 Authorization: localStorage.getItem("accessToken"),
@@ -295,10 +299,10 @@ function LiveAttendance() {
                 fotokeluar, // send Base64 photo
             };
 
-            // 📨 Kirim request ke API
+            // Kirim request ke API
             const response = await axios.patch(apiSubmit, payload, { headers });
 
-            // ✅ Jika berhasil
+            // Jika berhasil
             if (response.status === 200) {
                 localStorage.setItem("result", "udahKeluar");
                 setCheckInStatus("udahKeluar");
@@ -320,6 +324,7 @@ function LiveAttendance() {
             setIsLoading(false);
         }
     };
+
 
 
     useEffect(() => {
