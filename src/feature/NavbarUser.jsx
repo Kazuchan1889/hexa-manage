@@ -353,7 +353,7 @@ const NavbarUser = () => {
         className="border-b bg-accent w-full flex items-center"
         style={{ boxShadow: "none", backgroundColor: "#fefefe" }}
       >
-        <Toolbar className="justify-between bg-accent w-[93%]">
+        <Toolbar className="justify-between bg-accent w-full max-w-full px-4">
           {isMobile && (
             <IconButton
               aria-label="open drawer"
@@ -568,11 +568,11 @@ const NavbarUser = () => {
                 <SettingsDropdown handleLogout={handleLogout} />
               </div>
               {isUserAdmin === "admin" ? (
-                 <button className="text-black flex items-center justify-center" onClick={handleClick}>
+                 <button className="text-black flex items-center justify-center relative" onClick={handleClick}>
                  <NotificationsIcon />
                  {/* Indikator merah */}
                  {uniqueIdkCount > 0 && (
-                   <span className="absolute top-3 right-2 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                   <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                      {uniqueIdkCount}
                    </span>
                  )}

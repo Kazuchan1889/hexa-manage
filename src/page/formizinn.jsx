@@ -23,28 +23,28 @@ function App() {
       <div className="flex flex-col flex-1 overflow-auto">
         <Head />
         {/* Center Content with Search Bar and Buttons */}
-        <div className="bg-[#11284E] justify-center items-center text-white p-6 h-56">
-          <h1 className="text-2xl font-bold mb-20 text-center">Request For Time off</h1>
-          <div className="w-full h-3/4 mt-20 bg-[#D9D9D9] mx-auto rounded-t-[15px] flex flex-row items-center gap-3 p-4  justify-center">
+        <div className="bg-[#11284E] flex flex-col justify-center items-center text-white p-6 min-h-[14rem]">
+          <h1 className="text-2xl font-bold mb-4 text-center">Request For Time off</h1>
+          <div className="w-full max-w-2xl bg-[#D9D9D9] mx-auto rounded-t-[15px] flex flex-row items-center gap-3 p-4 justify-center">
             <button
-              className={`w-1/2 h-1/2 rounded-[30px] border border-black text-xl border font-bold text-center ${selectedForm === 'cuti' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
+              className={`w-1/2 py-3 rounded-[30px] border border-black text-xl font-bold text-center transition-colors ${selectedForm === 'cuti' ? 'bg-[#204682] text-white' : 'bg-white text-black'}`}
               onClick={() => setSelectedForm('cuti')}
             >
               Leave Form
             </button>
             <button
-              className={`w-1/2 h-1/2 rounded-[30px] border border-black text-xl font-bold text-center ${selectedForm === 'izin' ? 'bg-[#204682] text-white-700' : ' text-black'}`}
+              className={`w-1/2 py-3 rounded-[30px] border border-black text-xl font-bold text-center transition-colors ${selectedForm === 'izin' ? 'bg-[#204682] text-white' : 'bg-white text-black'}`}
               onClick={() => setSelectedForm('izin')}
             >
               Permission Form
             </button>
           </div>
+        </div>
 
-          {/* Render form berdasarkan pilihan user */}
-          <div className="w-full mx-auto flex justify-center gap-3">
+        {/* Render form berdasarkan pilihan user */}
+        <div className="w-full mx-auto flex justify-center px-4 py-6">
+          <div className="w-full max-w-4xl">
             {selectedForm === 'cuti' ? <FormCuti /> : <FormIzin />}
-          </div>
-          <div className="mt-4 flex justify-center items-center space-x-4">
           </div>
         </div>
       </div>

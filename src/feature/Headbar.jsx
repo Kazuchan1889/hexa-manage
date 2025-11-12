@@ -342,21 +342,21 @@ const Headb = () => {
   console.log("Total unique nama count:", uniqueIdkCount);
 
   return (
-    <div className="flex justify-between px-4 pt-2 items-center bg-[#11284E]">
+    <div className="flex justify-between items-center px-4 py-2 bg-[#11284E]">
       {/* Left Corner */}
       <div className="text-white">
-        <p className="text-md ">{date}</p>
+        <p className="text-md">{date}</p>
         {/* {hour !== null && (
               <p className="text-sm">Current hour: {hour} o'clock</p>
             )} */}
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
         {/* Notification Icon */}
-        <IconButton onClick={handleClickr} className="relative">
+        <IconButton onClick={handleClickr} className="relative p-2">
           <NotificationsIcon className="w-6 h-6 text-white cursor-pointer" />
           {uniqueIdkCount + cutiCount + izinCount > 0 && (
-            <span className="absolute top-1 right-1 bg-red-500 text-white rounded-full text-sm w-4 h-4 flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
               {uniqueIdkCount + cutiCount + izinCount}
             </span>
           )}

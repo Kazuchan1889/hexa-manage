@@ -224,13 +224,13 @@ const Sidebar = () => {
 
     return (
         <aside
-            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] rounded-br-lg rounded-tr-lg overflow-auto text-white rounded- ${open ? "w-60" : "w-16"
+            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] rounded-br-lg rounded-tr-lg overflow-auto text-white ${open ? "w-60" : "w-16"
                 }`}
         >
             {/* Header */}
             {open ? (
                 // Saat sidebar open → Logo di kiri, menu icon di kanan
-                <div className="flex flex-row justify-between items-center px-4 mb-4">
+                <div className="flex flex-row justify-between items-center px-4 py-2 mb-4">
                     <img
                         src={formData.logo}
                         alt="logo"
@@ -245,7 +245,7 @@ const Sidebar = () => {
                 </div>
             ) : (
                 // Saat sidebar minimize → Logo di atas menu icon
-                <div className="flex flex-col items-center gap-2 mb-4">
+                <div className="flex flex-col items-center gap-2 py-2 mb-4">
                     <img
                         src={formData.logo}
                         alt="logo"
@@ -262,14 +262,14 @@ const Sidebar = () => {
 
             {/* Profile Section */}
             <div
-                className={`flex flex-col mb-3 rounded-md mx-2 px-2 py-2 transition-all duration-300 ${open
+                className={`flex flex-col mb-3 rounded-md mx-2 px-3 py-3 transition-all duration-300 ${open
                     ? "bg-[#11284E] items-start justify-start"
                     : "bg-transparent items-center justify-center"
                     }`}
             >
                 {/* Avatar + Nama + Edit Icon (hanya saat open) */}
                 {open && (
-                    <div className="flex items-center w-full justify-between">
+                    <div className="flex items-center w-full justify-between mb-2">
                         <div className="flex items-center">
                             <Avatar className="w-10 h-10">
                                 {loading ? (
@@ -278,7 +278,7 @@ const Sidebar = () => {
                                     <img src={userData.dokumen} alt="User Profile" />
                                 )}
                             </Avatar>
-                            <p className="text-left font-semibold text-lg ml-2">
+                            <p className="text-left font-semibold text-lg ml-2 truncate">
                                 {loading ? (
                                     <div className="w-36 h-6 bg-gray-500 rounded animate-pulse"></div>
                                 ) : (
@@ -286,29 +286,29 @@ const Sidebar = () => {
                                 )}
                             </p>
                         </div>
-                        <EditIcon onClick={handleEditClick} className="cursor-pointer" />
+                        <EditIcon onClick={handleEditClick} className="cursor-pointer ml-2" />
                     </div>
                 )}
 
                 {/* Info tambahan */}
                 {open && (
                     <>
-                        <div className="text-left ml-1 mt-3.5 text-[16px] font-semibold">
+                        <div className="text-left ml-1 mt-2 text-[16px] font-semibold">
                             {loading ? (
                                 <div className="w-28 h-4 bg-gray-500 rounded animate-pulse"></div>
                             ) : (
                                 userData.jabatan
                             )}
                         </div>
-                        <div className="text-left ml-1 text-[16px]">
+                        <div className="text-left ml-1 mt-1 text-[16px]">
                             {loading ? (
-                                <div className="w-24 h-4 bg-gray-500 rounded animate-pulse mt-4"></div>
+                                <div className="w-24 h-4 bg-gray-500 rounded animate-pulse"></div>
                             ) : (
                                 userData.status
                             )}
                         </div>
-                        <div className="text-left ml-1 text-[16px]">
-                            Hexaon Business Mitrasindo
+                        <div className="text-left ml-1 mt-1 text-[14px] text-gray-300">
+                            Hexaon Business International
                         </div>
                     </>
                 )}

@@ -160,7 +160,7 @@ function Login() {
                   <Grid container>
                     <Grid item xs={12}>
                       <div className="mb-2">
-                        <div className="text-left mb-2">Email Address</div>
+                        <div className="text-left mb-2">username</div>
                         <TextField
                           id="email"
                           value={email}
