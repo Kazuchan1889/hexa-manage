@@ -231,7 +231,7 @@ const TableOverTime = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 15));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
   // const handleReportTypeChange = (newReportType) => {
@@ -440,6 +440,20 @@ const TableOverTime = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+          </div>
+          <div className="flex w-full justify-center mt-4">
+            <div className="flex w-11/12 items-end justify-end">
+              <TablePagination
+                rowsPerPageOptions={[10, 15, 25]}
+                component="div"
+                count={filteredRows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Rows per page"
+              />
+            </div>
           </div>
           {/* Modal */}
           <Modal open={openModal} onClose={handleCloseModal}>

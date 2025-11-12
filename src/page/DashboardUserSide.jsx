@@ -19,7 +19,6 @@ import ip from "../ip";
 import UserIcon from '@mui/icons-material/AccountCircle';
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
-import LoadingOverlay from "../components/LoadingOverlay";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -243,9 +242,7 @@ function DashboardUserSide() {
                     <div className="drop-shadow-lg bg-white p-4 rounded-xl border h-72">
                         <h2 className="text-lg font-bold">Today's Absences</h2>
                         <div className="overflow-y-auto h-60">
-                            {loading ? (
-                                <LoadingOverlay message="Loading attendance data..." fullscreen={false} />
-                            ) : absensiItems.map((item, index) => (
+                            {loading ? null : absensiItems.map((item, index) => (
                                 <div key={index} className="p-2 border-b">{item.nama} - {item.status}</div>
                             ))}
                         </div>

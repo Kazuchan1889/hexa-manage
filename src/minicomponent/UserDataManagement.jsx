@@ -31,7 +31,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
-import LoadingOverlay from "../components/LoadingOverlay";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
@@ -183,7 +182,7 @@ const TableDataKaryawan = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 15));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
@@ -215,12 +214,7 @@ const TableDataKaryawan = () => {
   };
 
   if (loading) {
-    return (
-      <LoadingOverlay
-        message="Loading employee data..."
-        fullscreen={false}
-      />
-    ); // Render loading spinner when data is being fetched
+    return null; // Render nothing when data is being fetched
   }
 
   return (

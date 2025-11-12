@@ -140,7 +140,7 @@ const TableLaporanKegiatan = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 15));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 

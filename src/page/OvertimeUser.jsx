@@ -26,7 +26,6 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import Formovertime from "../page/Formovertime";
 import dayjs from 'dayjs';
-import LoadingOverlay from "../components/LoadingOverlay";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CircularProgress, Box } from "@mui/material";
 import Head from "../feature/Headbar";
@@ -190,7 +189,7 @@ const OvertimeUser = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 15));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
