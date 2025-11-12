@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Typography } from "@mui/material";
-import Slider from "react-slick";
+import { Typography, IconButton } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ip from "../ip";
 
 function StatusApproval() {
@@ -19,6 +20,7 @@ function StatusApproval() {
   const [waitingReimburse, setWaitingReimburse] = useState("");
   const [acceptedReimburse, setAcceptedReimburse] = useState("");
   const [declinedReimburse, setDeclinedReimburse] = useState("");
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     // Fetch data for Summary
@@ -68,131 +70,183 @@ function StatusApproval() {
     fetchApprovalData();
   }, []);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+  const slides = [
+    {
+      title: "Attendance Summary",
+      items: [
+        {
+          label: "Overtime Quota",
+          value: summaryData.overtime,
+          color: "bg-blue-500",
+        },
+        {
+          label: "Available Leave",
+          value: summaryData.cuti,
+          color: "bg-yellow-400",
+        },
+        {
+          label: "Total Absence",
+          value: summaryData.absensi,
+          color: "bg-green-500",
+        },
+      ],
+    },
+    {
+      title: "Leave Approval Status",
+      items: [
+        {
+          label: "Waiting",
+          value: waitingCuti,
+          color: "bg-gray-400",
+        },
+        {
+          label: "Accepted",
+          value: acceptedCuti,
+          color: "bg-green-500",
+        },
+        {
+          label: "Declined",
+          value: declinedCuti,
+          color: "bg-red-600",
+        },
+      ],
+    },
+    {
+      title: "Permit Approval Status",
+      items: [
+        {
+          label: "Waiting",
+          value: waitingIzin,
+          color: "bg-gray-400",
+        },
+        {
+          label: "Accepted",
+          value: acceptedIzin,
+          color: "bg-green-500",
+        },
+        {
+          label: "Declined",
+          value: declinedIzin,
+          color: "bg-red-600",
+        },
+      ],
+    },
+    {
+      title: "Reimbursement Approval Status",
+      items: [
+        {
+          label: "Waiting",
+          value: waitingReimburse,
+          color: "bg-gray-400",
+        },
+        {
+          label: "Accepted",
+          value: acceptedReimburse,
+          color: "bg-green-500",
+        },
+        {
+          label: "Declined",
+          value: declinedReimburse,
+          color: "bg-red-600",
+        },
+      ],
+    },
+  ];
+
+  const handlePrev = () => {
+    setActiveSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setActiveSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
   };
 
   return (
-    <div className="flex flex-col w-10/12 mx-auto">
-      <Slider {...settings} className="w-full h-full mx-auto">
-        {/* Summary Slide */}
-        <div>
-          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Attendance Summary
-          </Typography>
-          <div className="flex flex-row justify-between items-center my-2">
-            {/* Overtime */}
-            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-blue-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Overtime Quota</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {summaryData.overtime}
-              </Typography>
-            </div>
-            {/* Cuti */}
-            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-yellow-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Available Leave</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {summaryData.cuti}
-              </Typography>
-            </div>
-            {/* Absensi */}
-            <div className="py-2 lg:py-2 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Total Absence</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {summaryData.absensi}
-              </Typography>
-            </div>
-          </div>
+    <div className="relative flex flex-col w-full h-full px-2">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <IconButton
+          onClick={handlePrev}
+          size="small"
+          className="!bg-white !shadow-md"
+          aria-label="Previous slide"
+        >
+          <ChevronLeftIcon />
+        </IconButton>
+        <div className="flex gap-2">
+          {slides.map((_, index) => (
+            <span
+              key={index}
+              className={`h-2 w-2 rounded-full ${
+                index === activeSlide ? "bg-[#204682]" : "bg-gray-300"
+              }`}
+            />
+          ))}
         </div>
-
-        {/* Cuti Slide */}
-        <div>
-          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Leave Approval Status
-          </Typography>
-          <div className="flex flex-row justify-between items-center my-2">
-            {/* Waiting */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Waiting</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {waitingCuti}
-              </Typography>
+        <IconButton
+          onClick={handleNext}
+          size="small"
+          className="!bg-white !shadow-md"
+          aria-label="Next slide"
+        >
+          <ChevronRightIcon />
+        </IconButton>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <div
+          className="flex h-full transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+        >
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className="min-w-full h-full flex justify-center px-2 sm:px-4"
+            >
+              <div className="w-full max-w-[680px] h-full bg-white rounded-2xl border border-gray-200 px-4 py-3 sm:px-8 sm:py-4 flex flex-col items-center justify-center gap-6">
+                <Typography
+                  variant="h5"
+                  className="text-center text-[#11284E]"
+                  style={{ fontWeight: "500" }}
+                >
+                  {slide.title}
+                </Typography>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5 w-full">
+                  {slide.items.map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className={`${item.color} w-full h-28 sm:h-32 flex flex-col justify-center items-center rounded-xl px-5 text-white`}
+                    >
+                      <Typography variant="body2" className="text-center">
+                        {item.label}
+                      </Typography>
+                      <Typography variant="body1" className="text-center" style={{ fontWeight: "bold" }}>
+                        {item.value ?? 0}
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            {/* Accepted */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Accepted</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {acceptedCuti}
-              </Typography>
-            </div>
-            {/* Declined */}
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Declined</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {declinedCuti}
-              </Typography>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* Izin Slide */}
-        <div>
-          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Permit Approval Status
-          </Typography>
-          <div className="flex flex-row justify-between items-center my-2">
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Waiting</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {waitingIzin}
-              </Typography>
-            </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Accepted</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {acceptedIzin}
-              </Typography>
-            </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Declined</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {declinedIzin}
-              </Typography>
-            </div>
-          </div>
-        </div>
-
-        {/* Reimburse Slide */}
-        <div>
-          <Typography variant="h5" className="mb-5" style={{ fontWeight: "400" }}>
-            Reimbursement Approval Status
-          </Typography>
-          <div className="flex flex-row justify-between items-center my-2">
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-gray-400 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Waiting</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {waitingReimburse}
-              </Typography>
-            </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-green-500 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Accepted</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {acceptedReimburse}
-              </Typography>
-            </div>
-            <div className="py-2 lg:py-5 px-8 lg:px-7 bg-red-600 w-1/4 flex flex-col justify-center items-center rounded-md drop-shadow-lg">
-              <Typography variant="body2">Declined</Typography>
-              <Typography variant="body1" style={{ fontWeight: "bold" }}>
-                {declinedReimburse}
-              </Typography>
-            </div>
-          </div>
-        </div>
-      </Slider>
+      </div>
+      <div className="flex items-center justify-center gap-2 mt-4 sm:hidden">
+        <IconButton
+          onClick={handlePrev}
+          size="small"
+          className="!bg-white !shadow-md"
+          aria-label="Previous slide"
+        >
+          <ChevronLeftIcon fontSize="small" />
+        </IconButton>
+        <IconButton
+          onClick={handleNext}
+          size="small"
+          className="!bg-white !shadow-md"
+          aria-label="Next slide"
+        >
+          <ChevronRightIcon fontSize="small" />
+        </IconButton>
+      </div>
     </div>
   );
 }

@@ -197,11 +197,11 @@ function DashboardUserSide() {
                 <div className="flex flex-col justify-center bg-[#11284E] px-4 pb-4 h-54">
                     <div className="text-white font-bold text-xl">Good Morning, {name}!</div>
                     <span className="text-white text-sm">Time to Check In, Don't Forget!</span>
-                    <div className="flex justify-center gap-4">
-                        <div className="flex justify-between items-center drop-shadow-lg bg-white px-5 lg:px-0 my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
+                    <div className="flex justify-center items-center gap-4">
+                        <div className="flex justify-center items-center drop-shadow-lg bg-white px-3 sm:px-6 my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
                             <StatusApproval />
                         </div>
-                        <div className="flex flex-col items-center jutify-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
+                        <div className="flex flex-col items-center justify-center drop-shadow-lg bg-white px-5 lg:px-10  my-5 rounded-3xl w-[100%] lg:w-[40%] h-[17rem]">
                             <CheckinDashboard />
                         </div>
                     </div>

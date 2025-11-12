@@ -224,7 +224,7 @@ const Sidebar = () => {
 
     return (
         <aside
-            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] rounded-br-lg rounded-tr-lg overflow-auto text-white ${open ? "w-60" : "w-16"
+            className={`shadow-md py-2 flex flex-col duration-500 bg-[#204682] overflow-auto text-white ${open ? "w-60" : "w-16"
                 }`}
         >
             {/* Header */}
