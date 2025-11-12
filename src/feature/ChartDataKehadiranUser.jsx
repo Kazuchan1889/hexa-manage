@@ -8,7 +8,7 @@ import { Typography } from "@mui/material";
 import ip from "../ip";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 function ChartDataKehadiranUser() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -110,7 +110,12 @@ function ChartDataKehadiranUser() {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <LoadingOverlay
+        message="Loading attendance summary..."
+        fullscreen={false}
+      />
+    );
   }
 
   return (

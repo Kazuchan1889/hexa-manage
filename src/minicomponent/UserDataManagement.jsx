@@ -31,7 +31,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ip from "../ip";
-import Loading from "../page/Loading"; // Importing Loading component
+import LoadingOverlay from "../components/LoadingOverlay";
 import Head from "../feature/Headbar";
 import NavbarUser from "../feature/MobileNav";
 import Sidebar from "../feature/Sidebar";
@@ -215,7 +215,12 @@ const TableDataKaryawan = () => {
   };
 
   if (loading) {
-    return <Loading />; // Render loading spinner when data is being fetched
+    return (
+      <LoadingOverlay
+        message="Loading employee data..."
+        fullscreen={false}
+      />
+    ); // Render loading spinner when data is being fetched
   }
 
   return (

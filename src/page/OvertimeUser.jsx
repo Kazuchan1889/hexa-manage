@@ -26,7 +26,7 @@ import Swal from "sweetalert2";
 import ip from "../ip";
 import Formovertime from "../page/Formovertime";
 import dayjs from 'dayjs';
-import Loading from "../page/Loading";
+import LoadingOverlay from "../components/LoadingOverlay";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { CircularProgress, Box } from "@mui/material";
 import Head from "../feature/Headbar";

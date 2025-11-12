@@ -41,6 +41,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Info as InfoIcon } from "@mui/icons-material";
 import { faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "@mui/material";
+import LoadingOverlay from "../components/LoadingOverlay";
 import {
 
   Modal,
@@ -56,7 +57,7 @@ const TablePayroll = () => {
   dispatch(loadingAction.startLoading(false));
 
   if (loading) {
-    return <Loading />;
+    return <LoadingOverlay message="Preparing payroll data..." />;
   }
 
   const [rows, setRows] = useState([]);

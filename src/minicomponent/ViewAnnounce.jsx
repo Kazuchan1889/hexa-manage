@@ -4,7 +4,7 @@ import ip from "../ip";
 import AnnouncementEdit from "./AnnouncementEdit";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 // Modal component to display detailed announcement
 const AnnouncementDetailModal = ({ announcement, onClose }) => {
@@ -130,7 +130,12 @@ const AnnouncementList = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <LoadingOverlay
+        message="Loading announcements..."
+        fullscreen={false}
+      />
+    );
   }
 
   return (

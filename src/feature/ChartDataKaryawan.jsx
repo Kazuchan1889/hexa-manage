@@ -8,7 +8,7 @@ import axios from "axios";
 import ip from "../ip";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 function ChartDataKaryawan() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels); // ✅ Register plugin datalabels
@@ -103,7 +103,12 @@ function ChartDataKaryawan() {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <LoadingOverlay
+        message="Loading employee distribution..."
+        fullscreen={false}
+      />
+    );
   }
 
   return (

@@ -8,7 +8,7 @@ import { Typography } from "@mui/material";
 import ip from "../ip";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingAction } from "../store/store";
-import Loading from "../page/Loading";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 function ChartDataKehadiran() {
   Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels); // ✅ Register plugin datalabels
@@ -105,7 +105,12 @@ function ChartDataKehadiran() {
   };
 
   if (loading) {
-    return <Loading />;
+    return (
+      <LoadingOverlay
+        message="Loading overall attendance data..."
+        fullscreen={false}
+      />
+    );
   }
 
   return (
