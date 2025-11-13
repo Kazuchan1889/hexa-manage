@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Typography, IconButton } from "@mui/material";
+import { Typography, IconButton, useMediaQuery } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ip from "../ip";
@@ -21,6 +21,7 @@ function StatusApproval() {
   const [acceptedReimburse, setAcceptedReimburse] = useState("");
   const [declinedReimburse, setDeclinedReimburse] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   useEffect(() => {
     // Fetch data for Summary
@@ -162,8 +163,8 @@ function StatusApproval() {
   };
 
   return (
-    <div className="relative flex flex-col w-full h-full px-2">
-      <div className="flex items-center justify-between mb-3 sm:mb-4">
+    <div className="relative flex flex-col w-full h-full px-2 sm:px-4 pb-4">
+      <div className="flex items-center justify-between mt-6 sm:mt-8">
         <IconButton
           onClick={handlePrev}
           size="small"
@@ -191,7 +192,7 @@ function StatusApproval() {
           <ChevronRightIcon />
         </IconButton>
       </div>
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden mt-4 sm:mt-6">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${activeSlide * 100}%)` }}
@@ -199,26 +200,48 @@ function StatusApproval() {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="min-w-full h-full flex justify-center px-2 sm:px-4"
+              className={`min-w-full flex justify-center ${
+                isMobile ? "items-stretch" : "items-center"
+              }`}
             >
-              <div className="w-full max-w-[680px] h-full bg-white rounded-2xl border border-gray-200 px-4 py-3 sm:px-8 sm:py-4 flex flex-col items-center justify-center gap-6">
+              <div
+                className={`w-full max-w-[680px] bg-white rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm ${
+                  isMobile
+                    ? "py-6 px-4 min-h-[320px] -mt-2"
+                    : "py-10 px-6 min-h-[360px] -mt-6"
+                }`}
+              >
                 <Typography
-                  variant="h5"
+                  variant={isMobile ? "h6" : "h5"}
                   className="text-center text-[#11284E]"
                   style={{ fontWeight: "500" }}
                 >
                   {slide.title}
                 </Typography>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5 w-full">
+                <div
+                  className={`grid grid-cols-1 sm:grid-cols-3 w-full ${
+                    isMobile ? "gap-3" : "gap-5"
+                  }`}
+                >
                   {slide.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
-                      className={`${item.color} w-full h-28 sm:h-32 flex flex-col justify-center items-center rounded-xl px-5 text-white`}
+                      className={`${item.color} w-full flex flex-col justify-center items-center rounded-xl px-5 text-white ${
+                        isMobile ? "h-24" : "h-28"
+                      }`}
                     >
-                      <Typography variant="body2" className="text-center">
+                      <Typography
+                        variant="body2"
+                        className="text-center"
+                        style={{ fontSize: isMobile ? "0.9rem" : undefined }}
+                      >
                         {item.label}
                       </Typography>
-                      <Typography variant="body1" className="text-center" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        variant={isMobile ? "body2" : "body1"}
+                        className="text-center"
+                        style={{ fontWeight: "bold" }}
+                      >
                         {item.value ?? 0}
                       </Typography>
                     </div>
